@@ -1,15 +1,10 @@
 version: "3.7"
 
 services:
-  dockerized-react:
-    container_name: dockerized-react
+  sample-prod:
+    container_name: sample-prod
     build:
       context: .
-      dockerfile: Dockerfile
-    volumes:
-      - ".:/usr/src/app"
-      - "/usr/src/app/node_modules"
+      dockerfile: Dockerfile-prod
     ports:
-      - "3000:3001"
-    environment:
-      - NODE_ENV=development
+      - "80:80"
