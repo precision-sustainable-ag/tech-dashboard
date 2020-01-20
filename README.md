@@ -1,6 +1,8 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![Build Status](https://api.travis-ci.org/precision-sustainable-ag/tech-dashboard.svg?branch=master)
 
-## Available Scripts
+
+
+## Tech Dashboard
 
 In the project directory, you can run:
 
