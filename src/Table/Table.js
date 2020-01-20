@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { forwardRef } from "react";
 import MaterialTable from "material-table";
 import AddBox from "@material-ui/icons/AddBox";
@@ -16,6 +16,12 @@ import Remove from "@material-ui/icons/Remove";
 import SaveAlt from "@material-ui/icons/SaveAlt";
 import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
+import { Context } from "../Store/Store";
+import Axios from "axios";
+// import ReactLoading from "react-loading";
+// import AddIcon from "@material-ui/icons/Add";
+
+// import { Fab } from "@material-ui/core";
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -40,39 +46,150 @@ const tableIcons = {
   ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
+
 const TableComponent = () => {
+  const [state, dispatch] = useContext(Context);
+  const [tableState, setTableState] = useState(true);
+  useEffect(() => {
+    console.log("hello from table");
+    if (state.site_information.length === 0) {
+      fetchRecords(`http://52.244.255.91/api.php?tablerecords=all`).then(() => {
+        setTableState(false);
+      });
+    } else {
+      setTableState(false);
+    }
+  }, [tableState]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const fetchRecords = async apiURL => {
+    await Axios.get(apiURL).then(response => {
+      let data = response.data;
+      dispatch({
+        type: "SET_SITE_INFO",
+        data: data
+      });
+      //   console.log(response);
+    });
+  };
+
+  const setTableRecordFormat = () => {
+    console.log("inside table record function", state);
+    state.site_information.map((site, index) => {
+      console.log("site", site);
+      let grower = site.last_name;
+      let county = site.county;
+      let email = site.email;
+      let address = site.address;
+      let latlng = `${site.latitude}, ${site.longitude}`;
+      let notes = site.notes;
+      let obj = {
+        grower: grower,
+        county: county,
+        email: email,
+        address: address,
+        latlng: latlng,
+        notes: notes
+      };
+      let arr = [];
+      console.log(obj);
+      arr.push(obj);
+      setTableState(arr);
+    });
+  };
   return (
     <div style={{ maxWidth: "100%" }}>
       <MaterialTable
+        isLoading={tableState}
+        editable={{
+          isEditable: rowData => rowData.state === "MD", // only name(a) rows would be editable
+          isDeletable: false,
+          //   isDeletable: rowData => rowData.name === "b", // only name(a) rows would be deletable
+          onRowAdd: newData => {
+            // console.log(newData);
+            // new Promise((resolve, reject) => {
+            //   setTimeout(() => {
+            //     {
+            //       /* const data = this.state.data;
+            //                 data.push(newData);
+            //                 this.setState({ data }, () => resolve()); */
+            //       dispatch(
+            //         {
+            //           type: "ADD_ONE_SITE_INFO_TO_STATE",
+            //           data: newData
+            //         },
+            //         () => resolve()
+            //       );
+            //     }
+            //     resolve();
+            //   }, 1000);
+            // });
+          }
+
+          //   onRowUpdate: (newData, oldData) =>
+          //     new Promise((resolve, reject) => {
+          //       setTimeout(() => {
+          //         {
+          //           /* const data = this.state.data;
+          //                     const index = data.indexOf(oldData);
+          //                     data[index] = newData;
+          //                     this.setState({ data }, () => resolve()); */
+          //         }
+          //         resolve();
+          //       }, 1000);
+          //     }),
+          //   onRowDelete: oldData =>
+          //     new Promise((resolve, reject) => {
+          //       setTimeout(() => {
+          //         {
+          //           /* let data = this.state.data;
+          //                     const index = data.indexOf(oldData);
+          //                     data.splice(index, 1);
+          //                     this.setState({ data }, () => resolve()); */
+          //         }
+          //         resolve();
+          //       }, 1000);
+          //     })
+        }}
         icons={tableIcons}
+        // onRowClick={(evt, selectedRow) => {
+        //   console.log(selectedRow);
+        // }}
+        // onRowSelected={(evt, selectRow) => {
+        //   console.log(selectRow);
+        // }}
         columns={[
-          { title: "First Name", field: "name" },
-          { title: "Last Name", field: "surname" },
-          { title: "Birth Year", field: "birthYear", type: "numeric" }
+          { title: "Code", field: "code" },
+          { title: "Grower", field: "grower" },
+          { title: "State", field: "state" },
+          { title: "County", field: "county" },
+          { title: "Email", field: "email" },
+          { title: "Year", field: "year" },
+          //   { title: "Email", field: "birthYear", type: "email" },
+          { title: "Address", field: "address" },
+          { title: "Lat, Long", field: "latlng" },
+          { title: "Notes", field: "notes" }
           //   {
           //     title: "Doğum Yeri",
           //     field: "birthCity",
           //     lookup: { 34: "İstanbul", 63: "Şanlıurfa" }
           //   }
         ]}
-        data={[
-          { name: "Mehmet", surname: "Baran", birthYear: 1987, birthCity: 63 },
-          {
-            name: "Rohit",
-            surname: "Bandooni",
-            birthYear: 1990,
-            birthCity: 23
-          },
-          {
-            name: "Vaishali",
-            surname: "Sharma",
-            birthYear: 1988,
-            birthCity: 45
-          },
-          { name: "Clarion", surname: "Smith", birthYear: 1994, birthCity: 22 }
-        ]}
+        // data={state.site_information.length !== 0 ? state.site_information : {}}
+        data={state.site_information}
         title="Data Table"
+        options={{
+          exportButton: true,
+          //   defaultExpanded: true,
+          exportFileName: "Site Information",
+          addRowPosition: "last",
+          exportAllData: true,
+          pageSize: 10,
+          pageSizeOptions: [5, 10, 20, 50, 100],
+          groupRowSeparator: "  ",
+          grouping: true
+        }}
       />
+      {/* )} */}
     </div>
   );
 };

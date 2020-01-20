@@ -6,6 +6,10 @@ import Header from "./Header/Header";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { makeStyles, Typography, Box } from "@material-ui/core";
 import TableComponent from "./Table/Table";
+import { Switch, Route } from "react-router-dom";
+import { ReposComponent } from "./Issues/Issues";
+import DevicesComponent from "./Devices/Devices";
+import DeviceComponent from "./Devices/Device";
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -36,10 +40,16 @@ function App() {
       <CssBaseline />
       <Header />
       <DrawerComponent />
+
       <main className={classes.content}>
         <div className={classes.toolbar} />
         <Box>
-          <TableComponent />
+          <Switch>
+            <Route path="/" component={TableComponent} exact />
+            <Route path="/issues" component={ReposComponent} exact />
+            <Route path="/devices" component={DevicesComponent} exact />
+            <Route path={`/devices/:deviceId`} component={DeviceComponent} />
+          </Switch>
         </Box>
       </main>
     </div>

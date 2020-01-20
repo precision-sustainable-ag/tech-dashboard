@@ -5,10 +5,13 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import Store from "./Store/Store";
 import "typeface-roboto";
+import { BrowserRouter } from "react-router-dom";
 
 ReactDOM.render(
   <Store>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </Store>,
   document.getElementById("root")
 );

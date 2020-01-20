@@ -1,14 +1,16 @@
 import React from "react";
 import Drawer from "@material-ui/core/Drawer";
 import {
-  Divider,
+  //   Divider,
   List,
   ListItem,
   ListItemText,
   ListItemIcon,
   makeStyles
 } from "@material-ui/core";
-import { Inbox, Mail } from "@material-ui/icons/";
+import { Radio, QuestionAnswer, ViewList } from "@material-ui/icons/";
+
+import { Link } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -45,14 +47,31 @@ const DrawerComponent = () => {
       <div className={classes.toolbar} />
 
       <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>
-              {index % 2 === 0 ? <Inbox /> : <Mail />}
-            </ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+        {/* {["All Data", "Issues"].map((text, index) => ( */}
+
+        <ListItem button key={"All Data"} component={Link} to="/">
+          <ListItemIcon>
+            <ViewList />
+          </ListItemIcon>
+          <ListItemText primary={"All Data"} />
+        </ListItem>
+
+        <ListItem button key={"Issues"} component={Link} to="/issues">
+          <ListItemIcon>
+            <QuestionAnswer />
+          </ListItemIcon>
+          <ListItemText primary={"Issues"} />
+        </ListItem>
+
+        <ListItem button key="Devices" component={Link} to="/devices">
+          <ListItemIcon>
+            <Radio />
+          </ListItemIcon>
+          <ListItemText primary="Devices" />
+        </ListItem>
+        {/* {index % 2 === 0 ? <Inbox /> : <Mail />} */}
+
+        {/* ))} */}
       </List>
     </Drawer>
   );

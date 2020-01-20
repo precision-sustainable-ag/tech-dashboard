@@ -1,0 +1,48 @@
+.devicesWrapper {
+  .devicesListWrapper {
+    .devices {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin: -15px -15px;
+      justify-content: space-between;
+      .device {
+        width: 200px;
+        height: 200px;
+
+        margin: 15px 15px;
+        .deviceDataWrapper {
+          display: flex;
+          flex-direction: column;
+
+          outline: none;
+          .deviceActionArea {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            &.deadDevice {
+              // Style for a dead device (no lastsession data)
+              // background-color: rgba($color: #ef5350, $alpha: 1);
+              color: #fafafa;
+            }
+            &.aliveDevice {
+              //   Style for an alive device (lastsession data present)
+            }
+          }
+          //   border-radius: 20px;
+          width: 100%;
+          height: 100%;
+          //   box-shadow: 0 0 2px 2px rgba($color: #2d2d2d, $alpha: 0.5);
+          font-weight: 500;
+        }
+      }
+    }
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+}
