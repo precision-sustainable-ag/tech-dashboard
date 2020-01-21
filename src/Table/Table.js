@@ -53,7 +53,7 @@ const TableComponent = () => {
   useEffect(() => {
     console.log("hello from table");
     if (state.site_information.length === 0) {
-      fetchRecords(`http://52.244.255.91/api.php?tablerecords=all`).then(() => {
+      fetchRecords(`http://13.72.51.225/api/?tablerecords=all`).then(() => {
         setTableState(false);
       });
     } else {

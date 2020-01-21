@@ -1,10 +1,10 @@
 version: "3.7"
 
 services:
-  sample-prod:
-    container_name: sample-prod
+  tech-dashboard-prod:
+    container_name: tech-dashboard-prod
     build:
       context: .
-      dockerfile: Dockerfile-prod
+      dockerfile: Dockerfile
     ports:
       - "80:80"
