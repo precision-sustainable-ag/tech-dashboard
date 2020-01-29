@@ -13,10 +13,24 @@ const Reducer = (state, action) =>
       return updateAllRepos(state, action);
     case "SET_DEVICES_INFO":
       return setDevicesInfo(state, action);
+      case "SET_PSA_FORMS": return setPsaForms(state, action);
+      case "SET_PSASSG_FORMS": return setPsassgForms(state, action);
     default:
       return { ...state };
   }
 };
+
+const setPsaForms = (state, action) => {
+  return {
+    ...state, psaForms: action.data
+  }
+};
+
+const setPsassgForms = (state, action) => {
+  return {
+    ...state, psassgForms: action.data
+  }
+}
 
 const setDevicesInfo = (state, action) => 
 {

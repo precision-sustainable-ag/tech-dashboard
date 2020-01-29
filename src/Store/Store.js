@@ -5,7 +5,9 @@ const initialState = {
   helloText: "hello world",
   site_information: [],
   repositories: [],
-  devices: []
+  devices: [],
+  psaForms:[],
+  psassgForms: []
 };
 
 const Store = ({ children }) => {
