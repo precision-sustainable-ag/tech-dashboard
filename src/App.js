@@ -10,6 +10,7 @@ import { Switch, Route } from "react-router-dom";
 import { ReposComponent } from "./Issues/Issues";
 import DevicesComponent from "./Devices/Devices";
 import DeviceComponent from "./Devices/Device";
+import Forms from "./Forms/Forms";
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -49,6 +50,7 @@ function App() {
             <Route path="/issues" component={ReposComponent} exact />
             <Route path="/devices" component={DevicesComponent} exact />
             <Route path={`/devices/:deviceId`} component={DeviceComponent} />
+            <Route path={`/kobo-forms`} component={Forms} />
           </Switch>
         </Box>
       </main>

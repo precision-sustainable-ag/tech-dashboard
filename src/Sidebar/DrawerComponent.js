@@ -8,7 +8,7 @@ import {
   ListItemIcon,
   makeStyles
 } from "@material-ui/core";
-import { Radio, QuestionAnswer, ViewList } from "@material-ui/icons/";
+import { Radio, QuestionAnswer, ViewList, Storage } from "@material-ui/icons/";
 
 import { Link } from "react-router-dom";
 
@@ -68,6 +68,13 @@ const DrawerComponent = () => {
             <Radio />
           </ListItemIcon>
           <ListItemText primary="Devices" />
+        </ListItem>
+        <ListItem button key="Forms" component={Link} to="/kobo-forms">
+          <ListItemIcon>
+            <Storage />
+            
+          </ListItemIcon>
+          <ListItemText primary="Forms" />
         </ListItem>
         {/* {index % 2 === 0 ? <Inbox /> : <Mail />} */}
 

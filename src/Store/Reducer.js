@@ -1,5 +1,7 @@
-const Reducer = (state, action) => {
-  switch (action.type) {
+const Reducer = (state, action) => 
+{
+  switch (action.type) 
+  {
     case "UPDATE_HELLO_WORLD":
       return updateHelloWorld(state, action);
 
@@ -16,14 +18,16 @@ const Reducer = (state, action) => {
   }
 };
 
-const setDevicesInfo = (state, action) => {
+const setDevicesInfo = (state, action) => 
+{
   return {
     ...state,
     devices: action.data
   };
 };
 
-const updateAllRepos = (state, action) => {
+const updateAllRepos = (state, action) => 
+{
   return {
     ...state,
     repositories: action.data
