@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 
 import "./Styles/App.css";
 
@@ -12,6 +12,7 @@ import DevicesComponent from "./Devices/Devices";
 import DeviceComponent from "./Devices/Device";
 import Forms from "./Forms/Forms";
 import LandingComponent from "./Landing/Landing";
+import Login from "./Auth/Login/Login";
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -27,8 +28,9 @@ const useStyles = makeStyles(theme => ({
 
 function App() {
   const classes = useStyles();
+  const [loggedIn, setLoggedIn] = useState(false);
   return (
-<Fragment>
+    <Fragment>
       <Header />
       {/* <DrawerComponent /> */}
 
@@ -36,7 +38,7 @@ function App() {
         <div className={classes.toolbar} />
         <Box>
           <Switch>
-            
+            <Route path="/" component={Login} exact />
             <Route path="/table" component={TableComponent} exact />
             <Route path="/landing" component={LandingComponent} exact />
             <Route path="/issues" component={ReposComponent} exact />
@@ -46,7 +48,7 @@ function App() {
           </Switch>
         </Box>
       </main>
-      </Fragment>
+    </Fragment>
   );
 }
 

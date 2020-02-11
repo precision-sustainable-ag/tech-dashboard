@@ -3,16 +3,14 @@ import { APIURL, APICreds } from "./hologramConstants";
 import Axios from "axios";
 
 import { Map, TileLayer, Marker, Popup } from "react-leaflet";
-import Loading from "react-loading";
+// import Loading from "react-loading";
 import Skeleton from "@material-ui/lab/Skeleton";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import {
   Card,
-  CardActionArea,
   CardHeader,
   CardContent,
-  Avatar,
   IconButton,
   GridList,
   GridListTile,
@@ -22,11 +20,9 @@ import {
   ListItemIcon,
   List,
   ListItemText,
-  Divider,
   Chip
 } from "@material-ui/core";
 import {
-  MoreVert,
   Create,
   SimCard,
   Phone,
@@ -439,7 +435,7 @@ const DeviceComponent = props => {
     </div>
   ) : (
     // <Loading width="500px" height="500px" type="cubes" />
-    <Skeleton variant="rect" width="100%" height="600px" animation="wave" />
+    <Skeleton variant="rect" width="100%" height="300px" animation="wave" />
   );
 };
 
