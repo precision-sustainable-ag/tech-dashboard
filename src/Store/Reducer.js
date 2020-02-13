@@ -13,8 +13,9 @@ const Reducer = (state, action) =>
       return updateAllRepos(state, action);
     case "SET_DEVICES_INFO":
       return setDevicesInfo(state, action);
-      case "SET_PSA_FORMS": return setPsaForms(state, action);
-      case "SET_PSASSG_FORMS": return setPsassgForms(state, action);
+    case "SET_PSA_FORMS": return setPsaForms(state, action);
+    case "SET_PSASSG_FORMS": return setPsassgForms(state, action);
+    case "CHECK_USERNAME_PASSWORD": return checkAuth(state, action);
     default:
       return { ...state };
   }
@@ -60,6 +61,13 @@ const setOneSiteInfo = (state, action) => {
     ...state,
     site_information: state.site_information.push(action.data)
   };
+};
+
+const checkAuth = (state, action) => {
+
+  if(action.data.username === 'hey' && action.data.password === 'hey') return {...state, loggedIn: true}
+  else return {...state, loggedIn: false}
+
 };
 
 export default Reducer;

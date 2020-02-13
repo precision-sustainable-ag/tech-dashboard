@@ -2,7 +2,7 @@ import React, { createContext, useReducer } from "react";
 import Reducer from "./Reducer";
 
 const initialState = {
-  helloText: "hello world",
+  loggedIn: false,
   site_information: [],
   repositories: [],
   devices: [],
