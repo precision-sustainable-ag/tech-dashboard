@@ -2,7 +2,7 @@
   "name": "tech-dashboard",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://gitname.github.io/react-gh-pages",
+  "homepage": "https://precision-sustainable-ag.github.io/tech-dashboard",
   "dependencies": {
     "@material-ui/core": "^4.9.2",
     "@material-ui/icons": "^4.5.1",

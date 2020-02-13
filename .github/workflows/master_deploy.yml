@@ -1,29 +1,24 @@
-name: MasterDeployCI
+# 4b4018d06082ae3934afb85d6636a6cfd8c3f49b
+name: Deploy to GitHub Pages
 on:
   push:
     branches:
       - master
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [8.x, 10.x, 12.x]
     steps:
-      - uses: actions/checkout@v1
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Install Packages
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Build
         run: |
-          echo "Installing packages..."
           npm install
-      - name: Deploy to Github Pages
-        run: |
-          git config --global user.email "Rohit_Bandooni@ncsu.edu"
-          git config --global user.name "rbandooni"
-          git remote set-url origin https://4b4018d06082ae3934afb85d6636a6cfd8c3f49b@github.com/precision-sustainable-ag/tech-dashboard.git
-          npm run deploy
-      - name: Updating Domain
-        run: echo "Update domain"
+          npm run-script build
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: build
