@@ -1,4 +1,3 @@
-# 4b4018d06082ae3934afb85d6636a6cfd8c3f49b
 name: Deploy to GitHub Pages
 on:
   push:

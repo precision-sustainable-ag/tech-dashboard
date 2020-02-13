@@ -7,12 +7,35 @@ import Store from "./Store/Store";
 import "typeface-roboto";
 import { BrowserRouter } from "react-router-dom";
 
+import { Auth0Provider } from "./Auth/react-auth0-spa";
+import history from "./utils/history";
+import config from  "./Auth/auth_config.json";
+
+
+// A function that routes the user to the right place
+// after login
+const onRedirectCallback = appState => {
+  history.push(
+    appState && appState.targetUrl
+      ? appState.targetUrl
+      : window.location.pathname
+  );
+};
+
 ReactDOM.render(
-  <Store>
-    <BrowserRouter>
+
+  <Auth0Provider
+    domain={config.domain}
+    client_id={config.clientId}
+    redirect_uri={window.location.origin}
+    onRedirectCallback={onRedirectCallback}
+  >
+      <Store>
+    <BrowserRouter history={history}>
       <App />
     </BrowserRouter>
-  </Store>,
+  </Store>
+  </Auth0Provider>,
   document.getElementById("root")
 );
 

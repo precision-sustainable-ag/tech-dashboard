@@ -4,16 +4,21 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 
 
-import {Drawer, CssBaseline, AppBar, Toolbar, List, ListItem, ListItemIcon, ListItemText, IconButton, Divider, Typography} from "@material-ui/core";
+import {Drawer, CssBaseline, AppBar, Toolbar, List, ListItem, ListItemIcon, ListItemText, IconButton, Divider, Typography, Button, Menu, MenuItem} from "@material-ui/core";
 
 import { Link } from "react-router-dom";
-import { ChevronRight, ChevronLeft, Radio, Storage, QuestionAnswer, ViewList } from '@material-ui/icons';
+import { ChevronRight, ChevronLeft, Radio, Storage, QuestionAnswer, ViewList, AccountCircle, Lock } from '@material-ui/icons';
+import { useAuth0 } from '../Auth/react-auth0-spa';
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
+    flexGrow: 1
+  },
+  title: {
+    flexGrow: 1,
   },
   appBar: {
     transition: theme.transitions.create(['margin', 'width'], {
@@ -72,6 +77,11 @@ export default function Header() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const profileMenuOpen = Boolean(anchorEl);
+
+  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -81,6 +91,16 @@ export default function Header() {
     setOpen(false);
   };
 
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleProfileMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+
+  };
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -89,6 +109,7 @@ export default function Header() {
         className={clsx(classes.appBar, {
           [classes.appBarShift]: open,
         })}
+        color="primary"
       >
         <Toolbar>
           <IconButton
@@ -100,9 +121,43 @@ export default function Header() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
+          <Typography variant="h6" noWrap className={classes.title}>
            PSA Tech Dashboard
           </Typography>
+          {!isAuthenticated && (
+        <IconButton color="inherit" onClick={() => loginWithRedirect({})}>
+          <Lock />
+        </IconButton>
+      )}
+
+      {/* {isAuthenticated && <Button onClick={() => logout()}>Log out</Button>} */}
+      {
+        isAuthenticated &&
+        (
+          <div>
+            <IconButton
+              aria-label="user profile"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleMenu}
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+            <Menu
+            id="menu-appbar"
+            anchorEl={anchorEl}
+            anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+            keepMounted
+            transformOrigin={{vertical: 'top', horizontal: 'right'}}
+            open={profileMenuOpen}
+            onClose={handleProfileMenuClose}>
+              <MenuItem onClick={handleProfileMenuClose}>Profile</MenuItem>
+              <MenuItem onClick={() => logout()}>Log Out</MenuItem>
+            </Menu>
+          </div>
+        )
+      }
         </Toolbar>
       </AppBar>
       <Drawer
@@ -122,6 +177,12 @@ export default function Header() {
         
         <Divider />
         <List>
+        <ListItem button key={"Home"} component={Link} to="/">
+          <ListItemIcon>
+            <ViewList />
+          </ListItemIcon>
+          <ListItemText primary={"Quick Links"} />
+        </ListItem>
         <ListItem button key={"All Data"} component={Link} to="/table">
           <ListItemIcon>
             <ViewList />
