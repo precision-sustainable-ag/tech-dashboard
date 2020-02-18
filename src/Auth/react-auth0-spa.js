@@ -60,7 +60,11 @@ export const Auth0Provider = ({
     // eslint-disable-next-line
   }, []);
 
-  const loginWithPopup = async (params = {}) => {
+  const loginWithPopup = async (
+    params = {
+      redirect_uri: "https://precisionsustainableag.org/tech-dashboard"
+    }
+  ) => {
     setPopupOpen(true);
     try {
       await auth0Client.loginWithPopup(params);

@@ -1,10 +1,19 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 
 import "./Styles/App.css";
 
 import Header from "./Header/Header";
 
-import { makeStyles, Box } from "@material-ui/core";
+import {
+  makeStyles,
+  Box,
+  MuiThemeProvider,
+  createMuiTheme,
+  CssBaseline,
+  ThemeProvider,
+  Paper,
+  Typography
+} from "@material-ui/core";
 import TableComponent from "./Table/Table";
 import { Switch, Route } from "react-router-dom";
 import { ReposComponent } from "./Issues/Issues";
@@ -17,8 +26,7 @@ import LandingComponent from "./Landing/Landing";
 import { useAuth0 } from "./Auth/react-auth0-spa";
 import Loading from "react-loading";
 import PrivateRoute from "./utils/private-routes";
-
-
+import Skeleton from "@material-ui/lab/Skeleton";
 
 const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
@@ -35,27 +43,89 @@ const useStyles = makeStyles(theme => ({
 function App() {
   const { loading } = useAuth0();
   const classes = useStyles();
+
+  const [theme, setTheme] = useState({
+    palette: {
+      primary: { main: "#2e7d32" },
+      secondary: { main: "#4d4d4d" },
+      type: "light"
+    },
+    typography: {
+      useNextVariants: true,
+      fontFamily: "'Nunito', sans-serif"
+    }
+  });
   const [loggedIn, setLoggedIn] = useState(false);
-  return loading ? (<Loading type="spin" width="200" height="200" />) :  (
-    <Fragment>
-      <Header />
+  const muiTheme = createMuiTheme(theme);
+
+  const toggleThemeDarkness = () => {
+    let newPaletteType = theme.palette.type === "light" ? "dark" : "light";
+    setTheme({
+      ...theme,
+      palette: {
+        ...theme.palette,
+        type: newPaletteType
+      }
+    });
+  };
+
+  const isDarkTheme = () => {
+    return theme.palette.type === "light" ? false : true;
+  };
+
+  return loading ? (
+    <CssBaseline>
+      <ThemeProvider theme={muiTheme}>
+        <Paper
+          style={{
+            height: "100vh"
+          }}
+        >
+          <Box height={"40vh"} />
+          <Typography variant="h3" gutterBottom align="center">
+            Loading..
+          </Typography>
+        </Paper>
+      </ThemeProvider>
+    </CssBaseline>
+  ) : (
+    // <CssBaseline>
+    <ThemeProvider theme={muiTheme}>
+      <Header
+        isDarkTheme={theme.palette.type === "light" ? false : true}
+        setDarkTheme={toggleThemeDarkness}
+      />
       {/* <DrawerComponent /> */}
 
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        <Box>
-          <Switch>
-            {/* <Route path="/" component={Login} exact /> */}
-            <PrivateRoute path="/table" component={TableComponent} />
-            <Route path="/" component={LandingComponent} exact />
-            <PrivateRoute path="/issues" component={ReposComponent} exact />
-            <PrivateRoute path="/devices" component={DevicesComponent} exact />
-            <PrivateRoute path={`/devices/:deviceId`} component={DeviceComponent} />
-            <PrivateRoute path={`/kobo-forms`} component={Forms} />
-          </Switch>
-        </Box>
+        {/* <Paper elevation={0} style={{ minHeight: "100%" }}> */}
+        <Switch>
+          {/* <Route path="/" component={Login} exact /> */}
+          <Route
+            render={props => (
+              <LandingComponent
+                {...props}
+                isDarkTheme={theme.palette.type === "light" ? false : true}
+              />
+            )}
+            path="/"
+            exact
+          />
+          <PrivateRoute path="/table" component={TableComponent} />
+          <PrivateRoute path="/issues" component={ReposComponent} exact />
+          <PrivateRoute path="/devices" component={DevicesComponent} exact />
+          <PrivateRoute
+            path={`/devices/:deviceId`}
+            component={DeviceComponent}
+          />
+          <PrivateRoute path={`/kobo-forms`} component={Forms} />
+        </Switch>
+        {/* </Paper> */}
       </main>
-    </Fragment>
+      {/* </Paper> */}
+    </ThemeProvider>
+    // </CssBaseline>
   );
 }
 

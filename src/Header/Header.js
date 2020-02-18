@@ -1,79 +1,103 @@
-import React from 'react';
-import clsx from 'clsx';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import MenuIcon from '@material-ui/icons/Menu';
+import React from "react";
+import clsx from "clsx";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import MenuIcon from "@material-ui/icons/Menu";
 
-
-import {Drawer, CssBaseline, AppBar, Toolbar, List, ListItem, ListItemIcon, ListItemText, IconButton, Divider, Typography, Button, Menu, MenuItem} from "@material-ui/core";
+import {
+  Drawer,
+  CssBaseline,
+  AppBar,
+  Toolbar,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  IconButton,
+  Divider,
+  Typography,
+  Button,
+  Menu,
+  MenuItem
+} from "@material-ui/core";
 
 import { Link } from "react-router-dom";
-import { ChevronRight, ChevronLeft, Radio, Storage, QuestionAnswer, ViewList, AccountCircle, Lock } from '@material-ui/icons';
-import { useAuth0 } from '../Auth/react-auth0-spa';
+import {
+  ChevronRight,
+  ChevronLeft,
+  Radio,
+  Storage,
+  QuestionAnswer,
+  ViewList,
+  AccountCircle,
+  Lock,
+  Brightness4,
+  BrightnessHigh
+} from "@material-ui/icons";
+import { useAuth0 } from "../Auth/react-auth0-spa";
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
   root: {
-    display: 'flex',
+    display: "flex",
     flexGrow: 1
   },
   title: {
-    flexGrow: 1,
+    flexGrow: 1
   },
   appBar: {
-    transition: theme.transitions.create(['margin', 'width'], {
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
+      duration: theme.transitions.duration.leavingScreen
+    })
   },
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
-    transition: theme.transitions.create(['margin', 'width'], {
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
+      duration: theme.transitions.duration.enteringScreen
+    })
   },
   menuButton: {
-    marginRight: theme.spacing(2),
+    marginRight: theme.spacing(2)
   },
   hide: {
-    display: 'none',
+    display: "none"
   },
   drawer: {
     width: drawerWidth,
-    flexShrink: 0,
+    flexShrink: 0
   },
   drawerPaper: {
-    width: drawerWidth,
+    width: drawerWidth
   },
   drawerHeader: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
     padding: theme.spacing(0, 1),
     ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
+    justifyContent: "flex-end"
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
+      duration: theme.transitions.duration.leavingScreen
     }),
-    marginLeft: -drawerWidth,
+    marginLeft: -drawerWidth
   },
   contentShift: {
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
+      duration: theme.transitions.duration.enteringScreen
     }),
-    marginLeft: 0,
-  },
+    marginLeft: 0
+  }
 }));
 
-
-export default function Header() {
+export default function Header(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -81,7 +105,6 @@ export default function Header() {
   const profileMenuOpen = Boolean(anchorEl);
 
   const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
-
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -91,23 +114,24 @@ export default function Header() {
     setOpen(false);
   };
 
-  const handleMenu = (event) => {
+  const handleMenu = event => {
     setAnchorEl(event.currentTarget);
   };
   const handleProfileMenuClose = () => {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
-
+  const handleLogout = () => {};
+  const toggleThemeDarkness = () => {
+    props.setDarkTheme();
   };
   return (
     <div className={classes.root}>
-      <CssBaseline />
+      {/* <CssBaseline /> */}
       <AppBar
         position="fixed"
         className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
+          [classes.appBarShift]: open
         })}
         color="primary"
       >
@@ -122,42 +146,43 @@ export default function Header() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap className={classes.title}>
-           PSA Tech Dashboard
+            PSA Tech Dashboard
           </Typography>
+          <IconButton color="inherit" onClick={toggleThemeDarkness}>
+            {props.isDarkTheme ? <Brightness4 /> : <BrightnessHigh />}
+          </IconButton>
           {!isAuthenticated && (
-        <IconButton color="inherit" onClick={() => loginWithRedirect({})}>
-          <Lock />
-        </IconButton>
-      )}
-
-      {/* {isAuthenticated && <Button onClick={() => logout()}>Log out</Button>} */}
-      {
-        isAuthenticated &&
-        (
-          <div>
-            <IconButton
-              aria-label="user profile"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-              color="inherit"
-            >
-              <AccountCircle />
+            <IconButton color="inherit" onClick={() => loginWithRedirect({})}>
+              <Lock />
             </IconButton>
-            <Menu
-            id="menu-appbar"
-            anchorEl={anchorEl}
-            anchorOrigin={{vertical: 'top', horizontal: 'right'}}
-            keepMounted
-            transformOrigin={{vertical: 'top', horizontal: 'right'}}
-            open={profileMenuOpen}
-            onClose={handleProfileMenuClose}>
-              <MenuItem onClick={handleProfileMenuClose}>Profile</MenuItem>
-              <MenuItem onClick={() => logout()}>Log Out</MenuItem>
-            </Menu>
-          </div>
-        )
-      }
+          )}
+
+          {/* {isAuthenticated && <Button onClick={() => logout()}>Log out</Button>} */}
+          {isAuthenticated && (
+            <div>
+              <IconButton
+                aria-label="user profile"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                keepMounted
+                transformOrigin={{ vertical: "top", horizontal: "right" }}
+                open={profileMenuOpen}
+                onClose={handleProfileMenuClose}
+              >
+                <MenuItem onClick={handleProfileMenuClose}>Profile</MenuItem>
+                <MenuItem onClick={() => logout()}>Log Out</MenuItem>
+              </Menu>
+            </div>
+          )}
         </Toolbar>
       </AppBar>
       <Drawer
@@ -166,52 +191,51 @@ export default function Header() {
         anchor="left"
         open={open}
         classes={{
-          paper: classes.drawerPaper,
+          paper: classes.drawerPaper
         }}
       >
         <div className={classes.drawerHeader}>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}
+            {theme.direction === "ltr" ? <ChevronLeft /> : <ChevronRight />}
           </IconButton>
         </div>
-        
+
         <Divider />
         <List>
-        <ListItem button key={"Home"} component={Link} to="/">
-          <ListItemIcon>
-            <ViewList />
-          </ListItemIcon>
-          <ListItemText primary={"Quick Links"} />
-        </ListItem>
-        <ListItem button key={"All Data"} component={Link} to="/table">
-          <ListItemIcon>
-            <ViewList />
-          </ListItemIcon>
-          <ListItemText primary={"All Data"} />
-        </ListItem>
+          <ListItem button key={"Home"} component={Link} to="/">
+            <ListItemIcon>
+              <ViewList />
+            </ListItemIcon>
+            <ListItemText primary={"Quick Links"} />
+          </ListItem>
+          <ListItem button key={"All Data"} component={Link} to="/table">
+            <ListItemIcon>
+              <ViewList />
+            </ListItemIcon>
+            <ListItemText primary={"All Data"} />
+          </ListItem>
 
-        <ListItem button key={"Issues"} component={Link} to="/issues">
-          <ListItemIcon>
-            <QuestionAnswer />
-          </ListItemIcon>
-          <ListItemText primary={"Issues"} />
-        </ListItem>
+          <ListItem button key={"Issues"} component={Link} to="/issues">
+            <ListItemIcon>
+              <QuestionAnswer />
+            </ListItemIcon>
+            <ListItemText primary={"Issues"} />
+          </ListItem>
 
-        <ListItem button key="Devices" component={Link} to="/devices">
-          <ListItemIcon>
-            <Radio />
-          </ListItemIcon>
-          <ListItemText primary="Devices" />
-        </ListItem>
-        <ListItem button key="Forms" component={Link} to="/kobo-forms">
-          <ListItemIcon>
-            <Storage />
-          </ListItemIcon>
-          <ListItemText primary="Forms" />
-        </ListItem>
-      </List>
-
+          <ListItem button key="Devices" component={Link} to="/devices">
+            <ListItemIcon>
+              <Radio />
+            </ListItemIcon>
+            <ListItemText primary="Devices" />
+          </ListItem>
+          <ListItem button key="Forms" component={Link} to="/kobo-forms">
+            <ListItemIcon>
+              <Storage />
+            </ListItemIcon>
+            <ListItemText primary="Forms" />
+          </ListItem>
+        </List>
       </Drawer>
-      </div>
-      );
-          };
+    </div>
+  );
+}

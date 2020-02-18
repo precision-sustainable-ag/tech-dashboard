@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import "./Styles/index.css";
 import App from "./App";
@@ -9,11 +9,10 @@ import { BrowserRouter } from "react-router-dom";
 
 import { Auth0Provider } from "./Auth/react-auth0-spa";
 import history from "./utils/history";
-import config from  "./Auth/auth_config.json";
+import config from "./Auth/auth_config.json";
+import { CssBaseline } from "@material-ui/core";
 
-
-// A function that routes the user to the right place
-// after login
+// a function that routes the user to the right place after login
 const onRedirectCallback = appState => {
   history.push(
     appState && appState.targetUrl
@@ -23,18 +22,17 @@ const onRedirectCallback = appState => {
 };
 
 ReactDOM.render(
-
   <Auth0Provider
     domain={config.domain}
     client_id={config.clientId}
     redirect_uri={window.location.origin}
     onRedirectCallback={onRedirectCallback}
   >
-      <Store>
-    <BrowserRouter history={history}>
-      <App />
-    </BrowserRouter>
-  </Store>
+    <Store>
+      <BrowserRouter history={history}>
+        <App />
+      </BrowserRouter>
+    </Store>
   </Auth0Provider>,
   document.getElementById("root")
 );
