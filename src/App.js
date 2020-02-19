@@ -12,7 +12,8 @@ import {
   CssBaseline,
   ThemeProvider,
   Paper,
-  Typography
+  Typography,
+  Container
 } from "@material-ui/core";
 import TableComponent from "./Table/Table";
 import { Switch, Route } from "react-router-dom";
@@ -31,7 +32,7 @@ import Skeleton from "@material-ui/lab/Skeleton";
 const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
   root: {
-    display: "flex"
+    flexGrow: 1
   },
   content: {
     flexGrow: 1,
@@ -48,14 +49,16 @@ function App() {
     palette: {
       primary: { main: "#2e7d32" },
       secondary: { main: "#4d4d4d" },
-      type: "light"
+      type: window.localStorage.getItem("theme")
+        ? window.localStorage.getItem("theme")
+        : "light"
     },
     typography: {
       useNextVariants: true,
       fontFamily: "'Nunito', sans-serif"
     }
   });
-  const [loggedIn, setLoggedIn] = useState(false);
+
   const muiTheme = createMuiTheme(theme);
 
   const toggleThemeDarkness = () => {
@@ -73,8 +76,26 @@ function App() {
     return theme.palette.type === "light" ? false : true;
   };
 
+  useEffect(() => {
+    if (!window.localStorage.getItem("theme")) {
+      // set localstorage with a default theme
+      window.localStorage.setItem("theme", "light");
+    }
+
+    if (theme.palette.type !== "light") {
+      // update localstorage
+      window.localStorage.setItem("theme", "dark");
+      document.body.style.backgroundColor = "#121212";
+    } else {
+      // update localstorage
+      window.localStorage.setItem("theme", "light");
+      document.body.style.backgroundColor = "#fff";
+      // document.body.style.backgroundColor = "rgb(247, 249, 252)";
+    }
+  }, [theme]);
   return loading ? (
-    <CssBaseline>
+    <div className={classes.root}>
+      <CssBaseline />
       <ThemeProvider theme={muiTheme}>
         <Paper
           style={{
@@ -87,43 +108,49 @@ function App() {
           </Typography>
         </Paper>
       </ThemeProvider>
-    </CssBaseline>
+    </div>
   ) : (
     // <CssBaseline>
     <ThemeProvider theme={muiTheme}>
-      <Header
-        isDarkTheme={theme.palette.type === "light" ? false : true}
-        setDarkTheme={toggleThemeDarkness}
-      />
-      {/* <DrawerComponent /> */}
+      <Container maxWidth={"xl"} className="mainContainer">
+        <Header
+          isDarkTheme={theme.palette.type === "light" ? false : true}
+          setDarkTheme={toggleThemeDarkness}
+        />
+        {/* <DrawerComponent /> */}
 
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
-        {/* <Paper elevation={0} style={{ minHeight: "100%" }}> */}
-        <Switch>
-          {/* <Route path="/" component={Login} exact /> */}
-          <Route
-            render={props => (
-              <LandingComponent
-                {...props}
-                isDarkTheme={theme.palette.type === "light" ? false : true}
-              />
-            )}
-            path="/"
-            exact
-          />
-          <PrivateRoute path="/table" component={TableComponent} />
-          <PrivateRoute path="/issues" component={ReposComponent} exact />
-          <PrivateRoute path="/devices" component={DevicesComponent} exact />
-          <PrivateRoute
-            path={`/devices/:deviceId`}
-            component={DeviceComponent}
-          />
-          <PrivateRoute path={`/kobo-forms`} component={Forms} />
-        </Switch>
+        <main className={classes.content}>
+          <div className={classes.toolbar} />
+          {/* <Paper elevation={0} style={{ minHeight: "100%" }}> */}
+          <Switch>
+            {/* <Route path="/" component={Login} exact /> */}
+            <Route
+              render={props => (
+                <LandingComponent
+                  {...props}
+                  isDarkTheme={theme.palette.type === "light" ? false : true}
+                />
+              )}
+              path="/"
+              exact
+            />
+            <PrivateRoute
+              path="/table"
+              render={props => <TableComponent {...props} />}
+            />
+            {/* <PrivateRoute path="/table" component={TableComponent} /> */}
+            <PrivateRoute path="/issues" component={ReposComponent} exact />
+            <PrivateRoute path="/devices" component={DevicesComponent} exact />
+            <PrivateRoute
+              path={`/devices/:deviceId`}
+              component={DeviceComponent}
+            />
+            <PrivateRoute path={`/kobo-forms`} component={Forms} />
+          </Switch>
+          {/* </Paper> */}
+        </main>
         {/* </Paper> */}
-      </main>
-      {/* </Paper> */}
+      </Container>
     </ThemeProvider>
     // </CssBaseline>
   );

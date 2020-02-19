@@ -1,4 +1,17 @@
-import React from "react";
+// API Endpoint Functions
+// "cs": contain string (string contains value)
+// "sw": start with (string starts with value)
+// "ew": end with (string end with value)
+// "eq": equal (string or number matches exactly)
+// "lt": lower than (number is lower than value)
+// "le": lower or equal (number is lower than or equal to value)
+// "ge": greater or equal (number is higher than or equal to value)
+// "gt": greater than (number is higher than value)
+// "bt": between (number is between two comma separated values)
+// "in": in (number or string is in comma separated list of values)
+// "is": is null (field contains "NULL" value)
+
+import React, { useEffect, useContext } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -31,9 +44,12 @@ import {
   AccountCircle,
   Lock,
   Brightness4,
-  BrightnessHigh
+  BrightnessHigh,
+  DragIndicatorSharp
 } from "@material-ui/icons";
 import { useAuth0 } from "../Auth/react-auth0-spa";
+import Axios from "axios";
+import { Context } from "../Store/Store";
 
 const drawerWidth = 240;
 
@@ -103,8 +119,9 @@ export default function Header(props) {
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const profileMenuOpen = Boolean(anchorEl);
+  const [state, dispatch] = useContext(Context);
 
-  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+  const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -125,6 +142,54 @@ export default function Header(props) {
   const toggleThemeDarkness = () => {
     props.setDarkTheme();
   };
+
+  const addUserToDatabase = async (role, email) => {
+    await Axios.post(`http://52.227.159.166/api/records/users`, {
+      userid: "",
+      email: email,
+      role: "default",
+      updated: ""
+    }).catch(error => {
+      console.log(error.response);
+    });
+  };
+  const fetchRole = async user => {
+    await Axios.get(
+      `http://52.227.159.166/api/records/users?filter=email,eq,${user.email}`,
+      {
+        mode: "no-cors"
+      }
+    ).then(response => {
+      console.log(response);
+      // response = response.json();
+      let data = response.data.records[0];
+      if (data.length === 0) {
+        //   //  new user.. add record to db with default role
+        addUserToDatabase(state.userRole, user.email);
+        dispatch({
+          type: "UPDATE_ROLE",
+          data: {
+            userRole: "default"
+          }
+        });
+      } else {
+        dispatch({
+          type: "UPDATE_ROLE",
+          data: {
+            userRole: data.role
+          }
+        });
+      }
+      console.log(response);
+    });
+  };
+
+  useEffect(() => {
+    // RenderRoleURL(user);
+    if (isAuthenticated) {
+      fetchRole(user);
+    }
+  }, [isAuthenticated]);
   return (
     <div className={classes.root}>
       {/* <CssBaseline /> */}

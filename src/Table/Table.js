@@ -18,6 +18,7 @@ import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
 import { Context } from "../Store/Store";
 import Axios from "axios";
+import { useAuth0 } from "../Auth/react-auth0-spa";
 // import ReactLoading from "react-loading";
 // import AddIcon from "@material-ui/icons/Add";
 
@@ -50,8 +51,10 @@ const tableIcons = {
 const TableComponent = () => {
   const [state, dispatch] = useContext(Context);
   const [tableState, setTableState] = useState(true);
+  const { user } = useAuth0();
   useEffect(() => {
     console.log("hello from table");
+    console.log(user);
     if (state.site_information.length === 0) {
       fetchRecords(`http://13.72.51.225/api/?tablerecords=all`).then(() => {
         setTableState(false);

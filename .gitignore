@@ -5,6 +5,9 @@
 /.pnp
 .pnp.js
 
+# Hide Auth0 access key
+/src/Auth/auth_config.json
+
 # testing
 /coverage
 

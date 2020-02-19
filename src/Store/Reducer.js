@@ -1,7 +1,5 @@
-const Reducer = (state, action) => 
-{
-  switch (action.type) 
-  {
+const Reducer = (state, action) => {
+  switch (action.type) {
     case "UPDATE_HELLO_WORLD":
       return updateHelloWorld(state, action);
 
@@ -13,36 +11,48 @@ const Reducer = (state, action) =>
       return updateAllRepos(state, action);
     case "SET_DEVICES_INFO":
       return setDevicesInfo(state, action);
-    case "SET_PSA_FORMS": return setPsaForms(state, action);
-    case "SET_PSASSG_FORMS": return setPsassgForms(state, action);
-    case "CHECK_USERNAME_PASSWORD": return checkAuth(state, action);
+    case "SET_PSA_FORMS":
+      return setPsaForms(state, action);
+    case "SET_PSASSG_FORMS":
+      return setPsassgForms(state, action);
+    case "CHECK_USERNAME_PASSWORD":
+      return checkAuth(state, action);
+    case "UPDATE_ROLE":
+      return updateRole(state, action);
+
     default:
       return { ...state };
   }
 };
 
+const updateRole = (state, action) => {
+  return {
+    ...state,
+    userRole: action.data.userRole
+  };
+};
 const setPsaForms = (state, action) => {
   return {
-    ...state, psaForms: action.data
-  }
+    ...state,
+    psaForms: action.data
+  };
 };
 
 const setPsassgForms = (state, action) => {
   return {
-    ...state, psassgForms: action.data
-  }
-}
+    ...state,
+    psassgForms: action.data
+  };
+};
 
-const setDevicesInfo = (state, action) => 
-{
+const setDevicesInfo = (state, action) => {
   return {
     ...state,
     devices: action.data
   };
 };
 
-const updateAllRepos = (state, action) => 
-{
+const updateAllRepos = (state, action) => {
   return {
     ...state,
     repositories: action.data
@@ -64,10 +74,9 @@ const setOneSiteInfo = (state, action) => {
 };
 
 const checkAuth = (state, action) => {
-
-  if(action.data.username === 'hey' && action.data.password === 'hey') return {...state, loggedIn: true}
-  else return {...state, loggedIn: false}
-
+  if (action.data.username === "hey" && action.data.password === "hey")
+    return { ...state, loggedIn: true };
+  else return { ...state, loggedIn: false };
 };
 
 export default Reducer;

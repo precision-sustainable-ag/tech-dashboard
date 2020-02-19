@@ -6,8 +6,9 @@ const initialState = {
   site_information: [],
   repositories: [],
   devices: [],
-  psaForms:[],
-  psassgForms: []
+  psaForms: [],
+  psassgForms: [],
+  userRole: "default"
 };
 
 const Store = ({ children }) => {
