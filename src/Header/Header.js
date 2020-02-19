@@ -142,17 +142,18 @@ export default function Header(props) {
   const toggleThemeDarkness = () => {
     props.setDarkTheme();
   };
-
+const dataString =  {
+  userid: "",
+  email: email,
+  state: 'default',
+  role: "default",
+  permissions: 'none',
+  view_protected: 1,
+  updated: ""
+};
+console.log(dataString);
   const addUserToDatabase = async (role, email) => {
-    await Axios.post(`http://52.227.159.166/api/records/users`, {
-      userid: "",
-      email: email,
-      state: 'default',
-      role: "default",
-      permissions: 'none',
-      view_protected: 1,
-      updated: ""
-    }, {
+    await Axios.post(`http://52.227.159.166/api/records/users`,dataString, {
       headers: {
         'Content-Type': 'application/x-www-form-url-encoded'
       }

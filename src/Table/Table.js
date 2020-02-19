@@ -103,7 +103,7 @@ const TableComponent = () => {
   return (
     <Box style={{ maxWidth: "100%" }}>
       <Grid container spacing={2}>
-
+      {state.userRole}
         <Grid item xs={12} direction="row-reverse">
           <Button variant="contained">Add Grower</Button>
         </Grid>
