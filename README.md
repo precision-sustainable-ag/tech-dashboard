@@ -1,6 +1,6 @@
 ![Build Status](https://api.travis-ci.org/precision-sustainable-ag/tech-dashboard.svg?branch=master)
 
-
+![Deploy to GitHub Pages](https://github.com/precision-sustainable-ag/tech-dashboard/workflows/Deploy%20to%20GitHub%20Pages/badge.svg?branch=master)
 
 ## Tech Dashboard
 
