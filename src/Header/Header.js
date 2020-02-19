@@ -147,40 +147,73 @@ export default function Header(props) {
     await Axios.post(`http://52.227.159.166/api/records/users`, {
       userid: "",
       email: email,
+      state: 'default',
       role: "default",
+      permissions: 'none',
+      view_protected: 1,
       updated: ""
+    }, {
+      headers: {
+        'Content-Type': 'application/x-www-form-url-encoded'
+      }
     }).catch(error => {
+      console.log('error')
       console.log(error.response);
     });
   };
   const fetchRole = async user => {
-    await Axios.get(
-      `http://52.227.159.166/api/records/users?filter=email,eq,${user.email}`,
-      {
-        mode: "no-cors"
-      }
-    ).then(response => {
-      console.log(response);
-      // response = response.json();
-      let data = response.data.records[0];
-      if (data.length === 0) {
-        //   //  new user.. add record to db with default role
+    await Axios.get(`http://52.227.159.166/api/records/users?filter=email,eq,${user.email}`).then(response => {
+     try{
+      
+      // console.log(response.data.records.length);
+      if(response.data.records.length === 0) {
+        //  new user.. add record to db with default role
         addUserToDatabase(state.userRole, user.email);
         dispatch({
-          type: "UPDATE_ROLE",
-          data: {
-            userRole: "default"
-          }
-        });
-      } else {
-        dispatch({
-          type: "UPDATE_ROLE",
-          data: {
-            userRole: data.role
-          }
-        });
-      }
-      console.log(response);
+            type: "UPDATE_ROLE",
+            data: {
+              userRole: "default"
+            }
+          });
+
+      }  else {
+          dispatch({
+            type: "UPDATE_ROLE",
+            data: {
+              userRole: response.data.records.role
+            }
+          });
+        }
+     }catch(e) {
+       console.error(e);
+     }
+     
+      // if(response.data.records) {
+      //   let data = response.data.records[0];
+      //   if (data.length === 0) {
+      //     //   //  new user.. add record to db with default role
+      //     console.log('inside')
+      //     // addUserToDatabase(state.userRole, user.email);
+      //     dispatch({
+      //       type: "UPDATE_ROLE",
+      //       data: {
+      //         userRole: "default"
+      //       }
+      //     });
+      //   } else {
+      //     dispatch({
+      //       type: "UPDATE_ROLE",
+      //       data: {
+      //         userRole: data.role
+      //       }
+      //     });
+      //   }
+        
+      // } else {
+      //   //
+      //   console.log('response',response);     
+      // }
+
     });
   };
 

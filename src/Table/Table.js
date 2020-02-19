@@ -19,6 +19,7 @@ import ViewColumn from "@material-ui/icons/ViewColumn";
 import { Context } from "../Store/Store";
 import Axios from "axios";
 import { useAuth0 } from "../Auth/react-auth0-spa";
+import { Box, Grid, Button } from "@material-ui/core";
 // import ReactLoading from "react-loading";
 // import AddIcon from "@material-ui/icons/Add";
 
@@ -100,7 +101,14 @@ const TableComponent = () => {
     });
   };
   return (
-    <div style={{ maxWidth: "100%" }}>
+    <Box style={{ maxWidth: "100%" }}>
+      <Grid container spacing={2}>
+
+        <Grid item xs={12} direction="row-reverse">
+          <Button variant="contained">Add Grower</Button>
+        </Grid>
+
+        <Grid item xs={12}>
       <MaterialTable
         isLoading={tableState}
         editable={{
@@ -193,7 +201,9 @@ const TableComponent = () => {
         }}
       />
       {/* )} */}
-    </div>
+      </Grid>
+      </Grid>
+    </Box>
   );
 };
 
