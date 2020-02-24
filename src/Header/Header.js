@@ -1,20 +1,9 @@
-// API Endpoint Functions
-// "cs": contain string (string contains value)
-// "sw": start with (string starts with value)
-// "ew": end with (string end with value)
-// "eq": equal (string or number matches exactly)
-// "lt": lower than (number is lower than value)
-// "le": lower or equal (number is lower than or equal to value)
-// "ge": greater or equal (number is higher than or equal to value)
-// "gt": greater than (number is higher than value)
-// "bt": between (number is between two comma separated values)
-// "in": in (number or string is in comma separated list of values)
-// "is": is null (field contains "NULL" value)
-
 import React, { useEffect, useContext } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
+
+import { apiPassword, apiUsername } from "../utils/api_secret";
 
 import {
   Drawer,
@@ -50,8 +39,10 @@ import {
 import { useAuth0 } from "../Auth/react-auth0-spa";
 import Axios from "axios";
 import { Context } from "../Store/Store";
+import { apiURL } from "../utils/constants";
 
 const drawerWidth = 240;
+const qs = require("qs");
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -142,80 +133,132 @@ export default function Header(props) {
   const toggleThemeDarkness = () => {
     props.setDarkTheme();
   };
-const dataString =  {
-  userid: "",
-  email: email,
-  state: 'default',
-  role: "default",
-  permissions: 'none',
-  view_protected: 1,
-  updated: ""
-};
-console.log(dataString);
-  const addUserToDatabase = async (role, email) => {
-    await Axios.post(`http://52.227.159.166/api/records/users`,dataString, {
-      headers: {
-        'Content-Type': 'application/x-www-form-url-encoded'
-      }
-    }).catch(error => {
-      console.log('error')
-      console.log(error.response);
-    });
-  };
-  const fetchRole = async user => {
-    await Axios.get(`http://52.227.159.166/api/records/users?filter=email,eq,${user.email}`).then(response => {
-     try{
-      
-      // console.log(response.data.records.length);
-      if(response.data.records.length === 0) {
-        //  new user.. add record to db with default role
-        addUserToDatabase(state.userRole, user.email);
-        dispatch({
+
+  const addUserToDatabase = async dataString => {
+    try {
+      await Axios({
+        method: "POST",
+        url: `${apiURL}/api/users`,
+        data: dataString,
+        auth: {
+          username: apiUsername,
+          password: apiPassword
+        },
+        headers: {
+          "content-type": "application/x-www-form-urlencoded;charset=utf-8"
+        }
+      }).then(response => {
+        console.log(response.data);
+        if (response.data.return) {
+          // user added
+          dispatch({
             type: "UPDATE_ROLE",
             data: {
               userRole: "default"
             }
           });
-
-      }  else {
-          dispatch({
-            type: "UPDATE_ROLE",
-            data: {
-              userRole: response.data.records.role
-            }
-          });
         }
-     }catch(e) {
-       console.error(e);
-     }
-     
-      // if(response.data.records) {
-      //   let data = response.data.records[0];
-      //   if (data.length === 0) {
-      //     //   //  new user.. add record to db with default role
-      //     console.log('inside')
-      //     // addUserToDatabase(state.userRole, user.email);
-      //     dispatch({
-      //       type: "UPDATE_ROLE",
-      //       data: {
-      //         userRole: "default"
-      //       }
-      //     });
-      //   } else {
-      //     dispatch({
-      //       type: "UPDATE_ROLE",
-      //       data: {
-      //         userRole: data.role
-      //       }
-      //     });
-      //   }
-        
-      // } else {
-      //   //
-      //   console.log('response',response);     
-      // }
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  };
+  const fetchRole = async user => {
+    // console.log(apiPassword);
+    await Axios.get(`${apiURL}/api/users/${user.email}`, {
+      auth: {
+        username: apiUsername,
+        password: apiPassword
+      }
+    }).then(response => {
+      let data = response.data;
+      if (data.data === null) {
+        //  user does not exist.. add record with default role
+        let obj = {
+          email: user.email
+        };
 
+        addUserToDatabase(qs.stringify(obj));
+      } else {
+        console.log("welcome back!");
+        dispatch({
+          type: "UPDATE_ROLE",
+          data: {
+            userRole: data.data.role
+          }
+        });
+        //update user details to state
+      }
     });
+    // await Axios.get(`${apiURL()}/api/user/${user.email}`, {
+    //   auth: {
+    //     username: 'psaadmin',
+    //     password:
+    //   }
+    // })
+    // await Axios.get(
+    //   `${apiURL()}/api/user`, {
+    //       email: user.email
+    //   }
+    // ).then(response => {
+    //   try {
+    //     // console.log(response.data.records.length);
+    //     if (response.data.records.length === 0) {
+    //       //  new user.. add record to db with default role
+    //       let obj = {
+    //         userid: "",
+    //         email: user.email,
+    //         state: "default",
+    //         role: "default",
+    //         permissions: "none",
+    //         view_protected: false,
+    //         updated: ""
+    //       };
+    //       addUserToDatabase(state.userRole, obj);
+    //       dispatch({
+    //         type: "UPDATE_ROLE",
+    //         data: {
+    //           userRole: "default"
+    //         }
+    //       });
+    //     } else {
+    //       dispatch({
+    //         type: "UPDATE_ROLE",
+    //         data: {
+    //           userRole: response.data.records.role
+    //         }
+    //       });
+    //     }
+    //   } catch (e) {
+    //     console.error(e);
+    //   }
+
+    // if(response.data.records) {
+    //   let data = response.data.records[0];
+    //   if (data.length === 0) {
+    //     //   //  new user.. add record to db with default role
+    //     console.log('inside')
+    //     // addUserToDatabase(state.userRole, user.email);
+    //     dispatch({
+    //       type: "UPDATE_ROLE",
+    //       data: {
+    //         userRole: "default"
+    //       }
+    //     });
+    //   } else {
+    //     dispatch({
+    //       type: "UPDATE_ROLE",
+    //       data: {
+    //         userRole: data.role
+    //       }
+    //     });
+    //   }
+
+    // } else {
+    //   //
+    //   console.log('response',response);
+    // }
+    // });
   };
 
   useEffect(() => {
