@@ -3,14 +3,22 @@ import { Context } from "../Store/Store";
 import Axios from "axios";
 import Loading from "react-loading";
 import "./Devices.scss";
-import { Card, CardActionArea } from "@material-ui/core";
+import {
+  Card,
+  CardActionArea,
+  Box,
+  Typography,
+  Paper
+} from "@material-ui/core";
 import DataParser from "./DataParser";
 import * as Constants from "./hologramConstants";
+import { bannedRoles } from "../utils/constants";
 
 // import red from "@material-ui/core/colors/red";
 
 const DevicesComponent = () => {
   const [state, dispatch] = useContext(Context);
+  const [showDevices, setShowDevices] = useState(false);
   const [devicesLoadingState, setDevicesLoadingState] = useState(true);
 
   //   const dateTime = new Date().toDateString();
@@ -19,20 +27,29 @@ const DevicesComponent = () => {
   let devicesData = [];
   let finalAPIURL = "";
   useEffect(() => {
-    console.log("hello from devices");
-    // let interval = setInterval(
-    finalAPIURL = Constants.APIURL();
-    console.log(finalAPIURL);
-    fetchRecords(`${finalAPIURL}/api/1/devices?withlocation=true`).then(() => {
-      setDevicesLoadingState(false);
-      console.log(
-        "This is just intended to retrieve basic info, rest of the data should technically come from websockets"
+    if (bannedRoles.includes(state.userRole)) {
+      setShowDevices(false);
+    } else {
+      console.log("hello from devices");
+      // let interval = setInterval(
+      finalAPIURL = Constants.APIURL();
+      console.log(finalAPIURL);
+      fetchRecords(`${finalAPIURL}/api/1/devices?withlocation=true`).then(
+        () => {
+          setDevicesLoadingState(false);
+          console.log(
+            "This is just intended to retrieve basic info, rest of the data should technically come from websockets"
+          );
+        }
       );
-    });
+
+      setShowDevices(true);
+    }
+
     //   30 * 1000
     // );
     // return () => clearInterval(interval);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [state.userRole]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchRecords = async apiURL => {
     let options = Constants.APICreds();
@@ -79,7 +96,7 @@ const DevicesComponent = () => {
     }
     return comparison;
   };
-  return (
+  return showDevices ? (
     <div className="devicesWrapper">
       <div className="devicesListWrapper">
         {devicesLoadingState ? (
@@ -101,6 +118,12 @@ const DevicesComponent = () => {
         )}
       </div>
     </div>
+  ) : (
+    <Box component={Paper} elevation={0}>
+      <Typography variant={"h6"} align="center">
+        Your access level does not permit this action.
+      </Typography>
+    </Box>
   );
 };
 

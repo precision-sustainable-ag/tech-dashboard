@@ -19,7 +19,8 @@ import ViewColumn from "@material-ui/icons/ViewColumn";
 import { Context } from "../Store/Store";
 import Axios from "axios";
 import { useAuth0 } from "../Auth/react-auth0-spa";
-import { Box, Grid, Button } from "@material-ui/core";
+import { Box, Grid, Button, Typography, Paper } from "@material-ui/core";
+import { bannedRoles } from "../utils/constants";
 // import ReactLoading from "react-loading";
 // import AddIcon from "@material-ui/icons/Add";
 
@@ -53,17 +54,25 @@ const TableComponent = () => {
   const [state, dispatch] = useContext(Context);
   const [tableState, setTableState] = useState(true);
   const { user } = useAuth0();
+  const [showTable, setShowTable] = useState(false);
   useEffect(() => {
     console.log("hello from table");
-    console.log(user);
-    if (state.site_information.length === 0) {
-      fetchRecords(`http://13.72.51.225/api/?tablerecords=all`).then(() => {
-        setTableState(false);
-      });
+    // console.log(user);
+
+    if (bannedRoles.includes(state.userRole)) {
+      setShowTable(false);
     } else {
-      setTableState(false);
+      if (state.site_information.length === 0) {
+        fetchRecords(`http://13.72.51.225/api/?tablerecords=all`).then(() => {
+          setTableState(false);
+          setShowTable(true);
+        });
+      } else {
+        setTableState(false);
+        setShowTable(true);
+      }
     }
-  }, [tableState]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [tableState, state.userRole]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchRecords = async apiURL => {
     await Axios.get(apiURL).then(response => {
@@ -102,107 +111,112 @@ const TableComponent = () => {
   };
   return (
     <Box style={{ maxWidth: "100%" }}>
-      <Grid container spacing={2}>
-      {state.userRole}
-        <Grid item xs={12} direction="row-reverse">
-          <Button variant="contained">Add Grower</Button>
+      {showTable ? (
+        <Grid container spacing={2}>
+          <Grid item xs={12} direction="row-reverse">
+            <Button variant="contained">Add Grower</Button>
+          </Grid>
+          <Grid item xs={12}>
+            <MaterialTable
+              isLoading={tableState}
+              editable={{
+                isEditable: rowData => rowData.state === "MD", // only name(a) rows would be editable
+                isDeletable: false,
+                //   isDeletable: rowData => rowData.name === "b", // only name(a) rows would be deletable
+                onRowAdd: newData => {
+                  // console.log(newData);
+                  // new Promise((resolve, reject) => {
+                  //   setTimeout(() => {
+                  //     {
+                  //       /* const data = this.state.data;
+                  //                 data.push(newData);
+                  //                 this.setState({ data }, () => resolve()); */
+                  //       dispatch(
+                  //         {
+                  //           type: "ADD_ONE_SITE_INFO_TO_STATE",
+                  //           data: newData
+                  //         },
+                  //         () => resolve()
+                  //       );
+                  //     }
+                  //     resolve();
+                  //   }, 1000);
+                  // });
+                }
+
+                //   onRowUpdate: (newData, oldData) =>
+                //     new Promise((resolve, reject) => {
+                //       setTimeout(() => {
+                //         {
+                //           /* const data = this.state.data;
+                //                     const index = data.indexOf(oldData);
+                //                     data[index] = newData;
+                //                     this.setState({ data }, () => resolve()); */
+                //         }
+                //         resolve();
+                //       }, 1000);
+                //     }),
+                //   onRowDelete: oldData =>
+                //     new Promise((resolve, reject) => {
+                //       setTimeout(() => {
+                //         {
+                //           /* let data = this.state.data;
+                //                     const index = data.indexOf(oldData);
+                //                     data.splice(index, 1);
+                //                     this.setState({ data }, () => resolve()); */
+                //         }
+                //         resolve();
+                //       }, 1000);
+                //     })
+              }}
+              icons={tableIcons}
+              // onRowClick={(evt, selectedRow) => {
+              //   console.log(selectedRow);
+              // }}
+              // onRowSelected={(evt, selectRow) => {
+              //   console.log(selectRow);
+              // }}
+              columns={[
+                { title: "Code", field: "code" },
+                { title: "Grower", field: "grower" },
+                { title: "State", field: "state" },
+                { title: "County", field: "county" },
+                { title: "Email", field: "email" },
+                { title: "Year", field: "year" },
+                //   { title: "Email", field: "birthYear", type: "email" },
+                { title: "Address", field: "address" },
+                { title: "Lat, Long", field: "latlng" },
+                { title: "Notes", field: "notes" }
+                //   {
+                //     title: "Doğum Yeri",
+                //     field: "birthCity",
+                //     lookup: { 34: "İstanbul", 63: "Şanlıurfa" }
+                //   }
+              ]}
+              // data={state.site_information.length !== 0 ? state.site_information : {}}
+              data={state.site_information}
+              title="Data Table"
+              options={{
+                exportButton: true,
+                //   defaultExpanded: true,
+                exportFileName: "Site Information",
+                addRowPosition: "last",
+                exportAllData: true,
+                pageSize: 10,
+                pageSizeOptions: [5, 10, 20, 50, 100],
+                groupRowSeparator: "  ",
+                grouping: true
+              }}
+            />
+          </Grid>
         </Grid>
-
-        <Grid item xs={12}>
-      <MaterialTable
-        isLoading={tableState}
-        editable={{
-          isEditable: rowData => rowData.state === "MD", // only name(a) rows would be editable
-          isDeletable: false,
-          //   isDeletable: rowData => rowData.name === "b", // only name(a) rows would be deletable
-          onRowAdd: newData => {
-            // console.log(newData);
-            // new Promise((resolve, reject) => {
-            //   setTimeout(() => {
-            //     {
-            //       /* const data = this.state.data;
-            //                 data.push(newData);
-            //                 this.setState({ data }, () => resolve()); */
-            //       dispatch(
-            //         {
-            //           type: "ADD_ONE_SITE_INFO_TO_STATE",
-            //           data: newData
-            //         },
-            //         () => resolve()
-            //       );
-            //     }
-            //     resolve();
-            //   }, 1000);
-            // });
-          }
-
-          //   onRowUpdate: (newData, oldData) =>
-          //     new Promise((resolve, reject) => {
-          //       setTimeout(() => {
-          //         {
-          //           /* const data = this.state.data;
-          //                     const index = data.indexOf(oldData);
-          //                     data[index] = newData;
-          //                     this.setState({ data }, () => resolve()); */
-          //         }
-          //         resolve();
-          //       }, 1000);
-          //     }),
-          //   onRowDelete: oldData =>
-          //     new Promise((resolve, reject) => {
-          //       setTimeout(() => {
-          //         {
-          //           /* let data = this.state.data;
-          //                     const index = data.indexOf(oldData);
-          //                     data.splice(index, 1);
-          //                     this.setState({ data }, () => resolve()); */
-          //         }
-          //         resolve();
-          //       }, 1000);
-          //     })
-        }}
-        icons={tableIcons}
-        // onRowClick={(evt, selectedRow) => {
-        //   console.log(selectedRow);
-        // }}
-        // onRowSelected={(evt, selectRow) => {
-        //   console.log(selectRow);
-        // }}
-        columns={[
-          { title: "Code", field: "code" },
-          { title: "Grower", field: "grower" },
-          { title: "State", field: "state" },
-          { title: "County", field: "county" },
-          { title: "Email", field: "email" },
-          { title: "Year", field: "year" },
-          //   { title: "Email", field: "birthYear", type: "email" },
-          { title: "Address", field: "address" },
-          { title: "Lat, Long", field: "latlng" },
-          { title: "Notes", field: "notes" }
-          //   {
-          //     title: "Doğum Yeri",
-          //     field: "birthCity",
-          //     lookup: { 34: "İstanbul", 63: "Şanlıurfa" }
-          //   }
-        ]}
-        // data={state.site_information.length !== 0 ? state.site_information : {}}
-        data={state.site_information}
-        title="Data Table"
-        options={{
-          exportButton: true,
-          //   defaultExpanded: true,
-          exportFileName: "Site Information",
-          addRowPosition: "last",
-          exportAllData: true,
-          pageSize: 10,
-          pageSizeOptions: [5, 10, 20, 50, 100],
-          groupRowSeparator: "  ",
-          grouping: true
-        }}
-      />
-      {/* )} */}
-      </Grid>
-      </Grid>
+      ) : (
+        <Box component={Paper} elevation={0}>
+          <Typography variant={"h6"} align="center">
+            Your access level does not permit this action.
+          </Typography>
+        </Box>
+      )}
     </Box>
   );
 };

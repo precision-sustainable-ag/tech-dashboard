@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 
-import { apiPassword, apiUsername } from "../utils/api_secret";
+import { apiPassword, apiUsername, apiURL } from "../utils/api_secret";
 
 import {
   Drawer,
@@ -34,12 +34,12 @@ import {
   Lock,
   Brightness4,
   BrightnessHigh,
-  DragIndicatorSharp
+  DragIndicatorSharp,
+  AddLocation
 } from "@material-ui/icons";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 import Axios from "axios";
 import { Context } from "../Store/Store";
-import { apiURL } from "../utils/constants";
 
 const drawerWidth = 240;
 const qs = require("qs");
@@ -320,7 +320,9 @@ export default function Header(props) {
                 open={profileMenuOpen}
                 onClose={handleProfileMenuClose}
               >
-                <MenuItem onClick={handleProfileMenuClose}>Profile</MenuItem>
+                <MenuItem component={Link} to={"/profile"}>
+                  Profile
+                </MenuItem>
                 <MenuItem onClick={() => logout()}>Log Out</MenuItem>
               </Menu>
             </div>
@@ -375,6 +377,17 @@ export default function Header(props) {
               <Storage />
             </ListItemIcon>
             <ListItemText primary="Forms" />
+          </ListItem>
+          <ListItem
+            button
+            key="Device Enroll"
+            component={Link}
+            to="/device-enroll"
+          >
+            <ListItemIcon>
+              <AddLocation />
+            </ListItemIcon>
+            <ListItemText primary="Device Enroll" />
           </ListItem>
         </List>
       </Drawer>

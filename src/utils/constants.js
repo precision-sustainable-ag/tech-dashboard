@@ -1,1 +1,2 @@
-export const apiURL = "https://techdashboard.tk";
+// anyone with these roles are not supposed to view anything !
+export const bannedRoles = ["default", "Default", "none", ""];

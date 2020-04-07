@@ -12,6 +12,7 @@ import {
   Box
 } from "@material-ui/core";
 import "./Forms.scss";
+import { bannedRoles } from "../utils/constants";
 const useStyles = makeStyles({
   card: {
     maxWidth: 400,
@@ -35,35 +36,40 @@ const Forms = () => {
 
   const [isPSALoading, setIsPSALoading] = useState(true);
   const [isPSASSGLoading, setIsPSASSGLoading] = useState(true);
-
+  const [showForms, setShowForms] = useState(false);
   const [state, dispatch] = useContext(Context);
 
   useEffect(() => {
-    console.log("hello from forms");
+    if (bannedRoles.includes(state.userRole)) {
+      setShowForms(false);
+    } else {
+      console.log("hello from forms");
 
-    getAllKoboAssets("psa")
-      .then(response => {
-        setIsPSALoading(false);
-        // console.log(data);
+      getAllKoboAssets("psa")
+        .then(response => {
+          setIsPSALoading(false);
+          // console.log(data);
 
-        dispatch({
-          type: "SET_PSA_FORMS",
-          data: response.data.results
-        });
-      })
-      .then(async () => {
-        await getAllKoboAssets("psassg").then(response => {
-          setIsPSASSGLoading(false);
           dispatch({
-            type: "SET_PSASSG_FORMS",
+            type: "SET_PSA_FORMS",
             data: response.data.results
           });
+        })
+        .then(async () => {
+          await getAllKoboAssets("psassg").then(response => {
+            setIsPSASSGLoading(false);
+            dispatch({
+              type: "SET_PSASSG_FORMS",
+              data: response.data.results
+            });
+          });
         });
-      });
-  }, []);
+      setShowForms(true);
+    }
+  }, [state.userRole]);
 
-  return (
-    <Paper>
+  return showForms ? (
+    <Paper elevation={0}>
       <Box className="koboFormsWrapper">
         <Typography variant="h5" className="mb-2">
           PSA Forms
@@ -119,6 +125,12 @@ const Forms = () => {
         )}
       </Box>
     </Paper>
+  ) : (
+    <Box component={Paper} elevation={0}>
+      <Typography variant={"h6"} align="center">
+        Your access level does not permit this action.
+      </Typography>
+    </Box>
   );
 };
 

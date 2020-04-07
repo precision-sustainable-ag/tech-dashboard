@@ -28,6 +28,8 @@ import { useAuth0 } from "./Auth/react-auth0-spa";
 import Loading from "react-loading";
 import PrivateRoute from "./utils/private-routes";
 import Skeleton from "@material-ui/lab/Skeleton";
+import Profile from "./Profile/Profile";
+import DeviceEnroll from "./Devices/Device-Enroll/DeviceEnroll";
 
 const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
@@ -53,6 +55,7 @@ function App() {
         ? window.localStorage.getItem("theme")
         : "light"
     },
+
     typography: {
       useNextVariants: true,
       fontFamily: "'Nunito', sans-serif"
@@ -85,11 +88,13 @@ function App() {
     if (theme.palette.type !== "light") {
       // update localstorage
       window.localStorage.setItem("theme", "dark");
-      document.body.style.backgroundColor = "#121212";
+      document.body.style.backgroundColor = "#333";
+      document.body.style.color = "#fbfbfb";
     } else {
       // update localstorage
       window.localStorage.setItem("theme", "light");
       document.body.style.backgroundColor = "#fff";
+      document.body.style.color = "#000";
       // document.body.style.backgroundColor = "rgb(247, 249, 252)";
     }
   }, [theme]);
@@ -146,6 +151,8 @@ function App() {
               component={DeviceComponent}
             />
             <PrivateRoute path={`/kobo-forms`} component={Forms} />
+            <PrivateRoute path="/profile" component={Profile} />
+            <PrivateRoute path="/device-enroll" component={DeviceEnroll} />
           </Switch>
           {/* </Paper> */}
         </main>
