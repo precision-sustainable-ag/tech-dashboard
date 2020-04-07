@@ -110,25 +110,52 @@ const DeviceEnroll = () => {
   };
 
   const pushGatewaySerialNo = async (deviceId, gatewaySerialNo) => {
-    return await Axios.post(
-      "https://techdashboard.tk/api/hologram/relationships/watersensor",
-      {
-        deviceId: deviceId,
-        gatewaySerialNo: gatewaySerialNo,
-        isActive: true
-      },
-      {
-        withCredentials: true,
-        auth: {
-          username: apiUsername,
-          password: apiPassword
-        },
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        }
-      }
+    // return await Axios.post(
+    //   "https://techdashboard.tk/api/hologram/relationships/watersensor",
+    //   {
+    //     deviceId: deviceId,
+    //     gatewaySerialNo: gatewaySerialNo,
+    //     isActive: true
+    //   },
+    //   {
+    //     withCredentials: true,
+    //     auth: {
+    //       username: apiUsername,
+    //       password: apiPassword
+    //     },
+    //     headers: {
+    //       Accept: "application/json",
+    //       "Content-Type": "application/json"
+    //     }
+    //   }
+    // );
+
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+    myHeaders.append(
+      "Authorization",
+      "Basic cHNhYWRtaW46TWpkaU5ESm1ZVEZpTmpKaU1tVTJNbVpqTnpGaU16VmlPRFpqTkdVd00yWT0="
     );
+
+    var urlencoded = new URLSearchParams();
+    urlencoded.append("deviceId", deviceId);
+    urlencoded.append("gatewaySerialNo", gatewaySerialNo);
+    urlencoded.append("isActive", "true");
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: urlencoded,
+      redirect: "follow"
+    };
+
+    return await fetch(
+      "https://techdashboard.tk/api/hologram/relationships/watersensor",
+      requestOptions
+    );
+    //   .then(response => response.text())
+    //   .then(result => console.log(result))
+    //   .catch(error => console.log('error', error));
   };
   const getWsensorRelations = async () => {
     return await Axios.get(
