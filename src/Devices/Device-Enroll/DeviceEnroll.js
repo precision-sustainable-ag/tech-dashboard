@@ -110,52 +110,29 @@ const DeviceEnroll = () => {
   };
 
   const pushGatewaySerialNo = async (deviceId, gatewaySerialNo) => {
-    // return await Axios.post(
-    //   "https://techdashboard.tk/api/hologram/relationships/watersensor",
-    //   {
-    //     deviceId: deviceId,
-    //     gatewaySerialNo: gatewaySerialNo,
-    //     isActive: true
-    //   },
-    //   {
-    //     withCredentials: true,
-    //     auth: {
-    //       username: apiUsername,
-    //       password: apiPassword
-    //     },
-    //     headers: {
-    //       Accept: "application/json",
-    //       "Content-Type": "application/json"
-    //     }
-    //   }
-    // );
-
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-    myHeaders.append(
-      "Authorization",
-      "Basic cHNhYWRtaW46TWpkaU5ESm1ZVEZpTmpKaU1tVTJNbVpqTnpGaU16VmlPRFpqTkdVd00yWT0="
-    );
-
-    var urlencoded = new URLSearchParams();
-    urlencoded.append("deviceId", deviceId);
-    urlencoded.append("gatewaySerialNo", gatewaySerialNo);
-    urlencoded.append("isActive", "true");
-
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: urlencoded,
-      redirect: "follow"
-    };
-
-    return await fetch(
+    let formData = new FormData();
+    formData.append("deviceId", deviceId);
+    formData.append("gatewaySerialNo", gatewaySerialNo);
+    formData.append("isActive", true);
+    Axios.post(
       "https://techdashboard.tk/api/hologram/relationships/watersensor",
-      requestOptions
-    );
-    //   .then(response => response.text())
-    //   .then(result => console.log(result))
-    //   .catch(error => console.log('error', error));
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
+        },
+        auth: {
+          username: apiUsername,
+          password: apiPassword
+        }
+      }
+    )
+      .then(response => {
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error.response);
+      });
   };
   const getWsensorRelations = async () => {
     return await Axios.get(
@@ -225,7 +202,7 @@ const DeviceEnroll = () => {
                 <CropFree />
               </InputAdornment>
             ),
-            endAdornment: (
+            endAdornment: !isTextFieldFilled ? (
               <InputAdornment position="end">
                 {doesDeviceIdExistsInRelationship(deviceId) ? (
                   ""
@@ -238,6 +215,8 @@ const DeviceEnroll = () => {
                   </IconButton>
                 )}
               </InputAdornment>
+            ) : (
+              ""
             )
           }}
         />
@@ -252,10 +231,14 @@ const DeviceEnroll = () => {
       //   console.log(deviceId, ele.value);
       if (ele.value.length > 0) {
         if (!isNaN(ele.value)) {
-          pushGatewaySerialNo(deviceId, ele.value).then(response => {
-            console.log(response);
-            window.location.reload();
-          });
+          pushGatewaySerialNo(deviceId, ele.value)
+            .then(response => {
+              console.log(response);
+              // window.location.reload();
+            })
+            .catch(e => {
+              console.error("axios error: ", e);
+            });
         }
       }
       // pushGatewaySerialNo(gatewaySerialNo);
