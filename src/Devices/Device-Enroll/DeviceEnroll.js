@@ -92,6 +92,9 @@ const DeviceEnroll = () => {
   const [confirmDialogDecision, setConfirmDialogDecision] = useState(false);
   const [open, setOpen] = useState(false);
 
+  const [deviceIdInput, setDeviceIdInput] = useState("");
+  const [gatewaySerialNumberInput, setGatewaySerialNumberInput] = useState("");
+
   const getDevices = async () => {
     return await Axios.get(
       "https://techdashboard.tk/api/hologram/devices/all",
@@ -204,7 +207,7 @@ const DeviceEnroll = () => {
             ),
             endAdornment: !isTextFieldFilled ? (
               <InputAdornment position="end">
-                {doesDeviceIdExistsInRelationship(deviceId) ? (
+                {doesDeviceIdExistsInRelationship(deviceId.toString()) ? (
                   ""
                 ) : (
                   <IconButton
@@ -310,6 +313,12 @@ const DeviceEnroll = () => {
   const handleModalClose = () => {
     setOpen(false);
   };
+  const checkAddDeviceBtnDisabled = () => {
+    // console.log(doesDeviceIdExistsInRelationship(deviceIdInput));
+
+    if (doesDeviceIdExistsInRelationship(deviceIdInput)) return true;
+    else return false;
+  };
   return (
     <div className={classes.root}>
       {/* <Backdrop open={backdropOpen} />
@@ -349,19 +358,47 @@ const DeviceEnroll = () => {
                 <FormGroup>
                   <FormControl>
                     <InputLabel htmlFor="deviceIdInput">Device ID</InputLabel>
-                    <Input id="deviceIdInput" aria-describedby="device-id" />
-                    <FormHelperText id="device-id">
-                      Make sure that this id has not already been used in the
-                      table
+                    <Input
+                      id="deviceIdInput"
+                      aria-describedby="device-id"
+                      value={deviceIdInput || ""}
+                      onChange={e => {
+                        e.target.value !== ""
+                          ? setDeviceIdInput(parseInt(e.target.value))
+                          : setDeviceIdInput("");
+                      }}
+                    />
+                    <FormHelperText
+                      id="device-id"
+                      error={
+                        doesDeviceIdExistsInRelationship(
+                          deviceIdInput.toString()
+                        )
+                          ? true
+                          : false
+                      }
+                    >
+                      {
+                        " Make sure that this id has not already been used in the table"
+                      }
                     </FormHelperText>
                   </FormControl>
                   <FormControl>
-                    <InputLabel htmlFor="gatewaySerialNumberInout">
+                    <InputLabel htmlFor="gatewaySerialNumberInput">
                       Gateway Serial Number
                     </InputLabel>
                     <Input
-                      id="gatewaySerialNumberInout"
+                      required="required"
+                      id="gatewaySerialNumberInput"
                       aria-describedby="gateway-serial-number"
+                      value={gatewaySerialNumberInput || ""}
+                      onChange={e => {
+                        e.target.value !== ""
+                          ? setGatewaySerialNumberInput(
+                              parseInt(e.target.value)
+                            )
+                          : setGatewaySerialNumberInput("");
+                      }}
                     />
                     <FormHelperText id="gateway-serial-number"></FormHelperText>
                   </FormControl>
@@ -370,7 +407,20 @@ const DeviceEnroll = () => {
                       color="primary"
                       variant="contained"
                       type="submit"
+                      disabled={
+                        doesDeviceIdExistsInRelationship(
+                          deviceIdInput.toString()
+                        )
+                          ? true
+                          : deviceIdInput.toString().length > 0 &&
+                            gatewaySerialNumberInput.toString().length > 0
+                          ? false
+                          : true
+                      }
                       style={{ marginTop: "3em" }}
+                      onClick={() => {
+                        //   check if device id exists
+                      }}
                     >
                       ADD DEVICE
                     </Button>
