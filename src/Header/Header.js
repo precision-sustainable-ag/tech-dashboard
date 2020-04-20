@@ -35,7 +35,8 @@ import {
   Brightness4,
   BrightnessHigh,
   DragIndicatorSharp,
-  AddLocation
+  AddLocation,
+  BrightnessLow
 } from "@material-ui/icons";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 import Axios from "axios";
@@ -291,7 +292,7 @@ export default function Header(props) {
             PSA Tech Dashboard
           </Typography>
           <IconButton color="inherit" onClick={toggleThemeDarkness}>
-            {props.isDarkTheme ? <Brightness4 /> : <BrightnessHigh />}
+            {props.isDarkTheme ? <BrightnessLow /> : <BrightnessHigh />}
           </IconButton>
           {!isAuthenticated && (
             <IconButton color="inherit" onClick={() => loginWithRedirect({})}>

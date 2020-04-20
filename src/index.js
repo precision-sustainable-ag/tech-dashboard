@@ -25,11 +25,7 @@ ReactDOM.render(
   <Auth0Provider
     domain={config.domain}
     client_id={config.clientId}
-    redirect_uri={
-      window.location.origin === "https://precision-sustainable-ag.github.io"
-        ? window.location.origin + "/tech-dashboard"
-        : window.location.origin
-    }
+    redirect_uri={window.location.origin}
     onRedirectCallback={onRedirectCallback}
   >
     <Store>
