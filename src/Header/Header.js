@@ -188,6 +188,12 @@ export default function Header(props) {
             userRole: data.data.role
           }
         });
+        dispatch({
+          type: "UPDATE_USER_INFO",
+          data: {
+            userInfo: data.data
+          }
+        });
         //update user details to state
       }
     });
