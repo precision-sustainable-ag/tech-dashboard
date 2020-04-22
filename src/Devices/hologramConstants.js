@@ -16,7 +16,7 @@ export const APIURL = () => {
   } else if (process.env.NODE_ENV === "test") {
     return debuggingProxyURL;
   } else {
-    return productionServerURL;
+    return debuggingProxyURL;
   }
   // if (
   //   !process.env.NODE_ENV ||
