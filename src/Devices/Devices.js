@@ -63,37 +63,34 @@ const DevicesComponent = () => {
               `${finalAPIURL}/api/1/devices?withlocation=true${apiParams}`
             ).then(() => {
               setDevicesLoadingState(false);
-              console.log(
-                "This is just intended to retrieve basic info, rest of the data should technically come from websockets"
-              );
             });
           } else {
-            getTags(`${finalAPIURL}/api/1/devices/tags?limit=1000`).then(
-              tagsObject => {
-                // console.log("Tags Object: ", tagsObject);
-                let tags = tagsObject.data.tags;
-                let matchedResult = tags.filter(obj => {
-                  if (deviceState.includes(obj.name)) return obj;
+            getTags(
+              `${finalAPIURL}/api/1/devices/tags?limit=1000&?withlocation=true`
+            ).then(tagsObject => {
+              // console.log("Tags Object: ", tagsObject);
+              let tags = tagsObject.data.tags;
+              let matchedResult = tags.filter(obj => {
+                if (deviceState.includes(obj.name)) return obj;
+              });
+              // console.log(matchedResult);
+              let tagsIdArray = [];
+              let tagsId = matchedResult.map((val, index) => {
+                // console.log(val);
+                // console.log(val.id);
+                // let tagId = val.id;
+                return val.id;
+              });
+              // console.log(tagsId);
+              tagsId.forEach(tagId => {
+                fetchRecords(
+                  `${finalAPIURL}/api/1/devices?tagid=${tagId}&?withlocation=true`
+                ).then(() => {
+                  setDevicesLoadingState(false);
                 });
-                // console.log(matchedResult);
-                let tagsIdArray = [];
-                let tagsId = matchedResult.map((val, index) => {
-                  // console.log(val);
-                  // console.log(val.id);
-                  // let tagId = val.id;
-                  return val.id;
-                });
-                // console.log(tagsId);
-                tagsId.forEach(tagId => {
-                  fetchRecords(
-                    `${finalAPIURL}/api/1/devices?tagid=${tagId}`
-                  ).then(() => {
-                    setDevicesLoadingState(false);
-                  });
-                });
-                // get tag ids from matched objects
-              }
-            );
+              });
+              // get tag ids from matched objects
+            });
           }
 
           // var result = jsObjects.filter(obj => {
