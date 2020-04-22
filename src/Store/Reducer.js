@@ -19,6 +19,8 @@ const Reducer = (state, action) => {
       return checkAuth(state, action);
     case "UPDATE_ROLE":
       return updateRole(state, action);
+    case "UPDATE_USER_INFO":
+      return updateUserInfo(state, action);
 
     default:
       return { ...state };
@@ -31,6 +33,14 @@ const updateRole = (state, action) => {
     userRole: action.data.userRole
   };
 };
+
+const updateUserInfo = (state, action) => {
+  return {
+    ...state,
+    userInfo: action.data.userInfo
+  };
+};
+
 const setPsaForms = (state, action) => {
   return {
     ...state,
