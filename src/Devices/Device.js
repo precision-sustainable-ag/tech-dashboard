@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { APIURL, APICreds } from "./hologramConstants";
+import { APIURL, APICreds, apiCorsUrl } from "./hologramConstants";
 import Axios from "axios";
 
 import { Map, TileLayer, Marker, Popup } from "react-leaflet";
@@ -7,6 +7,7 @@ import { Map, TileLayer, Marker, Popup } from "react-leaflet";
 import Skeleton from "@material-ui/lab/Skeleton";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import qs from "qs";
 import {
   Card,
   CardHeader,
@@ -38,6 +39,7 @@ import {
 } from "@material-ui/icons";
 import moment from "moment-timezone";
 import { Link } from "react-router-dom";
+import { apiUsername, apiPassword } from "../utils/api_secret";
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -102,12 +104,24 @@ const DeviceComponent = props => {
     } else {
       // data passed from component
       setDeviceData(props.location.state);
-      Axios.get(
-        `${APIURL()}/api/1/csr/rdm?deviceid=${
-          props.location.state.id
-        }&withlocation=true`,
-        APICreds()
-      )
+
+      Axios({
+        method: "post",
+        url: apiCorsUrl,
+        data: qs.stringify({
+          url: `${APIURL()}/api/1/csr/rdm?deviceid=${
+            props.location.state.id
+          }&withlocation=true`
+        }),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=utf-8"
+        },
+        auth: {
+          username: apiUsername,
+          password: apiPassword
+        },
+        responseType: "json"
+      })
         .then(response => {
           console.log("most recent data", response);
           setMostRecentData(response.data.data[0]);

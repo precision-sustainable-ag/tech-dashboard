@@ -3,6 +3,7 @@ import { Context } from "../Store/Store";
 import Axios from "axios";
 import Loading from "react-loading";
 import "./Devices.scss";
+import qs from "qs";
 import {
   Card,
   CardActionArea,
@@ -13,6 +14,7 @@ import {
 import DataParser from "./DataParser";
 import * as Constants from "./hologramConstants";
 import { bannedRoles } from "../utils/constants";
+import { apiUsername, apiPassword } from "../utils/api_secret";
 
 // import red from "@material-ui/core/colors/red";
 
@@ -66,7 +68,7 @@ const DevicesComponent = () => {
             });
           } else {
             getTags(
-              `${finalAPIURL}/api/1/devices/tags?limit=1000&?withlocation=true`
+              `${finalAPIURL}/api/1/devices/tags?limit=1000&withlocation=true`
             ).then(tagsObject => {
               // console.log("Tags Object: ", tagsObject);
               let tags = tagsObject.data.tags;
@@ -84,7 +86,7 @@ const DevicesComponent = () => {
               // console.log(tagsId);
               tagsId.forEach(tagId => {
                 fetchRecords(
-                  `${finalAPIURL}/api/1/devices?tagid=${tagId}&?withlocation=true`
+                  `${finalAPIURL}/api/1/devices?tagid=${tagId}&withlocation=true`
                 ).then(() => {
                   setDevicesLoadingState(false);
                 });
@@ -128,7 +130,22 @@ const DevicesComponent = () => {
 
   const tagsApiCall = async (url, options) => {
     let tagsData = [];
-    await Axios.get(url, options).then(response => {
+
+    await Axios({
+      method: "post",
+      url: Constants.apiCorsUrl,
+      data: qs.stringify({
+        url: url
+      }),
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8"
+      },
+      auth: {
+        username: apiUsername,
+        password: apiPassword
+      },
+      responseType: "json"
+    }).then(response => {
       // console.log(response.data);
       tagsData = response.data;
     });
@@ -136,7 +153,21 @@ const DevicesComponent = () => {
   };
 
   const apiCall = async (url, options) => {
-    await Axios.get(url, options)
+    await Axios({
+      method: "post",
+      url: Constants.apiCorsUrl,
+      data: qs.stringify({
+        url: url
+      }),
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8"
+      },
+      auth: {
+        username: apiUsername,
+        password: apiPassword
+      },
+      responseType: "json"
+    })
       .then(response => {
         // save whatever we get for a specific state or "all"
 
