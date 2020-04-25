@@ -42,7 +42,7 @@ const DevicesComponent = () => {
 
         // let interval = setInterval(
         finalAPIURL = Constants.APIURL();
-        console.log(finalAPIURL);
+        // console.log(finalAPIURL);
         // Check user state or retrieve all devices
         let apiParams;
         if (state.userInfo.role === "all") {
@@ -144,7 +144,7 @@ const DevicesComponent = () => {
           let devicesFlatData = [];
           devicesFlatData = devicesData.flat();
           devicesFlatData = devicesFlatData.sort(compare);
-          console.log("devicesFlatData", devicesFlatData);
+          // console.log("devicesFlatData", devicesFlatData);
           dispatch({
             type: "SET_DEVICES_INFO",
             data: devicesFlatData

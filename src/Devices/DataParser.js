@@ -54,7 +54,7 @@ const DataParser = props => {
       let deviceDateFormatted = deviceDateLocal.fromNow();
 
       let dateDiff = moment.duration(moment().diff(deviceDateLocal)).asHours();
-      console.log(dateDiff);
+      // console.log(dateDiff);
 
       setDeviceDateStr(deviceDateFormatted.toString());
       // let deviceDay = moment
