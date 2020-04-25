@@ -13,8 +13,10 @@ import {
 } from "@material-ui/core";
 import DataParser from "./DataParser";
 import * as Constants from "./hologramConstants";
-import { bannedRoles } from "../utils/constants";
+import { bannedRoles, apiCall } from "../utils/constants";
 import { apiUsername, apiPassword } from "../utils/api_secret";
+
+// import moment from "moment-timezone";
 
 // import red from "@material-ui/core/colors/red";
 
@@ -29,6 +31,7 @@ const DevicesComponent = () => {
   let devicesData = [];
   let finalAPIURL = "";
   useEffect(() => {
+    // console.log(moment)
     if (Reflect.ownKeys(state.userInfo).length > 0) {
       if (bannedRoles.includes(state.userInfo.role)) {
         setShowDevices(false);
@@ -125,7 +128,32 @@ const DevicesComponent = () => {
   const fetchRecords = async apiURL => {
     let options = Constants.APICreds();
 
-    await apiCall(apiURL, options);
+    await apiCall(apiURL, options)
+      .then(response => {
+        // save whatever we get for a specific state or "all"
+
+        devicesData.push(response.data.data);
+
+        return response;
+      })
+      .then(async response => {
+        if (response.data.continues) {
+          // recursive call to get more data
+          await fetchRecords(`${finalAPIURL}${response.data.links.next}`);
+        } else {
+          let devicesFlatData = [];
+          devicesFlatData = devicesData.flat();
+          devicesFlatData = devicesFlatData.sort(compare);
+          console.log("devicesFlatData", devicesFlatData);
+          dispatch({
+            type: "SET_DEVICES_INFO",
+            data: devicesFlatData
+          });
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   const tagsApiCall = async (url, options) => {
@@ -152,47 +180,6 @@ const DevicesComponent = () => {
     return tagsData;
   };
 
-  const apiCall = async (url, options) => {
-    await Axios({
-      method: "post",
-      url: Constants.apiCorsUrl,
-      data: qs.stringify({
-        url: url
-      }),
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8"
-      },
-      auth: {
-        username: apiUsername,
-        password: apiPassword
-      },
-      responseType: "json"
-    })
-      .then(response => {
-        // save whatever we get for a specific state or "all"
-
-        devicesData.push(response.data.data);
-
-        return response;
-      })
-      .then(async response => {
-        if (response.data.continues) {
-          // recursive call to get more data
-          await apiCall(`${finalAPIURL}${response.data.links.next}`, options);
-        } else {
-          let devicesFlatData = [];
-          devicesFlatData = devicesData.flat();
-          devicesFlatData = devicesFlatData.sort(compare);
-          dispatch({
-            type: "SET_DEVICES_INFO",
-            data: devicesFlatData
-          });
-        }
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  };
   const compare = (a, b) => {
     // Use toUpperCase() to ignore character casing
     let bandA = a.name.toUpperCase();
@@ -213,17 +200,21 @@ const DevicesComponent = () => {
           <Loading type="cubes" width="500px" height="500px" color="#3f51b5" />
         ) : (
           <div className="devices">
-            {state.devices.map((device, index) => (
-              <div className="device" key={device.id}>
-                <Card
-                  variant="elevation"
-                  elevation={3}
-                  className="deviceDataWrapper"
-                >
-                  <DataParser deviceData={device} />
-                </Card>
-              </div>
-            ))}
+            {state.devices.map((device, index) =>
+              device.lastsession ? (
+                <div className="device" key={device.id}>
+                  <Card
+                    variant="elevation"
+                    elevation={3}
+                    className="deviceDataWrapper"
+                  >
+                    <DataParser deviceData={device} />
+                  </Card>
+                </div>
+              ) : (
+                ""
+              )
+            )}
           </div>
         )}
       </div>
