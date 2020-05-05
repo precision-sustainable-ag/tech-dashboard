@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import { red, grey, green } from "@material-ui/core/colors";
 import { NavLink, Redirect } from "react-router-dom";
 import { CardActionArea, Tooltip } from "@material-ui/core";
+
 import moment from "moment-timezone";
 
 const deadDeviceBG = red[300];
@@ -27,6 +28,7 @@ const DataParser = props => {
   const [dateStatus, setDateStatus] = useState("");
   const [dateStringFormatted, setDateStringFormatted] = useState("");
   let device = props.deviceData;
+  // console.log("deviceData", props.deviceData);
   const setDeviceState = deviceId => {
     setDeviceId(deviceId);
     setShouldRedirect(true);
@@ -127,19 +129,6 @@ const DataParser = props => {
                 backgroundColor: deviceBGColor
               }
         }
-        // style={{
-        //   backgroundColor: device.lastsession
-        //     ? today
-        //       ? activeDeviceBG
-        //       : ""
-        //     : deadDeviceBG,
-        //   color: device.lastsession
-        //     ? today
-        //       ? activeDeviceCol
-        //       : ""
-        //     : deadDeviceCol
-        // }}
-        // hidden={!device.lastsession ? true : false}
         disabled={!device.lastsession ? true : false}
         onClick={() => {
           setDeviceState(device.id);
