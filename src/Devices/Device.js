@@ -477,7 +477,7 @@ const DeviceComponent = props => {
             </Card>
           </GridListTile>
         </GridList>
-        <Grid container>
+        {/* <Grid container>
           <Grid item md={12}>
             <Typography
               variant="h5"
@@ -486,7 +486,7 @@ const DeviceComponent = props => {
               Data
             </Typography>
           </Grid>
-        </Grid>
+        </Grid> */}
         <Grid container>
           <Grid item md={12}>
             {renderDataTable()}
