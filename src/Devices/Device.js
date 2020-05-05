@@ -21,7 +21,18 @@ import {
   ListItemIcon,
   List,
   ListItemText,
-  Chip
+  Chip,
+  TableContainer,
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  Grid,
+  Typography,
+  TableBody,
+  withStyles,
+  TablePagination
 } from "@material-ui/core";
 import {
   Create,
@@ -48,6 +59,24 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require("leaflet/dist/images/marker-shadow.png")
 });
 
+const StyledTableCell = withStyles(theme => ({
+  head: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white
+  },
+  body: {
+    fontSize: 14
+  }
+}))(TableCell);
+
+const StyledTableRow = withStyles(theme => ({
+  root: {
+    "&:nth-of-type(odd)": {
+      backgroundColor: theme.palette.action.hover
+    }
+  }
+}))(TableRow);
+
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",
@@ -69,15 +98,23 @@ const useStyles = makeStyles(theme => ({
   },
   icon: {
     color: "white"
+  },
+  paper: {
+    // padding: theme.spacing(2),
+    textAlign: "center",
+    color: theme.palette.text.secondary
   }
 }));
 const DeviceComponent = props => {
   const classes = useStyles();
-  console.log(props.location.state);
+  // console.log(props.location.state);
   const [deviceData, setDeviceData] = useState({ name: "" });
   const [latLng, setLatLng] = useState({ flag: false, data: {} });
   const [mostRecentData, setMostRecentData] = useState({});
+  const [userTimezone, setUserTimezone] = useState("America/New_York");
+
   useEffect(() => {
+    setUserTimezone(moment.tz.guess);
     if (props.location.state === undefined) {
       console.log("undefined !");
       // get data from api
@@ -92,17 +129,17 @@ const DeviceComponent = props => {
           setDeviceData(response.data.data);
           setLatLng({
             flag: true,
-            data: [35.764221, -78.69976]
-            // data: [
-            //   response.data.data.lastsession.latitude,
-            //   response.data.data.lastsession.longitude
-            // ]
+            // data: [35.764221, -78.69976]
+            data: [
+              response.data.data.lastsession.latitude,
+              response.data.data.lastsession.longitude
+            ]
           });
         } else {
         }
       });
     } else {
-      // data passed from component
+      // data passed from component via prop
       setDeviceData(props.location.state);
 
       Axios({
@@ -123,17 +160,15 @@ const DeviceComponent = props => {
         responseType: "json"
       })
         .then(response => {
-          console.log("most recent data", response);
-          setMostRecentData(response.data.data[0]);
+          // console.log("most recent data", response);
+          setMostRecentData(response.data.data);
         })
         .then(() => {
           setLatLng({
             flag: true,
             data: [
-              35.764221,
-              -78.69976
-              // props.location.state.lastsession.latitude,
-              // props.location.state.lastsession.longitude
+              props.location.state.lastsession.latitude,
+              props.location.state.lastsession.longitude
             ]
           });
         });
@@ -173,8 +208,11 @@ const DeviceComponent = props => {
   const renderGridListMap = () => {
     return (
       <GridList spacing={1} className={classes.gridList}>
-        <GridListTile key={deviceData.id} style={{ width: "100%" }}>
-          {/* <Map
+        <GridListTile
+          key={deviceData.id}
+          style={{ width: "100%", height: "300px" }}
+        >
+          <Map
             center={latLng.data}
             style={{ height: "300px" }}
             zoom={13}
@@ -187,7 +225,7 @@ const DeviceComponent = props => {
             <Marker position={latLng.data}>
               <Popup>Last Active Location</Popup>
             </Marker>
-          </Map> */}
+          </Map>
           <GridListTileBar
             title={deviceData.name}
             style={{
@@ -213,37 +251,85 @@ const DeviceComponent = props => {
       </GridList>
     );
   };
-  const renderJSON = () => {
-    let jdata = JSON.parse(mostRecentData.data);
-    jdata = jdata.data;
-    let part1 = jdata.substring(0, 100);
-    let part2 = jdata.substring(100);
-    jdata = atob(jdata);
+  const renderDataTable = () => {
     return (
-      <span style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}>
-        {jdata}
-        {/* <br />
-        {part2} */}
-      </span>
+      <TableContainer component={Paper} className={classes.paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>SNO</StyledTableCell>
+              <StyledTableCell>Data</StyledTableCell>
+              <StyledTableCell>Tags</StyledTableCell>
+              <StyledTableCell>Time Stamp</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {mostRecentData.map(
+              (data, index) => (
+                // index <= 8 ? (
+                <StyledTableRow key={`row-${index}`}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>
+                    {getDataFromJSON(data.data, "dataString")}
+                  </TableCell>
+                  <TableCell>{getDataFromJSON(data.data, "tags")}</TableCell>
+                  <TableCell>
+                    {getDataFromJSON(data.data, "timestamp")}
+                  </TableCell>
+                </StyledTableRow>
+              )
+              // ) : (
+              //   ""
+              // )
+            )}
+          </TableBody>
+        </Table>
+        {/* <TablePagination
+          rowsPerPageOptions={[5, 10, mostRecentData.length]}
+          component="div"
+          count={mostRecentData.length}
+        /> */}
+      </TableContainer>
     );
-  };
-  const renderTimestamp = () => {
-    let jdata = JSON.parse(mostRecentData.data);
-    console.log(jdata);
-    let ts = jdata.timestamp;
-    return <span>{ts}</span>;
+    // return <span>Data Table Here</span>;
+    // let jdata = JSON.parse(mostRecentData.data);
+    // jdata = jdata.data;
+    // let part1 = jdata.substring(0, 100);
+    // let part2 = jdata.substring(100);
+    // jdata = atob(jdata);
+    // return (
+    //   <span style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}>
+    //     {jdata}
+    //     {/* <br />
+    //     {part2} */}
+    //   </span>
+    // );
   };
 
-  const renderErrorCode = () => {
-    let jdata = JSON.parse(mostRecentData.data);
-    let ecd = jdata.errorcode;
-    return <span>{ecd}</span>;
-  };
+  const getDataFromJSON = (jsonData, type) => {
+    // console.log(jsonData);
 
-  const renderTags = () => {
-    let allData = JSON.parse(mostRecentData.data);
-    let chips = [];
-    chips = allData.tags;
+    jsonData = JSON.parse(jsonData);
+    let dataStringParsed = atob(jsonData.data);
+    switch (type) {
+      case "dataString":
+        return dataStringParsed;
+      case "tags":
+        return renderTags(jsonData.tags);
+      case "timestamp":
+        return moment
+          .tz(jsonData.received, "UTC")
+          .tz(userTimezone)
+          .format("dddd, MMMM Do YYYY, h:mm:ss a");
+      default:
+        return "";
+    }
+  };
+  const renderTags = chipsArray => {
+    // console.log(mostRecentData);
+    // let allData = JSON.parse(mostRecentData[index]);
+    let chips = chipsArray;
+    // chips = allData.tags;
 
     return chips.map((chip, index) => (
       <Chip
@@ -368,7 +454,7 @@ const DeviceComponent = props => {
                           deviceData.links.cellular[0].last_connect_time,
                           "UTC"
                         )
-                        .tz("America/New_York")
+                        .tz(userTimezone)
                         .format("MM/DD/YYYY hh:mm A")
                         .toString()}
                     />
@@ -381,7 +467,7 @@ const DeviceComponent = props => {
                       primary={"Expires"}
                       secondary={moment
                         .tz(deviceData.links.cellular[0].whenexpires, "UTC")
-                        .tz("America/New_York")
+                        .tz(userTimezone)
                         .format("MM/DD/YYYY")
                         .toString()}
                     />
@@ -391,7 +477,22 @@ const DeviceComponent = props => {
             </Card>
           </GridListTile>
         </GridList>
-        <GridList row={1}>
+        <Grid container>
+          <Grid item md={12}>
+            <Typography
+              variant="h5"
+              style={{ paddingTop: "24px", paddingBottom: "24px" }}
+            >
+              Data
+            </Typography>
+          </Grid>
+        </Grid>
+        <Grid container>
+          <Grid item md={12}>
+            {renderDataTable()}
+          </Grid>
+        </Grid>
+        {/* <GridList row={1}>
           <GridListTile style={{ height: "auto", width: "100%" }}>
             <Card>
               <CardHeader title="Most Recent Connection"></CardHeader>
@@ -401,33 +502,17 @@ const DeviceComponent = props => {
                     <ListItemIcon>
                       <FastForward />
                     </ListItemIcon>
-                    <ListItemText primary={"Data"} secondary={renderJSON()} />
-                  </ListItem>
-
-                  <ListItem alignItems="flex-start" key="timestamp">
-                    <ListItemIcon>
-                      <FastForward />
-                    </ListItemIcon>
                     <ListItemText
-                      primary={"Timestamp"}
-                      secondary={renderTimestamp()}
-                    />
-                  </ListItem>
-                  <ListItem alignItems="flex-start" key="errorcode">
-                    <ListItemIcon>
-                      <FastForward />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={"Error Code"}
-                      secondary={renderErrorCode()}
+                      primary={"Data"}
+                      secondary={renderDataTable()}
                     />
                   </ListItem>
                 </List>
               </CardContent>
             </Card>
           </GridListTile>
-        </GridList>
-        <GridList row={1}>
+        </GridList> */}
+        {/* <GridList row={1}>
           <GridListTile style={{ height: "auto", width: "100%" }}>
             <Card>
               <CardHeader title="Tags" />
@@ -437,13 +522,13 @@ const DeviceComponent = props => {
                     <ListItemIcon>
                       <Label />
                     </ListItemIcon>
-                    <ListItemText primary={renderTags()} title={"Tags"} />
+                    <ListItemText primary={renderTags(0)} title={"Tags"} />
                   </ListItem>
                 </List>
               </CardContent>
             </Card>
           </GridListTile>
-        </GridList>
+        </GridList> */}
       </Fragment>
     );
   };
