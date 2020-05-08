@@ -257,7 +257,7 @@ const DeviceComponent = props => {
         <Table>
           <TableHead>
             <TableRow>
-              <StyledTableCell>SNO</StyledTableCell>
+              <StyledTableCell>SNo</StyledTableCell>
               <StyledTableCell>Data</StyledTableCell>
               <StyledTableCell>Tags</StyledTableCell>
               <StyledTableCell>Time Stamp</StyledTableCell>
@@ -270,7 +270,9 @@ const DeviceComponent = props => {
                 <StyledTableRow key={`row-${index}`}>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>
-                    {getDataFromJSON(data.data, "dataString")}
+                    <pre>
+                      <code>{getDataFromJSON(data.data, "dataString")}</code>
+                    </pre>
                   </TableCell>
                   <TableCell>{getDataFromJSON(data.data, "tags")}</TableCell>
                   <TableCell>
@@ -320,7 +322,7 @@ const DeviceComponent = props => {
         return moment
           .tz(jsonData.received, "UTC")
           .tz(userTimezone)
-          .format("dddd, MMMM Do YYYY, h:mm:ss a");
+          .format("dddd, MMMM Do YYYY, h:mm:ss A");
       default:
         return "";
     }
@@ -362,7 +364,10 @@ const DeviceComponent = props => {
                     </ListItemIcon>
                     <ListItemText
                       primary={"Created"}
-                      secondary={deviceData.whencreated}
+                      secondary={moment
+                        .tz(deviceData.whencreated, "UTC")
+                        .tz(userTimezone)
+                        .format("MM/DD/YYYY hh:mm A")}
                     />
                   </ListItem>
 
@@ -477,58 +482,12 @@ const DeviceComponent = props => {
             </Card>
           </GridListTile>
         </GridList>
-        {/* <Grid container>
-          <Grid item md={12}>
-            <Typography
-              variant="h5"
-              style={{ paddingTop: "24px", paddingBottom: "24px" }}
-            >
-              Data
-            </Typography>
-          </Grid>
-        </Grid> */}
+
         <Grid container>
           <Grid item md={12}>
             {renderDataTable()}
           </Grid>
         </Grid>
-        {/* <GridList row={1}>
-          <GridListTile style={{ height: "auto", width: "100%" }}>
-            <Card>
-              <CardHeader title="Most Recent Connection"></CardHeader>
-              <CardContent>
-                <List>
-                  <ListItem alignItems="flex-start" key={"data"}>
-                    <ListItemIcon>
-                      <FastForward />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={"Data"}
-                      secondary={renderDataTable()}
-                    />
-                  </ListItem>
-                </List>
-              </CardContent>
-            </Card>
-          </GridListTile>
-        </GridList> */}
-        {/* <GridList row={1}>
-          <GridListTile style={{ height: "auto", width: "100%" }}>
-            <Card>
-              <CardHeader title="Tags" />
-              <CardContent>
-                <List>
-                  <ListItem alignItems="flex-start" key="tags">
-                    <ListItemIcon>
-                      <Label />
-                    </ListItemIcon>
-                    <ListItemText primary={renderTags(0)} title={"Tags"} />
-                  </ListItem>
-                </List>
-              </CardContent>
-            </Card>
-          </GridListTile>
-        </GridList> */}
       </Fragment>
     );
   };
