@@ -30,6 +30,8 @@ import PrivateRoute from "./utils/private-routes";
 import Skeleton from "@material-ui/lab/Skeleton";
 import Profile from "./Profile/Profile";
 import DeviceEnroll from "./Devices/Device-Enroll/DeviceEnroll";
+import WaterSensorData from "./Devices/WaterSensorData/WaterSensorData";
+import WaterSensorByGateway from "./Devices/WaterSensorData/WaterSensorByGateway";
 
 const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
@@ -153,6 +155,15 @@ function App() {
             <PrivateRoute path={`/kobo-forms`} component={Forms} />
             <PrivateRoute path="/profile" component={Profile} />
             <PrivateRoute path="/device-enroll" component={DeviceEnroll} />
+            <PrivateRoute
+              path="/water-sensors"
+              component={WaterSensorData}
+              exact
+            />
+            <PrivateRoute
+              path={`/water-sensors/:gatewayId`}
+              component={WaterSensorByGateway}
+            />
           </Switch>
           {/* </Paper> */}
         </main>
