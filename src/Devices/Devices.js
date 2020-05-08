@@ -3,6 +3,7 @@ import { Context } from "../Store/Store";
 import Axios from "axios";
 import Loading from "react-loading";
 import "./Devices.scss";
+import qs from "qs";
 import {
   Card,
   CardActionArea,
@@ -12,7 +13,10 @@ import {
 } from "@material-ui/core";
 import DataParser from "./DataParser";
 import * as Constants from "./hologramConstants";
-import { bannedRoles } from "../utils/constants";
+import { bannedRoles, apiCall } from "../utils/constants";
+import { apiUsername, apiPassword } from "../utils/api_secret";
+
+// import moment from "moment-timezone";
 
 // import red from "@material-ui/core/colors/red";
 
@@ -27,40 +31,107 @@ const DevicesComponent = () => {
   let devicesData = [];
   let finalAPIURL = "";
   useEffect(() => {
-    if (bannedRoles.includes(state.userRole)) {
-      setShowDevices(false);
-    } else {
-      console.log("hello from devices");
-      // let interval = setInterval(
-      finalAPIURL = Constants.APIURL();
-      console.log(finalAPIURL);
-      fetchRecords(`${finalAPIURL}/api/1/devices?withlocation=true`).then(
-        () => {
-          setDevicesLoadingState(false);
-          console.log(
-            "This is just intended to retrieve basic info, rest of the data should technically come from websockets"
-          );
-        }
-      );
+    // console.log(moment)
+    if (Reflect.ownKeys(state.userInfo).length > 0) {
+      if (bannedRoles.includes(state.userInfo.role)) {
+        setShowDevices(false);
+      } else {
+        console.log("hello from devices");
 
-      setShowDevices(true);
+        // get tag id for
+
+        // let interval = setInterval(
+        finalAPIURL = Constants.APIURL();
+        // console.log(finalAPIURL);
+        // Check user state or retrieve all devices
+        let apiParams;
+        if (state.userInfo.role === "all") {
+          apiParams = "";
+          fetchRecords(
+            `${finalAPIURL}/api/1/devices?withlocation=true${apiParams}`
+          ).then(() => {
+            setDevicesLoadingState(false);
+            console.log(
+              "This is just intended to retrieve basic info, rest of the data should technically come from websockets"
+            );
+          });
+        } else {
+          // console.log('user role !== all');
+          let deviceState = state.userInfo.state;
+          deviceState = deviceState.toUpperCase();
+          // // check if the string has commas and split it into an array
+
+          deviceState = deviceState.split(",");
+          if (deviceState.length === 1 && deviceState[0] === "ALL") {
+            apiParams = "";
+            fetchRecords(
+              `${finalAPIURL}/api/1/devices?withlocation=true${apiParams}`
+            ).then(() => {
+              setDevicesLoadingState(false);
+            });
+          } else {
+            getTags(
+              `${finalAPIURL}/api/1/devices/tags?limit=1000&withlocation=true`
+            ).then(tagsObject => {
+              // console.log("Tags Object: ", tagsObject);
+              let tags = tagsObject.data.tags;
+              let matchedResult = tags.filter(obj => {
+                if (deviceState.includes(obj.name)) return obj;
+              });
+              // console.log(matchedResult);
+              let tagsIdArray = [];
+              let tagsId = matchedResult.map((val, index) => {
+                // console.log(val);
+                // console.log(val.id);
+                // let tagId = val.id;
+                return val.id;
+              });
+              // console.log(tagsId);
+              tagsId.forEach(tagId => {
+                fetchRecords(
+                  `${finalAPIURL}/api/1/devices?tagid=${tagId}&withlocation=true`
+                ).then(() => {
+                  setDevicesLoadingState(false);
+                });
+              });
+              // get tag ids from matched objects
+            });
+          }
+
+          // var result = jsObjects.filter(obj => {
+          //   return obj.b === 6
+          // })
+          // }
+
+          // get tag id from hologram for this specific
+        }
+
+        setShowDevices(true);
+      }
     }
 
     //   30 * 1000
     // );
     // return () => clearInterval(interval);
-  }, [state.userRole]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [state.userInfo]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const getTags = async apiURL => {
+    let options = Constants.APICreds();
+    let tagsData = [];
+    await tagsApiCall(apiURL, options).then(response => {
+      // console.log(response);
+      tagsData = response;
+    });
+    return tagsData;
+  };
 
   const fetchRecords = async apiURL => {
     let options = Constants.APICreds();
 
-    await apiCall(apiURL, options);
-  };
-
-  const apiCall = async (url, options) => {
-    await Axios.get(url, options)
+    await apiCall(apiURL, options)
       .then(response => {
-        // save whatever we get
+        // save whatever we get for a specific state or "all"
+
         devicesData.push(response.data.data);
 
         return response;
@@ -68,11 +139,12 @@ const DevicesComponent = () => {
       .then(async response => {
         if (response.data.continues) {
           // recursive call to get more data
-          await apiCall(`${finalAPIURL}${response.data.links.next}`, options);
+          await fetchRecords(`${finalAPIURL}${response.data.links.next}`);
         } else {
           let devicesFlatData = [];
           devicesFlatData = devicesData.flat();
           devicesFlatData = devicesFlatData.sort(compare);
+          // console.log("devicesFlatData", devicesFlatData);
           dispatch({
             type: "SET_DEVICES_INFO",
             data: devicesFlatData
@@ -83,6 +155,31 @@ const DevicesComponent = () => {
         console.log(error);
       });
   };
+
+  const tagsApiCall = async (url, options) => {
+    let tagsData = [];
+
+    await Axios({
+      method: "post",
+      url: Constants.apiCorsUrl,
+      data: qs.stringify({
+        url: url
+      }),
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8"
+      },
+      auth: {
+        username: apiUsername,
+        password: apiPassword
+      },
+      responseType: "json"
+    }).then(response => {
+      // console.log(response.data);
+      tagsData = response.data;
+    });
+    return tagsData;
+  };
+
   const compare = (a, b) => {
     // Use toUpperCase() to ignore character casing
     let bandA = a.name.toUpperCase();
@@ -103,17 +200,21 @@ const DevicesComponent = () => {
           <Loading type="cubes" width="500px" height="500px" color="#3f51b5" />
         ) : (
           <div className="devices">
-            {state.devices.map((device, index) => (
-              <div className="device" key={device.id}>
-                <Card
-                  variant="elevation"
-                  elevation={3}
-                  className="deviceDataWrapper"
-                >
-                  <DataParser deviceData={device} />
-                </Card>
-              </div>
-            ))}
+            {state.devices.map((device, index) =>
+              device.lastsession ? (
+                <div className="device" key={device.id}>
+                  <Card
+                    variant="elevation"
+                    elevation={3}
+                    className="deviceDataWrapper"
+                  >
+                    <DataParser deviceData={device} />
+                  </Card>
+                </div>
+              ) : (
+                ""
+              )
+            )}
           </div>
         )}
       </div>
@@ -121,7 +222,11 @@ const DevicesComponent = () => {
   ) : (
     <Box component={Paper} elevation={0}>
       <Typography variant={"h6"} align="center">
-        Your access level does not permit this action.
+        Your access level does not permit this action. If think you are seeing
+        this as an error, please report this{" "}
+        <a href="mailto:saseehav@ncsu.edu?subject=Unable To See Devices on Tech Dashboard">
+          here
+        </a>
       </Typography>
     </Box>
   );

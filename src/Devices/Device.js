@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { APIURL, APICreds } from "./hologramConstants";
+import { APIURL, APICreds, apiCorsUrl } from "./hologramConstants";
 import Axios from "axios";
 
 import { Map, TileLayer, Marker, Popup } from "react-leaflet";
@@ -7,6 +7,7 @@ import { Map, TileLayer, Marker, Popup } from "react-leaflet";
 import Skeleton from "@material-ui/lab/Skeleton";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import qs from "qs";
 import {
   Card,
   CardHeader,
@@ -38,6 +39,7 @@ import {
 } from "@material-ui/icons";
 import moment from "moment-timezone";
 import { Link } from "react-router-dom";
+import { apiUsername, apiPassword } from "../utils/api_secret";
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -90,10 +92,11 @@ const DeviceComponent = props => {
           setDeviceData(response.data.data);
           setLatLng({
             flag: true,
-            data: [
-              response.data.data.lastsession.latitude,
-              response.data.data.lastsession.longitude
-            ]
+            data: [35.764221, -78.69976]
+            // data: [
+            //   response.data.data.lastsession.latitude,
+            //   response.data.data.lastsession.longitude
+            // ]
           });
         } else {
         }
@@ -101,10 +104,24 @@ const DeviceComponent = props => {
     } else {
       // data passed from component
       setDeviceData(props.location.state);
-      Axios.get(
-        `${APIURL()}/api/1/csr/rdm?deviceid=${props.location.state.id}`,
-        APICreds()
-      )
+
+      Axios({
+        method: "post",
+        url: apiCorsUrl,
+        data: qs.stringify({
+          url: `${APIURL()}/api/1/csr/rdm?deviceid=${
+            props.location.state.id
+          }&withlocation=true`
+        }),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=utf-8"
+        },
+        auth: {
+          username: apiUsername,
+          password: apiPassword
+        },
+        responseType: "json"
+      })
         .then(response => {
           console.log("most recent data", response);
           setMostRecentData(response.data.data[0]);
@@ -113,8 +130,10 @@ const DeviceComponent = props => {
           setLatLng({
             flag: true,
             data: [
-              props.location.state.lastsession.latitude,
-              props.location.state.lastsession.longitude
+              35.764221,
+              -78.69976
+              // props.location.state.lastsession.latitude,
+              // props.location.state.lastsession.longitude
             ]
           });
         });
@@ -153,9 +172,9 @@ const DeviceComponent = props => {
 
   const renderGridListMap = () => {
     return (
-      <GridList cellHeight={600} spacing={1} className={classes.gridList}>
+      <GridList spacing={1} className={classes.gridList}>
         <GridListTile key={deviceData.id} style={{ width: "100%" }}>
-          <Map
+          {/* <Map
             center={latLng.data}
             style={{ height: "300px" }}
             zoom={13}
@@ -168,7 +187,7 @@ const DeviceComponent = props => {
             <Marker position={latLng.data}>
               <Popup>Last Active Location</Popup>
             </Marker>
-          </Map>
+          </Map> */}
           <GridListTileBar
             title={deviceData.name}
             style={{

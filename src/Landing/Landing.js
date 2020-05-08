@@ -6,29 +6,27 @@ import {
   Grid,
   Card,
   CardActionArea,
-  Box
+  Box,
+  Button
 } from "@material-ui/core";
 
 const LandingComponent = () => {
   const [state, dispatch] = useContext(Context);
 
   return (
-    <Paper elevation={0}>
-      <Box paddingTop={"2em"} minHeight={"80vh"}>
-        <Typography variant="h5" align="center" gutterBottom>
-          Welcome to Precision Sustainable Agriculture Tech Dashboard
-        </Typography>
-        <Grid container>
+    <Box paddingTop={"2em"} minHeight={"80vh"}>
+      <Typography variant="h5" align="center" gutterBottom>
+        Welcome to Precision Sustainable Agriculture Tech Dashboard
+      </Typography>
+      {/* <Grid container>
           <Grid item>
-            {/* <Card>
-            <CardActionArea>
-              <Typography>Card 1</Typography>
-            </CardActionArea>
-          </Card> */}
+
           </Grid>
-        </Grid>
-      </Box>
-    </Paper>
+        </Grid> */}
+      <Button variant="outlined" href="/devices">
+        Water Sensors
+      </Button>
+    </Box>
   );
 };
 

@@ -1,6 +1,21 @@
 import isIP from "is-ip";
 import { hologramAPIKey } from "../utils/api_secret";
+import { FlipRounded } from "@material-ui/icons";
 
+export const apiCorsUrl =
+  "https://techdashboard.tk/api/hologram/remote/devices";
+
+// export const apiCorsCreds = () => {
+//   const authKey = `psaadmin:${hologramAPIKey}`;
+//   let authBase64 = btoa(authKey);
+//   let options = {
+//     responseType: "json",
+//     headers: {
+//       Authorization: `Basic ${authBase64}`
+//     }
+//   };
+//   return options;
+// };
 export const APIURL = () => {
   let mockServerURL =
     "https://private-anon-6a91fec95a-hologram.apiary-mock.com";
@@ -11,28 +26,15 @@ export const APIURL = () => {
 
   console.log("env: ", process.env.NODE_ENV);
 
-  if (process.env.NODE_ENV === "development") {
-    return debuggingProxyURL;
-  } else if (process.env.NODE_ENV === "test") {
-    return debuggingProxyURL;
-  } else {
-    return productionServerURL;
-  }
-  // if (
-  //   !process.env.NODE_ENV ||
-  //   process.env.NODE_ENV === "development" ||
-  //   isIP.v4(process.env.NODE_ENV) ||
-  //   isIP.v4(window.location.hostname)
-  // ) {
-  //   // dev code
-  //   finalAPIURL = mockServerURL;
-  //   console.log("RUNNING ON MOCK SERVER", window.location.hostname);
+  // if (process.env.NODE_ENV === "development") {
+  //   return debuggingProxyURL;
+  // } else if (process.env.NODE_ENV === "test") {
+  //   return debuggingProxyURL;
   // } else {
-  //   // production code
-  //   finalAPIURL = productionServerURL;
-  //   console.log("RUNNING ON LIVE SERVER", window.location.hostname);
+  //   return debuggingProxyURL;
   // }
-  // return finalAPIURL;
+
+  return productionServerURL;
 };
 
 export const APICreds = () => {

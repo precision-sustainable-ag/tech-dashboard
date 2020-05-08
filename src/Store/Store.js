@@ -8,7 +8,8 @@ const initialState = {
   devices: [],
   psaForms: [],
   psassgForms: [],
-  userRole: "default"
+  userRole: "default",
+  userInfo: {}
 };
 
 const Store = ({ children }) => {

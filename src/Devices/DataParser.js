@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { red, grey, green } from "@material-ui/core/colors";
 import { NavLink, Redirect } from "react-router-dom";
-import { CardActionArea } from "@material-ui/core";
+import { CardActionArea, Tooltip } from "@material-ui/core";
 import moment from "moment-timezone";
 
 const deadDeviceBG = red[300];
@@ -11,63 +11,99 @@ const activeDeviceBG = green[100];
 // const activeDeviceCol = green[50];
 const activeDeviceCol = "#114C2A !important";
 
+const deviceColors = {
+  withinLastHour: "#2e7d32",
+  lastFourHours: "#28a745",
+  lastThirtySixHours: "#fdd835",
+  lastMonth: "#bdbdbd",
+  default: "white"
+};
+
 const DataParser = props => {
   const [deviceId, setDeviceId] = useState(0);
   const [shouldRedirect, setShouldRedirect] = useState(false);
-
+  const [deviceBGColor, setDeviceBGColor] = useState("white");
+  const [deviceDateStr, setDeviceDateStr] = useState("");
+  const [dateStatus, setDateStatus] = useState("");
+  const [dateStringFormatted, setDateStringFormatted] = useState("");
+  let device = props.deviceData;
   const setDeviceState = deviceId => {
     setDeviceId(deviceId);
     setShouldRedirect(true);
   };
 
-  let device = props.deviceData;
-
-  let dateStatus = "";
-  let deviceDateStr = "";
-  let today = false;
-  if (device.lastsession) {
-    let deviceSessionBegin = device.links.cellular[0].last_connect_time;
-    let deviceDateFormatted = moment
-      .tz(deviceSessionBegin, "Africa/Abidjan")
-      .tz("America/New_York")
-      .format("MM/DD/YYYY hh:mm A");
-
-    deviceDateStr = deviceDateFormatted.toString();
-    let deviceDay = moment
-      .tz(deviceSessionBegin, "Africa/Abidjan")
-      .tz("America/New_York")
-      .date();
-
-    let deviceMonth =
-      moment
-        .tz(deviceSessionBegin, "Africa/Abidjan")
-        .tz("America/New_York")
-        .month() + 1;
-
-    let deviceYear = moment
-      .tz(deviceSessionBegin, "Africa/Abidjan")
-      .tz("America/New_York")
-      .year();
-
+  useEffect(() => {
     let now = moment();
     let todayDay = now.date();
     let todayMonth = now.month() + 1;
     let todayYear = now.year();
+    let today = false;
 
-    if (todayYear === deviceYear && todayMonth === deviceMonth) {
-      // active this month
-      if (todayDay === deviceDay) {
-        // active today
-        dateStatus = "Active Today";
-        today = true;
+    if (device.lastsession) {
+      // guess user's timezone
+      let tz = moment.tz.guess();
+
+      let deviceSessionBegin = device.links.cellular[0].last_connect_time;
+      // get device session begin as user local time
+      let deviceDateLocal = moment
+        .tz(deviceSessionBegin, "Africa/Abidjan")
+        .tz(tz);
+
+      setDateStringFormatted(deviceDateLocal.format("MM/DD/YYYY hh:mm A"));
+
+      let deviceDateFormatted = deviceDateLocal.fromNow();
+
+      let dateDiff = moment.duration(moment().diff(deviceDateLocal)).asHours();
+      // console.log(dateDiff);
+
+      setDeviceDateStr(deviceDateFormatted.toString());
+      // let deviceDay = moment
+      //   .tz(deviceSessionBegin, "Africa/Abidjan")
+      //   .tz(tz)
+      //   .date();
+
+      // let deviceMonth =
+      //   moment
+      //     .tz(deviceSessionBegin, "Africa/Abidjan")
+      //     .tz(tz)
+      //     .month() + 1;
+
+      // let deviceYear = moment
+      //   .tz(deviceSessionBegin, "Africa/Abidjan")
+      //   .tz(tz)
+      //   .year();
+
+      // if (todayYear === deviceYear && todayMonth === deviceMonth) {
+      //   // active this month
+      //   if (todayDay === deviceDay) {
+      //     // active today
+      //     dateStatus = "Active Today";
+      //     today = true;
+      //   } else {
+      //     dateStatus = "Active this month";
+      //   }
+      // } else {
+      //   // not active this month
+      //   dateStatus = "Not active this month";
+      // }
+      if (Math.round(dateDiff) <= 1) {
+        setDateStatus("Active within last hour");
+        setDeviceBGColor(deviceColors.withinLastHour);
+      } else if (dateDiff > 1 && dateDiff <= 4) {
+        setDateStatus("Active within last 4 hours");
+        setDeviceBGColor(deviceColors.lastFourHours);
+      } else if (dateDiff > 4 && dateDiff <= 36) {
+        setDateStatus("Active within last 36 hours");
+        setDeviceBGColor(deviceColors.lastThirtySixHours);
+      } else if (dateDiff > 36 && dateDiff <= 730) {
+        setDateStatus("Active last month");
+        setDeviceBGColor(deviceColors.lastMonth);
       } else {
-        dateStatus = "Active this month";
+        setDateStatus("Last active " + deviceDateLocal.format("MM/DD/Y"));
+        setDeviceBGColor(deviceColors.default);
       }
-    } else {
-      // not active this month
-      dateStatus = "Not active this month";
     }
-  }
+  }, []);
 
   return shouldRedirect ? (
     <Redirect
@@ -77,42 +113,52 @@ const DataParser = props => {
       }}
     />
   ) : (
-    <CardActionArea
-      className={
-        !device.lastsession
-          ? "deviceActionArea deadDevice"
-          : "deviceActionArea aliveDevice"
-      }
-      style={{
-        backgroundColor: device.lastsession
-          ? today
-            ? activeDeviceBG
-            : ""
-          : deadDeviceBG,
-        color: device.lastsession
-          ? today
-            ? activeDeviceCol
-            : ""
-          : deadDeviceCol
-      }}
-      disabled={!device.lastsession ? true : false}
-      onClick={() => {
-        setDeviceState(device.id);
-      }}
-    >
-      <p style={{ fontWeight: "bold" }}>{device.name}</p>
-      {device.lastsession ? (
-        <Fragment>
-          <p>Last Session: {deviceDateStr}</p>
-          <p style={{ fontWeight: "bold" }}>{dateStatus}</p>
-        </Fragment>
-      ) : (
-        <Fragment>
-          <p style={{ fontWeight: "bold" }}>Last Session: Not Available</p>
-          <p style={{ fontWeight: "bold" }}>Device Dead</p>
-        </Fragment>
-      )}
-    </CardActionArea>
+    <Tooltip title={dateStringFormatted} placeholder="top-right">
+      <CardActionArea
+        className={
+          !device.lastsession
+            ? "deviceActionArea deadDevice"
+            : "deviceActionArea aliveDevice"
+        }
+        style={
+          deviceBGColor === "white"
+            ? { backgroundColor: "white", color: "black" }
+            : {
+                backgroundColor: deviceBGColor
+              }
+        }
+        // style={{
+        //   backgroundColor: device.lastsession
+        //     ? today
+        //       ? activeDeviceBG
+        //       : ""
+        //     : deadDeviceBG,
+        //   color: device.lastsession
+        //     ? today
+        //       ? activeDeviceCol
+        //       : ""
+        //     : deadDeviceCol
+        // }}
+        // hidden={!device.lastsession ? true : false}
+        disabled={!device.lastsession ? true : false}
+        onClick={() => {
+          setDeviceState(device.id);
+        }}
+      >
+        <p style={{ fontWeight: "bold" }}>{device.name}</p>
+        {device.lastsession ? (
+          <Fragment>
+            <p>Last Session: {deviceDateStr}</p>
+            <p style={{ fontWeight: "bold" }}>{dateStatus}</p>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <p style={{ fontWeight: "bold" }}>Last Session: Not Available</p>
+            <p style={{ fontWeight: "bold" }}>Device Dead</p>
+          </Fragment>
+        )}
+      </CardActionArea>
+    </Tooltip>
   );
 };
 
