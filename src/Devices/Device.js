@@ -32,7 +32,7 @@ import {
   Typography,
   TableBody,
   withStyles,
-  TablePagination
+  TablePagination,
 } from "@material-ui/core";
 import {
   Create,
@@ -46,7 +46,7 @@ import {
   SignalCellularConnectedNoInternet0Bar,
   FastForward,
   Label,
-  ArrowBackIosOutlined
+  ArrowBackIosOutlined,
 } from "@material-ui/icons";
 import moment from "moment-timezone";
 import { Link } from "react-router-dom";
@@ -56,56 +56,56 @@ delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
   iconUrl: require("leaflet/dist/images/marker-icon.png"),
-  shadowUrl: require("leaflet/dist/images/marker-shadow.png")
+  shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
 });
 
-const StyledTableCell = withStyles(theme => ({
+const StyledTableCell = withStyles((theme) => ({
   head: {
     backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white
+    color: theme.palette.common.white,
   },
   body: {
-    fontSize: 14
-  }
+    fontSize: 14,
+  },
 }))(TableCell);
 
-const StyledTableRow = withStyles(theme => ({
+const StyledTableRow = withStyles((theme) => ({
   root: {
     "&:nth-of-type(odd)": {
-      backgroundColor: theme.palette.action.hover
-    }
-  }
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
 }))(TableRow);
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "space-around",
     overflow: "hidden",
-    backgroundColor: theme.palette.background.paper
+    backgroundColor: theme.palette.background.paper,
   },
   gridList: {
     width: "100%",
     height: 300,
     // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
-    transform: "translateZ(0)"
+    transform: "translateZ(0)",
   },
   titleBar: {
     background:
       "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, " +
-      "rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)"
+      "rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)",
   },
   icon: {
-    color: "white"
+    color: "white",
   },
   paper: {
     // padding: theme.spacing(2),
     textAlign: "center",
-    color: theme.palette.text.secondary
-  }
+    color: theme.palette.text.secondary,
+  },
 }));
-const DeviceComponent = props => {
+const DeviceComponent = (props) => {
   const classes = useStyles();
   // console.log(props.location.state);
   const [deviceData, setDeviceData] = useState({ name: "" });
@@ -124,7 +124,7 @@ const DeviceComponent = props => {
           props.match.params.deviceId
         }/?withlocation=true`,
         APICreds()
-      ).then(response => {
+      ).then((response) => {
         if (response.data.success) {
           setDeviceData(response.data.data);
           setLatLng({
@@ -132,8 +132,8 @@ const DeviceComponent = props => {
             // data: [35.764221, -78.69976]
             data: [
               response.data.data.lastsession.latitude,
-              response.data.data.lastsession.longitude
-            ]
+              response.data.data.lastsession.longitude,
+            ],
           });
         } else {
         }
@@ -148,18 +148,18 @@ const DeviceComponent = props => {
         data: qs.stringify({
           url: `${APIURL()}/api/1/csr/rdm?deviceid=${
             props.location.state.id
-          }&withlocation=true`
+          }&withlocation=true`,
         }),
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded;charset=utf-8"
+          "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
         },
         auth: {
           username: apiUsername,
-          password: apiPassword
+          password: apiPassword,
         },
-        responseType: "json"
+        responseType: "json",
       })
-        .then(response => {
+        .then((response) => {
           // console.log("most recent data", response);
           setMostRecentData(response.data.data);
         })
@@ -168,8 +168,8 @@ const DeviceComponent = props => {
             flag: true,
             data: [
               props.location.state.lastsession.latitude,
-              props.location.state.lastsession.longitude
-            ]
+              props.location.state.lastsession.longitude,
+            ],
           });
         });
     }
@@ -229,7 +229,7 @@ const DeviceComponent = props => {
           <GridListTileBar
             title={deviceData.name}
             style={{
-              zIndex: "999"
+              zIndex: "999",
             }}
             titlePosition="top"
             actionIcon={
@@ -309,9 +309,11 @@ const DeviceComponent = props => {
   };
 
   const getDataFromJSON = (jsonData, type) => {
+    // if (type == "timestamp") console.log(jsonData.received);
     // console.log(jsonData);
 
     jsonData = JSON.parse(jsonData);
+    // if (type == "timestamp") console.log(jsonData.received);
     let dataStringParsed = atob(jsonData.data);
     switch (type) {
       case "dataString":
@@ -327,7 +329,7 @@ const DeviceComponent = props => {
         return "";
     }
   };
-  const renderTags = chipsArray => {
+  const renderTags = (chipsArray) => {
     // console.log(mostRecentData);
     // let allData = JSON.parse(mostRecentData[index]);
     let chips = chipsArray;
@@ -350,7 +352,7 @@ const DeviceComponent = props => {
           style={{
             flexWrap: "nowrap",
             transform: "translateZ(0)",
-            height: "auto"
+            height: "auto",
           }}
         >
           <GridListTile style={{ height: "auto" }}>
@@ -373,63 +375,7 @@ const DeviceComponent = props => {
 
                   {/* <Divider /> */}
 
-                  <ListItem alignItems="flex-start" key="imei">
-                    <ListItemIcon>
-                      <SimCard />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={"IMEI"}
-                      secondary={deviceData.imei}
-                    />
-                  </ListItem>
                   {/* <Divider /> */}
-                  <ListItem alignItems="flex-start" key="phone">
-                    <ListItemIcon>
-                      <Phone />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={"Phone Number"}
-                      secondary={
-                        deviceData.phonenumber ? deviceData.phonenumber : "None"
-                      }
-                    />
-                  </ListItem>
-                </List>
-              </CardContent>
-            </Card>
-          </GridListTile>
-          <GridListTile style={{ height: "auto" }}>
-            <Card>
-              {/* <CardHeader title="General Info"></CardHeader> */}
-              <CardContent>
-                <List>
-                  <ListItem alignItems="flex-start" key="orgid">
-                    <ListItemIcon>
-                      <Business />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={"ORG ID"}
-                      secondary={deviceData.orgid}
-                    />
-                  </ListItem>
-                  <ListItem alignItems="flex-start" key="imeisv">
-                    <ListItemIcon>
-                      <SimCardTwoTone />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={"IMEI SV"}
-                      secondary={deviceData.imei_sv}
-                    />
-                  </ListItem>
-                  <ListItem alignItems="flex-start" key="type">
-                    <ListItemIcon>
-                      <Category />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={"Type"}
-                      secondary={deviceData.type}
-                    />
-                  </ListItem>
                 </List>
               </CardContent>
             </Card>
@@ -448,6 +394,15 @@ const DeviceComponent = props => {
                       secondary={deviceData.links.cellular[0].last_network_used}
                     />
                   </ListItem>
+                </List>
+              </CardContent>
+            </Card>
+          </GridListTile>
+          <GridListTile style={{ height: "auto" }}>
+            <Card>
+              {/* <CardHeader title="General Info"></CardHeader> */}
+              <CardContent>
+                <List>
                   <ListItem alignItems="flex-start" key="lastconnect">
                     <ListItemIcon>
                       <Router />
@@ -461,19 +416,6 @@ const DeviceComponent = props => {
                         )
                         .tz(userTimezone)
                         .format("MM/DD/YYYY hh:mm A")
-                        .toString()}
-                    />
-                  </ListItem>
-                  <ListItem alignItems="flex-start" key="expires">
-                    <ListItemIcon>
-                      <SignalCellularConnectedNoInternet0Bar />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={"Expires"}
-                      secondary={moment
-                        .tz(deviceData.links.cellular[0].whenexpires, "UTC")
-                        .tz(userTimezone)
-                        .format("MM/DD/YYYY")
                         .toString()}
                     />
                   </ListItem>
