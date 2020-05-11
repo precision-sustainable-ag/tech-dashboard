@@ -381,6 +381,10 @@ const NodeSensorVisual = (props) => {
         .then((nodeArr) => {
           setVoltageChartOptions({
             ...volatageChartOptions,
+            chart: {
+              type: "scatter",
+              zoomType: "xy",
+            },
             series: [
               {
                 name: "Battery Voltage",

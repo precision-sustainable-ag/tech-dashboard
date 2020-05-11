@@ -51,12 +51,17 @@ const getNodeSerialNo = async (gatewayNo) => {
 };
 
 const WaterSensorByGateway = (props) => {
-  //   console.log(props);
+  console.log(props);
   const classes = useStyles();
-  const gatewayNo = props.location.state || props.match.params.gatewayId;
+  const gatewayNo =
+    props.location.state.gatewaysno || props.match.params.gatewayId;
 
-  const [bareNodeSerialNo, setBareNodeSerialNo] = useState([]);
-  const [coverNodeSerialNo, setCoverNodeSerialNo] = useState([]);
+  const [bareNodeSerialNo, setBareNodeSerialNo] = useState([
+    props.location.state.bareNodeSerialNo || "",
+  ]);
+  const [coverNodeSerialNo, setCoverNodeSerialNo] = useState([
+    props.location.state.bareNodeSerialNo || "",
+  ]);
   const [loading, setLoading] = useState(false);
   const [activeChip, setActiveChip] = useState("");
 

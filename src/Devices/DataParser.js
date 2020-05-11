@@ -17,10 +17,10 @@ const deviceColors = {
   lastFourHours: "#28a745",
   lastThirtySixHours: "#fdd835",
   lastMonth: "#bdbdbd",
-  default: "white"
+  default: "white",
 };
 
-const DataParser = props => {
+const DataParser = (props) => {
   const [deviceId, setDeviceId] = useState(0);
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const [deviceBGColor, setDeviceBGColor] = useState("white");
@@ -29,7 +29,7 @@ const DataParser = props => {
   const [dateStringFormatted, setDateStringFormatted] = useState("");
   let device = props.deviceData;
   // console.log("deviceData", props.deviceData);
-  const setDeviceState = deviceId => {
+  const setDeviceState = (deviceId) => {
     setDeviceId(deviceId);
     setShouldRedirect(true);
   };
@@ -111,7 +111,7 @@ const DataParser = props => {
     <Redirect
       to={{
         pathname: `/devices/${deviceId}`,
-        state: device
+        state: device,
       }}
     />
   ) : (
@@ -125,8 +125,13 @@ const DataParser = props => {
         style={
           deviceBGColor === "white"
             ? { backgroundColor: "white", color: "black" }
+            : deviceBGColor === "#fdd835"
+            ? {
+                backgroundColor: deviceBGColor,
+                color: "black",
+              }
             : {
-                backgroundColor: deviceBGColor
+                backgroundColor: deviceBGColor,
               }
         }
         disabled={!device.lastsession ? true : false}

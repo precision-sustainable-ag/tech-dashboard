@@ -13,7 +13,7 @@ import {
   ThemeProvider,
   Paper,
   Typography,
-  Container
+  Container,
 } from "@material-ui/core";
 import TableComponent from "./Table/Table";
 import { Switch, Route } from "react-router-dom";
@@ -34,15 +34,15 @@ import WaterSensorData from "./Devices/WaterSensorData/WaterSensorData";
 import WaterSensorByGateway from "./Devices/WaterSensorData/WaterSensorByGateway";
 
 const drawerWidth = 240;
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3)
+    padding: theme.spacing(3),
   },
-  toolbar: theme.mixins.toolbar
+  toolbar: theme.mixins.toolbar,
 }));
 
 function App() {
@@ -55,13 +55,13 @@ function App() {
       secondary: { main: "#4d4d4d" },
       type: window.localStorage.getItem("theme")
         ? window.localStorage.getItem("theme")
-        : "light"
+        : "light",
     },
 
     typography: {
       useNextVariants: true,
-      fontFamily: "'Nunito', sans-serif"
-    }
+      fontFamily: "'Nunito', sans-serif",
+    },
   });
 
   const muiTheme = createMuiTheme(theme);
@@ -72,8 +72,8 @@ function App() {
       ...theme,
       palette: {
         ...theme.palette,
-        type: newPaletteType
-      }
+        type: newPaletteType,
+      },
     });
   };
 
@@ -106,7 +106,7 @@ function App() {
       <ThemeProvider theme={muiTheme}>
         <Paper
           style={{
-            height: "100vh"
+            height: "100vh",
           }}
         >
           <Box height={"40vh"} />
@@ -132,7 +132,7 @@ function App() {
           <Switch>
             {/* <Route path="/" component={Login} exact /> */}
             <Route
-              render={props => (
+              render={(props) => (
                 <LandingComponent
                   {...props}
                   isDarkTheme={theme.palette.type === "light" ? false : true}
@@ -143,7 +143,7 @@ function App() {
             />
             <PrivateRoute
               path="/table"
-              render={props => <TableComponent {...props} />}
+              render={(props) => <TableComponent {...props} />}
             />
             {/* <PrivateRoute path="/table" component={TableComponent} /> */}
             <PrivateRoute path="/issues" component={ReposComponent} exact />
@@ -162,7 +162,8 @@ function App() {
             />
             <PrivateRoute
               path={`/water-sensors/:gatewayId`}
-              component={WaterSensorByGateway}
+              // component={WaterSensorByGateway}
+              render={(props) => <WaterSensorByGateway {...props} />}
             />
           </Switch>
           {/* </Paper> */}
