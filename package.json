@@ -27,7 +27,7 @@
     "react-leaflet": "^2.6.3",
     "react-loading": "^2.0.3",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.0",
+    "react-scripts": "3.4.1",
     "typeface-roboto": "0.0.75"
   },
   "scripts": {
