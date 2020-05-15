@@ -372,6 +372,17 @@ export default function Header(props) {
             </ListItemIcon>
             <ListItemText primary={"Issues"} />
           </ListItem>
+          <ListItem
+            button
+            key={"Water Sensors"}
+            component={Link}
+            to="/water-sensors"
+          >
+            <ListItemIcon>
+              <QuestionAnswer />
+            </ListItemIcon>
+            <ListItemText primary={"Water Sensors"} />
+          </ListItem>
 
           <ListItem button key="Devices" component={Link} to="/devices">
             <ListItemIcon>

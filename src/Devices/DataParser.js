@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import { red, grey, green } from "@material-ui/core/colors";
 import { NavLink, Redirect } from "react-router-dom";
 import { CardActionArea, Tooltip } from "@material-ui/core";
+
 import moment from "moment-timezone";
 
 const deadDeviceBG = red[300];
@@ -16,10 +17,10 @@ const deviceColors = {
   lastFourHours: "#28a745",
   lastThirtySixHours: "#fdd835",
   lastMonth: "#bdbdbd",
-  default: "white"
+  default: "white",
 };
 
-const DataParser = props => {
+const DataParser = (props) => {
   const [deviceId, setDeviceId] = useState(0);
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const [deviceBGColor, setDeviceBGColor] = useState("white");
@@ -27,7 +28,8 @@ const DataParser = props => {
   const [dateStatus, setDateStatus] = useState("");
   const [dateStringFormatted, setDateStringFormatted] = useState("");
   let device = props.deviceData;
-  const setDeviceState = deviceId => {
+  // console.log("deviceData", props.deviceData);
+  const setDeviceState = (deviceId) => {
     setDeviceId(deviceId);
     setShouldRedirect(true);
   };
@@ -109,7 +111,7 @@ const DataParser = props => {
     <Redirect
       to={{
         pathname: `/devices/${deviceId}`,
-        state: device
+        state: device,
       }}
     />
   ) : (
@@ -123,23 +125,15 @@ const DataParser = props => {
         style={
           deviceBGColor === "white"
             ? { backgroundColor: "white", color: "black" }
+            : deviceBGColor === "#fdd835"
+            ? {
+                backgroundColor: deviceBGColor,
+                color: "black",
+              }
             : {
-                backgroundColor: deviceBGColor
+                backgroundColor: deviceBGColor,
               }
         }
-        // style={{
-        //   backgroundColor: device.lastsession
-        //     ? today
-        //       ? activeDeviceBG
-        //       : ""
-        //     : deadDeviceBG,
-        //   color: device.lastsession
-        //     ? today
-        //       ? activeDeviceCol
-        //       : ""
-        //     : deadDeviceCol
-        // }}
-        // hidden={!device.lastsession ? true : false}
         disabled={!device.lastsession ? true : false}
         onClick={() => {
           setDeviceState(device.id);
