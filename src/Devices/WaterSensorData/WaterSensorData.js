@@ -9,7 +9,7 @@ import {
   Chip,
 } from "@material-ui/core";
 import Axios from "axios";
-import { apiUsername, apiPassword } from "../../utils/api_secret";
+import { apiUsername, apiPassword, apiURL } from "../../utils/api_secret";
 import Skeleton from "@material-ui/lab/Skeleton";
 import { Redirect } from "react-router-dom";
 import WaterSensorDataParser from "./WaterSensorDataParser";
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 
 const getWaterSensorInstallDataByYear = async (year) => {
   return await Axios({
-    url: `https://techdashboard.tk/api/retrieve/nodes/by/year/${year}`,
+    url: `${apiURL}/api/retrieve/nodes/by/year/${year}`,
     method: "get",
     auth: {
       username: apiUsername,
@@ -41,7 +41,7 @@ const getWaterSensorInstallDataByYear = async (year) => {
 
 const getUniqueYears = async () => {
   return await Axios({
-    url: `https://techdashboard.tk/api/retrieve/nodes/years`,
+    url: `${apiURL}/api/retrieve/nodes/years`,
     method: "get",
     auth: {
       username: apiUsername,

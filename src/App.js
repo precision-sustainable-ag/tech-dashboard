@@ -32,6 +32,7 @@ import Profile from "./Profile/Profile";
 import DeviceEnroll from "./Devices/Device-Enroll/DeviceEnroll";
 import WaterSensorData from "./Devices/WaterSensorData/WaterSensorData";
 import WaterSensorByGateway from "./Devices/WaterSensorData/WaterSensorByGateway";
+import SiteEnrollment from "./SiteEnrollment/SiteEnrollment";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -144,6 +145,10 @@ function App() {
             <PrivateRoute
               path="/table"
               render={(props) => <TableComponent {...props} />}
+            />
+            <PrivateRoute
+              path="/site-enroll"
+              render={(props) => <SiteEnrollment {...props} />}
             />
             {/* <PrivateRoute path="/table" component={TableComponent} /> */}
             <PrivateRoute path="/issues" component={ReposComponent} exact />

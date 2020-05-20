@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Axios from "axios";
-import { apiUsername, apiPassword } from "../../../utils/api_secret";
+import { apiUsername, apiPassword, apiURL } from "../../../utils/api_secret";
 import Highcharts from "highcharts";
 
 import HighchartsReact from "highcharts-react-official";
@@ -12,72 +12,72 @@ require("highcharts/modules/exporting")(Highcharts);
 const getGatewayVisialData = async (gatewayNo, source) => {
   //   try {
   return await Axios({
-    url: `https://techdashboard.tk/api/retrieve/table/water_gateway_data/by/serialno/${gatewayNo}`,
+    url: `${apiURL}/api/retrieve/table/water_gateway_data/by/serialno/${gatewayNo}`,
     method: "get",
     auth: {
       username: apiUsername,
-      password: apiPassword
-    }
+      password: apiPassword,
+    },
     // cancelToken: source
   });
   //   } catch (error) {}
 };
 
-const GatewayVisual = props => {
+const GatewayVisual = (props) => {
   const gatewayNo = props.gatewayNo;
   const [gatewayData, setGatewayData] = useState({});
   const [loading, setLoading] = useState(false);
   const [volatageChartOptions, setVoltageChartOptions] = useState({
     title: {
-      text: "Gateway Voltage"
+      text: "Gateway Voltage",
     },
     xAxis: {
-      type: "datetime"
+      type: "datetime",
     },
     yAxis: {
       title: {
-        text: "Volage"
-      }
+        text: "Volage",
+      },
     },
     legend: {
       layout: "vertical",
       align: "right",
       verticalAlign: "middle",
-      borderWidth: 0
+      borderWidth: 0,
     },
     series: [
       {
         name: "Battery Voltage",
-        data: []
-      }
-    ]
+        data: [],
+      },
+    ],
   });
   const [currentChartOptions, setCurrentChartOptions] = useState({
     title: {
-      text: "Gateway Solar Current"
+      text: "Gateway Solar Current",
     },
     xAxis: {
-      type: "datetime"
+      type: "datetime",
     },
     yAxis: {
       title: {
-        text: "Current"
-      }
+        text: "Current",
+      },
     },
     legend: {
       layout: "vertical",
       align: "right",
       verticalAlign: "middle",
-      borderWidth: 0
+      borderWidth: 0,
     },
     series: [
       {
         name: "Solar Current",
-        data: []
-      }
-    ]
+        data: [],
+      },
+    ],
   });
-  const parseGatewayData = gatewayData => {
+  const parseGatewayData = (gatewayData) => {
     // console.log("Gatewat Data", gatewayData);
     // let chartObjectFormat = {};
     let gatewayBatteryVoltage = [];
@@ -89,15 +89,15 @@ const GatewayVisual = props => {
       //   console.log("time", time);
       gatewayBatteryVoltage.push([
         time,
-        parseFloat(gatewayData[i].gw_batt_voltage / 1000)
+        parseFloat(gatewayData[i].gw_batt_voltage / 1000),
       ]);
       gatewaySolarCurrent.push([
         time,
-        parseFloat(gatewayData[i].gw_solar_current)
+        parseFloat(gatewayData[i].gw_solar_current),
       ]);
       gatewaySolarVoltage.push([
         time,
-        parseFloat(gatewayData[i].gw_solar_voltage / 1000)
+        parseFloat(gatewayData[i].gw_solar_voltage / 1000),
       ]);
     }
     return [gatewayBatteryVoltage, gatewaySolarCurrent, gatewaySolarVoltage];
@@ -111,19 +111,19 @@ const GatewayVisual = props => {
     setLoading(true);
     let source = Axios.CancelToken.source();
     getGatewayVisialData(gatewayNo, source)
-      .then(gatewayDataObject => {
+      .then((gatewayDataObject) => {
         // console.log(gatewayDataObject);
         let batteryVoltageArray = parseGatewayData(gatewayDataObject.data.data);
 
         return batteryVoltageArray;
       })
-      .then(bvArr => {
+      .then((bvArr) => {
         setVoltageChartOptions({
           ...volatageChartOptions,
           series: [
             {
               name: "Battery Voltage",
-              data: bvArr[0]
+              data: bvArr[0],
             },
             // {
             //   name: "Solar Current",
@@ -131,18 +131,18 @@ const GatewayVisual = props => {
             // },
             {
               name: "Solar Voltage",
-              data: bvArr[2]
-            }
-          ]
+              data: bvArr[2],
+            },
+          ],
         });
         setCurrentChartOptions({
           ...currentChartOptions,
           series: [
             {
               name: "Solar Current",
-              data: bvArr[1]
-            }
-          ]
+              data: bvArr[1],
+            },
+          ],
         });
       })
       .then(() => {
@@ -155,7 +155,7 @@ const GatewayVisual = props => {
     };
   }, [
     volatageChartOptions.series[0].data.length,
-    currentChartOptions.series[0].data.length
+    currentChartOptions.series[0].data.length,
   ]);
 
   return !loading ? (

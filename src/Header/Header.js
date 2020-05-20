@@ -19,7 +19,7 @@ import {
   Typography,
   Button,
   Menu,
-  MenuItem
+  MenuItem,
 } from "@material-ui/core";
 
 import { Link } from "react-router-dom";
@@ -36,7 +36,7 @@ import {
   BrightnessHigh,
   DragIndicatorSharp,
   AddLocation,
-  BrightnessLow
+  BrightnessLow,
 } from "@material-ui/icons";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 import Axios from "axios";
@@ -45,64 +45,64 @@ import { Context } from "../Store/Store";
 const drawerWidth = 240;
 const qs = require("qs");
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
-    flexGrow: 1
+    flexGrow: 1,
   },
   title: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   appBar: {
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    })
+      duration: theme.transitions.duration.leavingScreen,
+    }),
   },
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    })
+      duration: theme.transitions.duration.enteringScreen,
+    }),
   },
   menuButton: {
-    marginRight: theme.spacing(2)
+    marginRight: theme.spacing(2),
   },
   hide: {
-    display: "none"
+    display: "none",
   },
   drawer: {
     width: drawerWidth,
-    flexShrink: 0
+    flexShrink: 0,
   },
   drawerPaper: {
-    width: drawerWidth
+    width: drawerWidth,
   },
   drawerHeader: {
     display: "flex",
     alignItems: "center",
     padding: theme.spacing(0, 1),
     ...theme.mixins.toolbar,
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
+      duration: theme.transitions.duration.leavingScreen,
     }),
-    marginLeft: -drawerWidth
+    marginLeft: -drawerWidth,
   },
   contentShift: {
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
+      duration: theme.transitions.duration.enteringScreen,
     }),
-    marginLeft: 0
-  }
+    marginLeft: 0,
+  },
 }));
 
 export default function Header(props) {
@@ -123,7 +123,7 @@ export default function Header(props) {
     setOpen(false);
   };
 
-  const handleMenu = event => {
+  const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleProfileMenuClose = () => {
@@ -135,7 +135,7 @@ export default function Header(props) {
     props.setDarkTheme();
   };
 
-  const addUserToDatabase = async dataString => {
+  const addUserToDatabase = async (dataString) => {
     try {
       await Axios({
         method: "POST",
@@ -143,20 +143,20 @@ export default function Header(props) {
         data: dataString,
         auth: {
           username: apiUsername,
-          password: apiPassword
+          password: apiPassword,
         },
         headers: {
-          "content-type": "application/x-www-form-urlencoded;charset=utf-8"
-        }
-      }).then(response => {
+          "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+        },
+      }).then((response) => {
         console.log(response.data);
         if (response.data.return) {
           // user added
           dispatch({
             type: "UPDATE_ROLE",
             data: {
-              userRole: "default"
-            }
+              userRole: "default",
+            },
           });
         }
       });
@@ -164,19 +164,19 @@ export default function Header(props) {
       console.error(e);
     }
   };
-  const fetchRole = async user => {
+  const fetchRole = async (user) => {
     // console.log(apiPassword);
     await Axios.get(`${apiURL}/api/users/${user.email}`, {
       auth: {
         username: apiUsername,
-        password: apiPassword
-      }
-    }).then(response => {
+        password: apiPassword,
+      },
+    }).then((response) => {
       let data = response.data;
       if (data.data === null) {
         //  user does not exist.. add record with default role
         let obj = {
-          email: user.email
+          email: user.email,
         };
 
         addUserToDatabase(qs.stringify(obj));
@@ -185,14 +185,14 @@ export default function Header(props) {
         dispatch({
           type: "UPDATE_ROLE",
           data: {
-            userRole: data.data.role
-          }
+            userRole: data.data.role,
+          },
         });
         dispatch({
           type: "UPDATE_USER_INFO",
           data: {
-            userInfo: data.data
-          }
+            userInfo: data.data,
+          },
         });
         //update user details to state
       }
@@ -280,7 +280,7 @@ export default function Header(props) {
       <AppBar
         position="fixed"
         className={clsx(classes.appBar, {
-          [classes.appBarShift]: open
+          [classes.appBarShift]: open,
         })}
         color="primary"
       >
@@ -342,7 +342,7 @@ export default function Header(props) {
         anchor="left"
         open={open}
         classes={{
-          paper: classes.drawerPaper
+          paper: classes.drawerPaper,
         }}
       >
         <div className={classes.drawerHeader}>
@@ -359,11 +359,16 @@ export default function Header(props) {
             </ListItemIcon>
             <ListItemText primary={"Quick Links"} />
           </ListItem>
-          <ListItem button key={"All Data"} component={Link} to="/table">
+          <ListItem
+            button
+            key={"Site Enrollment"}
+            component={Link}
+            to="/site-enroll"
+          >
             <ListItemIcon>
               <ViewList />
             </ListItemIcon>
-            <ListItemText primary={"All Data"} />
+            <ListItemText primary={"Site Enrollment"} />
           </ListItem>
 
           <ListItem button key={"Issues"} component={Link} to="/issues">

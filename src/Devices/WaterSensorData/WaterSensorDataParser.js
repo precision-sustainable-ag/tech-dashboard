@@ -2,7 +2,7 @@ import React, { useEffect, Fragment } from "react";
 import { Grid, Paper, Box, Typography } from "@material-ui/core";
 import { Redirect } from "react-router-dom";
 import Axios from "axios";
-import { apiUsername, apiPassword } from "../../utils/api_secret";
+import { apiUsername, apiPassword, apiURL } from "../../utils/api_secret";
 
 const WaterSensorDataParser = (props) => {
   let gatewaysno = props.gatewaysno;
@@ -14,7 +14,7 @@ const WaterSensorDataParser = (props) => {
 
   const getFarmCode = async (gatewaySno) => {
     await Axios({
-      url: `https://techdashboard.tk/api/retrieve/nodes/by/gateway/${gatewaySno}`,
+      url: `${apiURL}/api/retrieve/nodes/by/gateway/${gatewaySno}`,
       method: "get",
       auth: {
         username: apiUsername,

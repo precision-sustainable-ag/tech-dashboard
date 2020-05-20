@@ -3,7 +3,8 @@ import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { Grid, Typography } from "@material-ui/core";
 import Axios from "axios";
-import { apiUsername, apiPassword } from "../../../utils/api_secret";
+import { apiUsername, apiPassword, apiURL } from "../../../utils/api_secret";
+import moment from "moment-timezone";
 
 // Load Highcharts modules
 require("highcharts/modules/exporting")(Highcharts);
@@ -17,7 +18,7 @@ const styles = {
 
 const fetchBareNodeData = async (nodeSerialNo) => {
   return await Axios({
-    url: `https://techdashboard.tk/api/retrieve/table/water_node_data/by/node/${nodeSerialNo}`,
+    url: `${apiURL}/api/retrieve/table/water_node_data/by/node/${nodeSerialNo}`,
     method: "get",
     auth: {
       username: apiUsername,
@@ -28,7 +29,7 @@ const fetchBareNodeData = async (nodeSerialNo) => {
 
 const fetchNodeSensorData = async (nodeSerialNo) => {
   return await Axios({
-    url: `https://techdashboard.tk/api/retrieve/table/water_sensor_data/by/node/${nodeSerialNo}`,
+    url: `${apiURL}/api/retrieve/table/water_sensor_data/by/node/${nodeSerialNo}`,
     method: "get",
     auth: {
       username: apiUsername,
@@ -287,7 +288,13 @@ const NodeSensorVisual = (props) => {
     let ecPoreWater = { a: [], b: [], c: [] };
 
     for (let i = 0; i < sensorData.length; i++) {
+      console.log(sensorData[0].timestamp);
       let time = new Date(sensorData[i].timestamp).getTime();
+      // doesn't work on safari
+      // let time = moment(
+      //   sensorData[i].timestamp,
+      //   "YYYY-MM-DD HH:mm:ss"
+      // ).toDate();
 
       if (
         sensorData[i].tdr_address === "A" ||
