@@ -1,9 +1,8 @@
 import isIP from "is-ip";
-import { hologramAPIKey } from "../utils/api_secret";
+import { hologramAPIKey, apiURL } from "../utils/api_secret";
 import { FlipRounded } from "@material-ui/icons";
 
-export const apiCorsUrl =
-  "https://techdashboard.tk/api/hologram/remote/devices";
+export const apiCorsUrl = `${apiURL}/api/hologram/remote/devices`;
 
 // export const apiCorsCreds = () => {
 //   const authKey = `psaadmin:${hologramAPIKey}`;
@@ -43,8 +42,8 @@ export const APICreds = () => {
   let options = {
     responseType: "json",
     headers: {
-      Authorization: `Basic ${authBase64}`
-    }
+      Authorization: `Basic ${authBase64}`,
+    },
   };
   return options;
 };

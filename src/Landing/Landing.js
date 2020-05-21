@@ -7,7 +7,7 @@ import {
   Card,
   CardActionArea,
   Box,
-  Button
+  Button,
 } from "@material-ui/core";
 
 const LandingComponent = () => {
@@ -23,9 +23,9 @@ const LandingComponent = () => {
 
           </Grid>
         </Grid> */}
-      <Button variant="outlined" href="/devices">
+      {/* <Button variant="outlined" href="/devices">
         Water Sensors
-      </Button>
+      </Button> */}
     </Box>
   );
 };

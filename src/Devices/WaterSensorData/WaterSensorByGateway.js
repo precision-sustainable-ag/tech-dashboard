@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Axios from "axios";
-import { apiUsername, apiPassword } from "../../utils/api_secret";
+import { apiUsername, apiPassword, apiURL } from "../../utils/api_secret";
 import { Link } from "react-router-dom";
 import {
   Grid,
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 const getNodeSerialNo = async (gatewayNo) => {
   return await Axios({
     method: "get",
-    url: `https://techdashboard.tk/api/retrieve/nodes/by/gateway/${gatewayNo}`,
+    url: `${apiURL}/api/retrieve/nodes/by/gateway/${gatewayNo}`,
     auth: {
       username: apiUsername,
       password: apiPassword,
