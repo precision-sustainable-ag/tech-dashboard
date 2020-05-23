@@ -199,26 +199,6 @@ function App() {
       </ThemeProvider>
     </div>
   );
-  // </CssBaseline) : "Not Logged In";
-
-  // return loading ? (
-  //   <div className={classes.root}>
-  //     <CssBaseline />
-  //     <ThemeProvider theme={muiTheme}>
-  //       <Paper
-  //         style={{
-  //           height: "100vh",
-  //         }}
-  //       >
-
-  //         <Box height={"40vh"} />
-  //         <Typography variant="h3" gutterBottom align="center">
-  //           Loading..
-  //         </Typography>
-  //       </Paper>
-  //     </ThemeProvider>
-  //   </div>
-  // ) : (
 }
 
 export default App;
