@@ -113,7 +113,13 @@ export default function Header(props) {
   const profileMenuOpen = Boolean(anchorEl);
   const [state, dispatch] = useContext(Context);
 
-  const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
+  const {
+    isAuthenticated,
+    loginWithRedirect,
+    logout,
+    user,
+    loading,
+  } = useAuth0();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -270,10 +276,14 @@ export default function Header(props) {
 
   useEffect(() => {
     // RenderRoleURL(user);
-    if (isAuthenticated) {
+    // if (isAuthenticated) {
+    //   fetchRole(user);
+    // }
+
+    if (user) {
       fetchRole(user);
     }
-  }, [isAuthenticated]);
+  }, [user]);
   return (
     <div className={classes.root}>
       {/* <CssBaseline /> */}

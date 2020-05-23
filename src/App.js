@@ -14,6 +14,7 @@ import {
   Paper,
   Typography,
   Container,
+  Button,
 } from "@material-ui/core";
 import TableComponent from "./Table/Table";
 import { Switch, Route } from "react-router-dom";
@@ -47,7 +48,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function App() {
-  const { loading } = useAuth0();
+  const {
+    loading,
+    isAuthenticated,
+    loginWithRedirect,
+    logout,
+    user,
+  } = useAuth0();
   const classes = useStyles();
 
   const [theme, setTheme] = useState({
@@ -101,24 +108,8 @@ function App() {
       // document.body.style.backgroundColor = "rgb(247, 249, 252)";
     }
   }, [theme]);
-  return loading ? (
-    <div className={classes.root}>
-      <CssBaseline />
-      <ThemeProvider theme={muiTheme}>
-        <Paper
-          style={{
-            height: "100vh",
-          }}
-        >
-          <Box height={"40vh"} />
-          <Typography variant="h3" gutterBottom align="center">
-            Loading..
-          </Typography>
-        </Paper>
-      </ThemeProvider>
-    </div>
-  ) : (
-    // <CssBaseline>
+
+  return isAuthenticated ? ( // <CssBaseline>
     <ThemeProvider theme={muiTheme}>
       <Container maxWidth={"xl"} className="mainContainer">
         <Header
@@ -176,8 +167,52 @@ function App() {
         {/* </Paper> */}
       </Container>
     </ThemeProvider>
-    // </CssBaseline>
+  ) : (
+    <div className={classes.root}>
+      <CssBaseline />
+      <ThemeProvider theme={muiTheme}>
+        <Paper
+          style={{
+            height: "100vh",
+          }}
+        >
+          <Box height={"40vh"} />
+          <Typography variant="h3" gutterBottom align="center">
+            Please Log In To Continue
+          </Typography>
+          <Typography variant="body1" gutterBottom align="center">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => loginWithRedirect()}
+            >
+              Log in
+            </Button>
+          </Typography>
+        </Paper>
+      </ThemeProvider>
+    </div>
   );
+  // </CssBaseline) : "Not Logged In";
+
+  // return loading ? (
+  //   <div className={classes.root}>
+  //     <CssBaseline />
+  //     <ThemeProvider theme={muiTheme}>
+  //       <Paper
+  //         style={{
+  //           height: "100vh",
+  //         }}
+  //       >
+
+  //         <Box height={"40vh"} />
+  //         <Typography variant="h3" gutterBottom align="center">
+  //           Loading..
+  //         </Typography>
+  //       </Paper>
+  //     </ThemeProvider>
+  //   </div>
+  // ) : (
 }
 
 export default App;
