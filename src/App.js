@@ -52,6 +52,7 @@ function App() {
     loading,
     isAuthenticated,
     loginWithRedirect,
+    loginWithPopup,
     logout,
     user,
   } = useAuth0();
@@ -184,7 +185,12 @@ function App() {
             <Button
               variant="contained"
               color="primary"
-              onClick={() => loginWithRedirect()}
+              onClick={() => {
+                let params = {
+                  redirect_uri: window.location.href,
+                };
+                loginWithPopup(params);
+              }}
             >
               Log in
             </Button>
