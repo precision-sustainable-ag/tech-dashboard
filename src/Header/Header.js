@@ -363,13 +363,20 @@ export default function Header(props) {
 
         <Divider />
         <List>
-          <ListItem button key={"Home"} component={Link} to="/">
+          <ListItem
+            onClick={setOpen(false)}
+            button
+            key={"Home"}
+            component={Link}
+            to="/"
+          >
             <ListItemIcon>
               <ViewList />
             </ListItemIcon>
             <ListItemText primary={"Quick Links"} />
           </ListItem>
           <ListItem
+            onClick={setOpen(false)}
             button
             key={"Site Enrollment"}
             component={Link}
@@ -381,13 +388,20 @@ export default function Header(props) {
             <ListItemText primary={"Site Enrollment"} />
           </ListItem>
 
-          <ListItem button key={"Issues"} component={Link} to="/issues">
+          <ListItem
+            onClick={setOpen(false)}
+            button
+            key={"Issues"}
+            component={Link}
+            to="/issues"
+          >
             <ListItemIcon>
               <QuestionAnswer />
             </ListItemIcon>
             <ListItemText primary={"Issues"} />
           </ListItem>
           <ListItem
+            onClick={setOpen(false)}
             button
             key={"Water Sensors"}
             component={Link}
@@ -399,13 +413,25 @@ export default function Header(props) {
             <ListItemText primary={"Water Sensors"} />
           </ListItem>
 
-          <ListItem button key="Devices" component={Link} to="/devices">
+          <ListItem
+            onClick={setOpen(false)}
+            button
+            key="Devices"
+            component={Link}
+            to="/devices"
+          >
             <ListItemIcon>
               <Radio />
             </ListItemIcon>
             <ListItemText primary="Devices" />
           </ListItem>
-          <ListItem button key="Forms" component={Link} to="/kobo-forms">
+          <ListItem
+            onClick={setOpen(false)}
+            button
+            key="Forms"
+            component={Link}
+            to="/kobo-forms"
+          >
             <ListItemIcon>
               <Storage />
             </ListItemIcon>
