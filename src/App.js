@@ -34,6 +34,7 @@ import DeviceEnroll from "./Devices/Device-Enroll/DeviceEnroll";
 import WaterSensorData from "./Devices/WaterSensorData/WaterSensorData";
 import WaterSensorByGateway from "./Devices/WaterSensorData/WaterSensorByGateway";
 import SiteEnrollment from "./SiteEnrollment/SiteEnrollment";
+import PageNotFound from "./PageNotFound";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -55,6 +56,7 @@ function App() {
     loginWithPopup,
     logout,
     user,
+    getTokenSilently,
   } = useAuth0();
   const classes = useStyles();
 
@@ -110,6 +112,16 @@ function App() {
     }
   }, [theme]);
 
+  const callApi = async () => {
+    const token = await getTokenSilently();
+    // future use of this would be for authentication via bearer token
+    // console.log(token);
+  };
+
+  useEffect(() => {
+    if (isAuthenticated) callApi();
+  }, [isAuthenticated]);
+
   return isAuthenticated ? ( // <CssBaseline>
     <ThemeProvider theme={muiTheme}>
       <Container maxWidth={"xl"} className="mainContainer">
@@ -162,6 +174,9 @@ function App() {
               // component={WaterSensorByGateway}
               render={(props) => <WaterSensorByGateway {...props} />}
             />
+            <Route path="*">
+              <PageNotFound />
+            </Route>
           </Switch>
           {/* </Paper> */}
         </main>
