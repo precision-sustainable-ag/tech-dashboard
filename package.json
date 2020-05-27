@@ -19,7 +19,7 @@
     "leaflet": "^1.6.0",
     "material-table": "^1.58.2",
     "moment": "^2.26.0",
-    "moment-timezone": "^0.5.28",
+    "moment-timezone": "^0.5.31",
     "qs": "^6.9.4",
     "react": "^16.13.1",
     "react-data-grid": "^7.0.0-canary.16",
