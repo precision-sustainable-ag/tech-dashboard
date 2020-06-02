@@ -113,13 +113,7 @@ export default function Header(props) {
   const profileMenuOpen = Boolean(anchorEl);
   const [state, dispatch] = useContext(Context);
 
-  const {
-    isAuthenticated,
-    loginWithRedirect,
-    logout,
-    user,
-    loading,
-  } = useAuth0();
+  const { logout, user, loginWithRedirect } = useAuth0();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -136,7 +130,6 @@ export default function Header(props) {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {};
   const toggleThemeDarkness = () => {
     props.setDarkTheme();
   };
@@ -283,7 +276,7 @@ export default function Header(props) {
     if (user) {
       fetchRole(user);
     }
-  }, [user]);
+  }, [props.isLoggedIn]);
   return (
     <div className={classes.root}>
       {/* <CssBaseline /> */}
@@ -310,14 +303,13 @@ export default function Header(props) {
           <IconButton color="inherit" onClick={toggleThemeDarkness}>
             {props.isDarkTheme ? <BrightnessLow /> : <BrightnessHigh />}
           </IconButton>
-          {!isAuthenticated && (
+          {!props.isLoggedIn && (
             <IconButton color="inherit" onClick={() => loginWithRedirect({})}>
               <Lock />
             </IconButton>
           )}
 
-          {/* {isAuthenticated && <Button onClick={() => logout()}>Log out</Button>} */}
-          {isAuthenticated && (
+          {props.isLoggedIn && (
             <div>
               <IconButton
                 aria-label="user profile"
@@ -364,7 +356,7 @@ export default function Header(props) {
         <Divider />
         <List>
           <ListItem
-            onClick={setOpen(false)}
+            onClick={() => setOpen(false)}
             button
             key={"Home"}
             component={Link}
@@ -376,7 +368,7 @@ export default function Header(props) {
             <ListItemText primary={"Quick Links"} />
           </ListItem>
           <ListItem
-            onClick={setOpen(false)}
+            onClick={() => setOpen(false)}
             button
             key={"Site Enrollment"}
             component={Link}
@@ -389,7 +381,7 @@ export default function Header(props) {
           </ListItem>
 
           <ListItem
-            onClick={setOpen(false)}
+            onClick={() => setOpen(false)}
             button
             key={"Issues"}
             component={Link}
@@ -401,7 +393,7 @@ export default function Header(props) {
             <ListItemText primary={"Issues"} />
           </ListItem>
           <ListItem
-            onClick={setOpen(false)}
+            onClick={() => setOpen(false)}
             button
             key={"Water Sensors"}
             component={Link}
@@ -414,7 +406,7 @@ export default function Header(props) {
           </ListItem>
 
           <ListItem
-            onClick={setOpen(false)}
+            onClick={() => setOpen(false)}
             button
             key="Devices"
             component={Link}
@@ -426,7 +418,7 @@ export default function Header(props) {
             <ListItemText primary="Devices" />
           </ListItem>
           <ListItem
-            onClick={setOpen(false)}
+            onClick={() => setOpen(false)}
             button
             key="Forms"
             component={Link}
@@ -438,6 +430,7 @@ export default function Header(props) {
             <ListItemText primary="Forms" />
           </ListItem>
           <ListItem
+            onClick={() => setOpen(false)}
             button
             key="Device Enroll"
             component={Link}
