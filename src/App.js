@@ -248,9 +248,7 @@ function App() {
               variant="contained"
               color="primary"
               onClick={() => {
-                let params = {
-                  redirect_uri: window.location.href,
-                };
+                let params = {};
                 loginWithPopup(params);
               }}
             >

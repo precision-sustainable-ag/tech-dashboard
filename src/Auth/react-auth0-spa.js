@@ -36,6 +36,7 @@ export const Auth0Provider = ({
 
       if (isAuthenticated) {
         const user = await auth0FromHook.getUser();
+
         setUser(user);
       }
 
@@ -47,7 +48,7 @@ export const Auth0Provider = ({
 
   const loginWithPopup = async (
     params = {
-      redirect_uri: "https://onfarmtech.org",
+      redirect_uri: window.location.origin,
     }
   ) => {
     setPopupOpen(true);

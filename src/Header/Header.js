@@ -276,7 +276,7 @@ export default function Header(props) {
     if (user) {
       fetchRole(user);
     }
-  }, [props.isLoggedIn]);
+  }, [user]);
   return (
     <div className={classes.root}>
       {/* <CssBaseline /> */}
@@ -304,7 +304,12 @@ export default function Header(props) {
             {props.isDarkTheme ? <BrightnessLow /> : <BrightnessHigh />}
           </IconButton>
           {!props.isLoggedIn && (
-            <IconButton color="inherit" onClick={() => loginWithRedirect({})}>
+            <IconButton
+              color="inherit"
+              onClick={() =>
+                loginWithRedirect({ redirect_uri: window.location.href })
+              }
+            >
               <Lock />
             </IconButton>
           )}
@@ -332,7 +337,11 @@ export default function Header(props) {
                 <MenuItem component={Link} to={"/profile"}>
                   Profile
                 </MenuItem>
-                <MenuItem onClick={() => logout()}>Log Out</MenuItem>
+                <MenuItem
+                  onClick={() => logout({ returnTo: window.location.origin })}
+                >
+                  Log Out
+                </MenuItem>
               </Menu>
             </div>
           )}
