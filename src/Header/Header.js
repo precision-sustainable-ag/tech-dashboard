@@ -113,7 +113,7 @@ export default function Header(props) {
   const profileMenuOpen = Boolean(anchorEl);
   const [state, dispatch] = useContext(Context);
 
-  const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
+  const { logout, user, loginWithRedirect } = useAuth0();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -130,7 +130,6 @@ export default function Header(props) {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {};
   const toggleThemeDarkness = () => {
     props.setDarkTheme();
   };
@@ -270,10 +269,14 @@ export default function Header(props) {
 
   useEffect(() => {
     // RenderRoleURL(user);
-    if (isAuthenticated) {
+    // if (isAuthenticated) {
+    //   fetchRole(user);
+    // }
+
+    if (user) {
       fetchRole(user);
     }
-  }, [isAuthenticated]);
+  }, [user]);
   return (
     <div className={classes.root}>
       {/* <CssBaseline /> */}
@@ -300,14 +303,18 @@ export default function Header(props) {
           <IconButton color="inherit" onClick={toggleThemeDarkness}>
             {props.isDarkTheme ? <BrightnessLow /> : <BrightnessHigh />}
           </IconButton>
-          {!isAuthenticated && (
-            <IconButton color="inherit" onClick={() => loginWithRedirect({})}>
+          {!props.isLoggedIn && (
+            <IconButton
+              color="inherit"
+              onClick={() =>
+                loginWithRedirect({ redirect_uri: window.location.href })
+              }
+            >
               <Lock />
             </IconButton>
           )}
 
-          {/* {isAuthenticated && <Button onClick={() => logout()}>Log out</Button>} */}
-          {isAuthenticated && (
+          {props.isLoggedIn && (
             <div>
               <IconButton
                 aria-label="user profile"
@@ -330,7 +337,11 @@ export default function Header(props) {
                 <MenuItem component={Link} to={"/profile"}>
                   Profile
                 </MenuItem>
-                <MenuItem onClick={() => logout()}>Log Out</MenuItem>
+                <MenuItem
+                  onClick={() => logout({ returnTo: window.location.origin })}
+                >
+                  Log Out
+                </MenuItem>
               </Menu>
             </div>
           )}
@@ -353,13 +364,20 @@ export default function Header(props) {
 
         <Divider />
         <List>
-          <ListItem button key={"Home"} component={Link} to="/">
+          <ListItem
+            onClick={() => setOpen(false)}
+            button
+            key={"Home"}
+            component={Link}
+            to="/"
+          >
             <ListItemIcon>
               <ViewList />
             </ListItemIcon>
             <ListItemText primary={"Quick Links"} />
           </ListItem>
           <ListItem
+            onClick={() => setOpen(false)}
             button
             key={"Site Enrollment"}
             component={Link}
@@ -371,13 +389,20 @@ export default function Header(props) {
             <ListItemText primary={"Site Enrollment"} />
           </ListItem>
 
-          <ListItem button key={"Issues"} component={Link} to="/issues">
+          <ListItem
+            onClick={() => setOpen(false)}
+            button
+            key={"Issues"}
+            component={Link}
+            to="/issues"
+          >
             <ListItemIcon>
               <QuestionAnswer />
             </ListItemIcon>
             <ListItemText primary={"Issues"} />
           </ListItem>
           <ListItem
+            onClick={() => setOpen(false)}
             button
             key={"Water Sensors"}
             component={Link}
@@ -389,19 +414,32 @@ export default function Header(props) {
             <ListItemText primary={"Water Sensors"} />
           </ListItem>
 
-          <ListItem button key="Devices" component={Link} to="/devices">
+          <ListItem
+            onClick={() => setOpen(false)}
+            button
+            key="Devices"
+            component={Link}
+            to="/devices"
+          >
             <ListItemIcon>
               <Radio />
             </ListItemIcon>
             <ListItemText primary="Devices" />
           </ListItem>
-          <ListItem button key="Forms" component={Link} to="/kobo-forms">
+          <ListItem
+            onClick={() => setOpen(false)}
+            button
+            key="Forms"
+            component={Link}
+            to="/kobo-forms"
+          >
             <ListItemIcon>
               <Storage />
             </ListItemIcon>
             <ListItemText primary="Forms" />
           </ListItem>
           <ListItem
+            onClick={() => setOpen(false)}
             button
             key="Device Enroll"
             component={Link}

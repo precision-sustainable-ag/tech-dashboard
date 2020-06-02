@@ -14,6 +14,7 @@ import {
   Paper,
   Typography,
   Container,
+  Button,
 } from "@material-ui/core";
 import TableComponent from "./Table/Table";
 import { Switch, Route } from "react-router-dom";
@@ -33,6 +34,7 @@ import DeviceEnroll from "./Devices/Device-Enroll/DeviceEnroll";
 import WaterSensorData from "./Devices/WaterSensorData/WaterSensorData";
 import WaterSensorByGateway from "./Devices/WaterSensorData/WaterSensorByGateway";
 import SiteEnrollment from "./SiteEnrollment/SiteEnrollment";
+import PageNotFound from "./PageNotFound";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -47,8 +49,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function App() {
-  const { loading } = useAuth0();
+  const {
+    loading,
+    isAuthenticated,
+    loginWithRedirect,
+    loginWithPopup,
+    logout,
+    user,
+    getTokenSilently,
+  } = useAuth0();
   const classes = useStyles();
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [theme, setTheme] = useState({
     palette: {
@@ -101,6 +113,31 @@ function App() {
       // document.body.style.backgroundColor = "rgb(247, 249, 252)";
     }
   }, [theme]);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      console.log(isAuthenticated);
+      if (isAuthenticated) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+    };
+    if (!loading) {
+      checkAuth();
+    }
+  }, [loading, getTokenSilently]);
+
+  // const callApi = async () => {
+  //   const token = await getTokenSilently();
+  //   // future use of this would be for authentication via bearer token
+  //   // console.log(token);
+  // };
+
+  // useEffect(() => {
+  //   if (isAuthenticated) callApi();
+  // }, [isAuthenticated]);
+
   return loading ? (
     <div className={classes.root}>
       <CssBaseline />
@@ -112,18 +149,32 @@ function App() {
         >
           <Box height={"40vh"} />
           <Typography variant="h3" gutterBottom align="center">
-            Loading..
+            Loading
           </Typography>
+          {/* <Typography variant="body1" gutterBottom align="center">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                let params = {
+                  redirect_uri: window.location.href,
+                };
+                loginWithPopup(params);
+              }}
+            >
+              Log in
+            </Button>
+          </Typography> */}
         </Paper>
       </ThemeProvider>
     </div>
-  ) : (
-    // <CssBaseline>
+  ) : isLoggedIn ? (
     <ThemeProvider theme={muiTheme}>
       <Container maxWidth={"xl"} className="mainContainer">
         <Header
           isDarkTheme={theme.palette.type === "light" ? false : true}
           setDarkTheme={toggleThemeDarkness}
+          isLoggedIn={isLoggedIn}
         />
         {/* <DrawerComponent /> */}
 
@@ -170,14 +221,139 @@ function App() {
               // component={WaterSensorByGateway}
               render={(props) => <WaterSensorByGateway {...props} />}
             />
+            <Route path="*">
+              <PageNotFound />
+            </Route>
           </Switch>
           {/* </Paper> */}
         </main>
         {/* </Paper> */}
       </Container>
     </ThemeProvider>
-    // </CssBaseline>
+  ) : (
+    <div className={classes.root}>
+      <CssBaseline />
+      <ThemeProvider theme={muiTheme}>
+        <Paper
+          style={{
+            height: "100vh",
+          }}
+        >
+          <Box height={"40vh"} />
+          <Typography variant="h3" gutterBottom align="center">
+            Please Log In To Continue
+          </Typography>
+          <Typography variant="body1" gutterBottom align="center">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                let params = {};
+                loginWithPopup(params);
+              }}
+            >
+              Log in
+            </Button>
+          </Typography>
+        </Paper>
+      </ThemeProvider>
+    </div>
   );
+
+  // return true ? ( // <CssBaseline>
+  //   <ThemeProvider theme={muiTheme}>
+  //     <Container maxWidth={"xl"} className="mainContainer">
+  //       <Header
+  //         isDarkTheme={theme.palette.type === "light" ? false : true}
+  //         setDarkTheme={toggleThemeDarkness}
+  //       />
+  //       {/* <DrawerComponent /> */}
+
+  //       <main className={classes.content}>
+  //         <div className={classes.toolbar} />
+  //         {/* <Paper elevation={0} style={{ minHeight: "100%" }}> */}
+  //         <Switch>
+  //           {/* <Route path="/" component={Login} exact /> */}
+  //           <Route
+  //             render={(props) => (
+  //               <LandingComponent
+  //                 {...props}
+  //                 isDarkTheme={theme.palette.type === "light" ? false : true}
+  //               />
+  //             )}
+  //             path="/"
+  //             exact
+  //           />
+  //           <PrivateRoute
+  //             path="/table"
+  //             render={(props) => <TableComponent {...props} />}
+  //           />
+  //           <PrivateRoute
+  //             path="/site-enroll"
+  //             render={(props) => <SiteEnrollment {...props} />}
+  //           />
+  //           {/* <PrivateRoute path="/table" component={TableComponent} /> */}
+  //           <PrivateRoute path="/issues" component={ReposComponent} exact />
+  //           <PrivateRoute path="/devices" component={DevicesComponent} exact />
+  //           <PrivateRoute
+  //             path={`/devices/:deviceId`}
+  //             component={DeviceComponent}
+  //           />
+  //           <PrivateRoute path={`/kobo-forms`} component={Forms} />
+  //           <PrivateRoute path="/profile" component={Profile} />
+  //           <PrivateRoute path="/device-enroll" component={DeviceEnroll} />
+  //           <PrivateRoute
+  //             path="/water-sensors"
+  //             component={WaterSensorData}
+  //             exact
+  //           />
+  //           <PrivateRoute
+  //             path={`/water-sensors/:gatewayId`}
+  //             // component={WaterSensorByGateway}
+  //             render={(props) => <WaterSensorByGateway {...props} />}
+  //           />
+  //           <Route path="*">
+  //             <PageNotFound />
+  //           </Route>
+  //         </Switch>
+  //         {/* </Paper> */}
+  //       </main>
+  //       {/* </Paper> */}
+  //     </Container>
+  //   </ThemeProvider>
+  // ) : (
+  //   <div className={classes.root}>
+  //     <CssBaseline />
+  //     <ThemeProvider theme={muiTheme}>
+  //       <Paper
+  //         style={{
+  //           height: "100vh",
+  //         }}
+  //       >
+  //         <Box height={"40vh"} />
+  //         <Typography variant="h3" gutterBottom align="center">
+  //           Please Log In To Continue
+  //         </Typography>
+  //         <Typography variant="body1" gutterBottom align="center">
+  //           <Button
+  //             variant="contained"
+  //             color="primary"
+  //             onClick={() => {
+  //               let params = {
+  //                 redirect_uri: window.location.href,
+  //               };
+  //               loginWithPopup(params);
+  //             }}
+  //           >
+  //             Log in
+  //           </Button>
+  //         </Typography>
+  //       </Paper>
+  //     </ThemeProvider>
+  //   </div>
+  // );
+
+  // return "hello";
 }
 
 export default App;

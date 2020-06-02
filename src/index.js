@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 import "./Styles/index.css";
 import App from "./App";
@@ -10,10 +10,9 @@ import { BrowserRouter } from "react-router-dom";
 import { Auth0Provider } from "./Auth/react-auth0-spa";
 import history from "./utils/history";
 import config from "./Auth/auth_config.json";
-import { CssBaseline } from "@material-ui/core";
 
 // a function that routes the user to the right place after login
-const onRedirectCallback = appState => {
+const onRedirectCallback = (appState) => {
   history.push(
     appState && appState.targetUrl
       ? appState.targetUrl

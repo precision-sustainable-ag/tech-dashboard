@@ -36,6 +36,7 @@ export const Auth0Provider = ({
 
       if (isAuthenticated) {
         const user = await auth0FromHook.getUser();
+
         setUser(user);
       }
 
@@ -47,7 +48,7 @@ export const Auth0Provider = ({
 
   const loginWithPopup = async (
     params = {
-      redirect_uri: "https://precisionsustainableag.org/tech-dashboard"
+      redirect_uri: window.location.origin,
     }
   ) => {
     setPopupOpen(true);
@@ -84,7 +85,7 @@ export const Auth0Provider = ({
         loginWithRedirect: (...p) => auth0Client.loginWithRedirect(...p),
         getTokenSilently: (...p) => auth0Client.getTokenSilently(...p),
         getTokenWithPopup: (...p) => auth0Client.getTokenWithPopup(...p),
-        logout: (...p) => auth0Client.logout(...p)
+        logout: (...p) => auth0Client.logout(...p),
       }}
     >
       {children}

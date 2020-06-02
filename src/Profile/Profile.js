@@ -16,7 +16,7 @@ import {
   TableCell,
   Button,
   Tab,
-  Tabs
+  Tabs,
 } from "@material-ui/core";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 
@@ -31,8 +31,8 @@ const Profile = () => {
   return (
     <Paper elevation={0}>
       <Box paddingTop={"2em"} padding={"1em"} minHeight={"80vh"} gridGap={2}>
-        <Box gutterBottom>
-          <Grid container lg={12} spacing={2}>
+        <Box>
+          <Grid container spacing={2}>
             <Grid item lg={4}>
               <Card elevation={2}>
                 <CardHeader
