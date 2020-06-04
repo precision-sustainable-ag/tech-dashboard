@@ -111,7 +111,7 @@ const GatewayVisual = (props) => {
 
       gatewayBatteryVoltage.push([
         time,
-        parseFloat(gatewayData[i].gw_batt_voltage / 1000),
+        parseFloat(gatewayData[i].gw_batt_voltage),
       ]);
       gatewaySolarCurrent.push([
         time,
@@ -119,7 +119,7 @@ const GatewayVisual = (props) => {
       ]);
       gatewaySolarVoltage.push([
         time,
-        parseFloat(gatewayData[i].gw_solar_voltage / 1000),
+        parseFloat(gatewayData[i].gw_solar_voltage),
       ]);
     }
     return [gatewayBatteryVoltage, gatewaySolarCurrent, gatewaySolarVoltage];
