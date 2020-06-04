@@ -6,13 +6,15 @@ import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { Grid } from "@material-ui/core";
 
+import moment from "moment";
+
 // Load Highcharts modules
 require("highcharts/modules/exporting")(Highcharts);
 
-const getGatewayVisialData = async (gatewayNo, source) => {
+const getGatewayVisialData = async (gatewayNo, source, year) => {
   //   try {
   return await Axios({
-    url: `${apiURL}/api/retrieve/table/water_gateway_data/by/serialno/${gatewayNo}`,
+    url: `${apiURL}/api/retrieve/table/water_gateway_data/by/serialno/${gatewayNo}/${year}`,
     method: "get",
     auth: {
       username: apiUsername,
@@ -28,6 +30,10 @@ const GatewayVisual = (props) => {
   const [gatewayData, setGatewayData] = useState({});
   const [loading, setLoading] = useState(false);
   const [volatageChartOptions, setVoltageChartOptions] = useState({
+    chart: {
+      type: "scatter",
+      zoomType: "xy",
+    },
     title: {
       text: "Gateway Voltage",
     },
@@ -49,10 +55,18 @@ const GatewayVisual = (props) => {
       {
         name: "Battery Voltage",
         data: [],
+        tooltip: {
+          pointFormat:
+            "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
+        },
       },
     ],
   });
   const [currentChartOptions, setCurrentChartOptions] = useState({
+    chart: {
+      type: "scatter",
+      zoomType: "xy",
+    },
     title: {
       text: "Gateway Solar Current",
     },
@@ -63,6 +77,7 @@ const GatewayVisual = (props) => {
       title: {
         text: "Current",
       },
+      type: "logarithmic",
     },
     legend: {
       layout: "vertical",
@@ -74,6 +89,10 @@ const GatewayVisual = (props) => {
       {
         name: "Solar Current",
         data: [],
+        tooltip: {
+          pointFormat:
+            "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
+        },
       },
     ],
   });
@@ -85,8 +104,11 @@ const GatewayVisual = (props) => {
     let gatewaySolarVoltage = [];
     // let timestamps = [];
     for (let i = 0; i < gatewayData.length; i++) {
-      let time = new Date(gatewayData[i].timestamp).getTime();
-      //   console.log("time", time);
+      // let time = new Date(gatewayData[i].timestamp).getTime();
+
+      let time = moment(gatewayData[i].timestamp).valueOf();
+      // console.log("time", time);
+
       gatewayBatteryVoltage.push([
         time,
         parseFloat(gatewayData[i].gw_batt_voltage / 1000),
@@ -110,7 +132,7 @@ const GatewayVisual = (props) => {
   useEffect(() => {
     setLoading(true);
     let source = Axios.CancelToken.source();
-    getGatewayVisialData(gatewayNo, source)
+    getGatewayVisialData(gatewayNo, source, props.year)
       .then((gatewayDataObject) => {
         // console.log(gatewayDataObject);
         let batteryVoltageArray = parseGatewayData(gatewayDataObject.data.data);
@@ -124,14 +146,18 @@ const GatewayVisual = (props) => {
             {
               name: "Battery Voltage",
               data: bvArr[0],
+              tooltip: {
+                pointFormat:
+                  "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
+              },
             },
-            // {
-            //   name: "Solar Current",
-            //   data: bvArr[1]
-            // },
             {
               name: "Solar Voltage",
               data: bvArr[2],
+              tooltip: {
+                pointFormat:
+                  "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
+              },
             },
           ],
         });
@@ -141,6 +167,10 @@ const GatewayVisual = (props) => {
             {
               name: "Solar Current",
               data: bvArr[1],
+              tooltip: {
+                pointFormat:
+                  "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
+              },
             },
           ],
         });
@@ -160,7 +190,7 @@ const GatewayVisual = (props) => {
 
   return !loading ? (
     <div>
-      <Grid container>
+      <Grid container style={{ marginTop: "1em" }}>
         <Grid item md={6}>
           <HighchartsReact
             highcharts={Highcharts}

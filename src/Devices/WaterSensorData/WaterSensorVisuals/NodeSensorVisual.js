@@ -46,7 +46,17 @@ const NodeSensorVisual = (props) => {
   const chartWidth = props.chartWidth || 12;
   const [nodeData, setNodeData] = useState({});
   const [coverNodeData, setCoverNodeData] = useState({});
+  const GetNodeType = () => {
+    if (bareNodeSerialNo.includes(props.activeChip)) return "Bare Node";
+    else return "Cover Node";
+  };
   const [volatageChartOptions, setVoltageChartOptions] = useState({
+    chart: {
+      zoomType: "x",
+    },
+    credits: {
+      enabled: false,
+    },
     title: {
       text: "Node Voltage",
     },
@@ -72,6 +82,12 @@ const NodeSensorVisual = (props) => {
     ],
   });
   const [currentChartOptions, setCurrentChartOptions] = useState({
+    chart: {
+      zoomType: "x",
+    },
+    credits: {
+      enabled: false,
+    },
     title: {
       text: "Node Solar Current",
     },
@@ -98,6 +114,12 @@ const NodeSensorVisual = (props) => {
   });
 
   const [signalStrengthChartOptions, setSignalStrengthChartOptions] = useState({
+    chart: {
+      zoomType: "x",
+    },
+    credits: {
+      enabled: false,
+    },
     title: {
       text: "Node Signal Strength",
     },
@@ -124,6 +146,12 @@ const NodeSensorVisual = (props) => {
   });
 
   const [centerDepthChartOptions, setCenterDepthChartOptions] = useState({
+    chart: {
+      zoomType: "x",
+    },
+    credits: {
+      enabled: false,
+    },
     title: {
       text: "Sensor Center Depth",
     },
@@ -150,6 +178,12 @@ const NodeSensorVisual = (props) => {
   });
 
   const [soilTempChartOptions, setSoilTempChartOptions] = useState({
+    chart: {
+      zoomType: "x",
+    },
+    credits: {
+      enabled: false,
+    },
     title: {
       text: "Sensor Soil Temperature",
     },
@@ -176,6 +210,12 @@ const NodeSensorVisual = (props) => {
   });
 
   const [vwcChartOptions, setVwcChartOptions] = useState({
+    chart: {
+      zoomType: "x",
+    },
+    credits: {
+      enabled: false,
+    },
     title: {
       text: "Volumetric Water Content",
     },
@@ -202,6 +242,12 @@ const NodeSensorVisual = (props) => {
   });
 
   const [permittivityChartOptions, setPermittivityChartOptions] = useState({
+    chart: {
+      zoomType: "x",
+    },
+    credits: {
+      enabled: false,
+    },
     title: {
       text: "Permittivity",
     },
@@ -228,6 +274,12 @@ const NodeSensorVisual = (props) => {
   });
 
   const [ecBulkChartOptions, setEcBulkChartOptions] = useState({
+    chart: {
+      zoomType: "x",
+    },
+    credits: {
+      enabled: false,
+    },
     title: {
       text: "EC Bulk",
     },
@@ -254,6 +306,12 @@ const NodeSensorVisual = (props) => {
   });
 
   const [ecPoreWaterChartOptions, setEcPoreWaterChartOptions] = useState({
+    chart: {
+      zoomType: "x",
+    },
+    credits: {
+      enabled: false,
+    },
     title: {
       text: "EC Pore Water",
     },
@@ -288,8 +346,10 @@ const NodeSensorVisual = (props) => {
     let ecPoreWater = { a: [], b: [], c: [] };
 
     for (let i = 0; i < sensorData.length; i++) {
-      console.log(sensorData[0].timestamp);
-      let time = new Date(sensorData[i].timestamp).getTime();
+      // console.log(sensorData[0].timestamp);
+      // let time = new Date(sensorData[i].timestamp).getTime();
+      let time = moment(sensorData[i].timestamp).valueOf();
+
       // doesn't work on safari
       // let time = moment(
       //   sensorData[i].timestamp,
@@ -349,7 +409,8 @@ const NodeSensorVisual = (props) => {
 
     // let timestamps = [];
     for (let i = 0; i < nodeData.length; i++) {
-      let time = new Date(nodeData[i].timestamp).getTime();
+      // let time = new Date(nodeData[i].timestamp).getTime();
+      let time = moment(nodeData[i].timestamp).valueOf();
       //   console.log("time", time);
       nodeBatteryVoltage.push([time, parseFloat(nodeData[i].nd_batt_voltage)]);
       nodeSolarCurrent.push([time, parseFloat(nodeData[i].nd_solar_current)]);
@@ -396,30 +457,54 @@ const NodeSensorVisual = (props) => {
               {
                 name: "Battery Voltage",
                 data: nodeArr[0],
+                tooltip: {
+                  pointFormat:
+                    "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
+                },
               },
               {
                 name: "Solar Voltage",
                 data: nodeArr[2],
+                tooltip: {
+                  pointFormat:
+                    "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
+                },
               },
             ],
           });
 
           setCurrentChartOptions({
             ...currentChartOptions,
+            chart: {
+              type: "scatter",
+              zoomType: "xy",
+            },
             series: [
               {
                 name: "Solar Current",
                 data: nodeArr[1],
+                tooltip: {
+                  pointFormat:
+                    "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
+                },
               },
             ],
           });
 
           setSignalStrengthChartOptions({
             ...signalStrengthChartOptions,
+            chart: {
+              type: "scatter",
+              zoomType: "xy",
+            },
             series: [
               {
                 name: "Signal Strength",
                 data: nodeArr[3],
+                tooltip: {
+                  pointFormat:
+                    "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Strength: <b>{point.y}</b><br/>",
+                },
               },
             ],
           });
@@ -445,14 +530,26 @@ const NodeSensorVisual = (props) => {
                   {
                     name: "Top Depth",
                     data: sensorArr[0].a,
+                    tooltip: {
+                      pointFormat:
+                        "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+                    },
                   },
                   {
                     name: "Middle Depth",
                     data: sensorArr[0].b,
+                    tooltip: {
+                      pointFormat:
+                        "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+                    },
                   },
                   {
                     name: "Deep Depth",
                     data: sensorArr[0].c,
+                    tooltip: {
+                      pointFormat:
+                        "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+                    },
                   },
                 ],
               });
@@ -460,108 +557,168 @@ const NodeSensorVisual = (props) => {
               //   console.log(sensorArr[1]);
               setSoilTempChartOptions({
                 ...soilTempChartOptions,
-                // chart: {
-                //   type: "scatter",
-                //   zoomType: "xy",
-                // },
+                chart: {
+                  type: "scatter",
+                  zoomType: "xy",
+                },
                 series: [
                   {
                     name: "Top Depth",
                     data: sensorArr[1].a,
+                    tooltip: {
+                      pointFormat:
+                        "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+                    },
                   },
                   {
                     name: "Middle Depth",
                     data: sensorArr[1].b,
+                    tooltip: {
+                      pointFormat:
+                        "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+                    },
                   },
                   {
                     name: "Deep Depth",
                     data: sensorArr[1].c,
+                    tooltip: {
+                      pointFormat:
+                        "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+                    },
                   },
                 ],
               });
               setVwcChartOptions({
                 ...vwcChartOptions,
-                // chart: {
-                //   type: "scatter",
-                //   zoomType: "xy",
-                // },
+                chart: {
+                  type: "scatter",
+                  zoomType: "xy",
+                },
                 series: [
                   {
                     name: "Top Depth",
                     data: sensorArr[2].a,
+                    tooltip: {
+                      pointFormat:
+                        "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+                    },
                   },
                   {
                     name: "Middle Depth",
                     data: sensorArr[2].b,
+                    tooltip: {
+                      pointFormat:
+                        "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+                    },
                   },
                   {
                     name: "Deep Depth",
                     data: sensorArr[2].c,
+                    tooltip: {
+                      pointFormat:
+                        "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+                    },
                   },
                 ],
               });
               setPermittivityChartOptions({
                 ...permittivityChartOptions,
-                // chart: {
-                //   type: "scatter",
-                //   zoomType: "xy",
-                // },
+                chart: {
+                  type: "scatter",
+                  zoomType: "xy",
+                },
                 series: [
                   {
                     name: "Top Depth",
                     data: sensorArr[3].a,
+                    tooltip: {
+                      pointFormat:
+                        "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+                    },
                   },
                   {
                     name: "Middle Depth",
                     data: sensorArr[3].b,
+                    tooltip: {
+                      pointFormat:
+                        "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+                    },
                   },
                   {
                     name: "Deep Depth",
                     data: sensorArr[3].c,
+                    tooltip: {
+                      pointFormat:
+                        "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+                    },
                   },
                 ],
               });
 
               setEcBulkChartOptions({
                 ...ecBulkChartOptions,
-                // chart: {
-                //   type: "scatter",
-                //   zoomType: "xy",
-                // },
+                chart: {
+                  type: "scatter",
+                  zoomType: "xy",
+                },
                 series: [
                   {
                     name: "Top Depth",
                     data: sensorArr[4].a,
+                    tooltip: {
+                      pointFormat:
+                        "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+                    },
                   },
                   {
                     name: "Middle Depth",
                     data: sensorArr[4].b,
+                    tooltip: {
+                      pointFormat:
+                        "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+                    },
                   },
                   {
                     name: "Deep Depth",
                     data: sensorArr[4].c,
+                    tooltip: {
+                      pointFormat:
+                        "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+                    },
                   },
                 ],
               });
 
               setEcPoreWaterChartOptions({
                 ...ecPoreWaterChartOptions,
-                // chart: {
-                //   type: "scatter",
-                //   zoomType: "xy",
-                // },
+                chart: {
+                  type: "scatter",
+                  zoomType: "xy",
+                },
                 series: [
                   {
                     name: "Top Depth",
                     data: sensorArr[5].a,
+                    tooltip: {
+                      pointFormat:
+                        "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+                    },
                   },
                   {
                     name: "Middle Depth",
                     data: sensorArr[5].b,
+                    tooltip: {
+                      pointFormat:
+                        "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+                    },
                   },
                   {
                     name: "Deep Depth",
                     data: sensorArr[5].c,
+                    tooltip: {
+                      pointFormat:
+                        "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+                    },
                   },
                 ],
               });
@@ -577,7 +734,7 @@ const NodeSensorVisual = (props) => {
           <Grid container>
             <Grid item md={12}>
               <Typography variant="h5" align="center">
-                Node Data for {props.activeChip}
+                Node Data for {<GetNodeType />} {props.activeChip}
               </Typography>
             </Grid>
           </Grid>
@@ -629,10 +786,10 @@ const NodeSensorVisual = (props) => {
               md={chartWidth}
               // style={chartWidth < 12 ? styles.chartStyle : ""}
             >
-              <HighchartsReact
+              {/* <HighchartsReact
                 highcharts={Highcharts}
                 options={centerDepthChartOptions}
-              />
+              /> */}
             </Grid>
 
             <Grid

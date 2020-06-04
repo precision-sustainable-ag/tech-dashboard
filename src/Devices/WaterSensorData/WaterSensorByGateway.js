@@ -25,7 +25,7 @@ import WaterSensorByGatewayTopbar from "./WaterSensorByGatewayTopbar";
 const useStyles = makeStyles((theme) => ({
   gridList: {
     width: "100%",
-    height: 300,
+    height: "50px",
     // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
     transform: "translateZ(0)",
   },
@@ -33,16 +33,18 @@ const useStyles = makeStyles((theme) => ({
     background:
       "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, " +
       "rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)",
+    borderTopLeftRadius: "10px",
+    borderTopRightRadius: "10px",
   },
   icon: {
     color: "white",
   },
 }));
 
-const getNodeSerialNo = async (gatewayNo) => {
+const getNodeSerialNo = async (gatewayNo, year) => {
   return await Axios({
     method: "get",
-    url: `${apiURL}/api/retrieve/nodes/by/gateway/${gatewayNo}`,
+    url: `${apiURL}/api/retrieve/nodes/by/gateway/${gatewayNo}/${year}`,
     auth: {
       username: apiUsername,
       password: apiPassword,
@@ -51,7 +53,6 @@ const getNodeSerialNo = async (gatewayNo) => {
 };
 
 const WaterSensorByGateway = (props) => {
-  console.log(props);
   const classes = useStyles();
   const gatewayNo =
     props.location.state.gatewaysno || props.match.params.gatewayId;
@@ -67,6 +68,7 @@ const WaterSensorByGateway = (props) => {
 
   const [bareNodeObject, setBareNodeObject] = useState({});
   const [coverNodeObject, setCoverNodeObject] = useState({});
+  const [year, setYear] = useState(props.location.state.year);
   //   get all nodes in the gateway, and get all sensors in each node
   //    this can be done by making a nested object here
   /* eg. gatewayNo: {
@@ -92,9 +94,15 @@ const WaterSensorByGateway = (props) => {
         //   let i = 0;
         //   console.log(node);
         if (nodeData[node]["bare_node_serial_no"] !== null)
-          bareNodeArray.push(nodeData[node]["bare_node_serial_no"]);
+          if (!bareNodeArray.includes(nodeData[node]["bare_node_serial_no"])) {
+            bareNodeArray.push(nodeData[node]["bare_node_serial_no"]);
+          }
         if (nodeData[node]["cover_node_serial_no"] !== null)
-          coverNodeArray.push(nodeData[node]["cover_node_serial_no"]);
+          if (
+            !coverNodeArray.includes(nodeData[node]["cover_node_serial_no"])
+          ) {
+            coverNodeArray.push(nodeData[node]["cover_node_serial_no"]);
+          }
         //   i++;
       }
       setBareNodeSerialNo(bareNodeArray);
@@ -122,7 +130,10 @@ const WaterSensorByGateway = (props) => {
   };
   useEffect(() => {
     setLoading(true);
-    let nodeSerialNosPromise = getNodeSerialNo(gatewayNo);
+    let nodeSerialNosPromise = getNodeSerialNo(
+      gatewayNo,
+      props.location.state.year
+    );
 
     nodeSerialNosPromise
       .then((nodesObject) => {
@@ -147,22 +158,9 @@ const WaterSensorByGateway = (props) => {
   return !loading ? (
     <div>
       <GridList spacing={1} className={classes.gridList}>
-        <GridListTile
-          key={gatewayNo}
-          style={{ width: "100%", height: "300px" }}
-        >
-          <Grid container>
-            {/* <Grid item sm={12}>
-              <Typography variant="h5">
-                Gateway Serial Number {gatewayNo}
-              </Typography>
-            </Grid> */}
-            <Grid item sm={12}>
-              <GatewayVisual gatewayNo={gatewayNo} />
-            </Grid>
-          </Grid>
+        <GridListTile key={gatewayNo} style={{ width: "100%", height: "50px" }}>
           <GridListTileBar
-            title={gatewayNo}
+            title={"All Farm Codes"}
             style={{
               zIndex: "999",
             }}
@@ -184,6 +182,11 @@ const WaterSensorByGateway = (props) => {
           />
         </GridListTile>
       </GridList>
+      <Grid container style={{ marginTop: "2em" }}>
+        <Grid item sm={12}>
+          <GatewayVisual gatewayNo={gatewayNo} year={year} />
+        </Grid>
+      </Grid>
 
       <Grid container style={{ marginTop: "2em" }}>
         <Grid item md={12}>
