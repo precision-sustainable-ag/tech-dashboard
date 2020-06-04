@@ -67,6 +67,7 @@ const NodeSensorVisual = (props) => {
       title: {
         text: "Volage",
       },
+      type: "logarithmic",
     },
     legend: {
       layout: "vertical",
@@ -98,6 +99,7 @@ const NodeSensorVisual = (props) => {
       title: {
         text: "Current",
       },
+      type: "logarithmic",
     },
     legend: {
       layout: "vertical",
@@ -162,6 +164,7 @@ const NodeSensorVisual = (props) => {
       title: {
         text: "Depth",
       },
+      type: "logarithmic",
     },
     legend: {
       layout: "vertical",
@@ -194,6 +197,7 @@ const NodeSensorVisual = (props) => {
       title: {
         text: "Temperature",
       },
+      type: "logarithmic",
     },
     legend: {
       layout: "vertical",
@@ -226,6 +230,7 @@ const NodeSensorVisual = (props) => {
       title: {
         text: "VWC (%)",
       },
+      type: "logarithmic",
     },
     legend: {
       layout: "vertical",
@@ -258,6 +263,7 @@ const NodeSensorVisual = (props) => {
       title: {
         text: "Permittivity",
       },
+      type: "logarithmic",
     },
     legend: {
       layout: "vertical",
@@ -290,6 +296,7 @@ const NodeSensorVisual = (props) => {
       title: {
         text: "EC",
       },
+      type: "logarithmic",
     },
     legend: {
       layout: "vertical",
@@ -322,6 +329,7 @@ const NodeSensorVisual = (props) => {
       title: {
         text: "EC Pore Water",
       },
+      type: "logarithmic",
     },
     legend: {
       layout: "vertical",
