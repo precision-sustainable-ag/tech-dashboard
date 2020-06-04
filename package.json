@@ -12,7 +12,6 @@
     "@testing-library/user-event": "^10.4.0",
     "axios": "^0.19.2",
     "clsx": "^1.1.1",
-    "flare-react": "^1.0.7",
     "highcharts": "^8.1.0",
     "highcharts-react-official": "^3.0.0",
     "is-ip": "^3.1.0",
