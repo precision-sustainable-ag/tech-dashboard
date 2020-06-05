@@ -74,7 +74,7 @@ function App() {
 
     typography: {
       useNextVariants: true,
-      fontFamily: "'Nunito', sans-serif",
+      fontFamily: "bilo, sans-serif",
     },
   });
 
@@ -112,6 +112,10 @@ function App() {
       document.body.style.backgroundColor = "#fff";
       document.body.style.color = "#000";
       // document.body.style.backgroundColor = "rgb(247, 249, 252)";
+    }
+
+    if (!window.localStorage.getItem("font")) {
+      window.localStorage.setItem("font", theme.typography.fontFamily);
     }
   }, [theme]);
 
