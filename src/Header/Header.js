@@ -7,7 +7,6 @@ import { apiPassword, apiUsername, apiURL } from "../utils/api_secret";
 
 import {
   Drawer,
-  CssBaseline,
   AppBar,
   Toolbar,
   List,
@@ -17,7 +16,6 @@ import {
   IconButton,
   Divider,
   Typography,
-  Button,
   Menu,
   MenuItem,
 } from "@material-ui/core";
@@ -32,9 +30,7 @@ import {
   ViewList,
   AccountCircle,
   Lock,
-  Brightness4,
   BrightnessHigh,
-  DragIndicatorSharp,
   AddLocation,
   BrightnessLow,
 } from "@material-ui/icons";
@@ -196,75 +192,6 @@ export default function Header(props) {
         //update user details to state
       }
     });
-    // await Axios.get(`${apiURL()}/api/user/${user.email}`, {
-    //   auth: {
-    //     username: 'psaadmin',
-    //     password:
-    //   }
-    // })
-    // await Axios.get(
-    //   `${apiURL()}/api/user`, {
-    //       email: user.email
-    //   }
-    // ).then(response => {
-    //   try {
-    //     // console.log(response.data.records.length);
-    //     if (response.data.records.length === 0) {
-    //       //  new user.. add record to db with default role
-    //       let obj = {
-    //         userid: "",
-    //         email: user.email,
-    //         state: "default",
-    //         role: "default",
-    //         permissions: "none",
-    //         view_protected: false,
-    //         updated: ""
-    //       };
-    //       addUserToDatabase(state.userRole, obj);
-    //       dispatch({
-    //         type: "UPDATE_ROLE",
-    //         data: {
-    //           userRole: "default"
-    //         }
-    //       });
-    //     } else {
-    //       dispatch({
-    //         type: "UPDATE_ROLE",
-    //         data: {
-    //           userRole: response.data.records.role
-    //         }
-    //       });
-    //     }
-    //   } catch (e) {
-    //     console.error(e);
-    //   }
-
-    // if(response.data.records) {
-    //   let data = response.data.records[0];
-    //   if (data.length === 0) {
-    //     //   //  new user.. add record to db with default role
-    //     console.log('inside')
-    //     // addUserToDatabase(state.userRole, user.email);
-    //     dispatch({
-    //       type: "UPDATE_ROLE",
-    //       data: {
-    //         userRole: "default"
-    //       }
-    //     });
-    //   } else {
-    //     dispatch({
-    //       type: "UPDATE_ROLE",
-    //       data: {
-    //         userRole: data.role
-    //       }
-    //     });
-    //   }
-
-    // } else {
-    //   //
-    //   console.log('response',response);
-    // }
-    // });
   };
 
   useEffect(() => {
