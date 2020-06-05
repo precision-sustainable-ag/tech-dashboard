@@ -1,5 +1,6 @@
 import React from "react";
-import { withStyles, Switch } from "@material-ui/core";
+import { withStyles, Switch, Box, Typography, Paper } from "@material-ui/core";
+import { primaryContactPerson } from "./api_secret";
 
 export const AntSwitch = withStyles((theme) => ({
   root: {
@@ -34,3 +35,23 @@ export const AntSwitch = withStyles((theme) => ({
   },
   checked: {},
 }))(Switch);
+
+export const BannedRoleMessage = (props) => {
+  let title = props.title;
+  if (title.length === 0) title = "Anything";
+
+  return (
+    <Box component={Paper} elevation={0}>
+      <Typography variant={"h6"} align="center">
+        Your access level does not permit this action. If you think you are
+        seeing this as an error, please report this to{" "}
+        {primaryContactPerson.name}{" "}
+        <a
+          href={`mailto:${primaryContactPerson.email}?subject=Unable To See ${title} on Tech Dashboard`}
+        >
+          here
+        </a>
+      </Typography>
+    </Box>
+  );
+};
