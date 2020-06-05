@@ -158,16 +158,6 @@ function App() {
     }
   }, [loading, getTokenSilently]);
 
-  // const callApi = async () => {
-  //   const token = await getTokenSilently();
-  //   // future use of this would be for authentication via bearer token
-  //   // console.log(token);
-  // };
-
-  // useEffect(() => {
-  //   if (isAuthenticated) callApi();
-  // }, [isAuthenticated]);
-
   return online ? (
     loading ? (
       <div className={classes.root}>
