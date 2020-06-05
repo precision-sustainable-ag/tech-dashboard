@@ -1,5 +1,6 @@
 {
   "domain": "psa-tech-dashboard.auth0.com",
   "clientId": "jw8MpURCiiyE3TqjYriwGUtRvq9hEIgD",
-  "roleUrl": "https://precision-sustainable-ag/role"
+  "roleUrl": "https://precision-sustainable-ag/role",
+  "cacheLocation": "localstorage"
 }
