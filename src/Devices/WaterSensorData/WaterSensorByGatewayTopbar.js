@@ -34,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
 
 const WaterSensorByGatewayTopbar = (props) => {
   const classes = useStyles();
+
   const bareNodes = props.bareNodes;
   const coverNodes = props.coverNodes;
   let activeChip = props.activeChip;

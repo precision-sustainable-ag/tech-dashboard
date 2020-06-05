@@ -35,6 +35,31 @@ import WaterSensorData from "./Devices/WaterSensorData/WaterSensorData";
 import WaterSensorByGateway from "./Devices/WaterSensorData/WaterSensorByGateway";
 import SiteEnrollment from "./SiteEnrollment/SiteEnrollment";
 import PageNotFound from "./PageNotFound";
+import AllDataTable from "./Table/AllDataTable";
+
+function useOnlineStatus() {
+  const [online, setOnline] = useState(window.navigator.onLine);
+
+  useEffect(() => {
+    function handleOnline() {
+      setOnline(true);
+    }
+
+    function handleOffline() {
+      setOnline(false);
+    }
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
+  return online;
+}
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -49,6 +74,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function App() {
+  const online = useOnlineStatus();
   const {
     loading,
     isAuthenticated,
@@ -73,7 +99,7 @@ function App() {
 
     typography: {
       useNextVariants: true,
-      fontFamily: "'Nunito', sans-serif",
+      fontFamily: "bilo, sans-serif",
     },
   });
 
@@ -112,6 +138,10 @@ function App() {
       document.body.style.color = "#000";
       // document.body.style.backgroundColor = "rgb(247, 249, 252)";
     }
+
+    if (!window.localStorage.getItem("font")) {
+      window.localStorage.setItem("font", theme.typography.fontFamily);
+    }
   }, [theme]);
 
   useEffect(() => {
@@ -128,108 +158,122 @@ function App() {
     }
   }, [loading, getTokenSilently]);
 
-  // const callApi = async () => {
-  //   const token = await getTokenSilently();
-  //   // future use of this would be for authentication via bearer token
-  //   // console.log(token);
-  // };
-
-  // useEffect(() => {
-  //   if (isAuthenticated) callApi();
-  // }, [isAuthenticated]);
-
-  return loading ? (
-    <div className={classes.root}>
-      <CssBaseline />
+  return online ? (
+    loading ? (
+      <div className={classes.root}>
+        <CssBaseline />
+        <ThemeProvider theme={muiTheme}>
+          <Paper
+            style={{
+              height: "100vh",
+            }}
+          >
+            <Box height={"40vh"} />
+            <Typography variant="h3" gutterBottom align="center">
+              Loading
+            </Typography>
+          </Paper>
+        </ThemeProvider>
+      </div>
+    ) : isLoggedIn ? (
       <ThemeProvider theme={muiTheme}>
-        <Paper
-          style={{
-            height: "100vh",
-          }}
-        >
-          <Box height={"40vh"} />
-          <Typography variant="h3" gutterBottom align="center">
-            Loading
-          </Typography>
-          {/* <Typography variant="body1" gutterBottom align="center">
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                let params = {
-                  redirect_uri: window.location.href,
-                };
-                loginWithPopup(params);
-              }}
-            >
-              Log in
-            </Button>
-          </Typography> */}
-        </Paper>
-      </ThemeProvider>
-    </div>
-  ) : isLoggedIn ? (
-    <ThemeProvider theme={muiTheme}>
-      <Container maxWidth={"xl"} className="mainContainer">
-        <Header
-          isDarkTheme={theme.palette.type === "light" ? false : true}
-          setDarkTheme={toggleThemeDarkness}
-          isLoggedIn={isLoggedIn}
-        />
-        {/* <DrawerComponent /> */}
+        <Container maxWidth={"xl"} className="mainContainer">
+          <Header
+            isDarkTheme={theme.palette.type === "light" ? false : true}
+            setDarkTheme={toggleThemeDarkness}
+            isLoggedIn={isLoggedIn}
+          />
+          {/* <DrawerComponent /> */}
 
-        <main className={classes.content}>
-          <div className={classes.toolbar} />
-          {/* <Paper elevation={0} style={{ minHeight: "100%" }}> */}
-          <Switch>
-            {/* <Route path="/" component={Login} exact /> */}
-            <Route
-              render={(props) => (
-                <LandingComponent
-                  {...props}
-                  isDarkTheme={theme.palette.type === "light" ? false : true}
-                />
-              )}
-              path="/"
-              exact
-            />
-            <PrivateRoute
+          <main className={classes.content}>
+            <div className={classes.toolbar} />
+            {/* <Paper elevation={0} style={{ minHeight: "100%" }}> */}
+            <Switch>
+              {/* <Route path="/" component={Login} exact /> */}
+              <Route
+                render={(props) => (
+                  <LandingComponent
+                    {...props}
+                    isDarkTheme={theme.palette.type === "light" ? false : true}
+                  />
+                )}
+                path="/"
+                exact
+              />
+              {/* <PrivateRoute
               path="/table"
               render={(props) => <TableComponent {...props} />}
-            />
-            <PrivateRoute
-              path="/site-enroll"
-              render={(props) => <SiteEnrollment {...props} />}
-            />
-            {/* <PrivateRoute path="/table" component={TableComponent} /> */}
-            <PrivateRoute path="/issues" component={ReposComponent} exact />
-            <PrivateRoute path="/devices" component={DevicesComponent} exact />
-            <PrivateRoute
-              path={`/devices/:deviceId`}
-              component={DeviceComponent}
-            />
-            <PrivateRoute path={`/kobo-forms`} component={Forms} />
-            <PrivateRoute path="/profile" component={Profile} />
-            <PrivateRoute path="/device-enroll" component={DeviceEnroll} />
-            <PrivateRoute
-              path="/water-sensors"
-              component={WaterSensorData}
-              exact
-            />
-            <PrivateRoute
-              path={`/water-sensors/:gatewayId`}
-              // component={WaterSensorByGateway}
-              render={(props) => <WaterSensorByGateway {...props} />}
-            />
-            <Route path="*">
-              <PageNotFound />
-            </Route>
-          </Switch>
+            /> */}
+              <PrivateRoute
+                path="/table"
+                render={(props) => <AllDataTable {...props} />}
+              />
+              <PrivateRoute
+                path="/site-enroll"
+                render={(props) => <SiteEnrollment {...props} />}
+              />
+              {/* <PrivateRoute path="/table" component={TableComponent} /> */}
+              <PrivateRoute path="/issues" component={ReposComponent} exact />
+              <PrivateRoute
+                path="/devices"
+                component={DevicesComponent}
+                exact
+              />
+              <PrivateRoute
+                path={`/devices/:deviceId`}
+                component={DeviceComponent}
+              />
+              <PrivateRoute path={`/kobo-forms`} component={Forms} />
+              <PrivateRoute path="/profile" component={Profile} />
+              <PrivateRoute path="/device-enroll" component={DeviceEnroll} />
+              <PrivateRoute
+                path="/water-sensors"
+                component={WaterSensorData}
+                exact
+              />
+              <PrivateRoute
+                path={`/water-sensors/:gatewayId`}
+                // component={WaterSensorByGateway}
+                render={(props) => <WaterSensorByGateway {...props} />}
+              />
+              <Route path="*">
+                <PageNotFound />
+              </Route>
+            </Switch>
+            {/* </Paper> */}
+          </main>
           {/* </Paper> */}
-        </main>
-        {/* </Paper> */}
-      </Container>
-    </ThemeProvider>
+        </Container>
+      </ThemeProvider>
+    ) : (
+      <div className={classes.root}>
+        <CssBaseline />
+        <ThemeProvider theme={muiTheme}>
+          <Paper
+            style={{
+              height: "100vh",
+            }}
+          >
+            <Box height={"40vh"} />
+            <Typography variant="h3" gutterBottom align="center">
+              Please Log In To Continue
+            </Typography>
+            <Typography variant="body1" gutterBottom align="center">
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  let params = {};
+                  loginWithRedirect(params);
+                }}
+              >
+                Log in
+              </Button>
+            </Typography>
+          </Paper>
+        </ThemeProvider>
+      </div>
+    )
   ) : (
     <div className={classes.root}>
       <CssBaseline />
@@ -241,19 +285,11 @@ function App() {
         >
           <Box height={"40vh"} />
           <Typography variant="h3" gutterBottom align="center">
-            Please Log In To Continue
+            You are offline!
           </Typography>
           <Typography variant="body1" gutterBottom align="center">
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                let params = {};
-                loginWithPopup(params);
-              }}
-            >
-              Log in
-            </Button>
+            Unfortunately, this app requires an internet connection to work.
+            Please check back later!
           </Typography>
         </Paper>
       </ThemeProvider>

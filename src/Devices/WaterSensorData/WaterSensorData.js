@@ -137,6 +137,7 @@ const WaterSensorData = () => {
               index={index}
               paperClass={classes.paper}
               key={`gateway-${index}`}
+              year={activeYear}
             />
           ))
         )}

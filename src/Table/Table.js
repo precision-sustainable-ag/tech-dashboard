@@ -1,3 +1,9 @@
+/*
+
+DEPRECATED: Please use AllDataTable.js instead
+
+*/
+
 import React, { useEffect, useContext, useState } from "react";
 import { forwardRef } from "react";
 import MaterialTable from "material-table";
@@ -47,7 +53,7 @@ const tableIcons = {
   Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
   SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
   ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
-  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
+  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
 };
 
 const TableComponent = () => {
@@ -74,12 +80,12 @@ const TableComponent = () => {
     }
   }, [tableState, state.userRole]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const fetchRecords = async apiURL => {
-    await Axios.get(apiURL).then(response => {
+  const fetchRecords = async (apiURL) => {
+    await Axios.get(apiURL).then((response) => {
       let data = response.data;
       dispatch({
         type: "SET_SITE_INFO",
-        data: data
+        data: data,
       });
       //   console.log(response);
     });
@@ -101,7 +107,7 @@ const TableComponent = () => {
         email: email,
         address: address,
         latlng: latlng,
-        notes: notes
+        notes: notes,
       };
       let arr = [];
       console.log(obj);
@@ -120,10 +126,10 @@ const TableComponent = () => {
             <MaterialTable
               isLoading={tableState}
               editable={{
-                isEditable: rowData => rowData.state === "MD", // only name(a) rows would be editable
+                isEditable: (rowData) => rowData.state === "MD", // only name(a) rows would be editable
                 isDeletable: false,
                 //   isDeletable: rowData => rowData.name === "b", // only name(a) rows would be deletable
-                onRowAdd: newData => {
+                onRowAdd: (newData) => {
                   // console.log(newData);
                   // new Promise((resolve, reject) => {
                   //   setTimeout(() => {
@@ -142,7 +148,7 @@ const TableComponent = () => {
                   //     resolve();
                   //   }, 1000);
                   // });
-                }
+                },
 
                 //   onRowUpdate: (newData, oldData) =>
                 //     new Promise((resolve, reject) => {
@@ -186,7 +192,7 @@ const TableComponent = () => {
                 //   { title: "Email", field: "birthYear", type: "email" },
                 { title: "Address", field: "address" },
                 { title: "Lat, Long", field: "latlng" },
-                { title: "Notes", field: "notes" }
+                { title: "Notes", field: "notes" },
                 //   {
                 //     title: "Doğum Yeri",
                 //     field: "birthCity",
@@ -205,7 +211,7 @@ const TableComponent = () => {
                 pageSize: 10,
                 pageSizeOptions: [5, 10, 20, 50, 100],
                 groupRowSeparator: "  ",
-                grouping: true
+                grouping: true,
               }}
             />
           </Grid>

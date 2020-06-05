@@ -88,12 +88,43 @@ const Profile = () => {
                     </Typography>
                   }
                 />
-                <CardContent></CardContent>
+                <CardContent>
+                  <Grid container>
+                    <Grid item lg={12}>
+                      <table style={{ width: "100%" }}>
+                        <thead>
+                          <tr>
+                            <th>State</th>
+                            <th>Role</th>
+                            <th>Permissions</th>
+                            <th>View Protected</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {state.userInfo ? (
+                            <tr style={{ textAlign: "center" }}>
+                              <td>{state.userInfo.state}</td>
+                              <td>{state.userInfo.role}</td>
+                              <td>{state.userInfo.permissions}</td>
+                              <td>
+                                {state.userInfo.view_protected === 1
+                                  ? "Yes"
+                                  : "No"}
+                              </td>
+                            </tr>
+                          ) : (
+                            ""
+                          )}
+                        </tbody>
+                      </table>
+                    </Grid>
+                  </Grid>
+                </CardContent>
               </Card>
             </Grid>
           </Grid>
         </Box>
-        <Grid container>
+        {/* <Grid container>
           <Grid item lg={6}>
             <Paper square>
               <Tabs
@@ -109,7 +140,7 @@ const Profile = () => {
               </Tabs>
             </Paper>
           </Grid>
-        </Grid>
+        </Grid> */}
 
         {/* <Grid container lg={12} spacing={2}>
           <Grid item>
