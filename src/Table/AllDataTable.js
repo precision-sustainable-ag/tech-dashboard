@@ -4,9 +4,10 @@ import { bannedRoles } from "../utils/constants";
 import Axios from "axios";
 import { apiUsername, apiPassword, apiURL } from "../utils/api_secret";
 import Loading from "react-loading";
-import { Grid, Box, Paper, Typography } from "@material-ui/core";
+import { Grid, Box, Paper, Typography, Link, Button } from "@material-ui/core";
 import MaterialTable from "material-table";
 import { BannedRoleMessage } from "../utils/CustomComponents";
+import { GpsFixed } from "@material-ui/icons";
 
 const AllDataTable = (props) => {
   const [state, dispatch] = useContext(Context);
@@ -123,15 +124,20 @@ const AllDataTable = (props) => {
                 {
                   title: "Lat, Long",
                   field: "latlng",
-                  render: (rowData) => (
-                    <a
-                      href={`https://earth.google.com/web/search/${rowData.latlng}/@${rowData.latlng},75.78141996a,870.41248089d,35y,0h,45t,0r/data=ClQaKhIkGa36XG3FbkBAIVRSJ6CJkFTAKhAzMi44NjU0LC04Mi4yNTg0GAIgASImCiQJzF-JvuFuOEARyF-JvuFuOMAZThRMqkU0RMAh9HZjS910YsAoAg`}
-                      target="_blank"
-                      rel="noopener"
-                    >
-                      {rowData.latlng}
-                    </a>
-                  ),
+                  render: (rowData) =>
+                    rowData.latlng !== "" ? (
+                      <Button
+                        startIcon={<GpsFixed />}
+                        variant="contained"
+                        href={`https://earth.google.com/web/search/${rowData.latlng}/@${rowData.latlng},75.78141996a,870.41248089d,35y,0h,45t,0r/data=ClQaKhIkGa36XG3FbkBAIVRSJ6CJkFTAKhAzMi44NjU0LC04Mi4yNTg0GAIgASImCiQJzF-JvuFuOEARyF-JvuFuOMAZThRMqkU0RMAh9HZjS910YsAoAg`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {rowData.latlng}
+                      </Button>
+                    ) : (
+                      ""
+                    ),
                   sorting: false,
                   grouping: false,
                 },
@@ -146,7 +152,6 @@ const AllDataTable = (props) => {
               title="Site Information"
               options={{
                 exportButton: true,
-                //   defaultExpanded: true,
                 exportFileName: "Site Information",
                 addRowPosition: "last",
                 exportAllData: true,
@@ -160,6 +165,19 @@ const AllDataTable = (props) => {
                 // pageSizeOptions: [5, 10, 20, 50, tableData.length],
                 groupRowSeparator: "  ",
                 grouping: true,
+                headerStyle: {
+                  fontWeight: "bold",
+                  fontFamily: "Roboto, sans-serif",
+                  fontSize: "1em",
+                  textAlign: "left",
+                },
+                selection: false,
+                searchAutoFocus: true,
+                toolbarButtonAlignment: "left",
+                maxBodyHeight: "750px",
+                // fixedColumns: {
+                //   left: 1,
+                // },
               }}
             />
           </Grid>
