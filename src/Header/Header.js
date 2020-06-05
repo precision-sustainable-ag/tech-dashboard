@@ -379,6 +379,18 @@ export default function Header(props) {
           <ListItem
             onClick={() => setOpen(false)}
             button
+            key={"All Data"}
+            component={Link}
+            to="/table"
+          >
+            <ListItemIcon>
+              <ViewList />
+            </ListItemIcon>
+            <ListItemText primary={"All Data"} />
+          </ListItem>
+          <ListItem
+            onClick={() => setOpen(false)}
+            button
             key={"Site Enrollment"}
             component={Link}
             to="/site-enroll"

@@ -9,12 +9,13 @@ import {
   CardActionArea,
   Box,
   Typography,
-  Paper
+  Paper,
 } from "@material-ui/core";
 import DataParser from "./DataParser";
 import * as Constants from "./hologramConstants";
 import { bannedRoles, apiCall } from "../utils/constants";
 import { apiUsername, apiPassword } from "../utils/api_secret";
+import { BannedRoleMessage } from "../utils/CustomComponents";
 
 // import moment from "moment-timezone";
 
@@ -72,10 +73,10 @@ const DevicesComponent = () => {
           } else {
             getTags(
               `${finalAPIURL}/api/1/devices/tags?limit=1000&withlocation=true`
-            ).then(tagsObject => {
+            ).then((tagsObject) => {
               // console.log("Tags Object: ", tagsObject);
               let tags = tagsObject.data.tags;
-              let matchedResult = tags.filter(obj => {
+              let matchedResult = tags.filter((obj) => {
                 if (deviceState.includes(obj.name)) return obj;
               });
               // console.log(matchedResult);
@@ -87,7 +88,7 @@ const DevicesComponent = () => {
                 return val.id;
               });
               // console.log(tagsId);
-              tagsId.forEach(tagId => {
+              tagsId.forEach((tagId) => {
                 fetchRecords(
                   `${finalAPIURL}/api/1/devices?tagid=${tagId}&withlocation=true`
                 ).then(() => {
@@ -115,28 +116,28 @@ const DevicesComponent = () => {
     // return () => clearInterval(interval);
   }, [state.userInfo]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const getTags = async apiURL => {
+  const getTags = async (apiURL) => {
     let options = Constants.APICreds();
     let tagsData = [];
-    await tagsApiCall(apiURL, options).then(response => {
+    await tagsApiCall(apiURL, options).then((response) => {
       // console.log(response);
       tagsData = response;
     });
     return tagsData;
   };
 
-  const fetchRecords = async apiURL => {
+  const fetchRecords = async (apiURL) => {
     let options = Constants.APICreds();
 
     await apiCall(apiURL, options)
-      .then(response => {
+      .then((response) => {
         // save whatever we get for a specific state or "all"
 
         devicesData.push(response.data.data);
 
         return response;
       })
-      .then(async response => {
+      .then(async (response) => {
         if (response.data.continues) {
           // recursive call to get more data
           await fetchRecords(`${finalAPIURL}${response.data.links.next}`);
@@ -147,11 +148,11 @@ const DevicesComponent = () => {
           // console.log("devicesFlatData", devicesFlatData);
           dispatch({
             type: "SET_DEVICES_INFO",
-            data: devicesFlatData
+            data: devicesFlatData,
           });
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   };
@@ -163,17 +164,17 @@ const DevicesComponent = () => {
       method: "post",
       url: Constants.apiCorsUrl,
       data: qs.stringify({
-        url: url
+        url: url,
       }),
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8"
+        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
       },
       auth: {
         username: apiUsername,
-        password: apiPassword
+        password: apiPassword,
       },
-      responseType: "json"
-    }).then(response => {
+      responseType: "json",
+    }).then((response) => {
       // console.log(response.data);
       tagsData = response.data;
     });
@@ -197,7 +198,7 @@ const DevicesComponent = () => {
     <div className="devicesWrapper">
       <div className="devicesListWrapper">
         {devicesLoadingState ? (
-          <Loading type="cubes" width="500px" height="500px" color="#3f51b5" />
+          <Loading type="bars" width="200px" height="200px" color="#3f51b5" />
         ) : (
           <div className="devices">
             {state.devices.map((device, index) =>
@@ -220,15 +221,7 @@ const DevicesComponent = () => {
       </div>
     </div>
   ) : (
-    <Box component={Paper} elevation={0}>
-      <Typography variant={"h6"} align="center">
-        Your access level does not permit this action. If think you are seeing
-        this as an error, please report this{" "}
-        <a href="mailto:saseehav@ncsu.edu?subject=Unable To See Devices on Tech Dashboard">
-          here
-        </a>
-      </Typography>
-    </Box>
+    <BannedRoleMessage title="Devices" />
   );
 };
 
