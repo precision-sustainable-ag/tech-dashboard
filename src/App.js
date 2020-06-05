@@ -264,7 +264,7 @@ function App() {
                 color="primary"
                 onClick={() => {
                   let params = {};
-                  loginWithPopup(params);
+                  loginWithRedirect(params);
                 }}
               >
                 Log in
