@@ -1,6 +1,7 @@
 import React from "react";
 import { withStyles, Switch, Box, Typography, Paper } from "@material-ui/core";
 import { primaryContactPerson } from "./api_secret";
+import Loading from "react-loading";
 
 export const AntSwitch = withStyles((theme) => ({
   root: {
@@ -54,4 +55,11 @@ export const BannedRoleMessage = (props) => {
       </Typography>
     </Box>
   );
+};
+
+export const CustomLoader = (props) => {
+  const width = props.width || "200px";
+  const height = props.height || "200px";
+  const color = props.color || "#3f51b5";
+  return <Loading type="bars" width={width} height={height} color={color} />;
 };
