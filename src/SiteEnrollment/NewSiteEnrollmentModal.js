@@ -7,6 +7,7 @@ import {
   Button,
   Dialog,
   AppBar,
+  Box,
   IconButton,
   Typography,
   List,
@@ -31,15 +32,27 @@ import {
   Avatar,
   CardContent,
   CardActions,
+  CircularProgress,
+  Stepper,
+  Step,
+  StepLabel,
+  MobileStepper,
+  CardActionArea,
+  Slider,
+  TextareaAutosize,
 } from "@material-ui/core";
-import { Close, Search, Save } from "@material-ui/icons";
+import { Close, Search, Save, Check, GpsFixed } from "@material-ui/icons";
 import { Alert, AlertTitle, Skeleton } from "@material-ui/lab";
 import Axios from "axios";
 import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
 import { Map, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { statesHash, fetchGrowerByLastName } from "../utils/constants";
+import { statesHash, fetchGrowerByLastName, ucFirst } from "../utils/constants";
+import NewSiteEnrollmentYears from "./NewSiteEnrollmentYears";
+import NewSiteEnrollmentAffiliations from "./NewSiteEnrollmentAffiliations";
+import Loading from "react-loading";
+import { CustomLoader } from "../utils/CustomComponents";
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -66,7 +79,26 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: theme.spacing(6),
     marginTop: theme.spacing(2),
   },
+  instructions: {
+    marginTop: theme.spacing(6),
+    marginBottom: theme.spacing(6),
+  },
+  button: {
+    marginRight: theme.spacing(1),
+  },
+  belowHeader: {
+    marginBottom: theme.spacing(3),
+  },
 }));
+
+const getSteps = () => {
+  return [
+    "Basic Information",
+    "Grower Information",
+    "Site Information",
+    "Confirmation",
+  ];
+};
 
 const NewSiteEnrollmentModal = (props) => {
   const classes = useStyles();
@@ -79,6 +111,11 @@ const NewSiteEnrollmentModal = (props) => {
 
   const [growerLatLng, setGrowerLatLng] = useState([35.7796, -78.6382]);
   const [growerState, setGrowerState] = useState("");
+
+  const [siteAffilitaion, setSiteAffiliation] = useState([]);
+
+  const [loading, setLoading] = useState(false);
+  const [ajaxProgress, setAjaxProgress] = useState(0);
 
   const [alert, setAlert] = useState({
     severity: "error",
@@ -94,12 +131,12 @@ const NewSiteEnrollmentModal = (props) => {
   const [siteCodesArray, setSiteCodesArray] = useState([]);
 
   const getGrowerInfoByLastName = (lastNameVal) => {
-    if (alert.show) {
-      setAlert({
-        ...alert,
-        show: false,
-      });
-    }
+    // if (alert.show) {
+    //   setAlert({
+    //     ...alert,
+    //     show: false,
+    //   });
+    // }
 
     // check if last name is NAN and length > 0
     if (lastNameVal !== "" && isNaN(lastNameVal)) {
@@ -208,9 +245,48 @@ const NewSiteEnrollmentModal = (props) => {
       },
     });
   };
+
+  const fetchSiteAffiliations = async () => {
+    return await Axios({
+      url: `${apiURL}/api/retrieve/grower/affiliation/all`,
+      method: "GET",
+      auth: {
+        username: apiUsername,
+        password: apiPassword,
+      },
+    });
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    let siteAffResponse = fetchSiteAffiliations();
+
+    siteAffResponse
+      .then((resp) => {
+        let data = resp.data.data;
+        let affs = [];
+        affs = data.map((aff) => {
+          return aff.affiliation;
+        });
+        setSiteAffiliation(affs);
+      })
+      .then(() => {
+        setLoading(false);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+
+    return () => {
+      setSiteAffiliation([]);
+      setLoading(false);
+      // setAjaxProgress(0);
+    };
+  }, []);
+
   const getSiteCodesForProducer = async (producerId) => {
     let fetchSitesPromise = await fetchSiteCodesForProducer(producerId);
-    let responseArr = await [];
+    let responseArr = [];
 
     let data = fetchSitesPromise.data.data;
     responseArr = data.map((r, i) => {
@@ -243,7 +319,154 @@ const NewSiteEnrollmentModal = (props) => {
   };
 
   //   useEffect(() => {}, [growerState]);
+  const [activeStep, setActiveStep] = useState(1);
+  const [skipped, setSkipped] = useState(new Set());
+  const steps = getSteps();
+  const isStepOptional = (step) => {
+    // return step === 1;
+    return false;
+  };
 
+  const isStepSkipped = (step) => {
+    return skipped.has(step);
+  };
+
+  const siteValidationCheck = () => {
+    // TODO:
+    return true;
+  };
+  const handleNext = () => {
+    if (activeStep === 1) {
+      if (
+        window.confirm(
+          "Are you sure you want to proceed? You can not revert back to this screen"
+        )
+      ) {
+        let newSkipped = skipped;
+        if (isStepSkipped(activeStep)) {
+          newSkipped = new Set(newSkipped.values());
+          newSkipped.delete(activeStep);
+        }
+
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        setSkipped(newSkipped);
+        if (activeStep === steps.length - 1) {
+          // save all info here and close the modal
+
+          props.handleClose();
+        }
+      } else {
+      }
+    } else if (activeStep === 2) {
+      if (completeEnrollmentInfo.sites.length === 0) {
+        window.alert("Please add sites!");
+      } else if (!siteValidationCheck(completeEnrollmentInfo.sites)) {
+        window.alert(
+          "Please make sure complete site information has been added"
+        );
+      } else {
+        let newSkipped = skipped;
+        if (isStepSkipped(activeStep)) {
+          newSkipped = new Set(newSkipped.values());
+          newSkipped.delete(activeStep);
+        }
+
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        setSkipped(newSkipped);
+        if (activeStep === steps.length - 1) {
+          // save all info here and close the modal
+
+          props.handleClose();
+        }
+      }
+    } else {
+      let newSkipped = skipped;
+      if (isStepSkipped(activeStep)) {
+        newSkipped = new Set(newSkipped.values());
+        newSkipped.delete(activeStep);
+      }
+
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      setSkipped(newSkipped);
+      if (activeStep === steps.length - 1) {
+        // save all info here and close the modal
+
+        props.handleClose();
+      }
+    }
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleSkip = () => {
+    if (!isStepOptional(activeStep)) {
+      // You probably want to guard against something like this,
+      // it should never occur unless someone's actively trying to break something.
+      throw new Error("You can't skip a step that isn't optional.");
+    }
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setSkipped((prevSkipped) => {
+      const newSkipped = new Set(prevSkipped.values());
+      newSkipped.add(activeStep);
+      return newSkipped;
+    });
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+  };
+
+  const getStepContent = (step) => {
+    switch (step) {
+      case 0:
+        return (
+          <BasicInfo
+            currentYear={props.defaultYear}
+            allAffiliations={siteAffilitaion}
+            completeEnrollmentInfo={completeEnrollmentInfo}
+            setCompleteEnrollmentInfo={setCompleteEnrollmentInfo}
+            nextBtnDisabled={nextBtnDisabled}
+            setNextBtnDisabled={setNextBtnDisabled}
+          />
+        );
+      case 1:
+        return (
+          <GrowerInfo
+            completeEnrollmentInfo={completeEnrollmentInfo}
+            setCompleteEnrollmentInfo={setCompleteEnrollmentInfo}
+            nextBtnDisabled={nextBtnDisabled}
+            setNextBtnDisabled={setNextBtnDisabled}
+          />
+        );
+      case 2:
+        return (
+          <SiteInfo
+            completeEnrollmentInfo={completeEnrollmentInfo}
+            setCompleteEnrollmentInfo={setCompleteEnrollmentInfo}
+            nextBtnDisabled={nextBtnDisabled}
+            setNextBtnDisabled={setNextBtnDisabled}
+          />
+        );
+      case 3:
+        return (
+          <ConfirmationStep
+            completeEnrollmentInfo={completeEnrollmentInfo}
+            setCompleteEnrollmentInfo={setCompleteEnrollmentInfo}
+          />
+        );
+      default:
+        return "Unknown step";
+    }
+  };
+
+  const [completeEnrollmentInfo, setCompleteEnrollmentInfo] = useState({
+    selectedYear: props.defaultYear,
+    selectedAffiliation: siteAffilitaion[0] || "NC",
+    sites: [],
+  });
+  const [nextBtnDisabled, setNextBtnDisabled] = useState(false);
   return (
     <div>
       <Dialog
@@ -265,203 +488,1097 @@ const NewSiteEnrollmentModal = (props) => {
             <Typography variant="h6" className={classes.title}>
               Enroll New Site
             </Typography>
-            <Button autoFocus color="inherit" onClick={handleFinalSave}>
+            {/* <Button autoFocus color="inherit" onClick={handleFinalSave}>
               save
-            </Button>
+            </Button> */}
           </Toolbar>
         </AppBar>
 
-        <Grid container className={classes.grid}>
-          <Grid item lg={12} style={{ marginBottom: "2em" }}>
-            <Typography variant="h4">Basic Information</Typography>
-            <Divider />
+        {loading ? (
+          <Grid
+            container
+            className={classes.grid}
+            alignItems="center"
+            justify="center"
+          >
+            <Grid item sm={12}>
+              <Box position="relative" display="inline-flex">
+                <CircularProgress variant="static" />
+              </Box>
+            </Grid>
           </Grid>
-          <Grid item lg={3} sm={12}>
-            <InputLabel id="select-year-helper-label">
-              Enrollment Year
-            </InputLabel>
-            <Select
-              labelId="select-year-helper-label"
-              id="select-year-helper"
-              value={year}
-              onChange={handleYearChange}
-            >
-              {renderYears()}
-            </Select>
-            <FormHelperText>Select enrollment year</FormHelperText>
-          </Grid>
-          <Grid item lg={3} sm={12}>
-            <InputLabel id="check-site-irrigation-label">
-              Irrigation on site?
-            </InputLabel>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={irrigation}
-                  onChange={handleIrrigationChange}
-                  color="primary"
-                />
-              }
-              label={irrigation ? "Yes" : "No"}
-            />
-          </Grid>
-          <Grid item lg={3} sm={12}>
-            <InputLabel id="select-partner-code-label">Affiliation</InputLabel>
-            <Select
-              labelId="select-partner-code-label"
-              id="select-partner-code"
-              value={year}
-              onChange={handleYearChange}
-            >
-              {renderYears()}
-            </Select>
-            {/* pull data from affiliation table */}
-            <FormHelperText>Lab or partner code</FormHelperText>
-          </Grid>
-          <Grid item lg={3} sm={12}></Grid>
-          <Grid item lg={12} style={{ marginBottom: "2em", marginTop: "2em" }}>
-            <Typography variant="h4">Grower Information</Typography>
-            <Divider />
-          </Grid>
-          <Grid item lg={12} style={{ marginBottom: "2em" }}>
-            <Typography variant="body1">
-              Search for grower last name and add if not available
-            </Typography>
+        ) : (
+          <Grid
+            container
+            className={classes.grid}
+            alignItems="center"
+            justify="center"
+          >
+            <Grid item lg={12}>
+              <Stepper
+                activeStep={activeStep}
+                steps={steps.length}
+                variant="elevation"
+              >
+                {steps.map((label, index) => {
+                  const stepProps = {};
+                  const labelProps = {};
+                  if (isStepOptional(index)) {
+                    labelProps.optional = (
+                      <Typography variant="caption">Optional</Typography>
+                    );
+                  }
+                  if (isStepSkipped(index)) {
+                    stepProps.completed = false;
+                  }
+                  return (
+                    <Step key={label} {...stepProps}>
+                      <StepLabel {...labelProps}>{label}</StepLabel>
+                    </Step>
+                  );
+                })}
+              </Stepper>
+            </Grid>
 
-            <TextField
-              label="Grower Last Name"
-              value={growerLastNameEntry}
-              onChange={(evt) => {
-                setGrowerLastNameEntry(evt.target.value);
-                getGrowerInfoByLastName(evt.target.value);
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment>
-                    <IconButton>
-                      <Search />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-            {alert.show ? (
-              <Alert severity={alert.severity}>
-                <AlertTitle>{alert.title}</AlertTitle>
-                {alert.body}
-              </Alert>
-            ) : (
-              ""
-            )}
-            {growerLastNameLoading ? (
-              <Grid container style={{ marginTop: "2em" }}>
-                <Grid item lg={3}>
-                  <Skeleton variant="rect" height="150px"></Skeleton>
-                </Grid>
-              </Grid>
-            ) : growerExists && growerLastNameEntry.length > 0 ? (
-              <Grid container style={{ marginTop: "2em" }}>
-                {growerInfo.map((grower, index) => (
-                  <Grid item lg={3} key={index} style={{ marginRight: "1em" }}>
-                    <Card>
-                      <CardHeader
-                        avatar={
-                          <Avatar aria-label="grower-last-name-initial">
-                            {grower.last_name.charAt(0)}
-                          </Avatar>
-                        }
-                        title={grower.last_name}
-                        //   subheader="September 14, 2016"
-                      />
-                      <CardContent>
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          component="p"
-                        >
-                          {/* get rid of email, keep phone? add all sites( site code) that belong to the farmer */}
-                          Phone: {grower.phone} <br />
-                          Producer ID: {grower.producer_id} <br />
-                          {/* Sites: {getSiteCodesForProducer(grower.producer_id)} */}
-                        </Typography>
-                      </CardContent>
-                      <CardActions>
-                        <Button size="small">Select</Button>
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
-            ) : (
-              ""
-            )}
-            {growerLastNameLoading ? (
-              ""
-            ) : growerExists ? (
-              ""
-            ) : (
-              <Grid container style={{ marginTop: "2em" }}>
-                <Grid item lg={12}>
-                  <Button onClick={() => setAddNewGrower(!addNewGrower)}>
-                    Add New Grower
+            <Grid item lg={12}>
+              {activeStep === steps.length ? (
+                <div>
+                  <Typography className={classes.instructions}>
+                    All steps completed - you&apos;re finished
+                  </Typography>
+                  <Button onClick={handleReset} className={classes.button}>
+                    Reset
                   </Button>
-                </Grid>
-                {addNewGrower ? (
-                  <Grid item lg={12}>
-                    <Grid container>
-                      <Grid item lg={4} style={{ paddingRight: "1em" }}>
-                        <Grid container spacing={2}>
-                          <Grid item lg={12}>
-                            <TextField
-                              style={{ width: "100%" }}
-                              label="Last Name"
-                              value={growerLastNameEntry}
-                              onChange={(evt) => {
-                                // setGrowerLastNameEntry(evt.target.value);
-                                // getGrowerInfoByLastName(evt.target.value);
-                              }}
-                            />
-                          </Grid>
-                          <Grid item lg={12}>
-                            <InputLabel id="select-total-sites-label">
-                              How Many Sites?
-                            </InputLabel>
-                            <Select
-                              labelId="select-total-sites-label"
-                              id="select-total-sites"
-                              value={1}
-                              defaultValue={1}
-                              onChange={(e) => {}}
-                              name="totalSites"
-                            >
-                              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(
-                                (val, index) => (
-                                  <MenuItem value={val} key={index}>
-                                    {val}
-                                  </MenuItem>
-                                )
-                              )}
-                            </Select>
-                            {/* pull data from affiliation table */}
-                            <FormHelperText>
-                              Total number of sites for this grower
-                            </FormHelperText>
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                      <Grid item lg={8} style={{ paddingLeft: "1em" }}></Grid>
+                </div>
+              ) : (
+                <Grid container justify="center">
+                  <Grid item className={classes.instructions} lg={12}>
+                    <Grid container justify="center" alignItems="center">
+                      {getStepContent(activeStep)}
                     </Grid>
                   </Grid>
-                ) : (
-                  ""
-                )}
-              </Grid>
-            )}
+                  <Grid item lg={12} style={{ paddingBottom: "2em" }}>
+                    {/* <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        marginTop: "3rem",
+                      }}
+                    > */}
+                    <Button
+                      disabled={activeStep === 0 || activeStep === 2}
+                      onClick={handleBack}
+                      className={classes.button}
+                    >
+                      Back
+                    </Button>
+
+                    {isStepOptional(activeStep) && (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSkip}
+                        className={classes.button}
+                      >
+                        Skip
+                      </Button>
+                    )}
+
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleNext}
+                      className={classes.button}
+                      disabled={nextBtnDisabled}
+                    >
+                      {activeStep === steps.length - 1 ? "Exit" : "Next"}
+                    </Button>
+                    {/* </div> */}
+                  </Grid>
+                </Grid>
+              )}
+            </Grid>
           </Grid>
-        </Grid>
+        )}
       </Dialog>
     </div>
   );
 };
+
+const GrowerInfo = (props) => {
+  const classes = useStyles();
+  const [currentBtn, setCurrentBtn] = useState(1);
+  const [growerBasicInfo, setGrowerBasicInfo] = useState({
+    collaborationStatus:
+      props.completeEnrollmentInfo.collaborationStatus || "University",
+    phone: props.completeEnrollmentInfo.phone || null,
+    producerId: props.completeEnrollmentInfo.producerId || "",
+    lastName: props.completeEnrollmentInfo.lastName || "",
+    email: props.completeEnrollmentInfo.email || "",
+  });
+  const [alert, setAlert] = useState({
+    show: false,
+    text: "",
+  });
+  const [growerLastNameSearch, setGrowerLastNameSearch] = useState("");
+  const [
+    growerLastNameSearchLoading,
+    setGrowerLastNameSearchLoading,
+  ] = useState(false);
+  const [growerInfoFetch, setGrowerInfoFetch] = useState([
+    new ExistingGrower("", "", "", "", ""),
+  ]);
+
+  const emailIsNotValid = (email) => {
+    return !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  useEffect(() => {
+    if (growerLastNameSearch.length >= 3) {
+      // start searching
+      setGrowerLastNameSearchLoading(true);
+
+      let lastNamePromise = fetchGrowerByLastName(growerLastNameSearch);
+      lastNamePromise
+        .then((resp) => {
+          let data = resp.data.data;
+          let growerArray = [];
+          if (data.length > 0) {
+            data.map((val) => {
+              console.log(val);
+              growerArray.push(
+                new ExistingGrower(
+                  val.collaboration_status,
+                  val.producer_id,
+                  val.last_name,
+                  val.email,
+                  val.phone
+                )
+              );
+            });
+            return growerArray;
+          } else return [new ExistingGrower("", "", "", "", "")];
+          // setGrowerInfoFetch(data);
+        })
+        .then((growerArray) => {
+          // console.log(growerArray);
+          setGrowerInfoFetch(growerArray);
+          setGrowerLastNameSearchLoading(false);
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    }
+  }, [growerLastNameSearch]);
+
+  useEffect(() => {
+    // reset growerBasicInfo
+
+    setGrowerBasicInfo({
+      collaborationStatus: "University",
+      phone: null,
+      producerId: "",
+    });
+    if (currentBtn === 0) {
+      if (Reflect.ownKeys(growerBasicInfo).length === 4) {
+        if (
+          growerBasicInfo.lastName.length === 0 ||
+          emailIsNotValid(growerBasicInfo.email) ||
+          growerBasicInfo.phone.length === 0 ||
+          growerBasicInfo.phone.length > 10
+        ) {
+          props.setNextBtnDisabled(true);
+        } else {
+          props.setNextBtnDisabled(false);
+          console.log("complete", {
+            ...props.completeEnrollmentInfo,
+            ...growerBasicInfo,
+          });
+          props.setCompleteEnrollmentInfo({
+            ...props.completeEnrollmentInfo,
+            ...growerBasicInfo,
+          });
+        }
+      } else {
+        props.setNextBtnDisabled(true);
+      }
+    } else {
+      props.setNextBtnDisabled(true);
+    }
+  }, [currentBtn]);
+  // disable next btn on component load
+  useEffect(() => {
+    props.setNextBtnDisabled(true);
+  }, []);
+
+  useEffect(() => {
+    // check if growerbasicinfo is complete, setNextBtnDisabled(false) if true
+
+    if (Reflect.ownKeys(growerBasicInfo).length >= 4) {
+      if (growerBasicInfo.lastName) {
+        if (growerBasicInfo.lastName.length === 0) {
+          props.setNextBtnDisabled(true);
+          setAlert({
+            show: true,
+            text: "Last Name cannont be empty",
+          });
+        } else {
+          props.setNextBtnDisabled(false);
+          console.log("complete", {
+            ...props.completeEnrollmentInfo,
+            ...growerBasicInfo,
+          });
+          props.setCompleteEnrollmentInfo({
+            ...props.completeEnrollmentInfo,
+            ...growerBasicInfo,
+          });
+        }
+      } else {
+        props.setNextBtnDisabled(true);
+        // setAlert({
+        //   show: true,
+        //   text: 'Last Name cannont be empty'
+        // })
+      }
+    }
+  }, [growerBasicInfo]);
+
+  return (
+    <Fragment>
+      <Grid item lg={12} className={classes.belowHeader}>
+        <Typography variant="h4">Grower Information</Typography>
+      </Grid>
+      <Grid item lg={12} className={classes.belowHeader}>
+        <Grid container spacing={4}>
+          <Grid item>
+            <Button
+              variant="contained"
+              color={currentBtn === 0 ? "primary" : "secondary"}
+              onClick={() => {
+                setCurrentBtn(0);
+              }}
+            >
+              Add New Grower
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button
+              variant="contained"
+              color={currentBtn === 0 ? "secondary" : "primary"}
+              onClick={() => {
+                setCurrentBtn(1);
+              }}
+            >
+              Add Existing Grower
+            </Button>
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item lg={12}>
+        {currentBtn === 0 ? (
+          <Grid container spacing={3}>
+            <Grid item lg={6} sm={12}>
+              <Grid container spacing={4}>
+                <Grid item lg={12}>
+                  <TextField
+                    fullWidth
+                    id="grower-last-name"
+                    label="Last Name"
+                    value={growerBasicInfo.lastName || ""}
+                    onChange={(event) => {
+                      setGrowerBasicInfo({
+                        ...growerBasicInfo,
+                        lastName: event.target.value,
+                      });
+                    }}
+                  />
+                </Grid>
+                <Grid item lg={12}>
+                  <TextField
+                    fullWidth
+                    id="grower-email"
+                    label="Email"
+                    type="email"
+                    value={growerBasicInfo.email || ""}
+                    onChange={(event) => {
+                      setGrowerBasicInfo({
+                        ...growerBasicInfo,
+                        email: event.target.value,
+                      });
+                    }}
+                  />
+                </Grid>
+                <Grid item lg={12}>
+                  <TextField
+                    fullWidth
+                    id="grower-phone"
+                    label="Phone"
+                    value={growerBasicInfo.phone || ""}
+                    onChange={(event) => {
+                      setGrowerBasicInfo({
+                        ...growerBasicInfo,
+                        phone: event.target.value,
+                      });
+                    }}
+                  />
+                </Grid>
+                <Grid item lg={12}>
+                  <Select
+                    fullWidth
+                    label="Collaboration Status"
+                    labelId="collab-status-select-label"
+                    id="collab-simple-select"
+                    value={growerBasicInfo.collaborationStatus || "University"}
+                    onChange={(event) => {
+                      setGrowerBasicInfo({
+                        ...growerBasicInfo,
+                        collaborationStatus: event.target.value,
+                      });
+                    }}
+                  >
+                    <MenuItem value="University">University</MenuItem>
+                    <MenuItem value="Partner">Partner</MenuItem>
+                  </Select>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item lg={12}>
+              <Grid container>
+                <Grid item lg={6} sm={12}>
+                  {alert.show ? (
+                    <Alert severity="error">{alert.text}</Alert>
+                  ) : (
+                    ""
+                  )}
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
+        ) : (
+          <Grid container spacing={3}>
+            <Grid item sm={12}>
+              <TextField
+                fullWidth
+                label="Search Growers By Last Name"
+                onChange={(event) => {
+                  setGrowerLastNameSearch(event.target.value);
+                }}
+              />
+            </Grid>
+            <Grid item sm={12}>
+              <Grid container spacing={4}>
+                {growerLastNameSearchLoading ? (
+                  <Skeleton variant="rect" height="300px" width="300px" />
+                ) : growerInfoFetch[0].collaborationStatus !== "" ? (
+                  growerInfoFetch.map((grower, index) => (
+                    <Grid item key={index}>
+                      <Card style={{ minWidth: "275" }}>
+                        <CardHeader
+                          avatar={
+                            <Avatar>
+                              {grower.lastName.charAt(0).toUpperCase()}
+                            </Avatar>
+                          }
+                          title={ucFirst(grower.lastName)}
+                        />
+
+                        <CardContent>
+                          <Grid container spacing={2}>
+                            <Grid item sm={6}>
+                              <Typography
+                                variant="body2"
+                                style={{ fontWeight: "bold" }}
+                              >
+                                Collaboration
+                              </Typography>
+                            </Grid>
+                            <Grid item sm={6}>
+                              <Typography variant="body2">
+                                {ucFirst(grower.collaborationStatus)}
+                              </Typography>
+                            </Grid>
+                            <Grid item sm={6}>
+                              <Typography
+                                variant="body2"
+                                style={{ fontWeight: "bold" }}
+                              >
+                                Producer ID
+                              </Typography>
+                            </Grid>
+                            <Grid item sm={6}>
+                              <Typography variant="body2">
+                                {ucFirst(grower.producerId)}
+                              </Typography>
+                            </Grid>
+                            <Grid item sm={6}>
+                              <Typography
+                                variant="body2"
+                                style={{ fontWeight: "bold" }}
+                              >
+                                Email
+                              </Typography>
+                            </Grid>
+                            <Grid item sm={6}>
+                              <Typography variant="body2">
+                                {ucFirst(grower.email)}
+                              </Typography>
+                            </Grid>
+                            <Grid item sm={6}>
+                              <Typography
+                                variant="body2"
+                                style={{ fontWeight: "bold" }}
+                              >
+                                Phone
+                              </Typography>
+                            </Grid>
+                            <Grid item sm={6}>
+                              <Typography variant="body2">
+                                {ucFirst(grower.phone)}
+                              </Typography>
+                            </Grid>
+                          </Grid>
+                        </CardContent>
+                        <CardActions>
+                          <Button
+                            startIcon={
+                              growerBasicInfo.producerId ===
+                              grower.producerId ? (
+                                <Check />
+                              ) : (
+                                <Save />
+                              )
+                            }
+                            size="small"
+                            color="primary"
+                            variant="contained"
+                            onClick={() => {
+                              setGrowerBasicInfo({
+                                collaborationStatus: grower.collaborationStatus,
+                                phone: grower.phone,
+                                email: grower.email,
+                                producerId: grower.producerId,
+                                lastName: grower.lastName,
+                              });
+                            }}
+                          >
+                            {growerBasicInfo.producerId === grower.producerId
+                              ? "Selected"
+                              : "Select"}
+                          </Button>
+                        </CardActions>
+                      </Card>
+                    </Grid>
+                  ))
+                ) : (
+                  ""
+                )}
+              </Grid>
+            </Grid>
+          </Grid>
+        )}
+      </Grid>
+      {/* <Grid item lg={12} sm={12} style={{ marginTop: "2em" }}>
+        <Grid container>
+          <Grid item lg={6}>
+            <Alert variant="outlined" severity="info">
+              Make sure that you have completed your selection uptill here. You
+              cannot revert back after clicking "Next"
+            </Alert>
+          </Grid>
+        </Grid>
+      </Grid> */}
+    </Fragment>
+  );
+};
+
+const BasicInfo = (props) => {
+  const classes = useStyles();
+  const [selectedYear, setSelectedYear] = useState(props.currentYear);
+  const [selectedAffiliation, setSelectedAffiliation] = useState(
+    props.allAffiliations[0]
+  );
+  useEffect(() => {
+    props.setNextBtnDisabled(false);
+  }, []);
+  return (
+    <Fragment>
+      <Grid item lg={12} className={classes.belowHeader}>
+        <Typography variant="h4">Basic Information</Typography>
+      </Grid>
+      <Grid item lg={6}>
+        <NewSiteEnrollmentYears
+          currentYear={props.currentYear}
+          completeEnrollmentInfo={props.completeEnrollmentInfo}
+          setCompleteEnrollmentInfo={props.setCompleteEnrollmentInfo}
+          selectedYear={selectedYear}
+          setSelectedYear={setSelectedYear}
+        />
+      </Grid>
+      <Grid item lg={6}>
+        <NewSiteEnrollmentAffiliations
+          allAffiliations={props.allAffiliations}
+          selectedAffiliation={selectedAffiliation}
+          setSelectedAffiliation={setSelectedAffiliation}
+          completeEnrollmentInfo={props.completeEnrollmentInfo}
+          setCompleteEnrollmentInfo={props.setCompleteEnrollmentInfo}
+        />
+      </Grid>
+    </Fragment>
+  );
+};
+
+const SiteInfo = (props) => {
+  const completeEnrollmentInfo = props.completeEnrollmentInfo;
+  const classes = useStyles();
+  const [numberOfSites, setNumberOfSites] = useState(1);
+  const [sites, setSites] = useState([new SiteInformation({})]);
+  const marks = [
+    {
+      value: 0,
+      label: "None",
+    },
+    {
+      value: 1,
+      label: "One",
+    },
+    {
+      value: 2,
+      label: "Two",
+    },
+    {
+      value: 3,
+      label: "Three",
+    },
+    {
+      value: 4,
+      label: "Four",
+    },
+    {
+      value: 5,
+      label: "Five",
+    },
+    {
+      value: 6,
+      label: "Six",
+    },
+    {
+      value: 7,
+      label: "Seven",
+    },
+    {
+      value: 8,
+      label: "Eight",
+    },
+    {
+      value: 9,
+      label: "Nine",
+    },
+    {
+      value: 10,
+      label: "Ten",
+    },
+  ];
+
+  const fetchSiteCodes = async (size) => {
+    return await Axios({
+      url: `${apiURL}/api/sites/codes/unused/${size}`,
+      method: "GET",
+      auth: {
+        username: apiUsername,
+        password: apiPassword,
+      },
+    });
+  };
+
+  // useEffect(() => {
+  //   // get unused site code for 1 site
+  //   async function fetchCode() {
+  //     let siteCodesPromise = await fetchSiteCodes(1);
+  //     let code = siteCodesPromise.data.data;
+  //     console.log(code);
+  //     setSites(
+  //       new SiteInformation({
+  //         ...sites[0],
+  //         code: code[0],
+  //       })
+  //     );
+  //     props.setCompleteEnrollmentInfo({
+  //       ...completeEnrollmentInfo,
+  //       sites: [
+  //         new SiteInformation({
+  //           code: code[0],
+  //           ...sites[0],
+  //         }),
+  //       ],
+  //     });
+  //   }
+
+  //   fetchCode();
+  // }, []);
+
+  useEffect(() => {
+    let sitesArr = [];
+    let siteCodesPromise = fetchSiteCodes(numberOfSites);
+    siteCodesPromise
+      .then((resp) => {
+        let codes = resp.data.data;
+        for (let i = 0; i < numberOfSites; i++) {
+          sitesArr.push(
+            new SiteInformation({
+              code: codes[i],
+              year: props.completeEnrollmentInfo.selectedYear || "",
+              affiliation:
+                props.completeEnrollmentInfo.selectedAffiliation || "",
+              county: "",
+              latitude: null,
+              longitude: null,
+              address: "",
+              notes: "",
+              producer_id: props.completeEnrollmentInfo.producerId || "",
+              additional_contact: "",
+              irrigation: false,
+            })
+          );
+        }
+        setSites(sitesArr);
+        props.setCompleteEnrollmentInfo({
+          ...completeEnrollmentInfo,
+          sites: sitesArr,
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, [numberOfSites]);
+
+  // useEffect(() => {
+
+  // }, [sites]);
+
+  return (
+    <Fragment>
+      <Grid
+        item
+        lg={12}
+        lg={12}
+        sm={12}
+        xs={12}
+        className={classes.belowHeader}
+      >
+        <Typography variant="h4">Site Information for </Typography>
+      </Grid>
+      <Grid item lg={12} sm={12} xs={12}>
+        <Typography gutterBottom>Number of sites</Typography>
+        <Slider
+          min={1}
+          max={10}
+          marks={marks}
+          valueLabelDisplay="auto"
+          defaultValue={1}
+          value={numberOfSites}
+          onChange={(event, newVal) => {
+            setNumberOfSites(newVal);
+          }}
+        />
+      </Grid>
+      <Grid container spacing={6} style={{ paddingTop: "50px" }}>
+        {sites.length > 0 && sites[0].code !== ""
+          ? sites.map((site, index) => (
+              <Grid item lg={4} xs={12} md={6} key={`siteGrid-${index}`}>
+                <div
+                  style={{
+                    padding: "1em",
+                    // boxShadow:
+                    // "1px 1px 0px #999,2px 2px 0px #999,3px 3px 0px #999,4px 4px 0px #999,5px 5px 0px #999,6px 6px 0px #999",
+                    borderRadius: "10px",
+                    boxShadow:
+                      "inset 0 3px 6px rgba(0,0,0,0.16), 0 4px 6px rgba(0,0,0,0.45)",
+                  }}
+                >
+                  <Typography
+                    variant="h3"
+                    gutterBottom
+                    align="left"
+                    style={{ fontWeight: "bold" }}
+                  >
+                    {site.code}
+                  </Typography>
+                  <Grid container spacing={3}>
+                    <Grid item sm={4}>
+                      <Typography
+                        variant="body1"
+                        style={{ fontWeight: "bold" }}
+                      >
+                        Year
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={8}>
+                      <Typography variant="body2">{site.year}</Typography>
+                    </Grid>
+                    <Grid item sm={4}>
+                      <Typography
+                        variant="body1"
+                        style={{ fontWeight: "bold" }}
+                      >
+                        Affiliation
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={8}>
+                      <Typography variant="body2">
+                        {site.affiliation}
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={12}>
+                      <Divider />
+                    </Grid>
+
+                    {/* Dynamic Variables */}
+                    <Grid item sm={4}>
+                      <Typography
+                        variant="body1"
+                        style={{ fontWeight: "bold" }}
+                      >
+                        Irrigation
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={8}>
+                      <Switch
+                        color="primary"
+                        checked={site.irrigation}
+                        onChange={(event) => {
+                          const newObj = sites.map((obj) =>
+                            obj.code === site.code
+                              ? { ...obj, irrigation: event.target.checked }
+                              : obj
+                          );
+                          const newGlobalObj = props.completeEnrollmentInfo.sites.map(
+                            (obj) =>
+                              obj.code === site.code
+                                ? { ...obj, irrigation: event.target.checked }
+                                : obj
+                          );
+                          props.setCompleteEnrollmentInfo({
+                            ...completeEnrollmentInfo,
+                            sites: newGlobalObj,
+                          });
+                          setSites(newObj);
+                        }}
+                      />
+                    </Grid>
+                    <Grid item sm={4}>
+                      <Typography
+                        variant="body1"
+                        style={{ fontWeight: "bold" }}
+                      >
+                        Address
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={8}>
+                      <TextField
+                        fullWidth
+                        value={site.address}
+                        onChange={(event) => {
+                          const newObj = sites.map((obj) =>
+                            obj.code === site.code
+                              ? { ...obj, address: event.target.value }
+                              : obj
+                          );
+                          const newGlobalObj = props.completeEnrollmentInfo.sites.map(
+                            (obj) =>
+                              obj.code === site.code
+                                ? { ...obj, address: event.target.value }
+                                : obj
+                          );
+                          props.setCompleteEnrollmentInfo({
+                            ...completeEnrollmentInfo,
+                            sites: newGlobalObj,
+                          });
+                          setSites(newObj);
+                        }}
+                      />
+                    </Grid>
+
+                    <Grid item sm={4}>
+                      <Typography
+                        variant="body1"
+                        style={{ fontWeight: "bold" }}
+                      >
+                        County
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={8}>
+                      <TextField
+                        fullWidth
+                        value={site.county}
+                        onChange={(event) => {
+                          const newObj = sites.map((obj) =>
+                            obj.code === site.code
+                              ? { ...obj, county: event.target.value }
+                              : obj
+                          );
+                          const newGlobalObj = props.completeEnrollmentInfo.sites.map(
+                            (obj) =>
+                              obj.code === site.code
+                                ? { ...obj, county: event.target.value }
+                                : obj
+                          );
+                          props.setCompleteEnrollmentInfo({
+                            ...completeEnrollmentInfo,
+                            sites: newGlobalObj,
+                          });
+                          setSites(newObj);
+                        }}
+                      />
+                    </Grid>
+                    <Grid item sm={4}>
+                      <Typography
+                        variant="body1"
+                        style={{ fontWeight: "bold" }}
+                      >
+                        Latitude
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={8}>
+                      <Input
+                        fullWidth
+                        startAdornment={
+                          <InputAdornment>
+                            <IconButton
+                              onClick={() => {
+                                // window.navigator.geolocation.getCurrentPosition()
+                              }}
+                            >
+                              <GpsFixed />
+                            </IconButton>
+                          </InputAdornment>
+                        }
+                        value={site.latitide}
+                        onChange={(event) => {
+                          const newObj = sites.map((obj) =>
+                            obj.code === site.code
+                              ? { ...obj, latitide: event.target.value }
+                              : obj
+                          );
+                          const newGlobalObj = props.completeEnrollmentInfo.sites.map(
+                            (obj) =>
+                              obj.code === site.code
+                                ? { ...obj, latitide: event.target.value }
+                                : obj
+                          );
+                          props.setCompleteEnrollmentInfo({
+                            ...completeEnrollmentInfo,
+                            sites: newGlobalObj,
+                          });
+                          setSites(newObj);
+                        }}
+                      />
+                    </Grid>
+                    <Grid item sm={4}>
+                      <Typography
+                        variant="body1"
+                        style={{ fontWeight: "bold" }}
+                      >
+                        Longitude
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={8}>
+                      <Input
+                        fullWidth
+                        startAdornment={
+                          <InputAdornment>
+                            <IconButton>
+                              <GpsFixed />
+                            </IconButton>
+                          </InputAdornment>
+                        }
+                        value={site.longitude}
+                        onChange={(event) => {
+                          const newObj = sites.map((obj) =>
+                            obj.code === site.code
+                              ? { ...obj, longitude: event.target.value }
+                              : obj
+                          );
+                          const newGlobalObj = props.completeEnrollmentInfo.sites.map(
+                            (obj) =>
+                              obj.code === site.code
+                                ? { ...obj, longitude: event.target.value }
+                                : obj
+                          );
+                          props.setCompleteEnrollmentInfo({
+                            ...completeEnrollmentInfo,
+                            sites: newGlobalObj,
+                          });
+                          setSites(newObj);
+                        }}
+                      />
+                    </Grid>
+                    <Grid item sm={4}>
+                      <Typography
+                        variant="body1"
+                        style={{ fontWeight: "bold" }}
+                      >
+                        Additional Contact
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={8}>
+                      <TextField
+                        fullWidth
+                        multiline={true}
+                        value={site.additionalContact}
+                        onChange={(event) => {
+                          const newObj = sites.map((obj) =>
+                            obj.code === site.code
+                              ? {
+                                  ...obj,
+                                  additionalContact: event.target.value,
+                                }
+                              : obj
+                          );
+                          const newGlobalObj = props.completeEnrollmentInfo.sites.map(
+                            (obj) =>
+                              obj.code === site.code
+                                ? {
+                                    ...obj,
+                                    additionalContact: event.target.value,
+                                  }
+                                : obj
+                          );
+                          props.setCompleteEnrollmentInfo({
+                            ...completeEnrollmentInfo,
+                            sites: newGlobalObj,
+                          });
+                          setSites(newObj);
+                        }}
+                      />
+                    </Grid>
+                    <Grid item sm={4}>
+                      <Typography
+                        variant="body1"
+                        style={{ fontWeight: "bold" }}
+                      >
+                        Notes
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={8}>
+                      <TextField
+                        fullWidth
+                        multiline={true}
+                        value={site.notes}
+                        onChange={(event) => {
+                          const newObj = sites.map((obj) =>
+                            obj.code === site.code
+                              ? { ...obj, notes: event.target.value }
+                              : obj
+                          );
+                          const newGlobalObj = props.completeEnrollmentInfo.sites.map(
+                            (obj) =>
+                              obj.code === site.code
+                                ? { ...obj, notes: event.target.value }
+                                : obj
+                          );
+                          props.setCompleteEnrollmentInfo({
+                            ...completeEnrollmentInfo,
+                            sites: newGlobalObj,
+                          });
+                          setSites(newObj);
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+                </div>
+              </Grid>
+            ))
+          : ""}
+      </Grid>
+    </Fragment>
+  );
+};
+
+const ConfirmationStep = (props) => {
+  const classes = useStyles();
+  const [saving, setSaving] = useState(false);
+
+  return (
+    <Fragment>
+      <Grid item lg={12} xs={12}>
+        <Typography variant="h4" gutterBottom>
+          Confirmation
+        </Typography>
+      </Grid>
+      {saving ? (
+        <Grid container style={{ paddingTop: "2em" }} spacing={2}>
+          <Grid item xs={6}>
+            <Typography variant="body1">
+              Please wait while site Information is being saved..
+            </Typography>
+            <CustomLoader width="100px" height="100px" />
+          </Grid>
+          <Grid item xs={6}></Grid>
+        </Grid>
+      ) : (
+        <Grid
+          container
+          spacing={3}
+          style={{ paddingTop: "2em" }}
+          justify="center"
+        >
+          <Grid item xs={12}>
+            <Typography variant="subtitle1" gutterBottom>
+              All information has been successfully saved!
+            </Typography>
+            <Typography variant="subtitle2">
+              You may now exit or go back to add more sites for the producer
+            </Typography>
+          </Grid>
+          <Grid item xs={12}></Grid>
+        </Grid>
+      )}
+    </Fragment>
+  );
+};
+
+class ExistingGrower {
+  collaborationStatus = "";
+  producerId = "";
+  lastName = "";
+  email = "";
+  phone = "";
+
+  constructor(collaborationStatus, producerId, lastName, email, phone) {
+    this.collaborationStatus = collaborationStatus;
+    this.producerId = producerId;
+    this.lastName = lastName;
+    this.email = email;
+    this.phone = phone;
+  }
+}
+
+class SiteInformation {
+  code = "";
+  year = "";
+  affiliation = "";
+  county = "";
+  longitude = -79.2777;
+  latitide = 34.5356;
+  notes = "";
+  additionalContact = "";
+  producerId = "";
+  address = "";
+  irrigation = false;
+
+  constructor(obj) {
+    this.code = obj.code || "";
+    this.year = obj.year || "";
+    this.affiliation = obj.affiliation || "";
+    this.county = obj.county || "";
+    this.latitide = obj.latitude || "";
+    this.longitude = obj.longitude || "";
+    this.notes = obj.notes || "";
+    this.additionalContact = obj.additional_contact || "";
+    this.producerId = obj.producer_id || "";
+    this.address = obj.address || "";
+    this.irrigation = obj.irrigation || false;
+  }
+}
 
 export default NewSiteEnrollmentModal;
