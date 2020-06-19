@@ -1,4 +1,5 @@
 import React, { useState, Fragment, useEffect } from "react";
+
 import {
   Modal,
   Fade,
@@ -53,7 +54,7 @@ import NewSiteEnrollmentYears from "./NewSiteEnrollmentYears";
 import NewSiteEnrollmentAffiliations from "./NewSiteEnrollmentAffiliations";
 import Loading from "react-loading";
 import { CustomLoader } from "../utils/CustomComponents";
-
+const qs = require("qs");
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
@@ -235,17 +236,6 @@ const NewSiteEnrollmentModal = (props) => {
     }
   };
 
-  const fetchSiteCodesForProducer = async (producerId) => {
-    return await Axios({
-      url: `${apiURL}/api/retrieve/site/codes/by/producer/${producerId}`,
-      method: "get",
-      auth: {
-        username: apiUsername,
-        password: apiPassword,
-      },
-    });
-  };
-
   const fetchSiteAffiliations = async () => {
     return await Axios({
       url: `${apiURL}/api/retrieve/grower/affiliation/all`,
@@ -284,42 +274,8 @@ const NewSiteEnrollmentModal = (props) => {
     };
   }, []);
 
-  const getSiteCodesForProducer = async (producerId) => {
-    let fetchSitesPromise = await fetchSiteCodesForProducer(producerId);
-    let responseArr = [];
-
-    let data = fetchSitesPromise.data.data;
-    responseArr = data.map((r, i) => {
-      return r.code;
-    });
-
-    console.log(responseArr);
-
-    //  responseArr.map((el, i) => {
-    //   return <span key={i}>{el}</span>;
-    // });
-    return <span key={0}>{"hi"}</span>;
-    // let responseArrCodes = await fetchSitesPromise
-    //   .then((resp) => {
-    //     let data = resp.data.data;
-    //     // console.log(data);
-    //     responseArr = data.map((r, i) => {
-    //       return r.code;
-    //     });
-    //   })
-    //   .catch((e) => {
-    //     console.error(e);
-    //     responseArr = ["Error.."];
-    //   });
-    // console.log(responseArr);
-
-    // responseArr.map((el, i) => {
-    //   return <span key={i}>{el}</span>;
-    // });
-  };
-
   //   useEffect(() => {}, [growerState]);
-  const [activeStep, setActiveStep] = useState(1);
+  const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set());
   const steps = getSteps();
   const isStepOptional = (step) => {
@@ -350,11 +306,6 @@ const NewSiteEnrollmentModal = (props) => {
 
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
         setSkipped(newSkipped);
-        if (activeStep === steps.length - 1) {
-          // save all info here and close the modal
-
-          props.handleClose();
-        }
       } else {
       }
     } else if (activeStep === 2) {
@@ -373,11 +324,6 @@ const NewSiteEnrollmentModal = (props) => {
 
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
         setSkipped(newSkipped);
-        if (activeStep === steps.length - 1) {
-          // save all info here and close the modal
-
-          props.handleClose();
-        }
       }
     } else {
       let newSkipped = skipped;
@@ -389,7 +335,13 @@ const NewSiteEnrollmentModal = (props) => {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
       setSkipped(newSkipped);
       if (activeStep === steps.length - 1) {
-        // save all info here and close the modal
+        // reset and close
+        handleReset();
+        setCompleteEnrollmentInfo({
+          selectedYear: props.defaultYear,
+          selectedAffiliation: siteAffilitaion[0] || "NC",
+          sites: [],
+        });
 
         props.handleClose();
       }
@@ -454,6 +406,8 @@ const NewSiteEnrollmentModal = (props) => {
           <ConfirmationStep
             completeEnrollmentInfo={completeEnrollmentInfo}
             setCompleteEnrollmentInfo={setCompleteEnrollmentInfo}
+            nextBtnDisabled={nextBtnDisabled}
+            setNextBtnDisabled={setNextBtnDisabled}
           />
         );
       default:
@@ -591,7 +545,7 @@ const NewSiteEnrollmentModal = (props) => {
                       className={classes.button}
                       disabled={nextBtnDisabled}
                     >
-                      {activeStep === steps.length - 1 ? "Exit" : "Next"}
+                      {activeStep === steps.length - 1 ? "Finish" : "Next"}
                     </Button>
                     {/* </div> */}
                   </Grid>
@@ -608,6 +562,7 @@ const NewSiteEnrollmentModal = (props) => {
 const GrowerInfo = (props) => {
   const classes = useStyles();
   const [currentBtn, setCurrentBtn] = useState(1);
+  const [producerCodes, setProducerCodes] = useState([]);
   const [growerBasicInfo, setGrowerBasicInfo] = useState({
     collaborationStatus:
       props.completeEnrollmentInfo.collaborationStatus || "University",
@@ -645,7 +600,7 @@ const GrowerInfo = (props) => {
           let growerArray = [];
           if (data.length > 0) {
             data.map((val) => {
-              console.log(val);
+              // console.log(val);
               growerArray.push(
                 new ExistingGrower(
                   val.collaboration_status,
@@ -690,10 +645,10 @@ const GrowerInfo = (props) => {
           props.setNextBtnDisabled(true);
         } else {
           props.setNextBtnDisabled(false);
-          console.log("complete", {
-            ...props.completeEnrollmentInfo,
-            ...growerBasicInfo,
-          });
+          // console.log("complete", {
+          //             ...props.completeEnrollmentInfo,
+          //             ...growerBasicInfo,
+          //           });
           props.setCompleteEnrollmentInfo({
             ...props.completeEnrollmentInfo,
             ...growerBasicInfo,
@@ -724,14 +679,16 @@ const GrowerInfo = (props) => {
           });
         } else {
           props.setNextBtnDisabled(false);
-          console.log("complete", {
-            ...props.completeEnrollmentInfo,
-            ...growerBasicInfo,
-          });
+          // console.log("complete", {
+          //   ...props.completeEnrollmentInfo,
+          //   ...growerBasicInfo,
+          // });
           props.setCompleteEnrollmentInfo({
             ...props.completeEnrollmentInfo,
             ...growerBasicInfo,
           });
+
+          // setProducerCodes(getSiteCodesForProducer(growerBasicInfo.producerId))
         }
       } else {
         props.setNextBtnDisabled(true);
@@ -743,6 +700,55 @@ const GrowerInfo = (props) => {
     }
   }, [growerBasicInfo]);
 
+  const getSiteCodesForProducer = async (producerId) => {
+    // let producerId = props.producerId;
+    let fetchSitesPromise = await fetchSiteCodesForProducer(producerId);
+    let codes = [];
+    let data = fetchSitesPromise.data.data;
+    codes = data.map((r, i) => {
+      return r.code;
+    });
+    // let ele = [];
+    //  codes.forEach((code, index) => {
+    //    ele.push(<span key={index}>{code}</span>);
+    // });
+    // console.log(ele);
+    let str = `siteCodesFor${producerId}`;
+    setProducerCodes([codes.toString()]);
+    // console.log(str);
+    // document.getElementById(str).innerHTML = codes.toString();
+    // return codes;
+
+    // console.log(responseArr);
+
+    //  responseArr.map((el, i) => {
+    //   return <span key={i}>{el}</span>;
+    // // });
+    // return (
+    //   <div>
+    //     {producerCodes.map((code, index) => (
+    //       <span key={index}>{code}</span>
+    //     ))}
+    //   </div>
+    // );
+    // let responseArrCodes = await fetchSitesPromise
+    //   .then((resp) => {
+    //     let data = resp.data.data;
+    //     // console.log(data);
+    //     responseArr = data.map((r, i) => {
+    //       return r.code;
+    //     });
+    //   })
+    //   .catch((e) => {
+    //     console.error(e);
+    //     responseArr = ["Error.."];
+    //   });
+    // console.log(responseArr);
+
+    // responseArr.map((el, i) => {
+    //   return <span key={i}>{el}</span>;
+    // });
+  };
   return (
     <Fragment>
       <Grid item lg={12} className={classes.belowHeader}>
@@ -769,7 +775,7 @@ const GrowerInfo = (props) => {
                 setCurrentBtn(1);
               }}
             >
-              Add Existing Grower
+              Use Existing Grower
             </Button>
           </Grid>
         </Grid>
@@ -871,7 +877,7 @@ const GrowerInfo = (props) => {
                   <Skeleton variant="rect" height="300px" width="300px" />
                 ) : growerInfoFetch[0].collaborationStatus !== "" ? (
                   growerInfoFetch.map((grower, index) => (
-                    <Grid item key={index}>
+                    <Grid item key={index} lg={4}>
                       <Card style={{ minWidth: "275" }}>
                         <CardHeader
                           avatar={
@@ -935,6 +941,25 @@ const GrowerInfo = (props) => {
                               <Typography variant="body2">
                                 {ucFirst(grower.phone)}
                               </Typography>
+                            </Grid>
+                            <Grid item sm={6}>
+                              <Button
+                                size="small"
+                                onClick={() => {
+                                  getSiteCodesForProducer(grower.producerId);
+                                }}
+                              >
+                                Show Sites{" "}
+                              </Button>
+                            </Grid>
+                            <Grid item sm={6}>
+                              <code style={{ overflowWrap: "break-word" }}>
+                                {producerCodes}
+                              </code>
+                              {/* {getSiteCodesForProducer(grower.producerId)} */}
+                              {/* <SiteCodesForProducer
+                                producerId={grower.producerId}
+                              /> */}
                             </Grid>
                           </Grid>
                         </CardContent>
@@ -1029,6 +1054,10 @@ const BasicInfo = (props) => {
 
 const SiteInfo = (props) => {
   const completeEnrollmentInfo = props.completeEnrollmentInfo;
+  const producerLastName = props.completeEnrollmentInfo.lastName;
+  const [producerId, setProducerId] = useState(
+    props.completeEnrollmentInfo.producerId
+  );
   const classes = useStyles();
   const [numberOfSites, setNumberOfSites] = useState(1);
   const [sites, setSites] = useState([new SiteInformation({})]);
@@ -1079,46 +1108,101 @@ const SiteInfo = (props) => {
     },
   ];
 
-  const fetchSiteCodes = async (size) => {
+  const fetchProducerId = async () => {
+    let dataObject = {
+      lastName: props.completeEnrollmentInfo.lastName,
+      email: props.completeEnrollmentInfo.email,
+      phone: props.completeEnrollmentInfo.phone,
+      year: props.completeEnrollmentInfo.selectedYear,
+      affiliation: props.completeEnrollmentInfo.selectedAffiliation,
+      collaborationStatus: props.completeEnrollmentInfo.collaborationStatus,
+    };
+    let dataString = qs.stringify(dataObject);
     return await Axios({
-      url: `${apiURL}/api/sites/codes/unused/${size}`,
-      method: "GET",
+      method: "POST",
+      url: `${apiURL}/api/growers/add`,
+      data: dataString,
       auth: {
         username: apiUsername,
         password: apiPassword,
       },
+      headers: {
+        "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+      },
     });
   };
 
-  // useEffect(() => {
-  //   // get unused site code for 1 site
-  //   async function fetchCode() {
-  //     let siteCodesPromise = await fetchSiteCodes(1);
-  //     let code = siteCodesPromise.data.data;
-  //     console.log(code);
-  //     setSites(
-  //       new SiteInformation({
-  //         ...sites[0],
-  //         code: code[0],
-  //       })
-  //     );
-  //     props.setCompleteEnrollmentInfo({
-  //       ...completeEnrollmentInfo,
-  //       sites: [
-  //         new SiteInformation({
-  //           code: code[0],
-  //           ...sites[0],
-  //         }),
-  //       ],
-  //     });
-  //   }
+  useEffect(() => {
+    function initialize() {
+      if (producerId === "") {
+        let producerIdsPromise = fetchProducerId();
 
-  //   fetchCode();
-  // }, []);
+        producerIdsPromise
+          .then((resp) => {
+            if (resp.data.status === "success") {
+              let producerId = resp.data.producerId;
+              return producerId;
+            }
+          })
+          .then((producerId) => {
+            // set states
+            setProducerId(producerId);
+            props.setCompleteEnrollmentInfo({
+              ...completeEnrollmentInfo,
+              producerId: producerId,
+            });
+          })
+          .catch((e) => {
+            console.error(e);
+          });
+      }
+
+      if (completeEnrollmentInfo.sites.length === 0) {
+        let sitesArr = [];
+        let siteCodesPromise = fetchSiteCodes(numberOfSites);
+
+        siteCodesPromise
+          .then((resp) => {
+            let codes = resp.data.data;
+            for (let i = 0; i < numberOfSites; i++) {
+              sitesArr.push(
+                new SiteInformation({
+                  code: codes[i],
+                  year: props.completeEnrollmentInfo.selectedYear || "",
+                  affiliation:
+                    props.completeEnrollmentInfo.selectedAffiliation || "",
+                  county: "",
+                  latitude: null,
+                  longitude: null,
+                  address: "",
+                  notes: "",
+                  producer_id: producerId || "",
+                  additional_contact: "",
+                  irrigation: false,
+                })
+              );
+            }
+            setSites(sitesArr);
+            props.setCompleteEnrollmentInfo({
+              ...completeEnrollmentInfo,
+              sites: sitesArr,
+            });
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } else {
+        console.log("site length", completeEnrollmentInfo.sites.length);
+      }
+    }
+
+    initialize();
+  }, []);
 
   useEffect(() => {
     let sitesArr = [];
     let siteCodesPromise = fetchSiteCodes(numberOfSites);
+
     siteCodesPromise
       .then((resp) => {
         let codes = resp.data.data;
@@ -1134,7 +1218,7 @@ const SiteInfo = (props) => {
               longitude: null,
               address: "",
               notes: "",
-              producer_id: props.completeEnrollmentInfo.producerId || "",
+              producer_id: producerId || "",
               additional_contact: "",
               irrigation: false,
             })
@@ -1165,7 +1249,9 @@ const SiteInfo = (props) => {
         xs={12}
         className={classes.belowHeader}
       >
-        <Typography variant="h4">Site Information for </Typography>
+        <Typography variant="h4">
+          Site Information for {producerLastName}[{producerId}]
+        </Typography>
       </Grid>
       <Grid item lg={12} sm={12} xs={12}>
         <Typography gutterBottom>Number of sites</Typography>
@@ -1497,6 +1583,108 @@ const SiteInfo = (props) => {
 const ConfirmationStep = (props) => {
   const classes = useStyles();
   const [saving, setSaving] = useState(false);
+  const [confirmation, setConfirmation] = useState(true);
+  const completeEnrollmentInfo = props.completeEnrollmentInfo;
+  const [times, setTimes] = useState(0);
+  useEffect(() => {
+    props.setNextBtnDisabled(true);
+    renderTableFromJSON(completeEnrollmentInfo.sites);
+  }, []);
+
+  const finalConfirm = () => {
+    // save sites
+    /* /api/sites/add */
+    setSaving(true);
+    setConfirmation(false);
+
+    completeEnrollmentInfo.sites.forEach((site, index) => {
+      let dataObject = {
+        producerId: props.completeEnrollmentInfo.producerId,
+        year: props.completeEnrollmentInfo.selectedYear,
+        code: site.code,
+        affiliation: props.completeEnrollmentInfo.selectedAffiliation,
+        irrigation: site.irrigation,
+        county: site.county,
+        address: site.address,
+        additionalContact: site.additionalContact,
+        notes: site.notes,
+        latitude: site.latitide,
+        longitude: site.longitude,
+      };
+      let dataString = qs.stringify(dataObject);
+      Axios({
+        method: "POST",
+        url: `${apiURL}/api/sites/add`,
+        data: dataString,
+        auth: {
+          username: apiUsername,
+          password: apiPassword,
+        },
+        headers: {
+          "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+        },
+      })
+        .then(() => {
+          setTimes(index);
+        })
+        .catch((e) => {
+          setTimes(0);
+          console.error(e);
+        });
+    });
+
+    // set saving as true
+    // done
+    // set confirmation as false
+    // reset completeEnrollmentInfo object
+    // enable nextBtn
+  };
+
+  useEffect(() => {
+    console.log("times", times);
+    if (times === completeEnrollmentInfo.sites.length - 1) {
+      // all ajax completed
+      setSaving(false);
+      setConfirmation(false);
+      props.setNextBtnDisabled(false);
+    }
+  }, [times]);
+
+  const renderTableFromJSON = (sites) => {
+    var col = [];
+    for (var i = 0; i < sites.length; i++) {
+      for (var key in sites[i]) {
+        if (col.indexOf(key) === -1) {
+          col.push(key);
+        }
+      }
+    }
+
+    var table = document.createElement("table");
+    table.style.width = "100%";
+    table.border = "1";
+    var tr = table.insertRow(-1);
+
+    for (var i = 0; i < col.length; i++) {
+      var th = document.createElement("th"); // TABLE HEADER.
+      th.innerHTML = col[i];
+      tr.appendChild(th);
+    }
+
+    // ADD JSON DATA TO THE TABLE AS ROWS.
+    for (var i = 0; i < sites.length; i++) {
+      tr = table.insertRow(-1);
+
+      for (var j = 0; j < col.length; j++) {
+        var tabCell = tr.insertCell(-1);
+        tabCell.innerHTML = sites[i][col[j]];
+      }
+    }
+
+    var divContainer = document.getElementById("showTableData");
+    divContainer.innerHTML = "";
+    divContainer.appendChild(table);
+  };
 
   return (
     <Fragment>
@@ -1514,6 +1702,96 @@ const ConfirmationStep = (props) => {
             <CustomLoader width="100px" height="100px" />
           </Grid>
           <Grid item xs={6}></Grid>
+        </Grid>
+      ) : confirmation ? (
+        <Grid
+          container
+          spacing={3}
+          style={{ paddingTop: "2em" }}
+          justify="center"
+        >
+          <Grid item lg={12}>
+            <Typography variant="body1">
+              Grower information has already been saved into the database.
+              Please confirm site information.
+            </Typography>
+          </Grid>
+          <Grid item lg={12}>
+            <Typography variant="body2">
+              You can go still go back and modify or add any site
+            </Typography>
+          </Grid>
+          <Grid container spacing={3}>
+            <Grid item lg={4}>
+              <Typography variant="h6" gutterBottom>
+                Grower
+              </Typography>
+              <Grid container spacing={3}>
+                <Grid item lg={6} style={{ fontWeight: "bold" }}>
+                  Producer ID
+                </Grid>
+                <Grid item lg={6}>
+                  {completeEnrollmentInfo.producerId}
+                </Grid>
+                <Grid item lg={6} style={{ fontWeight: "bold" }}>
+                  Year
+                </Grid>
+                <Grid item lg={6}>
+                  {completeEnrollmentInfo.selectedYear}
+                </Grid>
+                <Grid item lg={6} style={{ fontWeight: "bold" }}>
+                  Affiliation
+                </Grid>
+                <Grid item lg={6}>
+                  {completeEnrollmentInfo.selectedAffiliation}
+                </Grid>
+                <Grid item lg={6} style={{ fontWeight: "bold" }}>
+                  Last Name
+                </Grid>
+                <Grid item lg={6}>
+                  {completeEnrollmentInfo.lastName}
+                </Grid>
+
+                <Grid item lg={6} style={{ fontWeight: "bold" }}>
+                  Collaboration Status
+                </Grid>
+                <Grid item lg={6}>
+                  {completeEnrollmentInfo.collaborationStatus}
+                </Grid>
+                <Grid item lg={6} style={{ fontWeight: "bold" }}>
+                  Email
+                </Grid>
+                <Grid item lg={6}>
+                  {completeEnrollmentInfo.email || "No Email"}
+                </Grid>
+                <Grid item lg={6} style={{ fontWeight: "bold" }}>
+                  Phone
+                </Grid>
+                <Grid item lg={6}>
+                  {completeEnrollmentInfo.phone || "No Phone"}
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item lg={8}>
+              <Typography variant="h6">
+                Site{completeEnrollmentInfo.sites.length > 1 ? "s" : ""}
+              </Typography>
+              <Grid container spacing={3}>
+                <Grid item lg={12}>
+                  <div id="showTableData"></div>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item lg={12}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={finalConfirm}
+              >
+                Confirm
+              </Button>
+            </Grid>
+          </Grid>
         </Grid>
       ) : (
         <Grid
@@ -1580,5 +1858,26 @@ class SiteInformation {
     this.irrigation = obj.irrigation || false;
   }
 }
+
+const fetchSiteCodes = async (size) => {
+  return await Axios({
+    url: `${apiURL}/api/sites/codes/unused/${size}`,
+    method: "GET",
+    auth: {
+      username: apiUsername,
+      password: apiPassword,
+    },
+  });
+};
+const fetchSiteCodesForProducer = async (producerId) => {
+  return await Axios({
+    url: `${apiURL}/api/retrieve/site/codes/by/producer/${producerId}`,
+    method: "get",
+    auth: {
+      username: apiUsername,
+      password: apiPassword,
+    },
+  });
+};
 
 export default NewSiteEnrollmentModal;
