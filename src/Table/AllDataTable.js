@@ -4,10 +4,25 @@ import { bannedRoles } from "../utils/constants";
 import Axios from "axios";
 import { apiUsername, apiPassword, apiURL } from "../utils/api_secret";
 import Loading from "react-loading";
-import { Grid, Box, Paper, Typography, Link, Button } from "@material-ui/core";
+import {
+  Grid,
+  Box,
+  Paper,
+  Typography,
+  Link,
+  Button,
+  IconButton,
+  Dialog,
+  TextField,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+  DialogActions,
+} from "@material-ui/core";
 import MaterialTable from "material-table";
 import { BannedRoleMessage } from "../utils/CustomComponents";
-import { GpsFixed } from "@material-ui/icons";
+import { GpsFixed, Edit } from "@material-ui/icons";
+import EditDataModal from "./EditDataModal";
 
 const AllDataTable = (props) => {
   const [state, dispatch] = useContext(Context);
@@ -19,10 +34,16 @@ const AllDataTable = (props) => {
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [editModalOpen, setEditModalOpen] = useState(false);
+
+  const handleEditModalClose = () => {
+    setEditModalOpen(!editModalOpen);
+  };
+
   useEffect(() => {
     if (state.userInfo.state) {
       setLoading(true);
-      let returnData = getData(
+      let returnData = getAllTableData(
         `${apiURL}/api/tablerecords/${state.userInfo.state}`
       );
       returnData
@@ -89,7 +110,7 @@ const AllDataTable = (props) => {
     }
   };
 
-  const getData = async (url) => {
+  const getAllTableData = async (url) => {
     return await Axios({
       url: url,
       method: "get",
@@ -114,6 +135,21 @@ const AllDataTable = (props) => {
           <Grid item lg={12}>
             <MaterialTable
               columns={[
+                {
+                  title: "Edit",
+                  render: (rowData) => (
+                    <IconButton
+                      onClick={() => {
+                        console.log(rowData);
+                        setEditModalOpen(true);
+                      }}
+                    >
+                      <Edit />
+                    </IconButton>
+                  ),
+                  sorting: false,
+                  grouping: false,
+                },
                 { title: "Code", field: "code" },
                 { title: "Grower", field: "last_name" },
                 { title: "State", field: "affiliation" },
@@ -182,6 +218,10 @@ const AllDataTable = (props) => {
             />
           </Grid>
         </Grid>
+        <EditDataModal
+          open={editModalOpen}
+          handleEditModalClose={handleEditModalClose}
+        />
       </div>
     )
   ) : (

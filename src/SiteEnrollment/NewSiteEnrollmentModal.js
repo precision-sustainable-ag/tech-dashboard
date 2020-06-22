@@ -890,7 +890,7 @@ const GrowerInfo = (props) => {
 
                         <CardContent>
                           <Grid container spacing={2}>
-                            <Grid item sm={6}>
+                            {/* <Grid item sm={6}>
                               <Typography
                                 variant="body2"
                                 style={{ fontWeight: "bold" }}
@@ -902,7 +902,7 @@ const GrowerInfo = (props) => {
                               <Typography variant="body2">
                                 {ucFirst(grower.collaborationStatus)}
                               </Typography>
-                            </Grid>
+                            </Grid> */}
                             <Grid item sm={6}>
                               <Typography
                                 variant="body2"
@@ -1364,6 +1364,7 @@ const SiteInfo = (props) => {
                         fullWidth
                         value={site.address}
                         onChange={(event) => {
+                          fetchSuggestedAddresses(event.target.value);
                           const newObj = sites.map((obj) =>
                             obj.code === site.code
                               ? { ...obj, address: event.target.value }
@@ -1878,6 +1879,19 @@ const fetchSiteCodesForProducer = async (producerId) => {
       password: apiPassword,
     },
   });
+};
+
+const fetchSuggestedAddresses = async (query) => {
+  // This is a not a client side code. This would need to go to the backend or find alternative!
+  // https://material-ui.com/components/autocomplete/#google-maps-place
+  if (query.length > 3) {
+    const key = "AIzaSyBl1RA-4g_QxqW882I8Axo7mO7JGRSOk5A";
+    let params = `key=${key}&input=${query}`;
+    let res = await Axios.get(
+      `https://maps.googleapis.com/maps/api/place/queryautocomplete/json?${params}`
+    );
+    console.log(res.data);
+  }
 };
 
 export default NewSiteEnrollmentModal;

@@ -48,7 +48,7 @@ export const BannedRoleMessage = (props) => {
         seeing this as an error, please report this to{" "}
         {primaryContactPerson.name}{" "}
         <a
-          href={`mailto:${primaryContactPerson.email}?subject=Unable To See ${title} on Tech Dashboard`}
+          href={`mailto:${primaryContactPerson.email}?subject=Unable to view ${title} on PSA Tech Dashboard`}
         >
           here
         </a>
