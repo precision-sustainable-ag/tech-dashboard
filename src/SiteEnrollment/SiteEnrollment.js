@@ -196,7 +196,7 @@ const SiteEnrollment = (props) => {
         }
       }
     }
-  }, [state.userInfo]);
+  }, [state.userInfo, modalOpen]);
 
   return showContent ? (
     <div>
