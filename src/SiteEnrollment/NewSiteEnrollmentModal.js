@@ -45,7 +45,12 @@ import {
 import { Close, Search, Save, Check, GpsFixed } from "@material-ui/icons";
 import { Alert, AlertTitle, Skeleton } from "@material-ui/lab";
 import Axios from "axios";
-import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
+import {
+  apiURL,
+  apiUsername,
+  apiPassword,
+  googleApiKey,
+} from "../utils/api_secret";
 import { Map, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -1885,7 +1890,7 @@ const fetchSuggestedAddresses = async (query) => {
   // This is a not a client side code. This would need to go to the backend or find alternative!
   // https://material-ui.com/components/autocomplete/#google-maps-place
   if (query.length > 3) {
-    const key = "AIzaSyBl1RA-4g_QxqW882I8Axo7mO7JGRSOk5A";
+    const key = googleApiKey;
     let params = `key=${key}&input=${query}`;
     let res = await Axios.get(
       `https://maps.googleapis.com/maps/api/place/queryautocomplete/json?${params}`
