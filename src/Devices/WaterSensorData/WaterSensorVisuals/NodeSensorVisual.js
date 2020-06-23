@@ -416,22 +416,35 @@ const NodeSensorVisual = (props) => {
     let nodeSignalStrength = [];
 
     // let timestamps = [];
-    for (let i = 0; i < nodeData.length; i++) {
-      // let time = new Date(nodeData[i].timestamp).getTime();
-      let time = moment(nodeData[i].timestamp).valueOf();
-      //   console.log("time", time);
-      nodeBatteryVoltage.push([time, parseFloat(nodeData[i].nd_batt_voltage)]);
-      nodeSolarCurrent.push([time, parseFloat(nodeData[i].nd_solar_current)]);
-      nodeSolarVoltage.push([time, parseFloat(nodeData[i].nd_solar_voltage)]);
-      if (nodeData[i].signal_strength === null) {
+    // for (let i = 0; i < nodeData.length; i++) {
+    //   // let time = new Date(nodeData[i].timestamp).getTime();
+    //   let time = moment(nodeData[i].timestamp).valueOf();
+    //   //   console.log("time", time);
+    //   nodeBatteryVoltage.push([time, parseFloat(nodeData[i].nd_batt_voltage)]);
+    //   nodeSolarCurrent.push([time, parseFloat(nodeData[i].nd_solar_current)]);
+    //   nodeSolarVoltage.push([time, parseFloat(nodeData[i].nd_solar_voltage)]);
+    //   if (nodeData[i].signal_strength === null) {
+    //     nodeSignalStrength.push([time, null]);
+    //   } else {
+    //     nodeSignalStrength.push([
+    //       time,
+    //       parseFloat(nodeData[i].signal_strength),
+    //     ]);
+    //   }
+    // }
+
+    nodeData.map((nodeData, index) => {
+      let time = moment(nodeData.timestamp).valueOf();
+      nodeBatteryVoltage.push([time, parseFloat(nodeData.nd_batt_voltage)]);
+      nodeSolarCurrent.push([time, parseFloat(nodeData.nd_solar_current)]);
+      nodeSolarVoltage.push([time, parseFloat(nodeData.nd_solar_voltage)]);
+      if (nodeData.signal_strength === null) {
         nodeSignalStrength.push([time, null]);
       } else {
-        nodeSignalStrength.push([
-          time,
-          parseFloat(nodeData[i].signal_strength),
-        ]);
+        nodeSignalStrength.push([time, parseFloat(nodeData.signal_strength)]);
       }
-    }
+    });
+
     return [
       nodeBatteryVoltage.sort(),
       nodeSolarCurrent.sort(),
