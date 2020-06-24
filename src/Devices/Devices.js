@@ -46,24 +46,25 @@ const DevicesComponent = () => {
         // console.log(finalAPIURL);
         // Check user state or retrieve all devices
         let apiParams;
-        if (state.userInfo.role === "all") {
-          apiParams = "";
-          fetchRecords(
-            `${finalAPIURL}/api/1/devices?withlocation=true${apiParams}`
-          ).then(() => {
-            setDevicesLoadingState(false);
-            console.log(
-              "This is just intended to retrieve basic info, rest of the data should technically come from websockets"
-            );
-          });
-        } else {
-          // console.log('user role !== all');
+        // if (state.userInfo.role === "all") {
+        //   apiParams = "";
+        //   fetchRecords(
+        //     `${finalAPIURL}/api/1/devices?withlocation=true${apiParams}`
+        //   ).then(() => {
+        //     setDevicesLoadingState(false);
+        //     console.log(
+        //       "This is just intended to retrieve basic info, rest of the data should technically come from websockets"
+        //     );
+        //   });
+        // } else {
+        // console.log('user role !== all');
+
+        // // check if the string has commas and split it into an array
+        if (state.userInfo) {
           let deviceState = state.userInfo.state;
           deviceState = deviceState.toUpperCase();
-          // // check if the string has commas and split it into an array
-
           deviceState = deviceState.split(",");
-          if (deviceState.length === 1 && deviceState[0] === "ALL") {
+          if (deviceState[0] === "ALL") {
             apiParams = "";
             fetchRecords(
               `${finalAPIURL}/api/1/devices?withlocation=true${apiParams}`
