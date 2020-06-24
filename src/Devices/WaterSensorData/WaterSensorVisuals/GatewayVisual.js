@@ -42,7 +42,7 @@ const GatewayVisual = (props) => {
     },
     yAxis: {
       title: {
-        text: "Volage",
+        text: "Voltage",
       },
     },
     legend: {

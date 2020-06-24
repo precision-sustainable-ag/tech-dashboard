@@ -65,7 +65,7 @@ const NodeSensorVisual = (props) => {
     },
     yAxis: {
       title: {
-        text: "Volage",
+        text: "Voltage",
       },
       type: "logarithmic",
     },
