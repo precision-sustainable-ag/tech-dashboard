@@ -195,6 +195,7 @@ const WaterSensorByGateway = (props) => {
             coverNodes={coverNodeSerialNo}
             activeChip={activeChip}
             setActiveChip={setActiveChip}
+            year={props.location.state.year}
           />
         </Grid>
         <Grid item md={12}>
@@ -203,6 +204,7 @@ const WaterSensorByGateway = (props) => {
             coverNodeSerialNo={coverNodeSerialNo}
             activeChip={activeChip}
             chartWidth={12}
+            year={props.location.state.year}
           />
         </Grid>
       </Grid>

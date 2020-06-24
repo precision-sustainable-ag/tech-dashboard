@@ -16,9 +16,9 @@ const styles = {
   },
 };
 
-const fetchBareNodeData = async (nodeSerialNo) => {
+const fetchBareNodeData = async (nodeSerialNo, year) => {
   return await Axios({
-    url: `${apiURL}/api/retrieve/table/water_node_data/by/node/${nodeSerialNo}`,
+    url: `${apiURL}/api/retrieve/table/water_node_data/by/node/${nodeSerialNo}/${year}`,
     method: "get",
     auth: {
       username: apiUsername,
@@ -27,9 +27,9 @@ const fetchBareNodeData = async (nodeSerialNo) => {
   });
 };
 
-const fetchNodeSensorData = async (nodeSerialNo) => {
+const fetchNodeSensorData = async (nodeSerialNo, year) => {
   return await Axios({
-    url: `${apiURL}/api/retrieve/table/water_sensor_data/by/node/${nodeSerialNo}`,
+    url: `${apiURL}/api/retrieve/table/water_sensor_data/by/node/${nodeSerialNo}/${year}`,
     method: "get",
     auth: {
       username: apiUsername,
@@ -46,6 +46,7 @@ const NodeSensorVisual = (props) => {
   const chartWidth = props.chartWidth || 12;
   const [nodeData, setNodeData] = useState({});
   const [coverNodeData, setCoverNodeData] = useState({});
+  const year = props.year ? props.year : new Date().getFullYear();
   const GetNodeType = () => {
     if (bareNodeSerialNo.includes(props.activeChip)) return "Bare Node";
     else return "Cover Node";
@@ -459,8 +460,9 @@ const NodeSensorVisual = (props) => {
 
   useEffect(() => {
     if (props.activeChip.length > 0) {
-      console.log("bareNodeSerialNo: ", props.activeChip);
-      fetchBareNodeData(props.activeChip)
+      // console.log("bareNodeSerialNo: ", props.activeChip);
+
+      fetchBareNodeData(props.activeChip, year)
         .then((activeChipObj) => {
           // console.log(bareNodeObj.data.data);
           // setBareNodeData(bareNodeObj.data.data);
@@ -532,7 +534,7 @@ const NodeSensorVisual = (props) => {
         })
         .then(() => {
           // fetch sensor data for active node
-          fetchNodeSensorData(props.activeChip)
+          fetchNodeSensorData(props.activeChip, year)
             .then((activeChipObj) => {
               let nodeSensorDataArray = parseNodeSensorData(
                 activeChipObj.data.data
