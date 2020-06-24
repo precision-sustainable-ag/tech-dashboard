@@ -37,7 +37,7 @@ const DevicesComponent = () => {
       if (bannedRoles.includes(state.userInfo.role)) {
         setShowDevices(false);
       } else {
-        console.log("hello from devices");
+        // console.log("hello from devices");
 
         // get tag id for
 
