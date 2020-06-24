@@ -97,7 +97,7 @@ const AllDataTable = (props) => {
     }
 
     setTimeout(init, 1000);
-  }, [state.userInfo, valuesEdited]);
+  }, [state.userInfo, valuesEdited, state.userRole]);
 
   const parseXHRResponse = (data) => {
     if (data.status === "success") {
