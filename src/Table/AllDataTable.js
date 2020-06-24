@@ -35,60 +35,69 @@ const AllDataTable = (props) => {
   const [loading, setLoading] = useState(true);
 
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editModalData, setEditModalData] = useState({});
+  const [valuesEdited, setValuesEdited] = useState(false);
 
   const handleEditModalClose = () => {
     setEditModalOpen(!editModalOpen);
   };
 
   useEffect(() => {
-    if (state.userInfo.state) {
-      setLoading(true);
-      let returnData = getAllTableData(
-        `${apiURL}/api/tablerecords/${state.userInfo.state}`
-      );
-      returnData
-        .then((responseData) => {
-          return parseXHRResponse(responseData.data);
-        })
-        .then((resp) => {
-          if (resp) {
-            setLoading(false);
-          } else {
-            setLoading(true);
-            console.log("Check API");
-          }
-        })
-        .catch((error) => {
-          if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            console.log(error.response.data);
-            console.log(error.response.status);
-            console.log(error.response.headers);
-          } else if (error.request) {
-            // The request was made but no response was received
-            // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-            // http.ClientRequest in node.js
-            console.log(error.request);
-          } else {
-            // Something happened in setting up the request that triggered an Error
-            console.log("Error", error.message);
-          }
-          console.log(error.config);
-        });
-    }
-
-    if (state.userInfo.role) {
-      if (bannedRoles.includes(state.userRole)) {
-        setShowTable(false);
-        setBannedRolesCheckMessage(
-          <BannedRoleMessage title="All Site Information" />
+    function init() {
+      if (valuesEdited) {
+        setBannedRolesCheckMessage("Updating database..");
+      }
+      if (state.userInfo.state) {
+        setLoading(true);
+        let returnData = getAllTableData(
+          `${apiURL}/api/tablerecords/${state.userInfo.state}`
         );
-      } else {
-        setShowTable(true);
+        returnData
+          .then((responseData) => {
+            return parseXHRResponse(responseData.data);
+          })
+          .then((resp) => {
+            if (resp) {
+              setLoading(false);
+            } else {
+              setLoading(true);
+              console.log("Check API");
+            }
+          })
+          .catch((error) => {
+            if (error.response) {
+              // The request was made and the server responded with a status code
+              // that falls out of the range of 2xx
+              console.log(error.response.data);
+              console.log(error.response.status);
+              console.log(error.response.headers);
+            } else if (error.request) {
+              // The request was made but no response was received
+              // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+              // http.ClientRequest in node.js
+              console.log(error.request);
+            } else {
+              // Something happened in setting up the request that triggered an Error
+              console.log("Error", error.message);
+            }
+            console.log(error.config);
+          });
+      }
+
+      if (state.userInfo.role) {
+        if (bannedRoles.includes(state.userRole)) {
+          setShowTable(false);
+          setBannedRolesCheckMessage(
+            <BannedRoleMessage title="All Site Information" />
+          );
+        } else {
+          setShowTable(true);
+        }
       }
     }
-  }, [state.userInfo]);
+
+    setTimeout(init, 2000);
+  }, [state.userInfo, valuesEdited]);
 
   const parseXHRResponse = (data) => {
     if (data.status === "success") {
@@ -142,6 +151,7 @@ const AllDataTable = (props) => {
                       onClick={() => {
                         console.log(rowData);
                         setEditModalOpen(true);
+                        setEditModalData(rowData);
                       }}
                     >
                       <Edit />
@@ -221,6 +231,10 @@ const AllDataTable = (props) => {
         <EditDataModal
           open={editModalOpen}
           handleEditModalClose={handleEditModalClose}
+          data={editModalData}
+          edit={setEditModalData}
+          valuesEdited={valuesEdited}
+          setValuesEdited={setValuesEdited}
         />
       </div>
     )
