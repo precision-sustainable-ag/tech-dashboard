@@ -4,10 +4,26 @@ import { bannedRoles } from "../utils/constants";
 import Axios from "axios";
 import { apiUsername, apiPassword, apiURL } from "../utils/api_secret";
 import Loading from "react-loading";
-import { Grid, Box, Paper, Typography, Link, Button } from "@material-ui/core";
+import {
+  Grid,
+  Box,
+  Paper,
+  Typography,
+  Link,
+  Button,
+  IconButton,
+  Dialog,
+  TextField,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+  DialogActions,
+} from "@material-ui/core";
 import MaterialTable from "material-table";
 import { BannedRoleMessage } from "../utils/CustomComponents";
-import { GpsFixed } from "@material-ui/icons";
+import { GpsFixed, Edit, DeleteForever } from "@material-ui/icons";
+import EditDataModal from "./EditDataModal";
+import UnenrollSiteModal from "./UnenrollSiteModal";
 
 const AllDataTable = (props) => {
   const [state, dispatch] = useContext(Context);
@@ -19,55 +35,77 @@ const AllDataTable = (props) => {
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (state.userInfo.state) {
-      setLoading(true);
-      let returnData = getData(
-        `${apiURL}/api/tablerecords/${state.userInfo.state}`
-      );
-      returnData
-        .then((responseData) => {
-          return parseXHRResponse(responseData.data);
-        })
-        .then((resp) => {
-          if (resp) {
-            setLoading(false);
-          } else {
-            setLoading(true);
-            console.log("Check API");
-          }
-        })
-        .catch((error) => {
-          if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            console.log(error.response.data);
-            console.log(error.response.status);
-            console.log(error.response.headers);
-          } else if (error.request) {
-            // The request was made but no response was received
-            // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-            // http.ClientRequest in node.js
-            console.log(error.request);
-          } else {
-            // Something happened in setting up the request that triggered an Error
-            console.log("Error", error.message);
-          }
-          console.log(error.config);
-        });
-    }
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editModalData, setEditModalData] = useState({});
 
-    if (state.userInfo.role) {
-      if (bannedRoles.includes(state.userRole)) {
-        setShowTable(false);
-        setBannedRolesCheckMessage(
-          <BannedRoleMessage title="All Site Information" />
+  const [unenrollRowData, setUnenrollRowData] = useState({});
+  const [unenrollOpen, setUnenrollOpen] = useState(false);
+
+  const [valuesEdited, setValuesEdited] = useState(false);
+
+  const handleEditModalClose = () => {
+    setEditModalOpen(!editModalOpen);
+  };
+  const handleUnenrollClose = () => {
+    setUnenrollOpen(!unenrollOpen);
+  };
+
+  useEffect(() => {
+    function init() {
+      if (valuesEdited) {
+        setBannedRolesCheckMessage("Updating database..");
+      }
+      if (state.userInfo.state) {
+        setLoading(true);
+        let returnData = getAllTableData(
+          `${apiURL}/api/tablerecords/${state.userInfo.state}`
         );
-      } else {
-        setShowTable(true);
+        returnData
+          .then((responseData) => {
+            return parseXHRResponse(responseData.data);
+          })
+          .then((resp) => {
+            if (resp) {
+              setLoading(false);
+            } else {
+              setLoading(true);
+              console.log("Check API");
+            }
+          })
+          .catch((error) => {
+            if (error.response) {
+              // The request was made and the server responded with a status code
+              // that falls out of the range of 2xx
+              console.log(error.response.data);
+              console.log(error.response.status);
+              console.log(error.response.headers);
+            } else if (error.request) {
+              // The request was made but no response was received
+              // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+              // http.ClientRequest in node.js
+              console.log(error.request);
+            } else {
+              // Something happened in setting up the request that triggered an Error
+              console.log("Error", error.message);
+            }
+            console.log(error.config);
+          });
+      }
+
+      if (state.userInfo.role) {
+        if (bannedRoles.includes(state.userRole)) {
+          setShowTable(false);
+          setBannedRolesCheckMessage(
+            <BannedRoleMessage title="All Site Information" />
+          );
+        } else {
+          setShowTable(true);
+        }
       }
     }
-  }, [state.userInfo]);
+
+    setTimeout(init, 1000);
+  }, [state.userInfo, valuesEdited, state.userRole]);
 
   const parseXHRResponse = (data) => {
     if (data.status === "success") {
@@ -78,7 +116,9 @@ const AllDataTable = (props) => {
           ...data,
           latlng:
             data.latitude !== null && data.longitude !== null
-              ? `${data.latitude},${data.longitude}`
+              ? data.latitude !== "-999" && data.longitude !== "-999"
+                ? `${data.latitude},${data.longitude}`
+                : "-999"
               : "",
         };
       });
@@ -89,7 +129,7 @@ const AllDataTable = (props) => {
     }
   };
 
-  const getData = async (url) => {
+  const getAllTableData = async (url) => {
     return await Axios({
       url: url,
       method: "get",
@@ -114,6 +154,52 @@ const AllDataTable = (props) => {
           <Grid item lg={12}>
             <MaterialTable
               columns={[
+                state.userInfo.permissions.split(",").includes("all") ||
+                state.userInfo.permissions.split(",").includes("edit") ||
+                state.userInfo.permissions.split(",").includes("update")
+                  ? {
+                      title: "Actions",
+                      render: (rowData) => (
+                        <div>
+                          <IconButton
+                            onClick={() => {
+                              // console.log(rowData);
+                              setEditModalOpen(true);
+                              setEditModalData(rowData);
+                            }}
+                          >
+                            <Edit />
+                          </IconButton>
+                          <IconButton
+                            onClick={() => {
+                              console.log(rowData);
+
+                              setUnenrollOpen(true);
+                              setUnenrollRowData(rowData);
+                            }}
+                          >
+                            <DeleteForever />
+                          </IconButton>
+                        </div>
+                      ),
+                      sorting: false,
+                      grouping: false,
+                    }
+                  : {
+                      title: "Actions",
+                      render: (rowData) => (
+                        <div>
+                          <IconButton disabled>
+                            <Edit />
+                          </IconButton>
+                          <IconButton disabled>
+                            <DeleteForever />
+                          </IconButton>
+                        </div>
+                      ),
+                      sorting: false,
+                      grouping: false,
+                    },
                 { title: "Code", field: "code" },
                 { title: "Grower", field: "last_name" },
                 { title: "State", field: "affiliation" },
@@ -126,15 +212,19 @@ const AllDataTable = (props) => {
                   field: "latlng",
                   render: (rowData) =>
                     rowData.latlng !== "" ? (
-                      <Button
-                        startIcon={<GpsFixed />}
-                        variant="contained"
-                        href={`https://earth.google.com/web/search/${rowData.latlng}/@${rowData.latlng},75.78141996a,870.41248089d,35y,0h,45t,0r/data=ClQaKhIkGa36XG3FbkBAIVRSJ6CJkFTAKhAzMi44NjU0LC04Mi4yNTg0GAIgASImCiQJzF-JvuFuOEARyF-JvuFuOMAZThRMqkU0RMAh9HZjS910YsAoAg`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {rowData.latlng}
-                      </Button>
+                      rowData.latlng !== "-999" ? (
+                        <Button
+                          startIcon={<GpsFixed />}
+                          variant="contained"
+                          href={`https://earth.google.com/web/search/${rowData.latlng}/@${rowData.latlng},75.78141996a,870.41248089d,35y,0h,45t,0r/data=ClQaKhIkGa36XG3FbkBAIVRSJ6CJkFTAKhAzMi44NjU0LC04Mi4yNTg0GAIgASImCiQJzF-JvuFuOEARyF-JvuFuOMAZThRMqkU0RMAh9HZjS910YsAoAg`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {rowData.latlng}
+                        </Button>
+                      ) : (
+                        "-999"
+                      )
                     ) : (
                       ""
                     ),
@@ -155,7 +245,7 @@ const AllDataTable = (props) => {
                 exportFileName: "Site Information",
                 addRowPosition: "last",
                 exportAllData: true,
-                pageSize: 10,
+                pageSize: tableData.length <= 20 ? 10 : 20,
                 pageSizeOptions:
                   tableData.length <= 50
                     ? [5, 10, 20, 50]
@@ -182,6 +272,20 @@ const AllDataTable = (props) => {
             />
           </Grid>
         </Grid>
+        <EditDataModal
+          open={editModalOpen}
+          handleEditModalClose={handleEditModalClose}
+          data={editModalData}
+          edit={setEditModalData}
+          valuesEdited={valuesEdited}
+          setValuesEdited={setValuesEdited}
+        />
+        <UnenrollSiteModal
+          open={unenrollOpen}
+          data={unenrollRowData}
+          handleUnenrollClose={handleUnenrollClose}
+          setValuesEdited={setValuesEdited}
+        />
       </div>
     )
   ) : (

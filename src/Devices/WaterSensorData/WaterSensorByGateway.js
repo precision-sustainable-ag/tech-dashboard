@@ -4,23 +4,17 @@ import { apiUsername, apiPassword, apiURL } from "../../utils/api_secret";
 import { Link } from "react-router-dom";
 import {
   Grid,
-  Typography,
-  List,
-  ListItem,
-  Checkbox,
-  ListItemIcon,
-  ListItemText,
   GridList,
   GridListTile,
   GridListTileBar,
   IconButton,
   makeStyles,
 } from "@material-ui/core";
-import { CheckBox, ArrowBackIosOutlined } from "@material-ui/icons";
-// import WaterSensorByGatewaySidebar from "./WaterSensorByGatewaySidebar";
-import NodeSensorVisual from "./WaterSensorVisuals/NodeSensorVisual";
+import { ArrowBackIosOutlined } from "@material-ui/icons";
+
 import GatewayVisual from "./WaterSensorVisuals/GatewayVisual";
 import WaterSensorByGatewayTopbar from "./WaterSensorByGatewayTopbar";
+import NodeSensorVisuals from "./WaterSensorVisuals/NodeSensorVisuals";
 
 const useStyles = makeStyles((theme) => ({
   gridList: {
@@ -65,6 +59,7 @@ const WaterSensorByGateway = (props) => {
   ]);
   const [loading, setLoading] = useState(false);
   const [activeChip, setActiveChip] = useState("");
+  const [loadingNodes, setLoadingNodes] = useState(false);
 
   const [bareNodeObject, setBareNodeObject] = useState({});
   const [coverNodeObject, setCoverNodeObject] = useState({});
@@ -155,6 +150,10 @@ const WaterSensorByGateway = (props) => {
       });
   }, []);
 
+  useEffect(() => {
+    setLoadingNodes(!loadingNodes);
+  }, [activeChip]);
+
   return !loading ? (
     <div>
       <GridList spacing={1} className={classes.gridList}>
@@ -183,7 +182,7 @@ const WaterSensorByGateway = (props) => {
         </GridListTile>
       </GridList>
       <Grid container style={{ marginTop: "2em" }}>
-        <Grid item sm={12}>
+        <Grid item xs={12}>
           <GatewayVisual gatewayNo={gatewayNo} year={year} />
         </Grid>
       </Grid>
@@ -195,14 +194,20 @@ const WaterSensorByGateway = (props) => {
             coverNodes={coverNodeSerialNo}
             activeChip={activeChip}
             setActiveChip={setActiveChip}
+            year={props.location.state.year}
+            loadingNodes={loadingNodes}
+            setLoadingNodes={setLoadingNodes}
           />
         </Grid>
         <Grid item md={12}>
-          <NodeSensorVisual
+          <NodeSensorVisuals
             bareNodeSerialNo={bareNodeSerialNo}
             coverNodeSerialNo={coverNodeSerialNo}
             activeChip={activeChip}
             chartWidth={12}
+            year={props.location.state.year}
+            loadingNodes={loadingNodes}
+            setLoadingNodes={setLoadingNodes}
           />
         </Grid>
       </Grid>

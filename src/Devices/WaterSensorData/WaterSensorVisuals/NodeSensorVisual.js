@@ -16,9 +16,9 @@ const styles = {
   },
 };
 
-const fetchBareNodeData = async (nodeSerialNo) => {
+const fetchBareNodeData = async (nodeSerialNo, year) => {
   return await Axios({
-    url: `${apiURL}/api/retrieve/table/water_node_data/by/node/${nodeSerialNo}`,
+    url: `${apiURL}/api/retrieve/table/water_node_data/by/node/${nodeSerialNo}/${year}`,
     method: "get",
     auth: {
       username: apiUsername,
@@ -27,9 +27,9 @@ const fetchBareNodeData = async (nodeSerialNo) => {
   });
 };
 
-const fetchNodeSensorData = async (nodeSerialNo) => {
+const fetchNodeSensorData = async (nodeSerialNo, year) => {
   return await Axios({
-    url: `${apiURL}/api/retrieve/table/water_sensor_data/by/node/${nodeSerialNo}`,
+    url: `${apiURL}/api/retrieve/table/water_sensor_data/by/node/${nodeSerialNo}/${year}`,
     method: "get",
     auth: {
       username: apiUsername,
@@ -46,10 +46,13 @@ const NodeSensorVisual = (props) => {
   const chartWidth = props.chartWidth || 12;
   const [nodeData, setNodeData] = useState({});
   const [coverNodeData, setCoverNodeData] = useState({});
-  const GetNodeType = () => {
+  const year = props.year ? props.year : new Date().getFullYear();
+
+  const NodeType = () => {
     if (bareNodeSerialNo.includes(props.activeChip)) return "Bare Node";
     else return "Cover Node";
   };
+
   const [volatageChartOptions, setVoltageChartOptions] = useState({
     chart: {
       zoomType: "x",
@@ -65,7 +68,7 @@ const NodeSensorVisual = (props) => {
     },
     yAxis: {
       title: {
-        text: "Volage",
+        text: "Voltage",
       },
       type: "logarithmic",
     },
@@ -416,22 +419,35 @@ const NodeSensorVisual = (props) => {
     let nodeSignalStrength = [];
 
     // let timestamps = [];
-    for (let i = 0; i < nodeData.length; i++) {
-      // let time = new Date(nodeData[i].timestamp).getTime();
-      let time = moment(nodeData[i].timestamp).valueOf();
-      //   console.log("time", time);
-      nodeBatteryVoltage.push([time, parseFloat(nodeData[i].nd_batt_voltage)]);
-      nodeSolarCurrent.push([time, parseFloat(nodeData[i].nd_solar_current)]);
-      nodeSolarVoltage.push([time, parseFloat(nodeData[i].nd_solar_voltage)]);
-      if (nodeData[i].signal_strength === null) {
+    // for (let i = 0; i < nodeData.length; i++) {
+    //   // let time = new Date(nodeData[i].timestamp).getTime();
+    //   let time = moment(nodeData[i].timestamp).valueOf();
+    //   //   console.log("time", time);
+    //   nodeBatteryVoltage.push([time, parseFloat(nodeData[i].nd_batt_voltage)]);
+    //   nodeSolarCurrent.push([time, parseFloat(nodeData[i].nd_solar_current)]);
+    //   nodeSolarVoltage.push([time, parseFloat(nodeData[i].nd_solar_voltage)]);
+    //   if (nodeData[i].signal_strength === null) {
+    //     nodeSignalStrength.push([time, null]);
+    //   } else {
+    //     nodeSignalStrength.push([
+    //       time,
+    //       parseFloat(nodeData[i].signal_strength),
+    //     ]);
+    //   }
+    // }
+
+    nodeData.map((nodeData, index) => {
+      let time = moment(nodeData.timestamp).valueOf();
+      nodeBatteryVoltage.push([time, parseFloat(nodeData.nd_batt_voltage)]);
+      nodeSolarCurrent.push([time, parseFloat(nodeData.nd_solar_current)]);
+      nodeSolarVoltage.push([time, parseFloat(nodeData.nd_solar_voltage)]);
+      if (nodeData.signal_strength === null) {
         nodeSignalStrength.push([time, null]);
       } else {
-        nodeSignalStrength.push([
-          time,
-          parseFloat(nodeData[i].signal_strength),
-        ]);
+        nodeSignalStrength.push([time, parseFloat(nodeData.signal_strength)]);
       }
-    }
+    });
+
     return [
       nodeBatteryVoltage.sort(),
       nodeSolarCurrent.sort(),
@@ -446,8 +462,9 @@ const NodeSensorVisual = (props) => {
 
   useEffect(() => {
     if (props.activeChip.length > 0) {
-      console.log("bareNodeSerialNo: ", props.activeChip);
-      fetchBareNodeData(props.activeChip)
+      // console.log("bareNodeSerialNo: ", props.activeChip);
+
+      fetchBareNodeData(props.activeChip, year)
         .then((activeChipObj) => {
           // console.log(bareNodeObj.data.data);
           // setBareNodeData(bareNodeObj.data.data);
@@ -519,7 +536,7 @@ const NodeSensorVisual = (props) => {
         })
         .then(() => {
           // fetch sensor data for active node
-          fetchNodeSensorData(props.activeChip)
+          fetchNodeSensorData(props.activeChip, year)
             .then((activeChipObj) => {
               let nodeSensorDataArray = parseNodeSensorData(
                 activeChipObj.data.data
@@ -733,6 +750,8 @@ const NodeSensorVisual = (props) => {
             });
         });
     }
+
+    return () => {};
   }, [props.activeChip]);
 
   return (
@@ -742,7 +761,7 @@ const NodeSensorVisual = (props) => {
           <Grid container>
             <Grid item md={12}>
               <Typography variant="h5" align="center">
-                Node Data for {<GetNodeType />} {props.activeChip}
+                Node Data for {<NodeType />} {props.activeChip}
               </Typography>
             </Grid>
           </Grid>

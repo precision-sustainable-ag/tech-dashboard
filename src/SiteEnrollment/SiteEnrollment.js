@@ -9,6 +9,7 @@ import {
   TableCell,
   TableBody,
   IconButton,
+  Typography,
 } from "@material-ui/core";
 import { Context } from "../Store/Store";
 import NewSiteEnrollmentModal from "./NewSiteEnrollmentModal";
@@ -18,6 +19,8 @@ import { Skeleton } from "@material-ui/lab";
 import MapModal from "./MapModal";
 import { EditAttributesSharp, Edit } from "@material-ui/icons";
 import EditSiteDataModal from "./EditSiteDataModal";
+import { bannedRoles } from "../utils/constants";
+import { BannedRoleMessage } from "../utils/CustomComponents";
 
 const getCurrentYear = () => {
   return new Date().getFullYear();
@@ -46,6 +49,12 @@ const SiteEnrollment = (props) => {
     },
   ]);
 
+  const [totalSitesEnrolled, setTotalSitesEnrolled] = React.useState(0);
+  const [stateSitesEnrolled, setStateSitesEnrolled] = React.useState(0);
+  const [showStateSpecificSites, setShowStateSpecificSites] = React.useState(
+    false
+  );
+
   const [ajaxLoading, setAjaxLoading] = React.useState(false);
 
   const [mapModalOpen, setMapModalOpen] = React.useState(false);
@@ -61,7 +70,11 @@ const SiteEnrollment = (props) => {
     new: false,
   });
 
+  const [bannedRolesCheckMessage, setBannedRolesCheckMessage] = React.useState(
+    "Checking your permissions.."
+  );
   const [growerSpecificInfo, setGrowerSpecificInfo] = React.useState([]);
+  const [showContent, setShowContent] = React.useState(false);
 
   const handleEnrollNewSiteClick = () => {
     setModalOpen(!modalOpen);
@@ -158,16 +171,50 @@ const SiteEnrollment = (props) => {
   React.useEffect(() => {
     // console.log(getCurrentYear());
     setDefaultYear(getCurrentYear());
-    setExistingGrowers();
+    // setExistingGrowers();
   }, []);
 
-  return (
+  React.useEffect(() => {
+    if (state.userInfo.state) {
+      if (state.userInfo.role) {
+        if (bannedRoles.includes(state.userRole)) {
+          setShowContent(false);
+          setBannedRolesCheckMessage(
+            <BannedRoleMessage title="Site Enrollment" />
+          );
+        } else {
+          setShowContent(true);
+          if (state.userInfo.state === "all") {
+            setShowStateSpecificSites(false);
+          } else {
+            setShowStateSpecificSites(true);
+          }
+          getStats(state.userInfo.state).then((data) => {
+            setTotalSitesEnrolled(data.total);
+            setStateSitesEnrolled(data.state);
+          });
+        }
+      }
+    }
+  }, [state.userInfo, modalOpen]);
+
+  return showContent ? (
     <div>
-      <Grid container>
-        <Grid item md={4}>
+      <Grid container spacing={4}>
+        <Grid item md={12} lg={12} xs={12}>
           <Button onClick={handleEnrollNewSiteClick} variant="contained">
             Enroll New Site
           </Button>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography variant="body1">
+            {showStateSpecificSites
+              ? `${stateSitesEnrolled} sites enrolled in your team: ${state.userInfo.state}`
+              : ""}
+          </Typography>
+          <Typography variant="body1">
+            {totalSitesEnrolled}&nbsp; sites enrolled across all teams.
+          </Typography>
         </Grid>
       </Grid>
       <Grid container>
@@ -175,90 +222,34 @@ const SiteEnrollment = (props) => {
           open={modalOpen}
           handleClose={handleEnrollNewSiteClick}
           defaultYear={defaultYear}
+          user={state.userInfo}
         />
       </Grid>
-
-      <Grid container style={{ marginTop: "2em" }}>
-        {ajaxLoading ? (
-          "Fetching Data..."
-        ) : (
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Actions</TableCell>
-                  <TableCell>Code</TableCell>
-                  <TableCell>Affiliation</TableCell>
-                  <TableCell>Producer ID</TableCell>
-                  <TableCell>Last Name</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Phone</TableCell>
-
-                  <TableCell>Address</TableCell>
-                  <TableCell style={{ minWidth: "200px" }}>Lat-Long</TableCell>
-                  <TableCell>County</TableCell>
-                  <TableCell>Notes</TableCell>
-                  <TableCell>Additional Contact</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {existingGrowerData.map((grower, index) => (
-                  <TableRow key={index}>
-                    <TableCell>
-                      <Grid container>
-                        <Grid item lg={12}>
-                          <IconButton
-                            onClick={() => {
-                              setGrowerSpecificInfo(grower);
-                              setEditModalOpen(true);
-                            }}
-                          >
-                            <Edit />
-                          </IconButton>
-                        </Grid>
-                      </Grid>
-                    </TableCell>
-                    <TableCell>{grower.code}</TableCell>
-                    <TableCell>{grower.affiliation}</TableCell>
-                    <TableCell>{grower.producer_id}</TableCell>
-                    <TableCell>{grower.last_name}</TableCell>
-                    <TableCell>{grower.email}</TableCell>
-                    <TableCell>{grower.phone}</TableCell>
-
-                    <TableCell>{grower.address}</TableCell>
-                    <TableCell>
-                      {renderLatLngs(
-                        grower.latitude,
-                        grower.longitude,
-                        grower.last_name,
-                        grower.producer_id,
-                        grower.code
-                      )}
-                    </TableCell>
-                    <TableCell>{grower.county}</TableCell>
-                    <TableCell>{grower.notes}</TableCell>
-                    <TableCell>{grower.additional_contact}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
-      </Grid>
-      <MapModal
-        mapModalOpen={mapModalOpen}
-        handleMapModalClose={handleMapModalClose}
-        growerInfo={mapModalGrowerData}
-        setMapModalGrowerData={setMapModalGrowerData}
-      />
-      <EditSiteDataModal
-        editModalOpen={editModalOpen}
-        handleEditModalClose={handleEditModalClose}
-        growerSpecificInfo={growerSpecificInfo}
-        setGrowerSpecificInfo={setGrowerSpecificInfo}
-      />
     </div>
+  ) : (
+    <div>{bannedRolesCheckMessage}</div>
   );
 };
 
 export default SiteEnrollment;
+
+const fetchStats = async (state) => {
+  return Axios({
+    url: `${apiURL}/api/total/sites/${state}`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    auth: {
+      username: apiUsername,
+      password: apiPassword,
+    },
+  });
+};
+
+const getStats = async (state) => {
+  let records = await fetchStats(state);
+
+  let data = records.data.data;
+
+  return data;
+};

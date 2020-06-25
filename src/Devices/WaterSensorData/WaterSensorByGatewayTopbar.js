@@ -1,16 +1,6 @@
 import React, { useEffect } from "react";
 
-import {
-  List,
-  ListItem,
-  ListItemIcon,
-  Checkbox,
-  ListItemText,
-  makeStyles,
-  ListSubheader,
-  Paper,
-  Chip,
-} from "@material-ui/core";
+import { makeStyles, Chip } from "@material-ui/core";
 
 // const useStyles = makeStyles(theme => ({
 //   root: {
