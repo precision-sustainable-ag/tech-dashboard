@@ -108,6 +108,9 @@ const GatewayVisual = (props) => {
       // let time = new Date(gatewayData[i].timestamp).getTime();
 
       let time = moment(gatewayData[i].timestamp).valueOf();
+      // var d = new Date(gatewayData[i].timestamp);
+      // let time = d.getUTCMilliseconds();
+
       // console.log("time", time);
 
       gatewayBatteryVoltage.push([

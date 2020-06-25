@@ -21,8 +21,9 @@ import {
 } from "@material-ui/core";
 import MaterialTable from "material-table";
 import { BannedRoleMessage } from "../utils/CustomComponents";
-import { GpsFixed, Edit } from "@material-ui/icons";
+import { GpsFixed, Edit, DeleteForever } from "@material-ui/icons";
 import EditDataModal from "./EditDataModal";
+import UnenrollSiteModal from "./UnenrollSiteModal";
 
 const AllDataTable = (props) => {
   const [state, dispatch] = useContext(Context);
@@ -36,10 +37,17 @@ const AllDataTable = (props) => {
 
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editModalData, setEditModalData] = useState({});
+
+  const [unenrollRowData, setUnenrollRowData] = useState({});
+  const [unenrollOpen, setUnenrollOpen] = useState(false);
+
   const [valuesEdited, setValuesEdited] = useState(false);
 
   const handleEditModalClose = () => {
     setEditModalOpen(!editModalOpen);
+  };
+  const handleUnenrollClose = () => {
+    setUnenrollOpen(!unenrollOpen);
   };
 
   useEffect(() => {
@@ -108,7 +116,9 @@ const AllDataTable = (props) => {
           ...data,
           latlng:
             data.latitude !== null && data.longitude !== null
-              ? `${data.latitude},${data.longitude}`
+              ? data.latitude !== "-999" && data.longitude !== "-999"
+                ? `${data.latitude},${data.longitude}`
+                : "-999"
               : "",
         };
       });
@@ -144,22 +154,52 @@ const AllDataTable = (props) => {
           <Grid item lg={12}>
             <MaterialTable
               columns={[
-                {
-                  title: "Edit",
-                  render: (rowData) => (
-                    <IconButton
-                      onClick={() => {
-                        console.log(rowData);
-                        setEditModalOpen(true);
-                        setEditModalData(rowData);
-                      }}
-                    >
-                      <Edit />
-                    </IconButton>
-                  ),
-                  sorting: false,
-                  grouping: false,
-                },
+                state.userInfo.permissions.split(",").includes("all") ||
+                state.userInfo.permissions.split(",").includes("edit") ||
+                state.userInfo.permissions.split(",").includes("update")
+                  ? {
+                      title: "Actions",
+                      render: (rowData) => (
+                        <div>
+                          <IconButton
+                            onClick={() => {
+                              // console.log(rowData);
+                              setEditModalOpen(true);
+                              setEditModalData(rowData);
+                            }}
+                          >
+                            <Edit />
+                          </IconButton>
+                          <IconButton
+                            onClick={() => {
+                              console.log(rowData);
+
+                              setUnenrollOpen(true);
+                              setUnenrollRowData(rowData);
+                            }}
+                          >
+                            <DeleteForever />
+                          </IconButton>
+                        </div>
+                      ),
+                      sorting: false,
+                      grouping: false,
+                    }
+                  : {
+                      title: "Actions",
+                      render: (rowData) => (
+                        <div>
+                          <IconButton disabled>
+                            <Edit />
+                          </IconButton>
+                          <IconButton disabled>
+                            <DeleteForever />
+                          </IconButton>
+                        </div>
+                      ),
+                      sorting: false,
+                      grouping: false,
+                    },
                 { title: "Code", field: "code" },
                 { title: "Grower", field: "last_name" },
                 { title: "State", field: "affiliation" },
@@ -172,15 +212,19 @@ const AllDataTable = (props) => {
                   field: "latlng",
                   render: (rowData) =>
                     rowData.latlng !== "" ? (
-                      <Button
-                        startIcon={<GpsFixed />}
-                        variant="contained"
-                        href={`https://earth.google.com/web/search/${rowData.latlng}/@${rowData.latlng},75.78141996a,870.41248089d,35y,0h,45t,0r/data=ClQaKhIkGa36XG3FbkBAIVRSJ6CJkFTAKhAzMi44NjU0LC04Mi4yNTg0GAIgASImCiQJzF-JvuFuOEARyF-JvuFuOMAZThRMqkU0RMAh9HZjS910YsAoAg`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {rowData.latlng}
-                      </Button>
+                      rowData.latlng !== "-999" ? (
+                        <Button
+                          startIcon={<GpsFixed />}
+                          variant="contained"
+                          href={`https://earth.google.com/web/search/${rowData.latlng}/@${rowData.latlng},75.78141996a,870.41248089d,35y,0h,45t,0r/data=ClQaKhIkGa36XG3FbkBAIVRSJ6CJkFTAKhAzMi44NjU0LC04Mi4yNTg0GAIgASImCiQJzF-JvuFuOEARyF-JvuFuOMAZThRMqkU0RMAh9HZjS910YsAoAg`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {rowData.latlng}
+                        </Button>
+                      ) : (
+                        "-999"
+                      )
                     ) : (
                       ""
                     ),
@@ -201,7 +245,7 @@ const AllDataTable = (props) => {
                 exportFileName: "Site Information",
                 addRowPosition: "last",
                 exportAllData: true,
-                pageSize: 10,
+                pageSize: tableData.length <= 20 ? 10 : 20,
                 pageSizeOptions:
                   tableData.length <= 50
                     ? [5, 10, 20, 50]
@@ -234,6 +278,12 @@ const AllDataTable = (props) => {
           data={editModalData}
           edit={setEditModalData}
           valuesEdited={valuesEdited}
+          setValuesEdited={setValuesEdited}
+        />
+        <UnenrollSiteModal
+          open={unenrollOpen}
+          data={unenrollRowData}
+          handleUnenrollClose={handleUnenrollClose}
           setValuesEdited={setValuesEdited}
         />
       </div>
