@@ -28,7 +28,7 @@ const getCurrentYear = () => {
 
 const SiteEnrollment = (props) => {
   const [state, dispatch] = React.useContext(Context);
-  const [modalOpen, setModalOpen] = React.useState(true);
+  const [modalOpen, setModalOpen] = React.useState(false);
   const [defaultYear, setDefaultYear] = React.useState(2020);
   const [existingGrowerData, setExistingGrowerData] = React.useState([
     {
