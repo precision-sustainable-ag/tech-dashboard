@@ -1,3 +1,9 @@
+/*
+DEPRECATED
+
+NodeSensorVisual.js replaces this file
+*/
+
 import React, { useState, useEffect, Fragment } from "react";
 import { apiUsername, apiURL, apiPassword } from "../../../utils/api_secret";
 import Axios from "axios";
