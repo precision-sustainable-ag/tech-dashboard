@@ -47,10 +47,12 @@ const NodeSensorVisual = (props) => {
   const [nodeData, setNodeData] = useState({});
   const [coverNodeData, setCoverNodeData] = useState({});
   const year = props.year ? props.year : new Date().getFullYear();
-  const GetNodeType = () => {
+
+  const NodeType = () => {
     if (bareNodeSerialNo.includes(props.activeChip)) return "Bare Node";
     else return "Cover Node";
   };
+
   const [volatageChartOptions, setVoltageChartOptions] = useState({
     chart: {
       zoomType: "x",
@@ -748,6 +750,8 @@ const NodeSensorVisual = (props) => {
             });
         });
     }
+
+    return () => {};
   }, [props.activeChip]);
 
   return (
@@ -757,7 +761,7 @@ const NodeSensorVisual = (props) => {
           <Grid container>
             <Grid item md={12}>
               <Typography variant="h5" align="center">
-                Node Data for {<GetNodeType />} {props.activeChip}
+                Node Data for {<NodeType />} {props.activeChip}
               </Typography>
             </Grid>
           </Grid>
