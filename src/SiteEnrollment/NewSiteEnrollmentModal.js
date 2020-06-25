@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, Fragment, useEffect, useContext } from "react";
 
 import {
   Modal,
@@ -59,6 +59,7 @@ import NewSiteEnrollmentYears from "./NewSiteEnrollmentYears";
 import NewSiteEnrollmentAffiliations from "./NewSiteEnrollmentAffiliations";
 import Loading from "react-loading";
 import { CustomLoader } from "../utils/CustomComponents";
+import { Context } from "../Store/Store";
 const qs = require("qs");
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -386,6 +387,7 @@ const NewSiteEnrollmentModal = (props) => {
             setCompleteEnrollmentInfo={setCompleteEnrollmentInfo}
             nextBtnDisabled={nextBtnDisabled}
             setNextBtnDisabled={setNextBtnDisabled}
+            user={props.userInfo}
           />
         );
       case 1:
@@ -720,6 +722,13 @@ const GrowerInfo = (props) => {
     // console.log(ele);
     let str = `siteCodesFor${producerId}`;
     setProducerCodes([codes.toString()]);
+    // console.log(document.getElementById(str));
+
+    if (codes.length === 0) {
+      document.getElementById(str).textContent = "No Sites";
+    } else {
+      document.getElementById(str).textContent = [codes.toString()];
+    }
     // console.log(str);
     // document.getElementById(str).innerHTML = codes.toString();
     // return codes;
@@ -958,9 +967,10 @@ const GrowerInfo = (props) => {
                               </Button>
                             </Grid>
                             <Grid item sm={6}>
-                              <code style={{ overflowWrap: "break-word" }}>
-                                {producerCodes}
-                              </code>
+                              <code
+                                style={{ overflowWrap: "break-word" }}
+                                id={`siteCodesFor${grower.producerId}`}
+                              ></code>
                               {/* {getSiteCodesForProducer(grower.producerId)} */}
                               {/* <SiteCodesForProducer
                                 producerId={grower.producerId}
@@ -1023,13 +1033,17 @@ const GrowerInfo = (props) => {
 
 const BasicInfo = (props) => {
   const classes = useStyles();
+  const [state, dispatch] = useContext(Context);
   const [selectedYear, setSelectedYear] = useState(props.currentYear);
-  const [selectedAffiliation, setSelectedAffiliation] = useState(
-    props.allAffiliations[0]
-  );
+  // const defaultAffiliation = props.user.state.split(",").join("");
+  const [selectedAffiliation, setSelectedAffiliation] = useState("NC");
   useEffect(() => {
     props.setNextBtnDisabled(false);
   }, []);
+
+  useEffect(() => {
+    setSelectedAffiliation(state.userInfo.state.split(",")[0]);
+  }, [state.userInfo]);
   return (
     <Fragment>
       <Grid item lg={12} className={classes.belowHeader}>

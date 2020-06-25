@@ -222,6 +222,7 @@ const SiteEnrollment = (props) => {
           open={modalOpen}
           handleClose={handleEnrollNewSiteClick}
           defaultYear={defaultYear}
+          user={state.userInfo}
         />
       </Grid>
     </div>
