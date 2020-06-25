@@ -365,10 +365,26 @@ const EditDataModal = (props) => {
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={props.handleEditModalClose} color="primary">
+        <Button
+          onClick={props.handleEditModalClose}
+          color="primary"
+          variant={
+            window.localStorage.getItem("theme") === "dark"
+              ? "contained"
+              : "text"
+          }
+        >
           Cancel
         </Button>
-        <Button onClick={validateData} color="primary">
+        <Button
+          onClick={validateData}
+          color="primary"
+          variant={
+            window.localStorage.getItem("theme") === "dark"
+              ? "contained"
+              : "text"
+          }
+        >
           Update
         </Button>
       </DialogActions>
