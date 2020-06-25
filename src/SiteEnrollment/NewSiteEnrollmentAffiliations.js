@@ -29,6 +29,7 @@ const NewSiteEnrollmentAffiliations = (props) => {
     props.completeEnrollmentInfo.selectedAffiliation
   );
   const handleChange = (event) => {
+    setSelectedAff(event.target.value);
     props.setCompleteEnrollmentInfo({
       ...props.completeEnrollmentInfo,
       selectedAffiliation: event.target.value,
@@ -36,14 +37,18 @@ const NewSiteEnrollmentAffiliations = (props) => {
   };
 
   useEffect(() => {
-    console.log(allAffiliations);
+    // console.log(allAffiliations);
     if (state.userInfo) {
-      const firstState = state.userInfo.state.toUpperCase().split(",")[0];
-      setSelectedAff(firstState);
-      props.setCompleteEnrollmentInfo({
-        ...props.completeEnrollmentInfo,
-        selectedAffiliation: firstState,
-      });
+      if (state.userInfo.state.toUpperCase() === "ALL") {
+        setSelectedAff("NC");
+      } else {
+        const firstState = state.userInfo.state.toUpperCase().split(",")[0];
+        setSelectedAff(firstState);
+        props.setCompleteEnrollmentInfo({
+          ...props.completeEnrollmentInfo,
+          selectedAffiliation: firstState,
+        });
+      }
     }
   }, [state.userInfo]);
 
