@@ -42,9 +42,10 @@ const WaterSensorDataParser = (props) => {
         pathname: `/water-sensors/${gatewaysno}`,
         state: props,
       }}
+      push={true}
     />
   ) : (
-    <Grid item md={3}>
+    <Grid item md={3} xs={6}>
       <Paper
         className={props.paperClass}
         style={{ cursor: "pointer" }}
