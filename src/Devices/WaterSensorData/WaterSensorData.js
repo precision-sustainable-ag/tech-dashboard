@@ -93,7 +93,7 @@ const WaterSensorData = () => {
   return (
     <div className={classes.root}>
       <Grid container spacing={3}>
-        <Grid item md={12}>
+        <Grid item xs={12}>
           {loading ? (
             years.length === 0 ? (
               <Skeleton width="300" height="300" variant="rect" />
