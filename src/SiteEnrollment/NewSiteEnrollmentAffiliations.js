@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   FormControl,
   InputLabel,
@@ -7,6 +7,7 @@ import {
   MenuItem,
   makeStyles,
 } from "@material-ui/core";
+import { Context } from "../Store/Store";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -21,15 +22,30 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const NewSiteEnrollmentAffiliations = (props) => {
+  const [state, dispatch] = useContext(Context);
   const classes = useStyles();
   const allAffiliations = props.allAffiliations || [];
-  const selectedAff = props.completeEnrollmentInfo.selectedAffiliation;
+  const [selectedAff, setSelectedAff] = useState(
+    props.completeEnrollmentInfo.selectedAffiliation
+  );
   const handleChange = (event) => {
     props.setCompleteEnrollmentInfo({
       ...props.completeEnrollmentInfo,
       selectedAffiliation: event.target.value,
     });
   };
+
+  useEffect(() => {
+    console.log(allAffiliations);
+    if (state.userInfo) {
+      const firstState = state.userInfo.state.toUpperCase().split(",")[0];
+      setSelectedAff(firstState);
+      props.setCompleteEnrollmentInfo({
+        ...props.completeEnrollmentInfo,
+        selectedAffiliation: firstState,
+      });
+    }
+  }, [state.userInfo]);
 
   return (
     <FormControl className={classes.formControl}>
@@ -42,9 +58,9 @@ const NewSiteEnrollmentAffiliations = (props) => {
         value={selectedAff}
         onChange={handleChange}
       >
-        {allAffiliations.map((aff) => (
-          <MenuItem value={aff} key={aff}>
-            {aff}
+        {props.allAffs.map((aff) => (
+          <MenuItem value={aff.affiliation} key={aff.affiliation}>
+            {aff.label}
           </MenuItem>
         ))}
       </Select>

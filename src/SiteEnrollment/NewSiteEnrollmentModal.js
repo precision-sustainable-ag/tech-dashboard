@@ -110,137 +110,10 @@ const getSteps = () => {
 const NewSiteEnrollmentModal = (props) => {
   const classes = useStyles();
 
-  const [year, setYear] = useState(props.defaultYear);
-  const [irrigation, setIrrigation] = useState(false);
-  const [growerInfo, setGrowerInfo] = useState([{}]);
-  const [growerLastNameEntry, setGrowerLastNameEntry] = useState("");
-  const [addNewGrower, setAddNewGrower] = useState(false);
-
-  const [growerLatLng, setGrowerLatLng] = useState([35.7796, -78.6382]);
-  const [growerState, setGrowerState] = useState("");
-
   const [siteAffilitaion, setSiteAffiliation] = useState([]);
+  const [allAffs, setAllAffs] = useState([]);
 
   const [loading, setLoading] = useState(false);
-  const [ajaxProgress, setAjaxProgress] = useState(0);
-
-  const [alert, setAlert] = useState({
-    severity: "error",
-    title: "Error",
-    body: "Please check the error",
-    show: false,
-  });
-
-  const [growerExists, setGrowerExists] = useState(false);
-
-  const [growerLastNameLoading, setGrowerLastNameLoading] = useState(false);
-
-  const [siteCodesArray, setSiteCodesArray] = useState([]);
-
-  const getGrowerInfoByLastName = (lastNameVal) => {
-    // if (alert.show) {
-    //   setAlert({
-    //     ...alert,
-    //     show: false,
-    //   });
-    // }
-
-    // check if last name is NAN and length > 0
-    if (lastNameVal !== "" && isNaN(lastNameVal)) {
-      console.log("looks good");
-      setGrowerLastNameLoading(true);
-
-      let growerSyncObj = fetchGrowerByLastName(lastNameVal);
-
-      growerSyncObj
-        .then((resp) => {
-          let response = resp.data;
-
-          if (response.data.length > 0) {
-            setGrowerExists(true);
-            setGrowerInfo(response.data);
-            setGrowerLastNameLoading(false);
-          } else {
-            setGrowerExists(false);
-            setGrowerLastNameLoading(false);
-          }
-        })
-        .catch((e) => {
-          console.error(e);
-          setAlert({
-            ...alert,
-            show: true,
-            body: e,
-          });
-        });
-    } else {
-      if (lastNameVal === "") {
-        setAlert({
-          ...alert,
-          show: false,
-        });
-      } else {
-        setAlert({
-          title: "Error",
-          body: "Grower Last Name not entered or incorrectly formatted!",
-          show: true,
-          severity: "error",
-        });
-      }
-    }
-  };
-
-  const handleYearChange = (el) => {
-    setYear(el.target.value);
-  };
-
-  const handleGrowerStateChange = (el) => {
-    setGrowerState(el.target.value);
-  };
-
-  const handleIrrigationChange = (event) => {
-    setIrrigation(event.target.checked);
-  };
-  const renderYears = () => {
-    let yearsArray = [props.defaultYear - 2, props.defaultYear - 1];
-
-    yearsArray.push(
-      props.defaultYear,
-      props.defaultYear + 1,
-      props.defaultYear + 2
-    );
-
-    return yearsArray.map((year, index) => (
-      <MenuItem value={year} key={index}>
-        {year}
-      </MenuItem>
-    ));
-
-    const renderAffiliations = () => {};
-  };
-
-  const renderStates = () => {
-    let states = statesHash;
-    const statesArray = Object.keys(states).map((i) => states[i]);
-
-    return statesArray.map((state, index) => (
-      <MenuItem value={state} key={index}>
-        {state}
-      </MenuItem>
-    ));
-  };
-
-  const handleFinalSave = () => {
-    if (growerLastNameEntry !== "" || growerLastNameEntry.length === 0) {
-      setAlert({
-        ...alert,
-        show: true,
-        body: "Last Name Not Entered",
-      });
-    } else {
-      props.handleClose();
-    }
-  };
 
   const fetchSiteAffiliations = async () => {
     return await Axios({
@@ -261,9 +134,11 @@ const NewSiteEnrollmentModal = (props) => {
       .then((resp) => {
         let data = resp.data.data;
         let affs = [];
+        // console.log(data);
         affs = data.map((aff) => {
           return aff.affiliation;
         });
+        setAllAffs(data);
         setSiteAffiliation(affs);
       })
       .then(() => {
@@ -388,6 +263,7 @@ const NewSiteEnrollmentModal = (props) => {
             nextBtnDisabled={nextBtnDisabled}
             setNextBtnDisabled={setNextBtnDisabled}
             user={props.userInfo}
+            allAffs={allAffs}
           />
         );
       case 1:
@@ -397,6 +273,7 @@ const NewSiteEnrollmentModal = (props) => {
             setCompleteEnrollmentInfo={setCompleteEnrollmentInfo}
             nextBtnDisabled={nextBtnDisabled}
             setNextBtnDisabled={setNextBtnDisabled}
+            allAffs={allAffs}
           />
         );
       case 2:
@@ -406,6 +283,7 @@ const NewSiteEnrollmentModal = (props) => {
             setCompleteEnrollmentInfo={setCompleteEnrollmentInfo}
             nextBtnDisabled={nextBtnDisabled}
             setNextBtnDisabled={setNextBtnDisabled}
+            allAffs={allAffs}
           />
         );
       case 3:
@@ -415,6 +293,7 @@ const NewSiteEnrollmentModal = (props) => {
             setCompleteEnrollmentInfo={setCompleteEnrollmentInfo}
             nextBtnDisabled={nextBtnDisabled}
             setNextBtnDisabled={setNextBtnDisabled}
+            allAffs={allAffs}
           />
         );
       default:
@@ -1065,6 +944,7 @@ const BasicInfo = (props) => {
           setSelectedAffiliation={setSelectedAffiliation}
           completeEnrollmentInfo={props.completeEnrollmentInfo}
           setCompleteEnrollmentInfo={props.setCompleteEnrollmentInfo}
+          allAffs={props.allAffs}
         />
       </Grid>
     </Fragment>
@@ -1646,6 +1526,11 @@ const ConfirmationStep = (props) => {
       })
         .then(() => {
           setTimes(index);
+          if (index === 0) {
+            setSaving(false);
+            setConfirmation(false);
+            props.setNextBtnDisabled(false);
+          }
         })
         .catch((e) => {
           setTimes(0);
@@ -1662,11 +1547,14 @@ const ConfirmationStep = (props) => {
 
   useEffect(() => {
     console.log("times", times);
-    if (times === completeEnrollmentInfo.sites.length - 1) {
-      // all ajax completed
-      setSaving(false);
-      setConfirmation(false);
-      props.setNextBtnDisabled(false);
+    if (times !== 0) {
+      if (times === completeEnrollmentInfo.sites.length - 1) {
+        // all ajax completed
+        setSaving(false);
+        setConfirmation(false);
+        props.setNextBtnDisabled(false);
+      }
+    } else {
     }
   }, [times]);
 
