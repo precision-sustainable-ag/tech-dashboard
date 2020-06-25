@@ -9,11 +9,9 @@ import {
   GridListTileBar,
   IconButton,
   makeStyles,
-  Typography,
 } from "@material-ui/core";
-import { CheckBox, ArrowBackIosOutlined } from "@material-ui/icons";
-// import WaterSensorByGatewaySidebar from "./WaterSensorByGatewaySidebar";
-import NodeSensorVisual from "./WaterSensorVisuals/NodeSensorVisual";
+import { ArrowBackIosOutlined } from "@material-ui/icons";
+
 import GatewayVisual from "./WaterSensorVisuals/GatewayVisual";
 import WaterSensorByGatewayTopbar from "./WaterSensorByGatewayTopbar";
 import NodeSensorVisuals from "./WaterSensorVisuals/NodeSensorVisuals";
