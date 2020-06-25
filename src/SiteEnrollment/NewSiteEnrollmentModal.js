@@ -1058,7 +1058,10 @@ const SiteInfo = (props) => {
 
       if (completeEnrollmentInfo.sites.length === 0) {
         let sitesArr = [];
-        let siteCodesPromise = fetchSiteCodes(numberOfSites);
+        let siteCodesPromise = fetchSiteCodes(
+          numberOfSites,
+          props.completeEnrollmentInfo.selectedAffiliation
+        );
 
         siteCodesPromise
           .then((resp) => {
@@ -1100,7 +1103,10 @@ const SiteInfo = (props) => {
 
   useEffect(() => {
     let sitesArr = [];
-    let siteCodesPromise = fetchSiteCodes(numberOfSites);
+    let siteCodesPromise = fetchSiteCodes(
+      numberOfSites,
+      props.completeEnrollmentInfo.selectedAffiliation
+    );
 
     siteCodesPromise
       .then((resp) => {
@@ -1767,9 +1773,10 @@ class SiteInformation {
   }
 }
 
-const fetchSiteCodes = async (size) => {
+const fetchSiteCodes = async (size, affiliation) => {
+  // TODO: check university or partner
   return await Axios({
-    url: `${apiURL}/api/sites/codes/unused/${size}`,
+    url: `${apiURL}/api/sites/codes/unused/${affiliation}/${size}`,
     method: "GET",
     auth: {
       username: apiUsername,
