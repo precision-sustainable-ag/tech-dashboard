@@ -1,9 +1,10 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { red, grey, green } from "@material-ui/core/colors";
 import { NavLink, Redirect } from "react-router-dom";
-import { CardActionArea, Tooltip } from "@material-ui/core";
+import { CardActionArea, Tooltip, IconButton } from "@material-ui/core";
 
 import moment from "moment-timezone";
+import { Edit } from "@material-ui/icons";
 
 const deadDeviceBG = red[300];
 // const deadDeviceCol = red[50];
@@ -138,8 +139,20 @@ const DataParser = (props) => {
         onClick={() => {
           setDeviceState(device.id);
         }}
+        onDoubleClick={() => {
+          console.log("yay");
+        }}
       >
-        <p style={{ fontWeight: "bold" }}>{device.name}</p>
+        <p style={{ fontWeight: "bold" }}>
+          {window.localStorage.getItem(
+            `devices.${device.name.split(" ").join("")}`
+          )
+            ? window.localStorage.getItem(
+                `devices.${device.name.split(" ").join("")}`
+              )
+            : device.name}
+        </p>
+
         {device.lastsession ? (
           <Fragment>
             <p>Last Session: {deviceDateStr}</p>
