@@ -377,7 +377,7 @@ export default function Header(props) {
             </ListItemIcon>
             <ListItemText primary="Forms" />
           </ListItem>
-          <ListItem
+          {/* <ListItem
             onClick={() => setOpen(false)}
             button
             key="Device Enroll"
@@ -388,7 +388,7 @@ export default function Header(props) {
               <AddLocation />
             </ListItemIcon>
             <ListItemText primary="Device Enroll" />
-          </ListItem>
+          </ListItem> */}
         </List>
       </Drawer>
     </div>
