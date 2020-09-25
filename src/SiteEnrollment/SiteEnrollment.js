@@ -1,180 +1,33 @@
-import * as React from "react";
 import {
-  Grid,
   Button,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  IconButton,
+  Grid,
+  Paper,
+  Slide,
+  Snackbar,
   Typography,
 } from "@material-ui/core";
-import { Context } from "../Store/Store";
-import NewSiteEnrollmentModal from "./NewSiteEnrollmentModal";
+import { Alert } from "@material-ui/lab";
 import Axios from "axios";
-import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
-import { Skeleton } from "@material-ui/lab";
-import MapModal from "./MapModal";
-import { EditAttributesSharp, Edit } from "@material-ui/icons";
-import EditSiteDataModal from "./EditSiteDataModal";
+import React, { useState, useEffect, useContext } from "react";
+import { Context } from "../Store/Store";
+import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
 import { bannedRoles } from "../utils/constants";
 import { BannedRoleMessage } from "../utils/CustomComponents";
-
-const getCurrentYear = () => {
-  return new Date().getFullYear();
-};
-
+import EnrollNewSite from "./EnrollNewSite";
 const SiteEnrollment = (props) => {
-  const [state, dispatch] = React.useContext(Context);
-  const [modalOpen, setModalOpen] = React.useState(false);
-  const [defaultYear, setDefaultYear] = React.useState(2020);
-  const [existingGrowerData, setExistingGrowerData] = React.useState([
-    {
-      producer_id: "",
-      last_name: "",
-      email: null,
-      phone: null,
-      cid: "",
-      code: "",
-      year: "",
-      affiliation: "",
-      county: null,
-      longitude: null,
-      latitude: null,
-      notes: "",
-      additional_contact: null,
-      address: null,
-    },
-  ]);
-
+  const [state, dispatch] = useContext(Context);
   const [totalSitesEnrolled, setTotalSitesEnrolled] = React.useState(0);
   const [stateSitesEnrolled, setStateSitesEnrolled] = React.useState(0);
   const [showStateSpecificSites, setShowStateSpecificSites] = React.useState(
     false
   );
-
-  const [ajaxLoading, setAjaxLoading] = React.useState(false);
-
-  const [mapModalOpen, setMapModalOpen] = React.useState(false);
-
-  const [editModalOpen, setEditModalOpen] = React.useState(false);
-
-  const [mapModalGrowerData, setMapModalGrowerData] = React.useState({
-    lat: 35.78598,
-    lng: -78.67254,
-    lastName: "",
-    producerId: "",
-    code: "",
-    new: false,
-  });
-
+  const [showContent, setShowContent] = React.useState(false);
   const [bannedRolesCheckMessage, setBannedRolesCheckMessage] = React.useState(
     "Checking your permissions.."
   );
-  const [growerSpecificInfo, setGrowerSpecificInfo] = React.useState([]);
-  const [showContent, setShowContent] = React.useState(false);
-
-  const handleEnrollNewSiteClick = () => {
-    setModalOpen(!modalOpen);
-  };
-
-  const fetchExistingGrowers = async () => {
-    return await Axios({
-      url: `${apiURL}/api/retrieve/grower/all`,
-      method: "get",
-      auth: {
-        username: apiUsername,
-        password: apiPassword,
-      },
-    });
-  };
-
-  const setExistingGrowers = () => {
-    setAjaxLoading(true);
-    let existingGrowersPromise = fetchExistingGrowers();
-
-    existingGrowersPromise
-      .then((response) => {
-        let data = response.data.data;
-        setExistingGrowerData(data);
-      })
-      .then(() => {
-        setAjaxLoading(false);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  };
-
-  const handleMapModalClose = () => {
-    setMapModalOpen(!mapModalOpen);
-  };
-  const handleEditModalClose = () => {
-    setEditModalOpen(!editModalOpen);
-  };
-  const renderLatLngs = (lat, lng, lastName, producerId, code) => {
-    if (lat === null || lng === null)
-      return (
-        <Grid container>
-          {/* <Grid item lg={12}>
-        {lat}, {lng}
-      </Grid> */}
-          <Grid item lg={12}>
-            <Button
-              variant="contained"
-              onClick={() => {
-                setMapModalGrowerData({
-                  lat: 35.78598,
-                  lng: -78.67254,
-                  lastName: lastName,
-                  producerId: producerId,
-                  code: code,
-                  new: true,
-                });
-                setMapModalOpen(true);
-              }}
-            >
-              Add Location
-            </Button>
-          </Grid>
-        </Grid>
-      );
-    else
-      return (
-        <Grid container>
-          {/* <Grid item lg={12}>
-            {lat}, {lng}
-          </Grid> */}
-          <Grid item lg={12}>
-            <Button
-              variant="contained"
-              onClick={() => {
-                setMapModalGrowerData({
-                  lat: lat,
-                  lng: lng,
-                  lastName: lastName,
-                  producerId: producerId,
-                  code: code,
-                  new: false,
-                });
-                setMapModalOpen(true);
-              }}
-            >
-              Show Map
-            </Button>
-          </Grid>
-        </Grid>
-      );
-  };
-  React.useEffect(() => {
-    // console.log(getCurrentYear());
-    setDefaultYear(getCurrentYear());
-    // setExistingGrowers();
-  }, []);
-
-  React.useEffect(() => {
+  const [enrollNewSite, setEnrollNewSite] = useState(false);
+  const [savedData, setSavedData] = useState(false);
+  useEffect(() => {
     if (state.userInfo.state) {
       if (state.userInfo.role) {
         if (bannedRoles.includes(state.userRole)) {
@@ -196,36 +49,54 @@ const SiteEnrollment = (props) => {
         }
       }
     }
-  }, [state.userInfo, modalOpen]);
+  }, [state.userInfo]);
 
   return showContent ? (
-    <div>
-      <Grid container spacing={4}>
-        <Grid item md={12} lg={12} xs={12}>
-          <Button onClick={handleEnrollNewSiteClick} variant="contained">
-            Enroll New Site
-          </Button>
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="body1">
-            {showStateSpecificSites
-              ? `${stateSitesEnrolled} sites enrolled in your team: ${state.userInfo.state}`
-              : ""}
-          </Typography>
-          <Typography variant="body1">
-            {totalSitesEnrolled}&nbsp; sites enrolled across all teams.
-          </Typography>
-        </Grid>
+    <Grid container spacing={4}>
+      <Grid item xs={12}>
+        <Button
+          variant="contained"
+          onClick={() => setEnrollNewSite(!enrollNewSite)}
+          color={enrollNewSite ? "secondary" : "primary"}
+        >
+          {enrollNewSite ? "Cancel" : "Enroll Site"}
+        </Button>
       </Grid>
-      <Grid container>
-        <NewSiteEnrollmentModal
-          open={modalOpen}
-          handleClose={handleEnrollNewSiteClick}
-          defaultYear={defaultYear}
-          user={state.userInfo}
+
+      {enrollNewSite ? (
+        <EnrollNewSite
+          enrollNewSite={enrollNewSite}
+          setEnrollNewSite={setEnrollNewSite}
+          saveData={savedData}
+          setSaveData={setSavedData}
+          {...props}
         />
-      </Grid>
-    </div>
+      ) : (
+        <Grid item xs={12}>
+          {showStateSpecificSites ? (
+            <Typography variant="body1" gutterBottom>
+              {stateSitesEnrolled} sites enrolled in your team:{" "}
+              {state.userInfo.state}
+            </Typography>
+          ) : (
+            ""
+          )}
+          <Typography variant="body1">
+            {totalSitesEnrolled} sites enrolled across all teams.
+          </Typography>
+        </Grid>
+      )}
+      <Snackbar
+        anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
+        open={savedData}
+        autoHideDuration={6000}
+        onClose={() => setSavedData(false)}
+      >
+        <Alert onClose={() => setSavedData(false)} severity="success">
+          Site successfully enrolled!
+        </Alert>
+      </Snackbar>
+    </Grid>
   ) : (
     <div>{bannedRolesCheckMessage}</div>
   );
@@ -233,9 +104,16 @@ const SiteEnrollment = (props) => {
 
 export default SiteEnrollment;
 
+const getStats = async (state) => {
+  let records = await fetchStats(state);
+
+  let data = records.data.data;
+
+  return data;
+};
+
 const fetchStats = async (state) => {
-  return Axios({
-    url: `${apiURL}/api/total/sites/${state}`,
+  return await Axios.get(`${apiURL}/api/total/sites/${state}`, {
     headers: {
       "Content-Type": "application/json",
     },
@@ -244,12 +122,4 @@ const fetchStats = async (state) => {
       password: apiPassword,
     },
   });
-};
-
-const getStats = async (state) => {
-  let records = await fetchStats(state);
-
-  let data = records.data.data;
-
-  return data;
 };

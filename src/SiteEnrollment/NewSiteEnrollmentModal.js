@@ -41,6 +41,8 @@ import {
   CardActionArea,
   Slider,
   TextareaAutosize,
+  useTheme,
+  useMediaQuery,
 } from "@material-ui/core";
 import { Close, Search, Save, Check, GpsFixed } from "@material-ui/icons";
 import { Alert, AlertTitle, Skeleton } from "@material-ui/lab";
@@ -109,6 +111,9 @@ const getSteps = () => {
 
 const NewSiteEnrollmentModal = (props) => {
   const classes = useStyles();
+
+  const theme = useTheme();
+  const mdMatch = useMediaQuery(theme.breakpoints.up("md"));
 
   const [siteAffilitaion, setSiteAffiliation] = useState([]);
   const [allAffs, setAllAffs] = useState([]);
@@ -355,29 +360,57 @@ const NewSiteEnrollmentModal = (props) => {
             justify="center"
           >
             <Grid item lg={12}>
-              <Stepper
-                activeStep={activeStep}
-                steps={steps.length}
-                variant="elevation"
-              >
-                {steps.map((label, index) => {
-                  const stepProps = {};
-                  const labelProps = {};
-                  if (isStepOptional(index)) {
-                    labelProps.optional = (
-                      <Typography variant="caption">Optional</Typography>
+              {mdMatch ? (
+                <Stepper
+                  activeStep={activeStep}
+                  steps={steps.length}
+                  variant="elevation"
+                  // variant="progress"
+                >
+                  {steps.map((label, index) => {
+                    const stepProps = {};
+                    const labelProps = {};
+                    if (isStepOptional(index)) {
+                      labelProps.optional = (
+                        <Typography variant="caption">Optional</Typography>
+                      );
+                    }
+                    if (isStepSkipped(index)) {
+                      stepProps.completed = false;
+                    }
+                    return (
+                      <Step key={label} {...stepProps}>
+                        <StepLabel {...labelProps}>{label}</StepLabel>
+                      </Step>
                     );
-                  }
-                  if (isStepSkipped(index)) {
-                    stepProps.completed = false;
-                  }
-                  return (
-                    <Step key={label} {...stepProps}>
-                      <StepLabel {...labelProps}>{label}</StepLabel>
-                    </Step>
-                  );
-                })}
-              </Stepper>
+                  })}
+                </Stepper>
+              ) : (
+                <MobileStepper
+                  activeStep={activeStep}
+                  steps={steps.length}
+                  // variant="elevation"
+                  variant="text"
+                >
+                  {steps.map((label, index) => {
+                    const stepProps = {};
+                    const labelProps = {};
+                    if (isStepOptional(index)) {
+                      labelProps.optional = (
+                        <Typography variant="caption">Optional</Typography>
+                      );
+                    }
+                    if (isStepSkipped(index)) {
+                      stepProps.completed = false;
+                    }
+                    return (
+                      <Step key={label} {...stepProps}>
+                        <StepLabel {...labelProps}>{label}</StepLabel>
+                      </Step>
+                    );
+                  })}
+                </MobileStepper>
+              )}
             </Grid>
 
             <Grid item lg={12}>
@@ -594,53 +627,15 @@ const GrowerInfo = (props) => {
     codes = data.map((r, i) => {
       return r.code;
     });
-    // let ele = [];
-    //  codes.forEach((code, index) => {
-    //    ele.push(<span key={index}>{code}</span>);
-    // });
-    // console.log(ele);
+
     let str = `siteCodesFor${producerId}`;
     setProducerCodes([codes.toString()]);
-    // console.log(document.getElementById(str));
 
     if (codes.length === 0) {
       document.getElementById(str).textContent = "No Sites";
     } else {
       document.getElementById(str).textContent = [codes.toString()];
     }
-    // console.log(str);
-    // document.getElementById(str).innerHTML = codes.toString();
-    // return codes;
-
-    // console.log(responseArr);
-
-    //  responseArr.map((el, i) => {
-    //   return <span key={i}>{el}</span>;
-    // // });
-    // return (
-    //   <div>
-    //     {producerCodes.map((code, index) => (
-    //       <span key={index}>{code}</span>
-    //     ))}
-    //   </div>
-    // );
-    // let responseArrCodes = await fetchSitesPromise
-    //   .then((resp) => {
-    //     let data = resp.data.data;
-    //     // console.log(data);
-    //     responseArr = data.map((r, i) => {
-    //       return r.code;
-    //     });
-    //   })
-    //   .catch((e) => {
-    //     console.error(e);
-    //     responseArr = ["Error.."];
-    //   });
-    // console.log(responseArr);
-
-    // responseArr.map((el, i) => {
-    //   return <span key={i}>{el}</span>;
-    // });
   };
   return (
     <Fragment>
