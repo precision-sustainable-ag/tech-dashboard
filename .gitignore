@@ -10,6 +10,9 @@
 /.pnp
 .pnp.js
 
+# env
+/.env
+
 # Hide Auth0 access key
 /src/Auth/auth_config.json
 
