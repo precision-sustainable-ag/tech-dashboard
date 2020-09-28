@@ -1,9 +1,17 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# mocks and tests
+/src/__mocks__/*
+/src/__tests__/*
+*.test.js
+
 # dependencies
 /node_modules
 /.pnp
 .pnp.js
+
+# env
+/.env
 
 # Hide Auth0 access key
 /src/Auth/auth_config.json
