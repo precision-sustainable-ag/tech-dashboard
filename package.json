@@ -10,7 +10,7 @@
     "autosuggest-highlight": "^3.1.1",
     "axios": "^0.20.0",
     "clsx": "^1.1.1",
-    "highcharts": "^8.1.2",
+    "highcharts": "^8.2.0",
     "highcharts-react-official": "^3.0.0",
     "install": "^0.13.0",
     "is-ip": "^3.1.0",
