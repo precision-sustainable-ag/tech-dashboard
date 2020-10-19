@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -18,6 +18,7 @@ import {
   Typography,
   Menu,
   MenuItem,
+  Collapse,
 } from "@material-ui/core";
 
 import { Link } from "react-router-dom";
@@ -33,6 +34,9 @@ import {
   BrightnessHigh,
   AddLocation,
   BrightnessLow,
+  Info,
+  ExpandLess,
+  ExpandMore,
 } from "@material-ui/icons";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 import Axios from "axios";
@@ -104,13 +108,17 @@ const useStyles = makeStyles((theme) => ({
 export default function Header(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
   const profileMenuOpen = Boolean(anchorEl);
   const [state, dispatch] = useContext(Context);
 
   const { logout, user, loginWithRedirect } = useAuth0();
+  const [openAllDataNav, setOpenAllDataNav] = useState(false);
 
+  const handleOpenAllDataNav = () => {
+    setOpenAllDataNav(!openAllDataNav);
+  };
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -304,17 +312,33 @@ export default function Header(props) {
             <ListItemText primary={"Quick Links"} />
           </ListItem>
           <ListItem
-            onClick={() => setOpen(false)}
+            onClick={() => handleOpenAllDataNav()}
             button
             key={"All Data"}
             component={Link}
-            to="/table"
           >
             <ListItemIcon>
               <ViewList />
             </ListItemIcon>
             <ListItemText primary={"All Data"} />
+            {openAllDataNav ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
+          <Collapse in={openAllDataNav} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem
+                button
+                to="/table"
+                component={Link}
+                onClick={() => {
+                  setOpen(false);
+                  handleOpenAllDataNav();
+                }}
+              >
+                <ListItemText inset primary="Site Information" />
+              </ListItem>
+            </List>
+          </Collapse>
+
           <ListItem
             onClick={() => setOpen(false)}
             button

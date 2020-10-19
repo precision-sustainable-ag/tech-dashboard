@@ -10,6 +10,7 @@ import moment from "moment";
 
 // Load Highcharts modules
 require("highcharts/modules/exporting")(Highcharts);
+require("highcharts/modules/offline-exporting")(Highcharts);
 
 const getGatewayVisialData = async (gatewayNo, token, year) => {
   //   try {

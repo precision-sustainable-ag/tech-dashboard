@@ -6,8 +6,9 @@ import Axios from "axios";
 import { apiUsername, apiPassword, apiURL } from "../../../utils/api_secret";
 import moment from "moment-timezone";
 
-// Load Highcharts modules
-require("highcharts/modules/exporting")(Highcharts);
+// Load Highcharts export modules
+// require("highcharts/modules/exporting")(Highcharts);
+// require("highcharts/modules/offline-exporting")(Highcharts);
 
 const styles = {
   chartStyle: {

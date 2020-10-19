@@ -32,11 +32,7 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {
   const [savingProducerId, setSavingProducerId] = useState(false);
 
   const handleNewGrowerInfo = () => {
-    if (
-      window.confirm(
-        "Are you sure you want to proceed? New Grower Information can not be modified after this."
-      )
-    ) {
+    if (window.confirm("Are you sure you want to save this grower?")) {
       if (
         Object.keys(enrollmentData.growerInfo).length === 0 ||
         enrollmentData.growerInfo.lastName === ""

@@ -18,9 +18,11 @@ const qs = require("qs");
 const UnenrollSiteModal = (props) => {
   const open = props.open;
   const [confirmText, setConfirmText] = useState("");
+  const [confirmBtnStatus, setConfirmBtnStatus] = useState("Confirm");
 
   const handleUnenroll = () => {
     // disenroll and close
+    setConfirmBtnStatus("Please Wait..");
     const site = new SiteEnrollment(props.data);
     site.sanitizeData();
     const dataString = qs.stringify(site);
@@ -45,7 +47,9 @@ const UnenrollSiteModal = (props) => {
           console.error(response.data);
         }
       })
-      .then(() => {})
+      .then(() => {
+        window.location.reload();
+      })
       .catch((e) => {
         console.error(e);
       });
@@ -113,7 +117,7 @@ const UnenrollSiteModal = (props) => {
               : "text"
           }
         >
-          Confirm
+          {confirmBtnStatus}
         </Button>
       </DialogActions>
     </Dialog>
