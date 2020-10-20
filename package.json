@@ -22,7 +22,7 @@
     "qs": "^6.9.4",
     "react": "^16.13.1",
     "react-app-polyfill": "^1.0.6",
-    "react-data-grid": "^7.0.0-canary.24",
+    "react-data-grid": "^7.0.0-canary.25",
     "react-dom": "^16.13.1",
     "react-leaflet": "^2.7.0",
     "react-loading": "^2.0.3",
