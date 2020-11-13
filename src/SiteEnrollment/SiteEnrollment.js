@@ -87,7 +87,7 @@ const SiteEnrollment = (props) => {
         </Grid>
       )}
       <Snackbar
-        anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
+        anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
         open={savedData}
         autoHideDuration={6000}
         onClose={() => setSavedData(false)}
