@@ -36,6 +36,7 @@ import WaterSensorByGateway from "./Devices/WaterSensorData/WaterSensorByGateway
 import SiteEnrollment from "./SiteEnrollment/SiteEnrollment";
 import PageNotFound from "./PageNotFound";
 import AllDataTable from "./Table/AllDataTable";
+import Issue from "./Issues/Issue";
 
 function useOnlineStatus() {
   const [online, setOnline] = useState(window.navigator.onLine);
@@ -214,6 +215,7 @@ function App() {
               />
               {/* <PrivateRoute path="/table" component={TableComponent} /> */}
               <PrivateRoute path="/issues" component={ReposComponent} exact />
+              <PrivateRoute path="/issues/:issueNumber" component={Issue} />
               <PrivateRoute
                 path="/devices"
                 component={DevicesComponent}
