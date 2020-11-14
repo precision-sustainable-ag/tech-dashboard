@@ -18,12 +18,28 @@ import {
   DialogTitle,
   DialogContentText,
   DialogActions,
+  Tooltip,
+  Snackbar,
 } from "@material-ui/core";
+import MuiAlert from "@material-ui/lab/Alert";
+
 import MaterialTable from "material-table";
 import { BannedRoleMessage } from "../utils/CustomComponents";
-import { GpsFixed, Edit, DeleteForever } from "@material-ui/icons";
+import {
+  GpsFixed,
+  Edit,
+  DeleteForever,
+  Add,
+  AddCircleOutline,
+  AddCircle,
+} from "@material-ui/icons";
 import EditDataModal from "./EditDataModal";
 import UnenrollSiteModal from "./UnenrollSiteModal";
+import NewIssueDialog from "./NewIssueModal";
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const AllDataTable = (props) => {
   const [state, dispatch] = useContext(Context);
@@ -43,6 +59,8 @@ const AllDataTable = (props) => {
 
   const [valuesEdited, setValuesEdited] = useState(false);
   const [siteRemoved, setSiteRemoved] = useState(false);
+  const [showNewIssueDialog, setShowNewIssueDialog] = useState(false);
+  const [newIssueData, setNewIssueData] = useState({});
 
   const handleEditModalClose = () => {
     setEditModalOpen(!editModalOpen);
@@ -158,6 +176,7 @@ const AllDataTable = (props) => {
     });
   };
 
+  const [snackbarData, setSnackbarData] = useState({ open: false, text: "" });
   return showTable ? (
     loading ? (
       <div style={{ display: "flex", justifyContent: "center" }}>
@@ -165,6 +184,19 @@ const AllDataTable = (props) => {
       </div>
     ) : (
       <div>
+        <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "center",
+          }}
+          open={snackbarData.open}
+          autoHideDuration={2000}
+          onClose={() =>
+            setSnackbarData({ ...snackbarData, open: !snackbarData.open })
+          }
+        >
+          <Alert severity="success">{snackbarData.text}</Alert>
+        </Snackbar>
         <Grid container>
           <Grid item lg={12}>
             <MaterialTable
@@ -246,6 +278,33 @@ const AllDataTable = (props) => {
                   grouping: false,
                 },
                 { title: "Notes", field: "notes" },
+                {
+                  title: "Issue",
+                  render: (rowData) => {
+                    return (
+                      <Tooltip
+                        title={
+                          <Typography variant="body2">
+                            Submit a new issue
+                          </Typography>
+                        }
+                        placement="bottom"
+                      >
+                        <Button
+                          size="small"
+                          variant="contained"
+                          color="primary"
+                          onClick={() => {
+                            setShowNewIssueDialog(true);
+                            setNewIssueData(rowData);
+                          }}
+                        >
+                          Comment
+                        </Button>
+                      </Tooltip>
+                    );
+                  },
+                },
                 //   {
                 //     title: "Doğum Yeri",
                 //     field: "birthCity",
@@ -295,6 +354,15 @@ const AllDataTable = (props) => {
           data={unenrollRowData}
           handleUnenrollClose={handleUnenrollClose}
           setValuesEdited={setValuesEdited}
+        />
+        <NewIssueDialog
+          open={showNewIssueDialog}
+          handleNewIssueDialogClose={() => {
+            setShowNewIssueDialog(!showNewIssueDialog);
+          }}
+          data={newIssueData}
+          setSnackbarData={setSnackbarData}
+          snackbarData={snackbarData}
         />
       </div>
     )

@@ -21,6 +21,10 @@ import React, { useState, useEffect } from "react";
 import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
 import { fetchGrowerByLastName, ucFirst } from "../utils/constants";
 import { NewSiteInfo } from "./NewSiteInfo";
+// import Input from "react-phone-number-input/input";
+import InputMask from "react-input-mask";
+import CustomPhoneInput from "./components/PhoneInput";
+// import "react-phone-number-input/style.css";
 const qs = require("qs");
 
 const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {
@@ -103,7 +107,7 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {
       },
     });
   }, [growerLastNameSearch, growerType]);
-
+  const [maskedTel, setMaskedTel] = useState("");
   return (
     <>
       <Grid item sm={12}>
@@ -199,7 +203,7 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
+              {/* <TextField
                 fullWidth
                 label="Phone"
                 value={enrollmentData.growerInfo.phone}
@@ -212,7 +216,43 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {
                     },
                   })
                 }
-              />
+              /> */}
+              {/* a.split("(").join("").split(")").join("").split(" ").join("").split("-").join("") */}
+              <InputMask
+                mask="(999) 999-9999"
+                value={enrollmentData.growerInfo.phone}
+                disabled={false}
+                onChange={(e) =>
+                  setEnrollmentData({
+                    ...enrollmentData,
+                    growerInfo: {
+                      ...enrollmentData.growerInfo,
+                      phone: e.target.value,
+                    },
+                  })
+                }
+              >
+                {() => <TextField fullWidth label="Phone number" />}
+              </InputMask>
+              {/* <CustomPhoneInput
+                placeholder="Enter phone number"
+                value={enrollmentData.growerInfo.phone}
+                onChange={(e) => {
+                  setEnrollmentData({
+                    ...enrollmentData,
+                    growerInfo: {
+                      ...enrollmentData.growerInfo,
+                      phone: e.target.value,
+                    },
+                  });
+                }}
+              /> */}
+              {/* <Input
+                country="US"
+                international={false}
+                inputComponent={CustomPhoneInput}
+                placeholder="Enter phone number"
+              /> */}
             </Grid>
             <Grid item xs={12}>
               <Select
@@ -449,7 +489,15 @@ const saveNewGrowerAndFetchProducerId = async (enrollmentData = {}) => {
   let dataObject = {
     lastName: enrollmentData.growerInfo.lastName,
     email: enrollmentData.growerInfo.email,
-    phone: enrollmentData.growerInfo.phone,
+    phone: enrollmentData.growerInfo.phone
+      .split("(")
+      .join("")
+      .split(")")
+      .join("")
+      .split(" ")
+      .join("")
+      .split("-")
+      .join(""),
     year: enrollmentData.year,
     affiliation: enrollmentData.affiliation,
     collaborationStatus: enrollmentData.growerInfo.collaborationStatus,
