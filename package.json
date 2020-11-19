@@ -14,7 +14,7 @@
     "axios": "^0.20.0",
     "clsx": "^1.1.1",
     "google-map-react": "^2.1.9",
-    "highcharts": "^8.1.2",
+    "highcharts": "^8.2.2",
     "highcharts-react-official": "^3.0.0",
     "i": "^0.3.6",
     "install": "^0.13.0",
