@@ -23,7 +23,7 @@
     "markdown-table": "^2.0.0",
     "material-table": "^1.62.0",
     "moment": "^2.29.1",
-    "moment-timezone": "^0.5.31",
+    "moment-timezone": "^0.5.32",
     "npm": "^6.14.8",
     "qs": "^6.9.4",
     "react": "^16.13.1",
