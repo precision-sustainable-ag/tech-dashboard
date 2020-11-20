@@ -20,6 +20,7 @@ import {
 } from "@material-ui/core";
 import Axios from "axios";
 import React, { useState, useEffect } from "react";
+import Location from "../Location/Location";
 import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
 
 export const NewSiteInfo = ({
@@ -27,7 +28,8 @@ export const NewSiteInfo = ({
   setEnrollmentData = () => {},
 }) => {
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const [maxWidth, setMaxWidth] = useState("md");
   const [totalSites, setTotalSites] = useState(0);
   useEffect(() => {
     setTotalSites(0);
@@ -81,8 +83,8 @@ export const NewSiteInfo = ({
     irrigation: false,
     address: "",
     county: "",
-    latitude: "",
-    longitude: "",
+    latitude: null,
+    longitude: null,
     additionalContact: "",
     notes: "",
   });
@@ -207,27 +209,65 @@ export const NewSiteInfo = ({
       </Grid>
       <Dialog
         fullScreen={fullScreen}
+        maxWidth={maxWidth}
         fullWidth
         open={modifyNewSiteDetailsModal}
         onClose={handleDialogClose}
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">
-          Edit Details for Site {selectedToEditSite.code}
+          <Grid container justify="space-between">
+            <Grid item>
+              <Typography variant="h4">
+                Edit Details for {selectedToEditSite.code}
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Select
+                label="Adjust Size"
+                autoFocus
+                value={maxWidth}
+                onChange={(e) => {
+                  setMaxWidth(e.target.value);
+                }}
+                inputProps={{
+                  name: "max-width",
+                  id: "max-width",
+                }}
+              >
+                <MenuItem value="xs">x-small</MenuItem>
+                <MenuItem value="sm">small</MenuItem>
+                <MenuItem value="md">medium</MenuItem>
+                <MenuItem value="lg">large</MenuItem>
+                <MenuItem value="xl">x-large</MenuItem>
+              </Select>
+            </Grid>
+          </Grid>
         </DialogTitle>
         <DialogContent>
           <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Location
+                searchLabel="Search for an address"
+                setSelectedToEditSite={setSelectedToEditSite}
+                selectedToEditSite={selectedToEditSite}
+                markerLatLng={{
+                  lat: selectedToEditSite.latitude,
+                  lng: selectedToEditSite.longitude,
+                }}
+              />
+            </Grid>
             <Grid item xs={12}>
               <TextField
                 fullWidth
                 label="Address"
                 value={selectedToEditSite.address}
-                onChange={(e) =>
-                  setSelectedToEditSite({
-                    ...selectedToEditSite,
-                    address: e.target.value,
-                  })
-                }
+                // onChange={(e) =>
+                //   setSelectedToEditSite({
+                //     ...selectedToEditSite,
+                //     address: e.target.value,
+                //   })
+                // }
               />
             </Grid>
             <Grid item xs={12}>

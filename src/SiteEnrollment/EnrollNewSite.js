@@ -15,6 +15,7 @@ import { Context } from "../Store/Store";
 import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
 import Axios from "axios";
 import GrowerInformation from "./GrowerInformation";
+import { Alert } from "@material-ui/lab";
 const qs = require("qs");
 
 const EnrollNewSite = (props) => {
@@ -27,7 +28,7 @@ const EnrollNewSite = (props) => {
   const [allAffiliations, setAllAffiliations] = useState([]);
   const [enrollmentData, setEnrollmentData] = useState({
     year: currentYear + 1,
-    affiliation: "NC",
+    affiliation: "none",
     growerInfo: {
       collaborationStatus: "University",
       producerId: "",
@@ -41,7 +42,7 @@ const EnrollNewSite = (props) => {
   useEffect(() => {
     setEnrollmentData({
       year: currentYear + 1,
-      affiliation: "NC",
+      affiliation: "none",
       growerInfo: {
         collaborationStatus: "University",
         producerId: "",
@@ -119,7 +120,7 @@ const EnrollNewSite = (props) => {
         setLoading(false);
       });
   }, []);
-
+  const [affiliationError, setAffiliationError] = useState(false);
   return (
     <LoadingWrapper loading={loading}>
       <Grid item xs={12}>
@@ -131,9 +132,9 @@ const EnrollNewSite = (props) => {
         <Select
           fullWidth
           value={enrollmentData.year}
-          onChange={(e) =>
-            setEnrollmentData({ ...enrollmentData, year: e.target.value })
-          }
+          onChange={(e) => {
+            setEnrollmentData({ ...enrollmentData, year: e.target.value });
+          }}
           inputProps={{
             name: "year",
             id: "enroll-year",
@@ -150,17 +151,24 @@ const EnrollNewSite = (props) => {
         <Select
           fullWidth
           value={enrollmentData.affiliation}
-          onChange={(e) =>
-            setEnrollmentData({
-              ...enrollmentData,
-              affiliation: e.target.value,
-            })
-          }
+          error={affiliationError}
+          onChange={(e) => {
+            if (e.target.value !== "none") {
+              setAffiliationError(false);
+              setEnrollmentData({
+                ...enrollmentData,
+                affiliation: e.target.value,
+              });
+            } else {
+              setAffiliationError(true);
+            }
+          }}
           inputProps={{
             name: "year",
             id: "enroll-year",
           }}
         >
+          <MenuItem value="none"></MenuItem>
           {allAffiliations.map((data, index) => (
             <MenuItem key={`aff-${index}`} value={data.affiliation}>
               {data.label}
@@ -168,11 +176,31 @@ const EnrollNewSite = (props) => {
           ))}
         </Select>
       </Grid>
+      {enrollmentData.affiliation === "" ||
+      enrollmentData.affiliation === "none" ||
+      enrollmentData.year === "" ? (
+        <Grid item xs={12}>
+          <Alert severity="info">
+            <Typography variant="body2">
+              Make sure you have selected the <b>year</b> and <b>affiliation</b>
+            </Typography>
+          </Alert>
+        </Grid>
+      ) : (
+        ""
+      )}
+
       {/* Grower Information  */}
-      <GrowerInformation
-        enrollmentData={enrollmentData}
-        setEnrollmentData={setEnrollmentData}
-      />
+      {enrollmentData.affiliation === "none" ||
+      enrollmentData.affiliation === "" ? (
+        ""
+      ) : (
+        <GrowerInformation
+          enrollmentData={enrollmentData}
+          setEnrollmentData={setEnrollmentData}
+        />
+      )}
+
       {enrollmentData.growerInfo.sites &&
       enrollmentData.growerInfo.sites.length > 0 ? (
         <Grid item xs={12}>

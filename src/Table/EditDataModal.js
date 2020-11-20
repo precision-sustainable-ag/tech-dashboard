@@ -20,14 +20,19 @@ import {
   MenuItem,
   FormControl,
   InputAdornment,
+  FormControlLabel,
+  Checkbox,
+  FormLabel,
 } from "@material-ui/core";
 
 import GoogleMapsTextField from "../SiteEnrollment/GoogleMapsTextField";
 import { GpsFixed } from "@material-ui/icons";
 import Axios from "axios";
 import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
+import Location from "../Location/Location";
 const qs = require("qs");
 
+// County is not being passed on to the server as that would need API modification, and Rick is developing a new API
 const useStyles = makeStyles((theme) => ({
   form: {
     display: "flex",
@@ -48,9 +53,10 @@ const EditDataModal = (props) => {
   const open = props.open;
   const classes = useStyles();
   const [fullWidth, setFullWidth] = useState(true);
-  const [maxWidth, setMaxWidth] = useState("sm");
+  const [maxWidth, setMaxWidth] = useState("md");
   const [locationMsg, setLocationMsg] = useState("");
   const [locationErr, setLocationErr] = useState(false);
+  const [showMap, setShowMap] = useState(false);
   //   const [currentLatLng, setCurrentLatLng] = useState(null);
   const [newData, setNewData] = useState({
     cid: props.data.cid,
@@ -138,6 +144,24 @@ const EditDataModal = (props) => {
     setFullWidth(event.target.checked);
   };
 
+  const [selectedToEditSite, setSelectedToEditSite] = useState({
+    address: "",
+    county: "",
+    latitude: "",
+    longitude: "",
+  });
+  useEffect(() => {
+    if (selectedToEditSite.address) {
+      setNewData({
+        ...newData,
+        address: selectedToEditSite.address,
+        latitude: selectedToEditSite.latitude,
+        longitude: selectedToEditSite.longitude,
+        county: selectedToEditSite.county,
+        latlng: `${selectedToEditSite.latitude},${selectedToEditSite.longitude}`,
+      });
+    }
+  }, [selectedToEditSite]);
   useEffect(() => {
     setNewData({
       cid: props.data.cid,
@@ -195,11 +219,12 @@ const EditDataModal = (props) => {
       disableEscapeKeyDown
     >
       <DialogTitle id="form-dialog-title">
-        <Grid container>
-          <Grid item lg={10}>
-            Edit Data
+        <Grid container justify="space-between">
+          <Grid item>
+            Site <mark>{props.data.code}</mark> of producer:{" "}
+            <strong>{props.data.last_name}</strong> [{props.data.producer_id}]
           </Grid>
-          <Grid item lg={2}>
+          <Grid item>
             <Select
               autoFocus
               value={maxWidth}
@@ -220,45 +245,58 @@ const EditDataModal = (props) => {
         </Grid>
       </DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          Showing data for site: <mark>{props.data.code}</mark> of producer:{" "}
-          <strong>{props.data.last_name}</strong> [{props.data.producer_id}]
-        </DialogContentText>
-
+        <Grid container>
+          <Grid item xs>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">
+                You can now use Google Maps to find address, location and county
+              </FormLabel>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    color="primary"
+                    checked={showMap}
+                    onChange={(e) => setShowMap(e.target.checked)}
+                    name="showMap"
+                  />
+                }
+                label="Show Map"
+              />
+            </FormControl>
+          </Grid>
+        </Grid>
         <Grid container spacing={2}>
+          {showMap && (
+            <Grid item xs={12}>
+              <Location
+                searchLabel="Search for an address"
+                setSelectedToEditSite={setSelectedToEditSite}
+                selectedToEditSite={selectedToEditSite}
+                markerLatLng={{
+                  lat: selectedToEditSite.latitude,
+                  lng: selectedToEditSite.longitude,
+                }}
+              />
+            </Grid>
+          )}
+
           <Grid item sm={12} lg={12}>
             <TextField
-              id="editCode"
+              label="County"
               margin="dense"
-              name="code"
-              value={props.data.code}
-              disabled
-              label="Code"
+              name="county"
+              value={
+                newData.county
+                  ? newData.county
+                  : props.data.county
+                  ? props.data.county
+                  : ""
+              }
               type="text"
               fullWidth
-            />
-          </Grid>
-          <Grid item sm={12} lg={12}>
-            <TextField
-              value={props.data.year ? props.data.year : ""}
-              margin="dense"
-              name="email"
-              label="Year"
-              type="text"
-              disabled
-              fullWidth
-            />
-          </Grid>
-          <Grid item sm={12} lg={12}>
-            <TextField
-              id="editEmail"
-              value={props.data.email ? props.data.email : ""}
-              margin="dense"
-              name="email"
-              label="Email Address"
-              type="email"
-              disabled
-              fullWidth
+              onChange={(e) => {
+                setNewData({ ...newData, county: e.target.value });
+              }}
             />
           </Grid>
           <Grid item sm={12} lg={12}>
@@ -276,7 +314,7 @@ const EditDataModal = (props) => {
               name="latlng"
               error={locationErr ? true : false}
               helperText={locationMsg}
-              label="Location"
+              label="Lat,Long"
               type="text"
               fullWidth
               InputProps={{
@@ -296,9 +334,6 @@ const EditDataModal = (props) => {
               }}
             />
           </Grid>
-          {/* <Grid item sm={12} lg={6}>
-            <GoogleMapsTextField />
-          </Grid> */}
 
           <Grid item sm={12} lg={12}>
             <TextField
@@ -360,6 +395,41 @@ const EditDataModal = (props) => {
               onChange={(e) => {
                 setNewData({ ...newData, additional_contact: e.target.value });
               }}
+            />
+          </Grid>
+          <Grid item sm={12} lg={12}>
+            <TextField
+              id="editCode"
+              margin="dense"
+              name="code"
+              value={props.data.code}
+              disabled
+              label="Code"
+              type="text"
+              fullWidth
+            />
+          </Grid>
+          <Grid item sm={12} lg={12}>
+            <TextField
+              value={props.data.year ? props.data.year : ""}
+              margin="dense"
+              name="email"
+              label="Year"
+              type="text"
+              disabled
+              fullWidth
+            />
+          </Grid>
+          <Grid item sm={12} lg={12}>
+            <TextField
+              id="editEmail"
+              value={props.data.email ? props.data.email : ""}
+              margin="dense"
+              name="email"
+              label="Email Address"
+              type="email"
+              disabled
+              fullWidth
             />
           </Grid>
         </Grid>
