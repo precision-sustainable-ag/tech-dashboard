@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import React from "react";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -9,9 +9,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import parse from "autosuggest-highlight/parse";
 import throttle from "lodash/throttle";
 
-//Local Imports
+// Local Imports
 import { googleApiKey } from "../utils/api_secret";
 
+// Helper functions
 function loadScript(src, position, id) {
   if (!position) {
     return;
@@ -24,8 +25,10 @@ function loadScript(src, position, id) {
   position.appendChild(script);
 }
 
+//Global Vars
 const autocompleteService = { current: null };
 
+// Styles
 const useStyles = makeStyles((theme) => ({
   icon: {
     color: theme.palette.text.secondary,
@@ -33,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// Default function 
 export default function GoogleMapsTextField() {
   const classes = useStyles();
   const [inputValue, setInputValue] = React.useState("");

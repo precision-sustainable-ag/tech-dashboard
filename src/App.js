@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import React, { useState, useEffect } from "react";
 import {
   makeStyles,
@@ -12,7 +12,7 @@ import {
   Button,
 } from "@material-ui/core";
 
-//Local Imports
+// Local Imports
 import { useAuth0 } from "./Auth/react-auth0-spa";
 import PrivateRoute from "./utils/private-routes";
 import Profile from "./Profile/Profile";
@@ -32,6 +32,7 @@ import DeviceComponent from "./Devices/Device";
 import Forms from "./Forms/Forms";
 import LandingComponent from "./Landing/Landing";
 
+// Helper function
 function useOnlineStatus() {
   const [online, setOnline] = useState(window.navigator.onLine);
 
@@ -68,6 +69,7 @@ const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
 }));
 
+// Default function 
 function App() {
   const online = useOnlineStatus();
   const {

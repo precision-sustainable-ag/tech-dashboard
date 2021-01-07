@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import React, { useContext } from "react";
 import {
   Grid,
@@ -16,10 +16,11 @@ import {
   TableCell,
 } from "@material-ui/core";
 
-//Local Imports
+// Local Imports
 import { Context } from "../Store/Store";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 
+// Default function 
 const Profile = () => {
   const [state, dispatch] = useContext(Context);
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();

@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import {
   Button,
   Card,
@@ -21,10 +21,11 @@ import {
 import Axios from "axios";
 import React, { useState, useEffect } from "react";
 
-//Local Imports
+// Local Imports
 import Location from "../Location/Location";
 import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
 
+// Default function 
 export const NewSiteInfo = ({
   enrollmentData = {},
   setEnrollmentData = () => {},

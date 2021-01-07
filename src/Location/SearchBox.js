@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import React, { useEffect } from "react";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -9,10 +9,12 @@ import { makeStyles } from "@material-ui/core/styles";
 import parse from "autosuggest-highlight/parse";
 import throttle from "lodash/throttle";
 
+//Global Vars
 const autocompleteService = { current: null };
 const placeService = { current: null };
 const geocodeService = { current: null };
 
+// Styles
 const useStyles = makeStyles((theme) => ({
   icon: {
     color: theme.palette.text.secondary,
@@ -20,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// Default function 
 export default function SearchBox({
   mapInstance,
   mapsApi,

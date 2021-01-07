@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import React, { useState, useEffect } from "react";
 import {
   Paper,
@@ -35,9 +35,10 @@ import {
   Save
 } from "@material-ui/icons";
 
-//Local Imports
+// Local Imports
 import { apiUsername, apiPassword } from "../../utils/api_secret";
 
+// Styles
 const useStyles = makeStyles(theme => ({
   paper: {
     backgroundColor: theme.palette.background.paper,
@@ -71,6 +72,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+// Default function 
 const DeviceEnroll = () => {
   const theme = useTheme();
   const classes = useStyles();

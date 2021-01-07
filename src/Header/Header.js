@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import React, { useEffect, useContext, useState } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
@@ -35,14 +35,16 @@ import {
 } from "@material-ui/icons";
 import Axios from "axios";
 
-//Local Imports
+// Local Imports
 import { apiPassword, apiUsername, apiURL } from "../utils/api_secret";
 import { Context } from "../Store/Store";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 
+//Global Vars
 const drawerWidth = 240;
 const qs = require("qs");
 
+// Styles
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -103,6 +105,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// Default function 
 export default function Header(props) {
   const classes = useStyles();
   const theme = useTheme();

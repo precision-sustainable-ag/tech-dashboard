@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import {
   Avatar,
   Button,
@@ -19,13 +19,15 @@ import Axios from "axios";
 import React, { useState, useEffect } from "react";
 import InputMask from "react-input-mask";
 
-//Local Imports
+// Local Imports
 import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
 import { fetchGrowerByLastName, ucFirst } from "../utils/constants";
 import { NewSiteInfo } from "./NewSiteInfo";
 
+//Global Vars
 const qs = require("qs");
 
+// Default function 
 const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {
   const [growerType, setGrowerType] = useState("existing");
   const [growerLastNameSearch, setGrowerLastNameSearch] = useState("");
@@ -333,6 +335,7 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {
 
 export default GrowerInformation;
 
+// Helper functions
 const ExistingGrowersGrid = ({
   allGrowers = [],
   growerLastName = "",

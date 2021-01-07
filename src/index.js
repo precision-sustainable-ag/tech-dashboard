@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import "react-app-polyfill/ie9";
 import "react-app-polyfill/stable";
 import React from "react";
@@ -6,7 +6,7 @@ import ReactDOM from "react-dom";
 import "typeface-roboto";
 import { BrowserRouter } from "react-router-dom";
 
-//Local Imports
+// Local Imports
 import { Auth0Provider } from "./Auth/react-auth0-spa";
 import history from "./utils/history";
 import config from "./Auth/auth_config.json";

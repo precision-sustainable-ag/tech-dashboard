@@ -1,10 +1,11 @@
-//Dependency Imports
+// Dependency Imports
 import React from 'react'
 import Skeleton from '@material-ui/lab/Skeleton';
 
-//Local Imports
+// Local Imports
 import "./FormsSkeletonWrapper.scss";
 
+// Default function 
 const FormsLoadingSkeleton = () => {
 
     return(

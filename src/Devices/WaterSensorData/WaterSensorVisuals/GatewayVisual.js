@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import React, { useEffect, useState } from "react";
 import Axios from "axios";
 import Highcharts from "highcharts";
@@ -7,7 +7,7 @@ import { Grid } from "@material-ui/core";
 import moment from "moment";
 
 
-//Local Imports
+// Local Imports
 import { apiUsername, apiPassword, apiURL } from "../../../utils/api_secret";
 
 // Load Highcharts modules

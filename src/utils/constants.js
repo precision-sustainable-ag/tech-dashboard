@@ -1,8 +1,8 @@
-//Dependency Imports
+// Dependency Imports
 import Axios from "axios";
 import qs from "qs";
 
-//Local Imports
+// Local Imports
 import { apiUsername, apiPassword, apiURL } from "./api_secret";
 import { apiCorsUrl } from "../Devices/hologramConstants";
 

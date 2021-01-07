@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import React, { useEffect, useState } from "react";
 import Axios from "axios";
 import Loading from "react-loading";
@@ -20,13 +20,15 @@ import {
 import { Octokit } from "@octokit/rest";
 import { Done } from "@material-ui/icons";
 
-//Local Imports
+// Local Imports
 import { Context } from "../Store/Store";
 import "./Issues.scss";
 import { githubToken } from "../utils/api_secret";
 import { bannedRoles } from "../utils/constants";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 
+
+// Helper function (unused)
 const getAllRepoNames = async (url) => {
   let data = await Axios.get(url)
     .then((response) => {
@@ -61,6 +63,7 @@ const getAllRepoNames = async (url) => {
   return data;
 };
 
+// Default function 
 export const ReposComponent = () => {
   const octokit = new Octokit({ auth: githubToken });
   const [state, dispatch] = React.useContext(Context);
@@ -212,6 +215,7 @@ export const ReposComponent = () => {
 
 export default ReposComponent;
 
+// Helper function
 const getIssues = async (octokit, labels) => {
   return await octokit.request("GET /repos/{owner}/{repo}/issues", {
     owner: "precision-sustainable-ag",
@@ -220,6 +224,7 @@ const getIssues = async (octokit, labels) => {
   });
 };
 
+// Helper function
 const IssueDialog = ({ issueId, open = false, setOpen = () => {} }) => {
   return (
     <Dialog fullScreen open={open} onClose={setOpen(false)}>

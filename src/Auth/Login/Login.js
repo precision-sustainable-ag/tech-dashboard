@@ -1,3 +1,4 @@
+// Default function
 const Login = () => {
   return "";
 };

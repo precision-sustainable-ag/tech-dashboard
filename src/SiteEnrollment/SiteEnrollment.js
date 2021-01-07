@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import {
   Button,
   Grid,
@@ -9,13 +9,14 @@ import { Alert } from "@material-ui/lab";
 import Axios from "axios";
 import React, { useState, useEffect, useContext } from "react";
 
-//Local Imports
+// Local Imports
 import { Context } from "../Store/Store";
 import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
 import { bannedRoles } from "../utils/constants";
 import { BannedRoleMessage } from "../utils/CustomComponents";
 import EnrollNewSite from "./EnrollNewSite";
 
+// Default function 
 const SiteEnrollment = (props) => {
   const [state, dispatch] = useContext(Context);
   const [totalSitesEnrolled, setTotalSitesEnrolled] = React.useState(0);
@@ -106,6 +107,7 @@ const SiteEnrollment = (props) => {
 
 export default SiteEnrollment;
 
+// Helper functions
 const getStats = async (state) => {
   let records = await fetchStats(state);
 

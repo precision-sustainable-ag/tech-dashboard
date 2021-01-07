@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import React, { useEffect } from "react";
 import { makeStyles, Chip } from "@material-ui/core";
 
@@ -8,6 +8,7 @@ import { makeStyles, Chip } from "@material-ui/core";
 //   }
 // }));
 
+// Styles
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -22,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// Default Function
 const WaterSensorByGatewayTopbar = (props) => {
   const classes = useStyles();
 

@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import React, { useState, useEffect, useContext } from "react";
 import {
   Button,
@@ -13,13 +13,15 @@ import {
 import Axios from "axios";
 import { Alert } from "@material-ui/lab";
 
-//Local Imports
+// Local Imports
 import { Context } from "../Store/Store";
 import GrowerInformation from "./GrowerInformation";
 import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
 
+//Global Vars
 const qs = require("qs");
 
+// Default function 
 const EnrollNewSite = (props) => {
   const [state, dispatch] = useContext(Context);
   const theme = useTheme();
@@ -226,6 +228,8 @@ const EnrollNewSite = (props) => {
 
 export default EnrollNewSite;
 
+
+// Helper functions
 const LoadingWrapper = ({ children, loading }) => {
   return loading ? "Loading" : <>{children}</>;
 };

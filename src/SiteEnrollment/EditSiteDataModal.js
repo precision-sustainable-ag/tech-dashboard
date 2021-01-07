@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import React from "react";
 import {
   Dialog,
@@ -20,6 +20,7 @@ import {
 //   shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
 // });
 
+// Default function 
 const EditSiteDataModal = (props) => {
   let grower = props.growerSpecificInfo;
 

@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import React, { useState, useEffect } from "react";
 import {
   Grid,
@@ -21,12 +21,14 @@ import {
 import { GpsFixed } from "@material-ui/icons";
 import Axios from "axios";
 
-//Local Imports
+// Local Imports
 import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
 import Location from "../Location/Location";
 
+//Global Vars
 const qs = require("qs");
 
+// Styles
 // County is not being passed on to the server as that would need API modification, and Rick is developing a new API
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -44,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// Default function 
 const EditDataModal = (props) => {
   const open = props.open;
   const classes = useStyles();

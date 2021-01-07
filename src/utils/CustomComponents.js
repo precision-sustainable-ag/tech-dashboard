@@ -1,9 +1,9 @@
-//Dependency Imports
+// Dependency Imports
 import React from "react";
 import { withStyles, Switch, Box, Typography, Paper } from "@material-ui/core";
 import Loading from "react-loading";
 
-//Local Imports
+// Local Imports
 import { primaryContactPerson } from "./api_secret";
 
 export const AntSwitch = withStyles((theme) => ({

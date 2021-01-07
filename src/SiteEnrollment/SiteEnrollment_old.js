@@ -1,19 +1,21 @@
-//Dependency Imports
+// Dependency Imports
 import * as React from "react";
 import { Grid, Button, Typography } from "@material-ui/core";
 import Axios from "axios";
 
-//Local Imports
+// Local Imports
 import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
 import { bannedRoles } from "../utils/constants";
 import { BannedRoleMessage } from "../utils/CustomComponents";
 import { Context } from "../Store/Store";
 import NewSiteEnrollmentModal from "./NewSiteEnrollmentModal";
 
+// Helper functions
 const getCurrentYear = () => {
   return new Date().getFullYear();
 };
 
+// Default function 
 const SiteEnrollment = (props) => {
   const [state, dispatch] = React.useContext(Context);
   const [modalOpen, setModalOpen] = React.useState(false);
@@ -221,6 +223,7 @@ const SiteEnrollment = (props) => {
 
 export default SiteEnrollment;
 
+// Helper functions
 const fetchStats = async (state) => {
   return Axios({
     url: `${apiURL}/api/total/sites/${state}`,

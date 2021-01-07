@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import {
   Button,
   Card,
@@ -10,13 +10,15 @@ import { Octokit } from "@octokit/rest";
 import React, { useState, useEffect, useContext } from "react";
 import MDEditor from "@uiw/react-md-editor";
 
-//Local Imports
+// Local Imports
 import { Context } from "../Store/Store";
 import { githubToken } from "../utils/api_secret";
 import { bannedRoles } from "../utils/constants";
 
+//Globar vars
 const showdown = require("showdown");
 
+// Default function 
 const Issue = (props) => {
   const issueNumber = props.match.params.issueNumber
     ? parseInt(props.match.params.issueNumber)

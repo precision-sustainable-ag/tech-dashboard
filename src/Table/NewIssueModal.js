@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import {
   Avatar,
   Button,
@@ -17,14 +17,16 @@ import React, { useState, useEffect, useContext } from "react";
 import { Octokit } from "@octokit/rest";
 import MDEditor from "@uiw/react-md-editor";
 
-//Local Imports
+// Local Imports
 import { githubToken } from "../utils/api_secret";
 import { Context } from "../Store/Store";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 
+//Global Vars
 const showdown = require("showdown");
 let table = require("markdown-table");
 
+// Default function 
 const NewIssueDialog = (props) => {
   const markdownConvert = new showdown.Converter({ tables: true });
   const [state, dispatch] = useContext(Context);
@@ -427,6 +429,7 @@ const NewIssueDialog = (props) => {
   );
 };
 
+// Helper functions
 const setIssue = async (
   octokit,
   issueTitle,

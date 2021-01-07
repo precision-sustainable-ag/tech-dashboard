@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import React from "react";
 import {
   Card,
@@ -11,6 +11,7 @@ import {
   Typography
 } from "@material-ui/core";
 
+// Styles
 const useStyles = makeStyles({
   card: {
     minWidth: 275,
@@ -29,6 +30,7 @@ const useStyles = makeStyles({
   }
 });
 
+// Default function 
 const RepositoriesComponent = props => {
   const repos = props.data;
   console.log(repos);
@@ -42,6 +44,7 @@ const RepositoriesComponent = props => {
   );
 };
 
+//Hepler function
 const CardBuilder = props => {
   const repo = props.data;
   const classes = useStyles();

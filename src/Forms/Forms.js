@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import React, { useEffect, useState, useContext } from "react";
 import {
   Typography,
@@ -9,13 +9,14 @@ import {
   Box
 } from "@material-ui/core";
 
-//Local Imports
+// Local Imports
 import getAllKoboAssets from "./KoboFormAuth";
 import FormsLoadingSkeleton from "./FormsLoadingSkeleton";
 import { Context } from "../Store/Store";
 import { bannedRoles } from "../utils/constants";
 import "./Forms.scss";
 
+// Styles
 const useStyles = makeStyles({
   card: {
     maxWidth: 400,
@@ -34,6 +35,7 @@ const useStyles = makeStyles({
   }
 });
 
+// Default function 
 const Forms = () => {
   const classes = useStyles();
 

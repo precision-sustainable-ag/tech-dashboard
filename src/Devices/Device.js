@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
 import { Map, TileLayer, Marker, Popup } from "react-leaflet";
@@ -39,7 +39,7 @@ import {
 import moment from "moment-timezone";
 import { Link } from "react-router-dom";
 
-//Local Imports
+// Local Imports
 import { apiUsername, apiPassword } from "../utils/api_secret";
 import { APIURL, APICreds, apiCorsUrl } from "./hologramConstants";
 
@@ -51,6 +51,8 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
 });
 
+
+// Styles
 const StyledTableCell = withStyles((theme) => ({
   head: {
     backgroundColor: theme.palette.common.black,
@@ -97,6 +99,8 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary,
   },
 }));
+
+// Default function 
 const DeviceComponent = (props) => {
   const classes = useStyles();
   // console.log(props.location.state);

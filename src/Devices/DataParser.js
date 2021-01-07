@@ -1,10 +1,11 @@
-//Dependency Imports
+// Dependency Imports
 import React, { Fragment, useState, useEffect } from "react";
 import { red, green } from "@material-ui/core/colors";
 import { Redirect } from "react-router-dom";
 import { CardActionArea, Tooltip } from "@material-ui/core";
 import moment from "moment-timezone";
 
+// Global Vars
 const deadDeviceBG = red[300];
 // const deadDeviceCol = red[50];
 const deadDeviceCol = "#360000 !important";
@@ -12,6 +13,7 @@ const activeDeviceBG = green[100];
 // const activeDeviceCol = green[50];
 const activeDeviceCol = "#114C2A !important";
 
+// Styles
 const deviceColors = {
   withinLastHour: "#2e7d32",
   lastFourHours: "#28a745",
@@ -20,6 +22,7 @@ const deviceColors = {
   default: "white",
 };
 
+// Default function 
 const DataParser = (props) => {
   const [deviceId, setDeviceId] = useState(0);
   const [shouldRedirect, setShouldRedirect] = useState(false);

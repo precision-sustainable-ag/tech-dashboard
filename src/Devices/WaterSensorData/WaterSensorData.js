@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import React, { useState, useEffect } from "react";
 import {
   Grid,
@@ -9,9 +9,10 @@ import Axios from "axios";
 import Skeleton from "@material-ui/lab/Skeleton";
 import WaterSensorDataParser from "./WaterSensorDataParser";
 
-//Local Imports
+// Local Imports
 import { apiUsername, apiPassword, apiURL } from "../../utils/api_secret";
 
+// Styles
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -26,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// Helper Functions
 const getWaterSensorInstallDataByYear = async (year) => {
   return await Axios({
     url: `${apiURL}/api/retrieve/nodes/by/year/${year}`,
@@ -48,6 +50,7 @@ const getUniqueYears = async () => {
   });
 };
 
+// Default Function
 const WaterSensorData = () => {
   const classes = useStyles();
   const [type, setType] = useState("gateway");

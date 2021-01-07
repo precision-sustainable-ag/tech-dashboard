@@ -37,7 +37,7 @@ import Axios from "axios";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
-//Local Imports
+// Local Imports
 import { CustomLoader } from "../utils/CustomComponents";
 import { Context } from "../Store/Store";
 import {
@@ -50,6 +50,7 @@ import { fetchGrowerByLastName, ucFirst } from "../utils/constants";
 import NewSiteEnrollmentYears from "./NewSiteEnrollmentYears";
 import NewSiteEnrollmentAffiliations from "./NewSiteEnrollmentAffiliations";
 
+//Globals
 const qs = require("qs");
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -63,6 +64,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+// Styles
 const useStyles = makeStyles((theme) => ({
   appBar: {
     position: "relative",
@@ -88,6 +90,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// Helper function
 const getSteps = () => {
   return [
     "Basic Information",
@@ -97,6 +100,7 @@ const getSteps = () => {
   ];
 };
 
+// Default function 
 const NewSiteEnrollmentModal = (props) => {
   const classes = useStyles();
 
@@ -893,6 +897,7 @@ const GrowerInfo = (props) => {
   );
 };
 
+// Helper functions
 const BasicInfo = (props) => {
   const classes = useStyles();
   const [state, dispatch] = useContext(Context);

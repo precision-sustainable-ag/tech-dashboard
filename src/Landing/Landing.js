@@ -1,13 +1,14 @@
-//Dependency Imports
+// Dependency Imports
 import React, { useContext } from "react";
 import {
   Typography,
   Box,
 } from "@material-ui/core";
 
-//Local Imports
+// Local Imports
 import { Context } from "../Store/Store";
 
+// Default function 
 const LandingComponent = () => {
   const [state, dispatch] = useContext(Context);
 

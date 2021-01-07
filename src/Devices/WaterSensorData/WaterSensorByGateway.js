@@ -12,12 +12,13 @@ import {
 } from "@material-ui/core";
 import { ArrowBackIosOutlined } from "@material-ui/icons";
 
-//Local Imports
+// Local Imports
 import GatewayVisual from "./WaterSensorVisuals/GatewayVisual";
 import WaterSensorByGatewayTopbar from "./WaterSensorByGatewayTopbar";
 import NodeSensorVisuals from "./WaterSensorVisuals/NodeSensorVisuals";
 import { apiUsername, apiPassword, apiURL } from "../../utils/api_secret";
 
+// Styles
 const useStyles = makeStyles((theme) => ({
   gridList: {
     width: "100%",
@@ -37,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// Helper functions
 const getNodeSerialNo = async (gatewayNo, year) => {
   return await Axios({
     method: "get",
@@ -48,6 +50,7 @@ const getNodeSerialNo = async (gatewayNo, year) => {
   });
 };
 
+// Default Function
 const WaterSensorByGateway = (props) => {
   const classes = useStyles();
   const gatewayNo =

@@ -1,13 +1,14 @@
-//Dependency Imports
+// Dependency Imports
 import { Grid } from "@material-ui/core";
 import React, { useState } from "react";
 import GoogleMapsReact from "google-map-react";
 
-//Local Imports
+// Local Imports
 import "./marker.scss";
 import { googleApiKey } from "../utils/api_secret";
 import SearchBox from "./SearchBox";
 
+// Default function 
 const Location = ({
   center = { lat: 35.763197, lng: -78.700187 },
   mapHeight = 500,
@@ -90,6 +91,7 @@ const Location = ({
   );
 };
 
+// Helper function
 const Marker = (props) => {
   return (
     <>

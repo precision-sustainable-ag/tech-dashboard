@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import React, { useContext, useState, useEffect } from "react";
 import Axios from "axios";
 import Loading from "react-loading";
@@ -18,7 +18,7 @@ import {
   DeleteForever,
 } from "@material-ui/icons";
 
-//Local Imports
+// Local Imports
 import { Context } from "../Store/Store";
 import { bannedRoles } from "../utils/constants";
 import EditDataModal from "./EditDataModal";
@@ -27,10 +27,12 @@ import NewIssueDialog from "./NewIssueModal";
 import { BannedRoleMessage } from "../utils/CustomComponents";
 import { apiUsername, apiPassword, apiURL } from "../utils/api_secret";
 
+// Helper function 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
+// Default function 
 const AllDataTable = (props) => {
   const [state, dispatch] = useContext(Context);
   const [states, setStates] = useState([]);

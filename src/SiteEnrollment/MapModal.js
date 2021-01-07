@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import React, { useState } from "react";
 import {
   Dialog,
@@ -18,6 +18,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
 });
 
+// Default function 
 const MapModal = (props) => {
   const [latlng, setLatLng] = useState([
     parseFloat(props.growerInfo.lat),

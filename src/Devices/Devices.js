@@ -1,4 +1,4 @@
-//Dependency Imports
+// Dependency Imports
 import React, { useContext, useState, useEffect } from "react";
 import Axios from "axios";
 import Loading from "react-loading";
@@ -7,7 +7,7 @@ import {
   Card,
 } from "@material-ui/core";
 
-//Local Imports
+// Local Imports
 import DataParser from "./DataParser";
 import * as Constants from "./hologramConstants";
 import { bannedRoles, apiCall } from "../utils/constants";
@@ -16,10 +16,7 @@ import { BannedRoleMessage } from "../utils/CustomComponents";
 import "./Devices.scss";
 import { Context } from "../Store/Store";
 
-// import moment from "moment-timezone";
-
-// import red from "@material-ui/core/colors/red";
-
+// Default function 
 const DevicesComponent = () => {
   const [state, dispatch] = useContext(Context);
   const [showDevices, setShowDevices] = useState(false);
