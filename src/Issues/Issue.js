@@ -15,7 +15,7 @@ import { Context } from "../Store/Store";
 import { githubToken } from "../utils/api_secret";
 import { bannedRoles } from "../utils/constants";
 
-//Globar vars
+// Global vars
 const showdown = require("showdown");
 
 // Default function 

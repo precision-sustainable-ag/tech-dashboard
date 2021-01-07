@@ -44,6 +44,7 @@ const fetchNodeSensorData = async (nodeSerialNo, year) => {
   });
 };
 
+//  Fucntion
 const NodeSensorVisual = (props) => {
   //NOTE:   lets assume for now that the above array length == 1
   const bareNodeSerialNo = props.bareNodeSerialNo;

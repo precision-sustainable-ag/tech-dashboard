@@ -17,6 +17,7 @@ import { BarsLoader } from "../../../utils/CustomComponents";
 
 const qs = require("qs");
 
+// Default Function
 const NodeSensorVisuals = (props) => {
   const activeChip = props.activeChip;
   const year = props.year;
@@ -680,6 +681,7 @@ const NodeSensorVisuals = (props) => {
   );
 };
 
+// Helper functions
 const fetchBasicNodeData = async (nodeSerialNo, year) => {
   let dataObj = {
     serialNo: nodeSerialNo,

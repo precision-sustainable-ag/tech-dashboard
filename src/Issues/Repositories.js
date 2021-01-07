@@ -44,7 +44,7 @@ const RepositoriesComponent = props => {
   );
 };
 
-//Hepler function
+// Helper function
 const CardBuilder = props => {
   const repo = props.data;
   const classes = useStyles();

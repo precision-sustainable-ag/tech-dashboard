@@ -452,4 +452,5 @@ const setIssue = async (
     assignees: assignees,
   });
 };
+
 export default NewIssueDialog;

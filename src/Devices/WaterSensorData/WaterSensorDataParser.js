@@ -7,6 +7,7 @@ import Axios from "axios";
 // Local Imports
 import { apiUsername, apiPassword, apiURL } from "../../utils/api_secret";
 
+// Default Function
 const WaterSensorDataParser = (props) => {
   let gatewaysno = props.gatewaysno;
   const [shouldRedirect, setShouldRedirect] = React.useState(false);

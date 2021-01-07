@@ -6,6 +6,7 @@ import Loading from "react-loading";
 // Local Imports
 import { primaryContactPerson } from "./api_secret";
 
+// Styles
 export const AntSwitch = withStyles((theme) => ({
   root: {
     width: 28,
@@ -40,6 +41,7 @@ export const AntSwitch = withStyles((theme) => ({
   checked: {},
 }))(Switch);
 
+// Helper functions
 export const BannedRoleMessage = (props) => {
   let title = props.title;
   if (title.length === 0) title = "Anything";

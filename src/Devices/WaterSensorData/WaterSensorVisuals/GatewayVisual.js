@@ -15,6 +15,7 @@ require("highcharts/modules/exporting")(Highcharts);
 require("highcharts/modules/offline-exporting")(Highcharts);
 require("highcharts/modules/export-data")(Highcharts);
 
+// Helper functions
 const getGatewayVisialData = async (gatewayNo, token, year) => {
   //   try {
   return await Axios({
@@ -30,6 +31,7 @@ const getGatewayVisialData = async (gatewayNo, token, year) => {
   //   } catch (error) {}
 };
 
+// Default Function
 const GatewayVisual = (props) => {
   const gatewayNo = props.gatewayNo;
   const [gatewayData, setGatewayData] = useState({});

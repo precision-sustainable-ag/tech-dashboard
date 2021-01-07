@@ -31,7 +31,7 @@ import { Context } from "../Store/Store";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 import { bannedRoles } from "../utils/constants";
 
-//Global Vars
+// Global Vars
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
