@@ -1,9 +1,8 @@
 //Dependency Imports
-import React, { Fragment, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   makeStyles,
   Box,
-  MuiThemeProvider,
   createMuiTheme,
   CssBaseline,
   ThemeProvider,
@@ -12,10 +11,6 @@ import {
   Container,
   Button,
 } from "@material-ui/core";
-// import Login from "./Auth/Login/Login";
-import Loading from "react-loading";
-import Skeleton from "@material-ui/lab/Skeleton";
-
 
 //Local Imports
 import { useAuth0 } from "./Auth/react-auth0-spa";
@@ -30,7 +25,6 @@ import AllDataTable from "./Table/AllDataTable";
 import Issue from "./Issues/Issue";
 import "./Styles/App.css";
 import Header from "./Header/Header";
-import TableComponent from "./Table/Table";
 import { Switch, Route } from "react-router-dom";
 import { ReposComponent } from "./Issues/Issues";
 import DevicesComponent from "./Devices/Devices";

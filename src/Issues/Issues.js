@@ -1,12 +1,10 @@
 //Dependency Imports
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Axios from "axios";
 import Loading from "react-loading";
-import Skeleton from "@material-ui/lab/Skeleton";
 import {
   Avatar,
   Box,
-  Button,
   Card,
   CardActionArea,
   CardContent,
@@ -19,7 +17,6 @@ import {
   Paper,
   Typography,
 } from "@material-ui/core";
-import { createTokenAuth } from "@octokit/auth";
 import { Octokit } from "@octokit/rest";
 import { Done } from "@material-ui/icons";
 
@@ -29,8 +26,6 @@ import "./Issues.scss";
 import { githubToken } from "../utils/api_secret";
 import { bannedRoles } from "../utils/constants";
 import { useAuth0 } from "../Auth/react-auth0-spa";
-import Issue from "./Issue";
-import RepositoriesComponent from "./Repositories";
 
 const getAllRepoNames = async (url) => {
   let data = await Axios.get(url)

@@ -1,6 +1,5 @@
 //Dependency Imports
 import React, { useEffect, useState, useContext } from "react";
-import Skeleton from "@material-ui/lab/Skeleton";
 import {
   Typography,
   makeStyles,

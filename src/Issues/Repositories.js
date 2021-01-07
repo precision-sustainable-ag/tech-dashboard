@@ -1,5 +1,5 @@
 //Dependency Imports
-import React, { Fragment } from "react";
+import React from "react";
 import {
   Card,
   makeStyles,

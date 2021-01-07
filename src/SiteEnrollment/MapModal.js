@@ -4,13 +4,10 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   DialogActions,
   Button,
 } from "@material-ui/core";
 import { Map, TileLayer, Marker, Popup } from "react-leaflet";
-// import Loading from "react-loading";
-// import Skeleton from "@material-ui/lab/Skeleton";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 

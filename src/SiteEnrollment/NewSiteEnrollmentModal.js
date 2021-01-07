@@ -1,8 +1,5 @@
 import React, { useState, Fragment, useEffect, useContext } from "react";
 import {
-  Modal,
-  Fade,
-  Backdrop,
   makeStyles,
   Button,
   Dialog,
@@ -10,19 +7,12 @@ import {
   Box,
   IconButton,
   Typography,
-  List,
-  ListItem,
-  ListItemText,
   Divider,
   Toolbar,
   Slide,
   Grid,
-  FormControl,
-  InputLabel,
   Select,
   MenuItem,
-  FormHelperText,
-  FormControlLabel,
   Switch,
   Input,
   TextField,
@@ -37,19 +27,15 @@ import {
   Step,
   StepLabel,
   MobileStepper,
-  CardActionArea,
   Slider,
-  TextareaAutosize,
   useTheme,
   useMediaQuery,
 } from "@material-ui/core";
-import { Close, Search, Save, Check, GpsFixed } from "@material-ui/icons";
-import { Alert, AlertTitle, Skeleton } from "@material-ui/lab";
+import { Close, Save, Check, GpsFixed } from "@material-ui/icons";
+import { Alert, Skeleton } from "@material-ui/lab";
 import Axios from "axios";
-import { Map, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import Loading from "react-loading";
 
 //Local Imports
 import { CustomLoader } from "../utils/CustomComponents";
@@ -60,7 +46,7 @@ import {
   apiPassword,
   googleApiKey,
 } from "../utils/api_secret";
-import { statesHash, fetchGrowerByLastName, ucFirst } from "../utils/constants";
+import { fetchGrowerByLastName, ucFirst } from "../utils/constants";
 import NewSiteEnrollmentYears from "./NewSiteEnrollmentYears";
 import NewSiteEnrollmentAffiliations from "./NewSiteEnrollmentAffiliations";
 

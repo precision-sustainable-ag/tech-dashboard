@@ -2,16 +2,8 @@
 import {
   Button,
   Card,
-  CardActionArea,
   CardContent,
-  Dialog,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Grid,
-  TextareaAutosize,
-  TextField,
-  Typography,
 } from "@material-ui/core";
 import { ArrowBack } from "@material-ui/icons";
 import { Octokit } from "@octokit/rest";

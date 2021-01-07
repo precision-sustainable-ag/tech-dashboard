@@ -2,20 +2,13 @@
 import React, { useState, useEffect } from "react";
 import {
   Grid,
-  Box,
-  Paper,
-  Typography,
-  Link,
   Button,
   IconButton,
   Dialog,
   TextField,
   DialogContent,
   DialogTitle,
-  DialogContentText,
   DialogActions,
-  Input,
-  InputLabel,
   makeStyles,
   Select,
   MenuItem,
@@ -29,7 +22,6 @@ import { GpsFixed } from "@material-ui/icons";
 import Axios from "axios";
 
 //Local Imports
-import GoogleMapsTextField from "../SiteEnrollment/GoogleMapsTextField";
 import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
 import Location from "../Location/Location";
 

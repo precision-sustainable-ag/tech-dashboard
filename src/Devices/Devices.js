@@ -1,14 +1,10 @@
 //Dependency Imports
-import React, { useContext, useState, useEffect, Fragment } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Axios from "axios";
 import Loading from "react-loading";
 import qs from "qs";
 import {
   Card,
-  CardActionArea,
-  Box,
-  Typography,
-  Paper,
 } from "@material-ui/core";
 
 //Local Imports

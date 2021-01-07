@@ -30,10 +30,6 @@ import { Box, Grid, Button, Typography, Paper } from "@material-ui/core";
 import { Context } from "../Store/Store";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 import { bannedRoles } from "../utils/constants";
-// import ReactLoading from "react-loading";
-// import AddIcon from "@material-ui/icons/Add";
-
-// import { Fab } from "@material-ui/core";
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),

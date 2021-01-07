@@ -9,9 +9,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import parse from "autosuggest-highlight/parse";
 import throttle from "lodash/throttle";
 
-//Local Imports
-import { googleApiKey } from "../utils/api_secret";
-
 const autocompleteService = { current: null };
 const placeService = { current: null };
 const geocodeService = { current: null };

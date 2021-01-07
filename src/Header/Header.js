@@ -29,9 +29,7 @@ import {
   AccountCircle,
   Lock,
   BrightnessHigh,
-  AddLocation,
   BrightnessLow,
-  Info,
   ExpandLess,
   ExpandMore,
 } from "@material-ui/icons";

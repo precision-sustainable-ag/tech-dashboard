@@ -1,10 +1,9 @@
 //Dependency Imports
 import React, { Fragment, useState, useEffect } from "react";
-import { red, grey, green } from "@material-ui/core/colors";
-import { NavLink, Redirect } from "react-router-dom";
-import { CardActionArea, Tooltip, IconButton } from "@material-ui/core";
+import { red, green } from "@material-ui/core/colors";
+import { Redirect } from "react-router-dom";
+import { CardActionArea, Tooltip } from "@material-ui/core";
 import moment from "moment-timezone";
-import { Edit } from "@material-ui/icons";
 
 const deadDeviceBG = red[300];
 // const deadDeviceCol = red[50];

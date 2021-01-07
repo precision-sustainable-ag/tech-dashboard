@@ -2,8 +2,6 @@
 import {
   Button,
   Grid,
-  Paper,
-  Slide,
   Snackbar,
   Typography,
 } from "@material-ui/core";

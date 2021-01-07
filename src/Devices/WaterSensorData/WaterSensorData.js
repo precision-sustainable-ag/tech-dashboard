@@ -2,16 +2,11 @@
 import React, { useState, useEffect } from "react";
 import {
   Grid,
-  Typography,
-  Button,
-  Paper,
-  Box,
   makeStyles,
   Chip,
 } from "@material-ui/core";
 import Axios from "axios";
 import Skeleton from "@material-ui/lab/Skeleton";
-import { Redirect } from "react-router-dom";
 import WaterSensorDataParser from "./WaterSensorDataParser";
 
 //Local Imports

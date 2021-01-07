@@ -1,9 +1,7 @@
 //Dependency Imports
-import { Grid, TextField } from "@material-ui/core";
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import { Grid } from "@material-ui/core";
+import React, { useState } from "react";
 import GoogleMapsReact from "google-map-react";
-import PropTypes from "prop-types";
-import { LocationOn, PinDrop } from "@material-ui/icons";
 
 //Local Imports
 import "./marker.scss";

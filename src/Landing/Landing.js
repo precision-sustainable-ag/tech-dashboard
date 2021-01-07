@@ -1,13 +1,8 @@
 //Dependency Imports
 import React, { useContext } from "react";
 import {
-  Paper,
   Typography,
-  Grid,
-  Card,
-  CardActionArea,
   Box,
-  Button,
 } from "@material-ui/core";
 
 //Local Imports
