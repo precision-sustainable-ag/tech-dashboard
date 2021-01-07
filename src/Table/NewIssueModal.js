@@ -1,3 +1,4 @@
+//Dependency Imports
 import {
   Avatar,
   Button,
@@ -19,13 +20,15 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-
 import React, { useState, useEffect, useContext } from "react";
 import { Octokit } from "@octokit/rest";
 import MDEditor from "@uiw/react-md-editor";
+
+//Local Imports
 import { githubToken } from "../utils/api_secret";
 import { Context } from "../Store/Store";
 import { useAuth0 } from "../Auth/react-auth0-spa";
+
 const showdown = require("showdown");
 let table = require("markdown-table");
 

@@ -1,5 +1,4 @@
 import React, { useState, Fragment, useEffect, useContext } from "react";
-
 import {
   Modal,
   Fade,
@@ -47,21 +46,24 @@ import {
 import { Close, Search, Save, Check, GpsFixed } from "@material-ui/icons";
 import { Alert, AlertTitle, Skeleton } from "@material-ui/lab";
 import Axios from "axios";
+import { Map, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+import Loading from "react-loading";
+
+//Local Imports
+import { CustomLoader } from "../utils/CustomComponents";
+import { Context } from "../Store/Store";
 import {
   apiURL,
   apiUsername,
   apiPassword,
   googleApiKey,
 } from "../utils/api_secret";
-import { Map, TileLayer, Marker, Popup } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
 import { statesHash, fetchGrowerByLastName, ucFirst } from "../utils/constants";
 import NewSiteEnrollmentYears from "./NewSiteEnrollmentYears";
 import NewSiteEnrollmentAffiliations from "./NewSiteEnrollmentAffiliations";
-import Loading from "react-loading";
-import { CustomLoader } from "../utils/CustomComponents";
-import { Context } from "../Store/Store";
+
 const qs = require("qs");
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({

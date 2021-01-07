@@ -1,9 +1,5 @@
+//Dependency Imports
 import React, { Fragment, useState, useEffect } from "react";
-
-import "./Styles/App.css";
-
-import Header from "./Header/Header";
-
 import {
   makeStyles,
   Box,
@@ -16,19 +12,14 @@ import {
   Container,
   Button,
 } from "@material-ui/core";
-import TableComponent from "./Table/Table";
-import { Switch, Route } from "react-router-dom";
-import { ReposComponent } from "./Issues/Issues";
-import DevicesComponent from "./Devices/Devices";
-import DeviceComponent from "./Devices/Device";
-import Forms from "./Forms/Forms";
-import LandingComponent from "./Landing/Landing";
 // import Login from "./Auth/Login/Login";
-
-import { useAuth0 } from "./Auth/react-auth0-spa";
 import Loading from "react-loading";
-import PrivateRoute from "./utils/private-routes";
 import Skeleton from "@material-ui/lab/Skeleton";
+
+
+//Local Imports
+import { useAuth0 } from "./Auth/react-auth0-spa";
+import PrivateRoute from "./utils/private-routes";
 import Profile from "./Profile/Profile";
 import DeviceEnroll from "./Devices/Device-Enroll/DeviceEnroll";
 import WaterSensorData from "./Devices/WaterSensorData/WaterSensorData";
@@ -37,6 +28,15 @@ import SiteEnrollment from "./SiteEnrollment/SiteEnrollment";
 import PageNotFound from "./PageNotFound";
 import AllDataTable from "./Table/AllDataTable";
 import Issue from "./Issues/Issue";
+import "./Styles/App.css";
+import Header from "./Header/Header";
+import TableComponent from "./Table/Table";
+import { Switch, Route } from "react-router-dom";
+import { ReposComponent } from "./Issues/Issues";
+import DevicesComponent from "./Devices/Devices";
+import DeviceComponent from "./Devices/Device";
+import Forms from "./Forms/Forms";
+import LandingComponent from "./Landing/Landing";
 
 function useOnlineStatus() {
   const [online, setOnline] = useState(window.navigator.onLine);

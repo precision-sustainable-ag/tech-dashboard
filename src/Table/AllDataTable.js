@@ -1,8 +1,6 @@
+//Dependency Imports
 import React, { useContext, useState, useEffect } from "react";
-import { Context } from "../Store/Store";
-import { bannedRoles } from "../utils/constants";
 import Axios from "axios";
-import { apiUsername, apiPassword, apiURL } from "../utils/api_secret";
 import Loading from "react-loading";
 import {
   Grid,
@@ -22,9 +20,7 @@ import {
   Snackbar,
 } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
-
 import MaterialTable from "material-table";
-import { BannedRoleMessage } from "../utils/CustomComponents";
 import {
   GpsFixed,
   Edit,
@@ -33,9 +29,15 @@ import {
   AddCircleOutline,
   AddCircle,
 } from "@material-ui/icons";
+
+//Local Imports
+import { Context } from "../Store/Store";
+import { bannedRoles } from "../utils/constants";
 import EditDataModal from "./EditDataModal";
 import UnenrollSiteModal from "./UnenrollSiteModal";
 import NewIssueDialog from "./NewIssueModal";
+import { BannedRoleMessage } from "../utils/CustomComponents";
+import { apiUsername, apiPassword, apiURL } from "../utils/api_secret";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;

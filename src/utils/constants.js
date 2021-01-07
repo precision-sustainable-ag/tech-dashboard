@@ -1,7 +1,10 @@
+//Dependency Imports
 import Axios from "axios";
-import { apiCorsUrl } from "../Devices/hologramConstants";
 import qs from "qs";
+
+//Local Imports
 import { apiUsername, apiPassword, apiURL } from "./api_secret";
+import { apiCorsUrl } from "../Devices/hologramConstants";
 
 // anyone with these roles are not supposed to view anything !
 export const bannedRoles = ["default", "Default", "none", ""];

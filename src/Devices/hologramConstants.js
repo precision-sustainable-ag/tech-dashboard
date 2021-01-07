@@ -1,6 +1,9 @@
+//Dependency Imports
 import isIP from "is-ip";
-import { hologramAPIKey, apiURL } from "../utils/api_secret";
 import { FlipRounded } from "@material-ui/icons";
+
+//Local Imports
+import { hologramAPIKey, apiURL } from "../utils/api_secret";
 
 export const apiCorsUrl = `${apiURL}/api/hologram/remote/devices`;
 

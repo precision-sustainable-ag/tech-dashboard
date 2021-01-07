@@ -1,8 +1,7 @@
+//Dependency Imports
 import React, { useContext, useState, useEffect, Fragment } from "react";
-import { Context } from "../Store/Store";
 import Axios from "axios";
 import Loading from "react-loading";
-import "./Devices.scss";
 import qs from "qs";
 import {
   Card,
@@ -11,11 +10,15 @@ import {
   Typography,
   Paper,
 } from "@material-ui/core";
+
+//Local Imports
 import DataParser from "./DataParser";
 import * as Constants from "./hologramConstants";
 import { bannedRoles, apiCall } from "../utils/constants";
 import { apiUsername, apiPassword } from "../utils/api_secret";
 import { BannedRoleMessage } from "../utils/CustomComponents";
+import "./Devices.scss";
+import { Context } from "../Store/Store";
 
 // import moment from "moment-timezone";
 

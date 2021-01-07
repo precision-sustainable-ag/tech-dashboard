@@ -1,6 +1,6 @@
+//Dependency Improts
 import React, { useEffect, useState } from "react";
 import Axios from "axios";
-import { apiUsername, apiPassword, apiURL } from "../../utils/api_secret";
 import { Link } from "react-router-dom";
 import {
   Grid,
@@ -12,9 +12,11 @@ import {
 } from "@material-ui/core";
 import { ArrowBackIosOutlined } from "@material-ui/icons";
 
+//Local Imports
 import GatewayVisual from "./WaterSensorVisuals/GatewayVisual";
 import WaterSensorByGatewayTopbar from "./WaterSensorByGatewayTopbar";
 import NodeSensorVisuals from "./WaterSensorVisuals/NodeSensorVisuals";
+import { apiUsername, apiPassword, apiURL } from "../../utils/api_secret";
 
 const useStyles = makeStyles((theme) => ({
   gridList: {

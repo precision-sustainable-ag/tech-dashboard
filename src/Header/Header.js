@@ -1,10 +1,8 @@
+//Dependency Imports
 import React, { useEffect, useContext, useState } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
-
-import { apiPassword, apiUsername, apiURL } from "../utils/api_secret";
-
 import {
   Drawer,
   AppBar,
@@ -20,7 +18,6 @@ import {
   MenuItem,
   Collapse,
 } from "@material-ui/core";
-
 import { Link } from "react-router-dom";
 import {
   ChevronRight,
@@ -38,9 +35,12 @@ import {
   ExpandLess,
   ExpandMore,
 } from "@material-ui/icons";
-import { useAuth0 } from "../Auth/react-auth0-spa";
 import Axios from "axios";
+
+//Local Imports
+import { apiPassword, apiUsername, apiURL } from "../utils/api_secret";
 import { Context } from "../Store/Store";
+import { useAuth0 } from "../Auth/react-auth0-spa";
 
 const drawerWidth = 240;
 const qs = require("qs");

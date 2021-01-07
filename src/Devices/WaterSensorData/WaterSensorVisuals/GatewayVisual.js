@@ -1,12 +1,14 @@
+//Dependency Imports
 import React, { useEffect, useState } from "react";
 import Axios from "axios";
-import { apiUsername, apiPassword, apiURL } from "../../../utils/api_secret";
 import Highcharts from "highcharts";
-
 import HighchartsReact from "highcharts-react-official";
 import { Grid } from "@material-ui/core";
-
 import moment from "moment";
+
+
+//Local Imports
+import { apiUsername, apiPassword, apiURL } from "../../../utils/api_secret";
 
 // Load Highcharts modules
 require("highcharts/modules/exporting")(Highcharts);

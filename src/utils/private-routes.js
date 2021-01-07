@@ -1,5 +1,8 @@
+//Dependency Imports
 import React, { useEffect } from "react";
 import { Route } from "react-router-dom";
+
+//Local Imports
 import { useAuth0 } from "../Auth/react-auth0-spa";
 
 const PrivateRoute = ({ component: Component, path, ...rest }) => {

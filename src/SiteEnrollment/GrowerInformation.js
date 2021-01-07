@@ -1,3 +1,4 @@
+//Dependency Imports
 import {
   Avatar,
   Button,
@@ -18,13 +19,16 @@ import {
 import { CancelOutlined, Check, Save } from "@material-ui/icons";
 import Axios from "axios";
 import React, { useState, useEffect } from "react";
+// import Input from "react-phone-number-input/input";
+import InputMask from "react-input-mask";
+// import "react-phone-number-input/style.css";
+
+//Local Imports
 import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
 import { fetchGrowerByLastName, ucFirst } from "../utils/constants";
 import { NewSiteInfo } from "./NewSiteInfo";
-// import Input from "react-phone-number-input/input";
-import InputMask from "react-input-mask";
 import CustomPhoneInput from "./components/PhoneInput";
-// import "react-phone-number-input/style.css";
+
 const qs = require("qs");
 
 const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {

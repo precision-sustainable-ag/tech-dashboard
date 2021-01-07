@@ -1,5 +1,5 @@
+//Dependency Imports
 import React, { useContext } from "react";
-import { Context } from "../Store/Store";
 import {
   Grid,
   Box,
@@ -18,6 +18,9 @@ import {
   Tab,
   Tabs,
 } from "@material-ui/core";
+
+//Local Imports
+import { Context } from "../Store/Store";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 
 const Profile = () => {

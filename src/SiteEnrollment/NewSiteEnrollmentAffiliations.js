@@ -1,3 +1,4 @@
+//Dependency Imports
 import React, { useContext, useEffect, useState } from "react";
 import {
   FormControl,
@@ -7,6 +8,8 @@ import {
   MenuItem,
   makeStyles,
 } from "@material-ui/core";
+
+//Local Imports
 import { Context } from "../Store/Store";
 
 const useStyles = makeStyles((theme) => ({

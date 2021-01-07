@@ -1,5 +1,8 @@
+//Dependency Imports
 import React from "react";
 import { render } from "@testing-library/react";
+
+//Local Imports
 import IssuesComponent from "./Issues";
 
 test("URL should not be blank", () => {

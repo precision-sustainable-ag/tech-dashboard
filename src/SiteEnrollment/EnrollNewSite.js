@@ -1,3 +1,4 @@
+//Dependency Imports
 import React, { useState, useEffect, useContext } from "react";
 import {
   Button,
@@ -11,11 +12,14 @@ import {
   useMediaQuery,
   useTheme,
 } from "@material-ui/core";
-import { Context } from "../Store/Store";
-import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
 import Axios from "axios";
-import GrowerInformation from "./GrowerInformation";
 import { Alert } from "@material-ui/lab";
+
+//Local Imports
+import { Context } from "../Store/Store";
+import GrowerInformation from "./GrowerInformation";
+import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
+
 const qs = require("qs");
 
 const EnrollNewSite = (props) => {

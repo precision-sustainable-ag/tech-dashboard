@@ -1,12 +1,14 @@
+//Dependency Imports
 import * as React from "react";
 import { Grid, Button, Typography } from "@material-ui/core";
-import { Context } from "../Store/Store";
-import NewSiteEnrollmentModal from "./NewSiteEnrollmentModal";
 import Axios from "axios";
-import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
 
+//Local Imports
+import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
 import { bannedRoles } from "../utils/constants";
 import { BannedRoleMessage } from "../utils/CustomComponents";
+import { Context } from "../Store/Store";
+import NewSiteEnrollmentModal from "./NewSiteEnrollmentModal";
 
 const getCurrentYear = () => {
   return new Date().getFullYear();

@@ -1,3 +1,4 @@
+//Dependency Imports
 import {
   Button,
   Card,
@@ -20,6 +21,8 @@ import {
 } from "@material-ui/core";
 import Axios from "axios";
 import React, { useState, useEffect } from "react";
+
+//Local Imports
 import Location from "../Location/Location";
 import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
 

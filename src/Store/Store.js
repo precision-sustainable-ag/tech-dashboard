@@ -1,4 +1,7 @@
+//Dependency Imports
 import React, { createContext, useReducer } from "react";
+
+//Local Imports
 import Reducer from "./Reducer";
 
 const initialState = {

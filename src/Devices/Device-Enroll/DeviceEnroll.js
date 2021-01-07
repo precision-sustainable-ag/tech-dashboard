@@ -1,5 +1,5 @@
+//Dependency Imports
 import React, { useState, useEffect } from "react";
-
 import {
   Paper,
   Container,
@@ -34,7 +34,6 @@ import SpeedDial from "@material-ui/lab/SpeedDial";
 import SpeedDialIcon from "@material-ui/lab/SpeedDialIcon";
 import SpeedDialAction from "@material-ui/lab/SpeedDialAction";
 import Axios from "axios";
-import { apiUsername, apiPassword } from "../../utils/api_secret";
 import {
   Add,
   CropFree,
@@ -43,6 +42,9 @@ import {
   Check,
   Save
 } from "@material-ui/icons";
+
+//Local Imports
+import { apiUsername, apiPassword } from "../../utils/api_secret";
 import ConfirmDialog from "./ConfirmDialog";
 
 const useStyles = makeStyles(theme => ({

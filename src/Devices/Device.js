@@ -1,7 +1,6 @@
+//Dependency Imports
 import React, { useState, useEffect, Fragment } from "react";
-import { APIURL, APICreds, apiCorsUrl } from "./hologramConstants";
 import Axios from "axios";
-
 import { Map, TileLayer, Marker, Popup } from "react-leaflet";
 // import Loading from "react-loading";
 import Skeleton from "@material-ui/lab/Skeleton";
@@ -50,7 +49,11 @@ import {
 } from "@material-ui/icons";
 import moment from "moment-timezone";
 import { Link } from "react-router-dom";
+
+//Local Imports
 import { apiUsername, apiPassword } from "../utils/api_secret";
+import { APIURL, APICreds, apiCorsUrl } from "./hologramConstants";
+
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({

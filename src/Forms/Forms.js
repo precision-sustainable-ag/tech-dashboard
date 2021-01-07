@@ -1,8 +1,6 @@
+//Dependency Imports
 import React, { useEffect, useState, useContext } from "react";
-import getAllKoboAssets from "./KoboFormAuth";
 import Skeleton from "@material-ui/lab/Skeleton";
-import FormsLoadingSkeleton from "./FormsLoadingSkeleton";
-import { Context } from "../Store/Store";
 import {
   Typography,
   makeStyles,
@@ -11,8 +9,14 @@ import {
   Paper,
   Box
 } from "@material-ui/core";
-import "./Forms.scss";
+
+//Local Imports
+import getAllKoboAssets from "./KoboFormAuth";
+import FormsLoadingSkeleton from "./FormsLoadingSkeleton";
+import { Context } from "../Store/Store";
 import { bannedRoles } from "../utils/constants";
+import "./Forms.scss";
+
 const useStyles = makeStyles({
   card: {
     maxWidth: 400,

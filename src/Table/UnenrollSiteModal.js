@@ -1,3 +1,4 @@
+//Dependency Imports
 import React, { useState, useEffect } from "react";
 import {
   Dialog,
@@ -11,6 +12,8 @@ import {
   Typography,
 } from "@material-ui/core";
 import Axios from "axios";
+
+//Local Imports
 import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
 
 const qs = require("qs");

@@ -1,3 +1,4 @@
+//Dependency Imports
 import React, { useEffect } from "react";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -7,6 +8,8 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import parse from "autosuggest-highlight/parse";
 import throttle from "lodash/throttle";
+
+//Local Imports
 import { googleApiKey } from "../utils/api_secret";
 
 const autocompleteService = { current: null };

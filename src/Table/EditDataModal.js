@@ -1,3 +1,4 @@
+//Dependency Imports
 import React, { useState, useEffect } from "react";
 import {
   Grid,
@@ -24,12 +25,14 @@ import {
   Checkbox,
   FormLabel,
 } from "@material-ui/core";
-
-import GoogleMapsTextField from "../SiteEnrollment/GoogleMapsTextField";
 import { GpsFixed } from "@material-ui/icons";
 import Axios from "axios";
+
+//Local Imports
+import GoogleMapsTextField from "../SiteEnrollment/GoogleMapsTextField";
 import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
 import Location from "../Location/Location";
+
 const qs = require("qs");
 
 // County is not being passed on to the server as that would need API modification, and Rick is developing a new API

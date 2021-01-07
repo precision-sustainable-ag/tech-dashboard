@@ -1,3 +1,4 @@
+//Dependency Imports
 import {
   Button,
   Card,
@@ -15,10 +16,13 @@ import {
 import { ArrowBack } from "@material-ui/icons";
 import { Octokit } from "@octokit/rest";
 import React, { useState, useEffect, useContext } from "react";
+import MDEditor from "@uiw/react-md-editor";
+
+//Local Imports
 import { Context } from "../Store/Store";
 import { githubToken } from "../utils/api_secret";
 import { bannedRoles } from "../utils/constants";
-import MDEditor from "@uiw/react-md-editor";
+
 const showdown = require("showdown");
 
 const Issue = (props) => {

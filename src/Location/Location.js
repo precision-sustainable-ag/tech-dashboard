@@ -1,11 +1,14 @@
+//Dependency Imports
 import { Grid, TextField } from "@material-ui/core";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import GoogleMapsReact from "google-map-react";
-import { googleApiKey } from "../utils/api_secret";
 import PropTypes from "prop-types";
-import SearchBox from "./SearchBox";
 import { LocationOn, PinDrop } from "@material-ui/icons";
+
+//Local Imports
 import "./marker.scss";
+import { googleApiKey } from "../utils/api_secret";
+import SearchBox from "./SearchBox";
 
 const Location = ({
   center = { lat: 35.763197, lng: -78.700187 },

@@ -1,3 +1,4 @@
+//Dependency Imports
 import React, { useState, useEffect } from "react";
 import {
   Grid,
@@ -9,10 +10,12 @@ import {
   Chip,
 } from "@material-ui/core";
 import Axios from "axios";
-import { apiUsername, apiPassword, apiURL } from "../../utils/api_secret";
 import Skeleton from "@material-ui/lab/Skeleton";
 import { Redirect } from "react-router-dom";
 import WaterSensorDataParser from "./WaterSensorDataParser";
+
+//Local Imports
+import { apiUsername, apiPassword, apiURL } from "../../utils/api_secret";
 
 const useStyles = makeStyles((theme) => ({
   root: {

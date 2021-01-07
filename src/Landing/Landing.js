@@ -1,5 +1,5 @@
+//Dependency Imports
 import React, { useContext } from "react";
-import { Context } from "../Store/Store";
 import {
   Paper,
   Typography,
@@ -9,6 +9,9 @@ import {
   Box,
   Button,
 } from "@material-ui/core";
+
+//Local Imports
+import { Context } from "../Store/Store";
 
 const LandingComponent = () => {
   const [state, dispatch] = useContext(Context);
