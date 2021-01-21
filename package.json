@@ -37,7 +37,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.1",
     "showdown": "^1.9.1",
-    "typeface-roboto": "0.0.75"
+    "typeface-roboto": "1.1.13"
   },
   "scripts": {
     "start": "react-scripts start",
