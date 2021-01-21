@@ -105,7 +105,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// Default function 
+// Default function
 export default function Header(props) {
   const classes = useStyles();
   const theme = useTheme();
@@ -316,7 +316,6 @@ export default function Header(props) {
             onClick={() => handleOpenAllDataNav()}
             button
             key={"All Data"}
-            component={Link}
           >
             <ListItemIcon>
               <ViewList />
