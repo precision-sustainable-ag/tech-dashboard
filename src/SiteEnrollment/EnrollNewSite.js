@@ -21,7 +21,7 @@ import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
 //Global Vars
 const qs = require("qs");
 
-// Default function 
+// Default function
 const EnrollNewSite = (props) => {
   const [state, dispatch] = useContext(Context);
   const theme = useTheme();
@@ -118,7 +118,15 @@ const EnrollNewSite = (props) => {
     siteAffResponse
       .then((res) => {
         let affiliations = res.data.data;
-        setAllAffiliations(affiliations);
+        let permittedAffiliations = [];
+        const dbPermittedAffiliations = state.userInfo.state
+          .toUpperCase()
+          .split(",");
+        dbPermittedAffiliations.forEach((element) => {
+          let a = affiliations.filter((data) => data.affiliation === element);
+          permittedAffiliations.push(a);
+        });
+        setAllAffiliations(permittedAffiliations.flat());
       })
       .then(() => {
         setLoading(false);
@@ -227,7 +235,6 @@ const EnrollNewSite = (props) => {
 };
 
 export default EnrollNewSite;
-
 
 // Helper functions
 const LoadingWrapper = ({ children, loading }) => {
