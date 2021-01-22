@@ -28,7 +28,7 @@
     "qs": "^6.9.6",
     "react": "^16.14.0",
     "react-app-polyfill": "^1.0.6",
-    "react-data-grid": "^7.0.0-canary.34",
+    "react-data-grid": "^7.0.0-canary.35",
     "react-dom": "^16.14.0",
     "react-input-mask": "^2.0.4",
     "react-leaflet": "^2.8.0",
