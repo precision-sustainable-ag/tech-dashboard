@@ -1,14 +1,11 @@
 // Dependency Imports
 import React, { useContext } from "react";
-import {
-  Typography,
-  Box,
-} from "@material-ui/core";
+import { Typography, Box } from "@material-ui/core";
 
 // Local Imports
 import { Context } from "../Store/Store";
 
-// Default function 
+// Default function
 const LandingComponent = () => {
   const [state, dispatch] = useContext(Context);
 
@@ -17,14 +14,6 @@ const LandingComponent = () => {
       <Typography variant="h5" align="center" gutterBottom>
         Welcome to Precision Sustainable Agriculture Tech Dashboard
       </Typography>
-      {/* <Grid container>
-          <Grid item>
-
-          </Grid>
-        </Grid> */}
-      {/* <Button variant="outlined" href="/devices">
-        Water Sensors
-      </Button> */}
     </Box>
   );
 };
