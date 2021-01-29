@@ -229,7 +229,12 @@ const DataParser = (props) => {
           )
         }
       >
-        <Typography align="center" variant="body1" className="cardTitle">
+        <Typography
+          component="div"
+          align="center"
+          variant="body1"
+          className="cardTitle"
+        >
           {isDeviceNameBeingEdited ? (
             <TextField
               type="text"
