@@ -1,7 +1,7 @@
 // Dependency Imports
 import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
-import { Map, TileLayer, Marker, Popup } from "react-leaflet";
+import { Map, Marker, Popup, TileLayer } from "react-leaflet";
 import Skeleton from "@material-ui/lab/Skeleton";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -29,28 +29,38 @@ import {
   Grid,
   TableBody,
   withStyles,
+  Typography,
+  Fab,
 } from "@material-ui/core";
 import {
   Create,
   NetworkCell,
   Router,
   ArrowBackIosOutlined,
+  KeyboardArrowUp,
 } from "@material-ui/icons";
 import moment from "moment-timezone";
 import { Link } from "react-router-dom";
 
 // Local Imports
-import { apiUsername, apiPassword } from "../utils/api_secret";
-import { APIURL, APICreds, apiCorsUrl } from "./hologramConstants";
+import { apiUsername, apiPassword } from "../../utils/api_secret";
+import { APIURL, APICreds, apiCorsUrl } from "../hologramConstants";
+import GoogleMap from "../../Location/GoogleMap";
+import { ScrollTop, useInfiniteScroll } from "../../utils/CustomComponents";
+import Loading from "react-loading";
+// import { theme } from "highcharts";
 
-
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
+const leafletIcon = new L.Icon({
   iconUrl: require("leaflet/dist/images/marker-icon.png"),
+  iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
+  iconAnchor: null,
+  popupAnchor: null,
   shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
+  shadowSize: null,
+  shadowAnchor: null,
+  iconSize: new L.Point(60, 75),
+  className: "leaflet-div-icon",
 });
-
 
 // Styles
 const StyledTableCell = withStyles((theme) => ({
@@ -100,14 +110,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// Default function 
+// Default function
 const DeviceComponent = (props) => {
   const classes = useStyles();
-  // console.log(props.location.state);
   const [deviceData, setDeviceData] = useState({ name: "" });
   const [latLng, setLatLng] = useState({ flag: false, data: {} });
-  const [mostRecentData, setMostRecentData] = useState({});
+  const [mostRecentData, setMostRecentData] = useState([]);
   const [userTimezone, setUserTimezone] = useState("America/New_York");
+  const [pagesLoaded, setPagesLoaded] = useState(0);
+  const [loadMoreDataURI, setLoadMoreDataURI] = useState("");
 
   useEffect(() => {
     setUserTimezone(moment.tz.guess);
@@ -156,8 +167,11 @@ const DeviceComponent = (props) => {
         responseType: "json",
       })
         .then((response) => {
-          // console.log("most recent data", response);
           setMostRecentData(response.data.data);
+          if (response.data.continues) {
+            setLoadMoreDataURI(response.data.links.next);
+            setPagesLoaded(pagesLoaded + 1);
+          }
         })
         .then(() => {
           setLatLng({
@@ -170,6 +184,8 @@ const DeviceComponent = (props) => {
         });
     }
   }, []);
+
+  // Un-used function declaration
   const renderCard = () => {
     return (
       <Card>
@@ -195,13 +211,14 @@ const DeviceComponent = (props) => {
               <Popup>Last Active Location</Popup>
             </Marker>
           </Map>
+          {/* <GoogleMap lat={latLng.data[0]} lng={latLng.data[1]} /> */}
           <div className="belowMapContent"></div>
         </CardContent>
       </Card>
     );
   };
 
-  const renderGridListMap = () => {
+  const RenderGridListMap = () => {
     return (
       <GridList spacing={1} className={classes.gridList}>
         <GridListTile
@@ -211,7 +228,7 @@ const DeviceComponent = (props) => {
           <Map
             center={latLng.data}
             style={{ height: "300px" }}
-            zoom={13}
+            zoom={15}
             zoomControl={false}
           >
             <TileLayer
@@ -222,6 +239,7 @@ const DeviceComponent = (props) => {
               <Popup>Last Active Location</Popup>
             </Marker>
           </Map>
+          {/* <GoogleMap /> */}
           <GridListTileBar
             title={deviceData.name}
             style={{
@@ -247,7 +265,7 @@ const DeviceComponent = (props) => {
       </GridList>
     );
   };
-  const renderDataTable = () => {
+  const RenderDataTable = () => {
     return (
       <TableContainer component={Paper} className={classes.paper}>
         <Table>
@@ -255,67 +273,36 @@ const DeviceComponent = (props) => {
             <TableRow>
               <StyledTableCell>SNo</StyledTableCell>
               <StyledTableCell>Data</StyledTableCell>
-              <StyledTableCell>Tags</StyledTableCell>
+              {/* <StyledTableCell>Tags</StyledTableCell> */}
               <StyledTableCell>Time Stamp</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {mostRecentData.map(
-              (data, index) => (
-                // index <= 8 ? (
-                <StyledTableRow key={`row-${index}`}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>
-                    <pre>
-                      <code>{getDataFromJSON(data.data, "dataString")}</code>
-                    </pre>
-                  </TableCell>
-                  <TableCell>{getDataFromJSON(data.data, "tags")}</TableCell>
-                  <TableCell>
-                    {getDataFromJSON(data.data, "timestamp")}
-                  </TableCell>
-                </StyledTableRow>
-              )
-              // ) : (
-              //   ""
-              // )
-            )}
+            {mostRecentData.map((data, index) => (
+              <StyledTableRow key={`row-${index}`}>
+                <TableCell>{index + 1}</TableCell>
+                <TableCell>
+                  <code>{getDataFromJSON(data.data, "dataString")}</code>
+                </TableCell>
+                {/* <TableCell>{getDataFromJSON(data.data, "tags")}</TableCell> */}
+                <TableCell>{getDataFromJSON(data.data, "timestamp")}</TableCell>
+              </StyledTableRow>
+            ))}
           </TableBody>
         </Table>
-        {/* <TablePagination
-          rowsPerPageOptions={[5, 10, mostRecentData.length]}
-          component="div"
-          count={mostRecentData.length}
-        /> */}
       </TableContainer>
     );
-    // return <span>Data Table Here</span>;
-    // let jdata = JSON.parse(mostRecentData.data);
-    // jdata = jdata.data;
-    // let part1 = jdata.substring(0, 100);
-    // let part2 = jdata.substring(100);
-    // jdata = atob(jdata);
-    // return (
-    //   <span style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}>
-    //     {jdata}
-    //     {/* <br />
-    //     {part2} */}
-    //   </span>
-    // );
   };
 
   const getDataFromJSON = (jsonData, type) => {
-    // if (type == "timestamp") console.log(jsonData.received);
-    // console.log(jsonData);
-
     jsonData = JSON.parse(jsonData);
-    // if (type == "timestamp") console.log(jsonData.received);
+
     let dataStringParsed = atob(jsonData.data);
     switch (type) {
       case "dataString":
         return dataStringParsed;
       case "tags":
-        return renderTags(jsonData.tags);
+        return <RenderTags chipsArray={jsonData.tags} />;
       case "timestamp":
         return moment
           .tz(jsonData.received, "UTC")
@@ -325,11 +312,8 @@ const DeviceComponent = (props) => {
         return "";
     }
   };
-  const renderTags = (chipsArray) => {
-    // console.log(mostRecentData);
-    // let allData = JSON.parse(mostRecentData[index]);
+  const RenderTags = ({ chipsArray }) => {
     let chips = chipsArray;
-    // chips = allData.tags;
 
     return chips.map((chip, index) => (
       <Chip
@@ -340,11 +324,11 @@ const DeviceComponent = (props) => {
     ));
   };
 
-  const renderGridListData = () => {
+  const RenderGridListData = () => {
     return (
-      <Fragment key="griddata">
+      <div key="griddata">
         <GridList
-          cols={3}
+          // cols={1}
           style={{
             flexWrap: "nowrap",
             transform: "translateZ(0)",
@@ -352,91 +336,141 @@ const DeviceComponent = (props) => {
           }}
         >
           <GridListTile style={{ height: "auto" }}>
-            <Card>
-              {/* <CardHeader title="General Info"></CardHeader> */}
-              <CardContent>
-                <List>
-                  <ListItem alignItems="flex-start" key="created">
-                    <ListItemIcon>
-                      <Create />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={"Created"}
-                      secondary={moment
-                        .tz(deviceData.whencreated, "UTC")
-                        .tz(userTimezone)
-                        .format("MM/DD/YYYY hh:mm A")}
-                    />
-                  </ListItem>
-
-                  {/* <Divider /> */}
-
-                  {/* <Divider /> */}
-                </List>
-              </CardContent>
-            </Card>
+            <List>
+              <ListItem alignItems="flex-start" key="created">
+                <ListItemIcon>
+                  <Create />
+                </ListItemIcon>
+                <ListItemText
+                  primary={"Created"}
+                  secondary={moment
+                    .tz(deviceData.whencreated, "UTC")
+                    .tz(userTimezone)
+                    .format("MM/DD/YYYY hh:mm A")}
+                />
+              </ListItem>
+            </List>
           </GridListTile>
           <GridListTile style={{ height: "auto" }}>
-            <Card>
-              {/* <CardHeader title="General Info"></CardHeader> */}
-              <CardContent>
-                <List>
-                  <ListItem alignItems="flex-start" key="network">
-                    <ListItemIcon>
-                      <NetworkCell />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={"Network"}
-                      secondary={deviceData.links.cellular[0].last_network_used}
-                    />
-                  </ListItem>
-                </List>
-              </CardContent>
-            </Card>
+            <List>
+              <ListItem alignItems="flex-start" key="network">
+                <ListItemIcon>
+                  <NetworkCell />
+                </ListItemIcon>
+                <ListItemText
+                  primary={"Network"}
+                  secondary={deviceData.links.cellular[0].last_network_used}
+                />
+              </ListItem>
+            </List>
           </GridListTile>
-          <GridListTile style={{ height: "auto" }}>
-            <Card>
-              {/* <CardHeader title="General Info"></CardHeader> */}
-              <CardContent>
-                <List>
-                  <ListItem alignItems="flex-start" key="lastconnect">
-                    <ListItemIcon>
-                      <Router />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={"Last Connection"}
-                      secondary={moment
-                        .tz(
-                          deviceData.links.cellular[0].last_connect_time,
-                          "UTC"
-                        )
-                        .tz(userTimezone)
-                        .format("MM/DD/YYYY hh:mm A")
-                        .toString()}
-                    />
-                  </ListItem>
-                </List>
-              </CardContent>
-            </Card>
-          </GridListTile>
+          {deviceData.links && deviceData.links.cellular && (
+            <GridListTile style={{ height: "auto" }}>
+              <List>
+                <ListItem alignItems="flex-start" key="lastconnect">
+                  <ListItemIcon>
+                    <Router />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={"Last Connection"}
+                    secondary={moment
+                      .tz(deviceData.links.cellular[0].last_connect_time, "UTC")
+                      .tz(userTimezone)
+                      .format("MM/DD/YYYY hh:mm A")
+                      .toString()}
+                  />
+                </ListItem>
+              </List>
+            </GridListTile>
+          )}
         </GridList>
 
-        <Grid container>
-          <Grid item md={12}>
-            {renderDataTable()}
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <RenderDataTable />
           </Grid>
+          {isFetching && (
+            <Grid item xs={12}>
+              <Grid container justify="center" alignItems="center" spacing={3}>
+                <Grid item>
+                  <Loading
+                    className="scrollLoadingSpinner"
+                    width={50}
+                    height={50}
+                    type="spinningBubbles"
+                    color="#2d2d2d"
+                  />
+                </Grid>
+                <Grid item>
+                  <Typography variant="h5">
+                    Fetching Page {pagesLoaded + 1}
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Grid>
+          )}
         </Grid>
-      </Fragment>
+      </div>
     );
   };
+
+  const fetchMoreData = async () => {
+    if (loadMoreDataURI) {
+      console.log("Fetching..");
+      await Axios({
+        method: "post",
+        url: apiCorsUrl,
+        data: qs.stringify({
+          url: `${APIURL()}${loadMoreDataURI}`,
+        }),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+        },
+        auth: {
+          username: apiUsername,
+          password: apiPassword,
+        },
+        responseType: "json",
+      }).then((response) => {
+        // console.log(response);
+        let deviceDataShadow = mostRecentData || [];
+        deviceDataShadow.push(response.data.data);
+
+        let devicesFlatData = deviceDataShadow.flat();
+        setMostRecentData(devicesFlatData);
+        if (response.data.continues) {
+          setLoadMoreDataURI(response.data.links.next);
+          setPagesLoaded(pagesLoaded + 1);
+        } else {
+          setLoadMoreDataURI("");
+        }
+        setIsFetching(false);
+      });
+    } else {
+      return false;
+    }
+  };
+  const [isFetching, setIsFetching] = useInfiniteScroll(fetchMoreData);
+
   return latLng.flag ? (
     <div>
-      {renderGridListMap()}
-      {renderGridListData()}
+      <RenderGridListMap />
+      <RenderGridListData />
+      <ScrollTop {...props}>
+        <Fab color={`primary`} size="medium" aria-label="scroll back to top">
+          <KeyboardArrowUp />
+        </Fab>
+      </ScrollTop>
     </div>
   ) : (
-    // <Loading width="500px" height="500px" type="cubes" />
-    <Skeleton variant="rect" width="100%" height="300px" animation="wave" />
+    <Grid container spacing={4}>
+      <Grid item xs={12}>
+        <Skeleton variant="rect" width="100%" height="300px" animation="wave" />
+      </Grid>
+      <Grid item xs={12}>
+        <Skeleton variant="rect" width="100%" height="50vh" animation="pulse" />
+      </Grid>
+    </Grid>
   );
 };
 
