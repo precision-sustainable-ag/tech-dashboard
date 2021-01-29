@@ -27,7 +27,7 @@ import { NewSiteInfo } from "./NewSiteInfo";
 //Global Vars
 const qs = require("qs");
 
-// Default function 
+// Default function
 const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {
   const [growerType, setGrowerType] = useState("existing");
   const [growerLastNameSearch, setGrowerLastNameSearch] = useState("");
@@ -255,7 +255,7 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {
                 placeholder="Enter phone number"
               /> */}
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Select
                 fullWidth
                 value={
@@ -281,7 +281,7 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {
                 <MenuItem value="University">University</MenuItem>
                 <MenuItem value="Partner">Partner</MenuItem>
               </Select>
-            </Grid>
+            </Grid> */}
             <Grid item xs={12}>
               <Button
                 size="small"
