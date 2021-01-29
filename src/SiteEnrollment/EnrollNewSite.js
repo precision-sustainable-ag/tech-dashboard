@@ -31,7 +31,7 @@ const EnrollNewSite = (props) => {
   const currentYear = new Date().getFullYear();
   const [allAffiliations, setAllAffiliations] = useState([]);
   const [enrollmentData, setEnrollmentData] = useState({
-    year: currentYear + 1,
+    year: "none",
     affiliation: "none",
     growerInfo: {
       collaborationStatus: "University",
@@ -45,7 +45,7 @@ const EnrollNewSite = (props) => {
   });
   useEffect(() => {
     setEnrollmentData({
-      year: currentYear + 1,
+      year: "none",
       affiliation: "none",
       growerInfo: {
         collaborationStatus: "University",
@@ -91,8 +91,8 @@ const EnrollNewSite = (props) => {
         .then((res) => {
           // reset everything
           setEnrollmentData({
-            year: currentYear + 1,
-            affiliation: "NC",
+            year: "none",
+            affiliation: "none",
             growerInfo: {
               collaborationStatus: "University",
               producerId: "",
@@ -133,6 +133,7 @@ const EnrollNewSite = (props) => {
       });
   }, []);
   const [affiliationError, setAffiliationError] = useState(false);
+  const [enrollmentYearError, setEnrollmentYearError] = useState(false);
   return (
     <LoadingWrapper loading={loading}>
       <Grid item xs={12}>
@@ -143,15 +144,22 @@ const EnrollNewSite = (props) => {
         <InputLabel htmlFor="enroll-year">Year</InputLabel>
         <Select
           fullWidth
+          error={enrollmentYearError}
           value={enrollmentData.year}
           onChange={(e) => {
-            setEnrollmentData({ ...enrollmentData, year: e.target.value });
+            if (e.target.value !== "none") {
+              setEnrollmentYearError(false);
+              setEnrollmentData({ ...enrollmentData, year: e.target.value });
+            } else {
+              setEnrollmentYearError(true);
+            }
           }}
           inputProps={{
             name: "year",
             id: "enroll-year",
           }}
         >
+          <MenuItem value="none"></MenuItem>
           <MenuItem value={currentYear}>{currentYear}</MenuItem>
           <MenuItem value={currentYear + 1}>{currentYear + 1}</MenuItem>
           <MenuItem value={currentYear + 2}>{currentYear + 2}</MenuItem>
@@ -190,7 +198,7 @@ const EnrollNewSite = (props) => {
       </Grid>
       {enrollmentData.affiliation === "" ||
       enrollmentData.affiliation === "none" ||
-      enrollmentData.year === "" ? (
+      enrollmentData.year === "none" ? (
         <Grid item xs={12}>
           <Alert severity="info">
             <Typography variant="body2">
@@ -204,7 +212,8 @@ const EnrollNewSite = (props) => {
 
       {/* Grower Information  */}
       {enrollmentData.affiliation === "none" ||
-      enrollmentData.affiliation === "" ? (
+      enrollmentData.affiliation === "" ||
+      enrollmentData.year === "none" ? (
         ""
       ) : (
         <GrowerInformation
