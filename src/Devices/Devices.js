@@ -3,9 +3,7 @@ import React, { useContext, useState, useEffect } from "react";
 import Axios from "axios";
 import Loading from "react-loading";
 import qs from "qs";
-import {
-  Card,
-} from "@material-ui/core";
+import { Card } from "@material-ui/core";
 
 // Local Imports
 import DataParser from "./DataParser";
@@ -15,8 +13,10 @@ import { apiUsername, apiPassword } from "../utils/api_secret";
 import { BannedRoleMessage } from "../utils/CustomComponents";
 import "./Devices.scss";
 import { Context } from "../Store/Store";
+import { getDevices } from "./factory/factory";
+import { Devices } from "./model/devices";
 
-// Default function 
+// Default function
 const DevicesComponent = () => {
   const [state, dispatch] = useContext(Context);
   const [showDevices, setShowDevices] = useState(false);
@@ -129,7 +129,10 @@ const DevicesComponent = () => {
     await apiCall(apiURL, options)
       .then((response) => {
         // save whatever we get for a specific state or "all"
-
+        // console.log(response.data.data);
+        // TODO: Set a model to be used for devices
+        // let device = new Devices(response.data.data);
+        // console.log(device);
         devicesData.push(response.data.data);
 
         return response;
@@ -143,6 +146,7 @@ const DevicesComponent = () => {
           devicesFlatData = devicesData.flat();
           devicesFlatData = devicesFlatData.sort(compare);
           // console.log("devicesFlatData", devicesFlatData);
+          // TODO: Change to local state
           dispatch({
             type: "SET_DEVICES_INFO",
             data: devicesFlatData,
@@ -198,7 +202,7 @@ const DevicesComponent = () => {
           <Loading type="bars" width="200px" height="200px" color="#3f51b5" />
         ) : (
           <div className="devices">
-            {state.devices.map((device, index) =>
+            {state.devices.map((device) =>
               device.lastsession ? (
                 <div className="device" key={device.id}>
                   <Card
@@ -206,7 +210,7 @@ const DevicesComponent = () => {
                     elevation={3}
                     className="deviceDataWrapper"
                   >
-                    <DataParser deviceData={device} />
+                    <DataParser key={device.id} deviceData={device} />
                   </Card>
                 </div>
               ) : (
