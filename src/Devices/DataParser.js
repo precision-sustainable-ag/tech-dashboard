@@ -207,7 +207,6 @@ const DataParser = (props) => {
       }}
     />
   ) : (
-    // <Tooltip title={dateStringFormatted} placeholder="top-right">
     <>
       <CardContent
         onMouseEnter={() =>
@@ -291,45 +290,53 @@ const DataParser = (props) => {
       <hr
         style={{ marginBottom: 0, width: "100%", border: "0.5px solid #eee" }}
       />
-
-      <CardActionArea
-        className={
-          !device.lastsession
-            ? "deviceActionArea deadDevice"
-            : "deviceActionArea aliveDevice"
-        }
-        style={
-          deviceBGColor === "white"
-            ? { backgroundColor: "white", color: "black" }
-            : deviceBGColor === "#fdd835"
-            ? {
-                backgroundColor: deviceBGColor,
-                color: "black",
-              }
-            : {
-                backgroundColor: deviceBGColor,
-              }
-        }
-        disabled={!device.lastsession ? true : false}
-        onClick={() => {
-          setDeviceState(device.id);
-        }}
-      >
-        {device.lastsession ? (
-          <Fragment>
-            <p>{props.deviceData.name}</p>
-            <p>Last Session: {deviceDateStr}</p>
-            <p style={{ fontWeight: "bold" }}>{dateStatus}</p>
-          </Fragment>
-        ) : (
-          <Fragment>
-            <p style={{ fontWeight: "bold" }}>Last Session: Not Available</p>
-            <p style={{ fontWeight: "bold" }}>Device Dead</p>
-          </Fragment>
-        )}
-      </CardActionArea>
+      <>
+        <Tooltip
+          title={`Last Update: ${dateStringFormatted}`}
+          arrow
+          placeholder="top-right"
+        >
+          <CardActionArea
+            className={
+              !device.lastsession
+                ? "deviceActionArea deadDevice"
+                : "deviceActionArea aliveDevice"
+            }
+            style={
+              deviceBGColor === "white"
+                ? { backgroundColor: "white", color: "black" }
+                : deviceBGColor === "#fdd835"
+                ? {
+                    backgroundColor: deviceBGColor,
+                    color: "black",
+                  }
+                : {
+                    backgroundColor: deviceBGColor,
+                  }
+            }
+            disabled={!device.lastsession ? true : false}
+            onClick={() => {
+              setDeviceState(device.id);
+            }}
+          >
+            {device.lastsession ? (
+              <Fragment>
+                {deviceNickname && <p>{props.deviceData.name}</p>}
+                <p>Last Session: {deviceDateStr}</p>
+                <p style={{ fontWeight: "bold" }}>{dateStatus}</p>
+              </Fragment>
+            ) : (
+              <Fragment>
+                <p style={{ fontWeight: "bold" }}>
+                  Last Session: Not Available
+                </p>
+                <p style={{ fontWeight: "bold" }}>Device Dead</p>
+              </Fragment>
+            )}
+          </CardActionArea>
+        </Tooltip>
+      </>
     </>
-    // </Tooltip>
   );
 };
 

@@ -56,7 +56,7 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
 };
 
-// Default function 
+// Default function
 const TableComponent = () => {
   const [state, dispatch] = useContext(Context);
   const [tableState, setTableState] = useState(true);

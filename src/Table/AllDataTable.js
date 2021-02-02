@@ -12,11 +12,7 @@ import {
 } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
 import MaterialTable from "material-table";
-import {
-  GpsFixed,
-  Edit,
-  DeleteForever,
-} from "@material-ui/icons";
+import { GpsFixed, Edit, DeleteForever, Search } from "@material-ui/icons";
 
 // Local Imports
 import { Context } from "../Store/Store";
@@ -26,23 +22,24 @@ import UnenrollSiteModal from "./UnenrollSiteModal";
 import NewIssueDialog from "./NewIssueModal";
 import { BannedRoleMessage } from "../utils/CustomComponents";
 import { apiUsername, apiPassword, apiURL } from "../utils/api_secret";
+import { UserIsEditor, useWindowResize } from "../utils/SharedFunctions";
+import MapModal from "./MapModal";
 
-// Helper function 
+// Helper function
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-// Default function 
+// Default function
 const AllDataTable = (props) => {
   const [state, dispatch] = useContext(Context);
-  const [states, setStates] = useState([]);
   const [showTable, setShowTable] = useState(false);
   const [bannedRolesCheckMessage, setBannedRolesCheckMessage] = useState(
     "Checking your permissions.."
   );
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [snackbarData, setSnackbarData] = useState({ open: false, text: "" });
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editModalData, setEditModalData] = useState({});
 
@@ -60,7 +57,7 @@ const AllDataTable = (props) => {
   const handleUnenrollClose = () => {
     setUnenrollOpen(!unenrollOpen);
   };
-
+  const { height } = useWindowResize();
   useEffect(() => {
     function init() {
       if (valuesEdited) {
@@ -121,10 +118,12 @@ const AllDataTable = (props) => {
   const parseXHRResponse = (data) => {
     if (data.status === "success") {
       let responseData = data.data;
-
       let modifiedData = responseData.map((data) => {
         return {
           ...data,
+          // county: data.county ? data.county : "Not Provided",
+          // email: data.email ? data.email : "Not Provided",
+          // address: data.address ? data.address : "Not Provided",
           latlng:
             data.latitude !== null && data.longitude !== null
               ? data.latitude !== "-999" && data.longitude !== "-999"
@@ -168,7 +167,9 @@ const AllDataTable = (props) => {
     });
   };
 
-  const [snackbarData, setSnackbarData] = useState({ open: false, text: "" });
+  const [mapModalOpen, setMapModalOpen] = useState(false);
+  const [mapModalData, setMapModalData] = useState([]);
+
   return showTable ? (
     loading ? (
       <div style={{ display: "flex", justifyContent: "center" }}>
@@ -192,10 +193,16 @@ const AllDataTable = (props) => {
         <Grid container>
           <Grid item lg={12}>
             <MaterialTable
+              // detailPanel={[
+              //   {
+              //     tooltip: "Show Details",
+              //     render: (rowData) => {
+              //       return <>{rowData.address}</>;
+              //     },
+              //   },
+              // ]}
               columns={[
-                state.userInfo.permissions.split(",").includes("all") ||
-                state.userInfo.permissions.split(",").includes("edit") ||
-                state.userInfo.permissions.split(",").includes("update")
+                UserIsEditor()
                   ? {
                       title: "Actions",
                       render: (rowData) => (
@@ -238,13 +245,13 @@ const AllDataTable = (props) => {
                       sorting: false,
                       grouping: false,
                     },
-                { title: "Code", field: "code" },
-                { title: "Grower", field: "last_name" },
-                { title: "State", field: "affiliation" },
-                { title: "County", field: "county" },
-                { title: "Email", field: "email" },
+                { title: "Code", field: "code", type: "string" },
+                { title: "Grower", field: "last_name", type: "string" },
+                { title: "State", field: "affiliation", type: "string" },
+                { title: "County", field: "county", type: "string" },
+                { title: "Email", field: "email", type: "string" },
                 { title: "Year", field: "year" },
-                { title: "Address", field: "address" },
+                { title: "Field Address", field: "address" },
                 {
                   title: "Lat, Long",
                   field: "latlng",
@@ -252,13 +259,21 @@ const AllDataTable = (props) => {
                     rowData.latlng !== "" ? (
                       rowData.latlng !== "-999" ? (
                         <Button
-                          startIcon={<GpsFixed />}
+                          size="small"
+                          startIcon={<Search />}
                           variant="contained"
-                          href={`https://earth.google.com/web/search/${rowData.latlng}/@${rowData.latlng},75.78141996a,870.41248089d,35y,0h,45t,0r/data=ClQaKhIkGa36XG3FbkBAIVRSJ6CJkFTAKhAzMi44NjU0LC04Mi4yNTg0GAIgASImCiQJzF-JvuFuOEARyF-JvuFuOMAZThRMqkU0RMAh9HZjS910YsAoAg`}
+                          // href={`https://earth.google.com/web/search/${rowData.latlng}/@${rowData.latlng},75.78141996a,870.41248089d,35y,0h,45t,0r/data=ClQaKhIkGa36XG3FbkBAIVRSJ6CJkFTAKhAzMi44NjU0LC04Mi4yNTg0GAIgASImCiQJzF-JvuFuOEARyF-JvuFuOMAZThRMqkU0RMAh9HZjS910YsAoAg`}
                           target="_blank"
                           rel="noreferrer"
+                          onClick={() => {
+                            setMapModalData([
+                              parseFloat(rowData.latitude),
+                              parseFloat(rowData.longitude),
+                            ]);
+                            setMapModalOpen(true);
+                          }}
                         >
-                          {rowData.latlng}
+                          {"Map"}
                         </Button>
                       ) : (
                         "-999"
@@ -297,11 +312,6 @@ const AllDataTable = (props) => {
                     );
                   },
                 },
-                //   {
-                //     title: "Doğum Yeri",
-                //     field: "birthCity",
-                //     lookup: { 34: "İstanbul", 63: "Şanlıurfa" }
-                //   }
               ]}
               data={tableData}
               title="Site Information"
@@ -310,25 +320,28 @@ const AllDataTable = (props) => {
                 exportFileName: "Site Information",
                 addRowPosition: "last",
                 exportAllData: true,
-                pageSize: tableData.length <= 20 ? 10 : 20,
-                pageSizeOptions:
-                  tableData.length <= 50
-                    ? [5, 10, 20, 50]
-                    : tableData.length > 50 && tableData.length <= 100
-                    ? [5, 10, 20, 50, tableData.length]
-                    : [5, 10, 20, 50, 100, tableData.length],
+                pageSize: tableData.length,
                 // pageSizeOptions: [5, 10, 20, 50, tableData.length],
                 groupRowSeparator: "  ",
                 grouping: true,
                 headerStyle: {
                   fontWeight: "bold",
+                  fontFamily: "Bilo, sans-serif",
+                  fontSize: "0.8em",
+                  textAlign: "left",
+                  position: "sticky",
+                  top: 0,
+                },
+                rowStyle: {
                   fontFamily: "Roboto, sans-serif",
-                  fontSize: "1em",
+                  fontSize: "0.8em",
                   textAlign: "left",
                 },
                 selection: false,
                 searchAutoFocus: true,
                 toolbarButtonAlignment: "left",
+                actionsColumnIndex: 1,
+                maxBodyHeight: height - 48,
               }}
             />
           </Grid>
@@ -355,6 +368,12 @@ const AllDataTable = (props) => {
           data={newIssueData}
           setSnackbarData={setSnackbarData}
           snackbarData={snackbarData}
+        />
+        <MapModal
+          open={mapModalOpen}
+          setOpen={setMapModalOpen}
+          lat={mapModalData[0]}
+          lng={mapModalData[1]}
         />
       </div>
     )

@@ -26,7 +26,7 @@ import { useAuth0 } from "../Auth/react-auth0-spa";
 const showdown = require("showdown");
 let table = require("markdown-table");
 
-// Default function 
+// Default function
 const NewIssueDialog = (props) => {
   const markdownConvert = new showdown.Converter({ tables: true });
   const [state, dispatch] = useContext(Context);
@@ -211,30 +211,38 @@ const NewIssueDialog = (props) => {
   };
   const [isNewCollab, setIsNewCollab] = useState(false);
   useEffect(() => {
-    getGithubResourceLimit().then((response) => {
-      console.log(
-        "Limit: " +
-          response.data.rate.limit +
-          "Used: " +
-          response.data.rate.remaining
-      );
-    });
+    console.log("run run");
+
     //   check if a user is a collaborator to repo, else add the user to repo
 
     //   const collaboratorNames = res.data.map((data) => data.login);
 
     fetchCollabs()
       .then((res) => {
-        //   console.log(res.status);
         const status = res.status;
         let collaborators = res.data.map((data) => {
           return { username: data.login, picture: data.avatar_url };
-          // return data.login;
         });
 
         checkIfUserIsCollaborator(user.nickname)
           .then((res) => {
             setCollaborators(collaborators);
+            if (res.status === 204) {
+              // user already exists
+              return false;
+            } else {
+              try {
+                addNewCollaboratorToRepo(user.nickname).catch((e) => {
+                  console.error(e);
+                });
+              } catch (e) {
+                console.log(e);
+                collaborators.push({
+                  username: user.nickname,
+                  picture: `https://via.placeholder.com/50x50?text=${user.nickname[0]}`,
+                });
+              }
+            }
           })
           .catch((e) => {
             collaborators.push({
@@ -243,39 +251,19 @@ const NewIssueDialog = (props) => {
             });
             setCollaborators(collaborators);
           });
-
-        //   if (status !== 204) {
-        //     // user is not a repo collaborator
-
-        //   }
-        //   if (res.status === 204) {
-        //     console.log(`${user.nickname} already in corrections repo`);
-        //   } else {
-        //     console.error(res.status, res.data);
-        //   }
-      })
-      .then(() => {
-        try {
-          addNewCollaboratorToRepo(user.nickname);
-        } catch (e) {
-          console.log(e);
-        }
       })
       .catch((e) => {
         console.error(e);
-        // most probably a 404 (user not exists in the repo)
-        // //   setIsNewCollab(!isNewCollab);
-        // addNewCollaboratorToRepo(user.nickname).then((res) => {
-        //   if (res.status === 201) {
-        //     console.log(`${user.nickname} added to corrections repo`);
-        //   } else {
-        //     if (res.status === 204) {
-        //       console.log(`${user.nickname} already in corrections repo`);
-        //     } else {
-        //       console.error(res.status, res.data);
-        //     }
-        //   }
-        // });
+        getGithubResourceLimit().then((response) => {
+          console.log(
+            "%cRequest Limit: " +
+              response.data.rate.limit +
+              "%c Used: " +
+              response.data.rate.remaining,
+            "color: green;font-family:system-ui;font-size:0.6rem;",
+            "color: red;font-family:system-ui;font-size:0.6rem;"
+          );
+        });
       });
   }, [isNewCollab]);
 
@@ -363,8 +351,8 @@ const NewIssueDialog = (props) => {
               <Grid item xs={12}>
                 <Typography variant="body1">Select Assignees</Typography>
               </Grid>
-              {collaborators.map((name) => (
-                <Grid item>
+              {collaborators.map((name, index) => (
+                <Grid item key={`collab${index}`}>
                   <Chip
                     disabled={
                       alwaysTaggedPeople.includes(name.username) ? true : false

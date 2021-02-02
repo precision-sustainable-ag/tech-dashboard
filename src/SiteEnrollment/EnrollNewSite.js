@@ -9,6 +9,7 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  makeStyles,
 } from "@material-ui/core";
 import Axios from "axios";
 import { Alert } from "@material-ui/lab";
@@ -21,11 +22,18 @@ import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
 //Global Vars
 const qs = require("qs");
 
+const useStyles = makeStyles((theme) => ({
+  labelRoot: {
+    fontSize: "1.2rem",
+  },
+}));
+
 // Default function
 const EnrollNewSite = (props) => {
   const [state, dispatch] = useContext(Context);
   const theme = useTheme();
-  const smallScreen = useMediaQuery(theme.breakpoints.up("sm"));
+  const styles = useStyles(theme);
+  const mediumUpScreen = useMediaQuery(theme.breakpoints.up("md"));
 
   const [loading, setLoading] = useState();
   const currentYear = new Date().getFullYear();
@@ -136,109 +144,126 @@ const EnrollNewSite = (props) => {
   const [enrollmentYearError, setEnrollmentYearError] = useState(false);
   return (
     <LoadingWrapper loading={loading}>
-      <Grid item xs={12}>
-        <Typography variant="h4">Basic Information</Typography>
-      </Grid>
+      {/* {mediumUpScreen ? ( */}
 
-      <Grid item xs={12} md={6}>
-        <InputLabel htmlFor="enroll-year">Year</InputLabel>
-        <Select
-          fullWidth
-          error={enrollmentYearError}
-          value={enrollmentData.year}
-          onChange={(e) => {
-            if (e.target.value !== "none") {
-              setEnrollmentYearError(false);
-              setEnrollmentData({ ...enrollmentData, year: e.target.value });
-            } else {
-              setEnrollmentYearError(true);
-            }
-          }}
-          inputProps={{
-            name: "year",
-            id: "enroll-year",
-          }}
-        >
-          <MenuItem value="none"></MenuItem>
-          <MenuItem value={currentYear}>{currentYear}</MenuItem>
-          <MenuItem value={currentYear + 1}>{currentYear + 1}</MenuItem>
-          <MenuItem value={currentYear + 2}>{currentYear + 2}</MenuItem>
-        </Select>
-      </Grid>
-
-      <Grid item xs={12} md={6}>
-        <InputLabel htmlFor="enroll-affiliation">Affiliation</InputLabel>
-        <Select
-          fullWidth
-          value={enrollmentData.affiliation}
-          error={affiliationError}
-          onChange={(e) => {
-            if (e.target.value !== "none") {
-              setAffiliationError(false);
-              setEnrollmentData({
-                ...enrollmentData,
-                affiliation: e.target.value,
-              });
-            } else {
-              setAffiliationError(true);
-            }
-          }}
-          inputProps={{
-            name: "year",
-            id: "enroll-year",
-          }}
-        >
-          <MenuItem value="none"></MenuItem>
-          {allAffiliations.map((data, index) => (
-            <MenuItem key={`aff-${index}`} value={data.affiliation}>
-              {data.label}
-            </MenuItem>
-          ))}
-        </Select>
-      </Grid>
-      {enrollmentData.affiliation === "" ||
-      enrollmentData.affiliation === "none" ||
-      enrollmentData.year === "none" ? (
+      <Grid container spacing={3} alignItems="center">
         <Grid item xs={12}>
-          <Alert severity="info">
-            <Typography variant="body2">
-              Make sure you have selected the <b>year</b> and <b>affiliation</b>
-            </Typography>
-          </Alert>
+          <Typography variant="h4">Basic Information</Typography>
         </Grid>
-      ) : (
-        ""
-      )}
 
-      {/* Grower Information  */}
-      {enrollmentData.affiliation === "none" ||
-      enrollmentData.affiliation === "" ||
-      enrollmentData.year === "none" ? (
-        ""
-      ) : (
-        <GrowerInformation
-          enrollmentData={enrollmentData}
-          setEnrollmentData={setEnrollmentData}
-        />
-      )}
+        <Grid item xs={12} md={6}>
+          <InputLabel
+            // classes={{ root: styles.labelRoot }}
+            error={enrollmentYearError}
+            htmlFor="enroll-year"
+          >
+            Year
+          </InputLabel>
+          <Select
+            fullWidth
+            error={enrollmentYearError}
+            value={enrollmentData.year}
+            onChange={(e) => {
+              if (e.target.value !== "none") {
+                setEnrollmentYearError(false);
+                setEnrollmentData({ ...enrollmentData, year: e.target.value });
+              } else {
+                setEnrollmentYearError(true);
+              }
+            }}
+            inputProps={{
+              name: "year",
+              id: "enroll-year",
+            }}
+          >
+            <MenuItem value="none"></MenuItem>
+            <MenuItem value={currentYear}>{currentYear}</MenuItem>
+            <MenuItem value={currentYear + 1}>{currentYear + 1}</MenuItem>
+            <MenuItem value={currentYear + 2}>{currentYear + 2}</MenuItem>
+          </Select>
+        </Grid>
 
-      {enrollmentData.growerInfo.sites &&
-      enrollmentData.growerInfo.sites.length > 0 ? (
-        <Grid item xs={12}>
-          <Grid container justify="center" alignItems="center">
-            <Button
-              size="large"
-              variant="contained"
-              color="primary"
-              onClick={finalConfirm}
-            >
-              Confirm Site Information
-            </Button>
+        <Grid item xs={12} md={6}>
+          <InputLabel
+            // classes={{ root: styles.labelRoot }}
+            error={affiliationError}
+            htmlFor="enroll-affiliation"
+          >
+            Affiliation
+          </InputLabel>
+          <Select
+            fullWidth
+            value={enrollmentData.affiliation}
+            error={affiliationError}
+            onChange={(e) => {
+              if (e.target.value !== "none") {
+                setAffiliationError(false);
+                setEnrollmentData({
+                  ...enrollmentData,
+                  affiliation: e.target.value,
+                });
+              } else {
+                setAffiliationError(true);
+              }
+            }}
+            inputProps={{
+              name: "year",
+              id: "enroll-year",
+            }}
+          >
+            <MenuItem value="none"></MenuItem>
+            {allAffiliations.map((data, index) => (
+              <MenuItem key={`aff-${index}`} value={data.affiliation}>
+                {data.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </Grid>
+        {enrollmentData.affiliation === "" ||
+        enrollmentData.affiliation === "none" ||
+        enrollmentData.year === "none" ? (
+          <Grid item xs={12}>
+            <Alert severity="info">
+              <Typography variant="body2">
+                Make sure you have selected the <b>year</b> and{" "}
+                <b>affiliation</b>
+              </Typography>
+            </Alert>
           </Grid>
-        </Grid>
-      ) : (
-        ""
-      )}
+        ) : (
+          ""
+        )}
+
+        {/* Grower Information  */}
+        {enrollmentData.affiliation === "none" ||
+        enrollmentData.affiliation === "" ||
+        enrollmentData.year === "none" ? (
+          ""
+        ) : (
+          <GrowerInformation
+            enrollmentData={enrollmentData}
+            setEnrollmentData={setEnrollmentData}
+          />
+        )}
+
+        {enrollmentData.growerInfo.sites &&
+        enrollmentData.growerInfo.sites.length > 0 ? (
+          <Grid item xs={12}>
+            <Grid container justify="center" alignItems="center">
+              <Button
+                size="large"
+                variant="contained"
+                color="primary"
+                onClick={finalConfirm}
+              >
+                Confirm Site Information
+              </Button>
+            </Grid>
+          </Grid>
+        ) : (
+          ""
+        )}
+      </Grid>
     </LoadingWrapper>
   );
 };

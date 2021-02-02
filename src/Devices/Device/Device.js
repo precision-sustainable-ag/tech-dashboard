@@ -31,6 +31,7 @@ import {
   withStyles,
   Typography,
   Fab,
+  Button,
 } from "@material-ui/core";
 import {
   Create,
@@ -100,9 +101,7 @@ const useStyles = makeStyles((theme) => ({
       "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, " +
       "rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)",
   },
-  icon: {
-    color: "white",
-  },
+
   paper: {
     // padding: theme.spacing(2),
     textAlign: "center",
@@ -220,51 +219,33 @@ const DeviceComponent = (props) => {
 
   const RenderGridListMap = () => {
     return (
-      <GridList spacing={1} className={classes.gridList}>
-        <GridListTile
-          key={deviceData.id}
-          style={{ width: "100%", height: "300px" }}
-        >
-          <Map
-            center={latLng.data}
-            style={{ height: "300px" }}
-            zoom={15}
-            zoomControl={false}
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Button
+            variant="contained"
+            color={props.isDarkTheme ? "primary" : "default"}
+            aria-label={`All Devices`}
+            component={Link}
+            tooltip="All Devices"
+            to={"/devices"}
+            startIcon={<ArrowBackIosOutlined />}
           >
-            <TileLayer
-              attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            All Devices
+          </Button>
+        </Grid>
+        <Grid item xs={12}>
+          <div style={{ height: "350px" }}>
+            <GoogleMap
+              lat={latLng.data[0]}
+              lng={latLng.data[1]}
+              from={"device"}
             />
-            <Marker position={latLng.data}>
-              <Popup>Last Active Location</Popup>
-            </Marker>
-          </Map>
-          {/* <GoogleMap /> */}
-          <GridListTileBar
-            title={deviceData.name}
-            style={{
-              zIndex: "999",
-            }}
-            titlePosition="top"
-            actionIcon={
-              <Link to="/devices">
-                <IconButton
-                  aria-label={`All Devices`}
-                  tooltip="All Devices"
-                  className={classes.icon}
-                  to="/devices"
-                >
-                  <ArrowBackIosOutlined />
-                </IconButton>
-              </Link>
-            }
-            actionPosition="left"
-            className={classes.titleBar}
-          />
-        </GridListTile>
-      </GridList>
+          </div>
+        </Grid>
+      </Grid>
     );
   };
+
   const RenderDataTable = () => {
     return (
       <TableContainer component={Paper} className={classes.paper}>
@@ -285,7 +266,9 @@ const DeviceComponent = (props) => {
                   <code>{getDataFromJSON(data.data, "dataString")}</code>
                 </TableCell>
                 {/* <TableCell>{getDataFromJSON(data.data, "tags")}</TableCell> */}
-                <TableCell>{getDataFromJSON(data.data, "timestamp")}</TableCell>
+                <TableCell datatype="">
+                  {getDataFromJSON(data.data, "timestamp")}
+                </TableCell>
               </StyledTableRow>
             ))}
           </TableBody>

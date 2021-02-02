@@ -8,7 +8,7 @@ import "./marker.scss";
 import { googleApiKey } from "../utils/api_secret";
 import SearchBox from "./SearchBox";
 
-// Default function 
+// Default function
 const Location = ({
   center = { lat: 35.763197, lng: -78.700187 },
   mapHeight = 500,
@@ -20,6 +20,7 @@ const Location = ({
   setCounty,
   setAddress,
   setSelectedToEditSite,
+  selectedToEditSite,
 }) => {
   const [apiStates, setApiStates] = useState({
     mapsApiLoaded: false,
@@ -44,7 +45,19 @@ const Location = ({
   //     }
   //     console.log(markerLatLng);
   //   }, [markerLatLng]);
-
+  const addressLookup = async (lat, lng) => {
+    let placeService = new window.google.maps.Geocoder();
+    const placeRequest = {
+      location: { lat: lat, lng: lng },
+      region: "en-US",
+    };
+    return await new Promise((resolve) =>
+      placeService.geocode(placeRequest, (results, status) => {
+        resolve({ results, status });
+      })
+    );
+  };
+  const [draggable, setDraggable] = useState(true);
   return (
     <Grid container spacing={0}>
       <Grid item xs={12}>
@@ -58,12 +71,14 @@ const Location = ({
             setCounty={setCounty}
             setAddress={setAddress}
             setSelectedToEditSite={setSelectedToEditSite}
+            selectedToEditSite={selectedToEditSite}
           />
         )}
       </Grid>
       <Grid item xs={12}>
         <div style={{ height: mapHeight, width: "100%" }}>
           <GoogleMapsReact
+            draggable={draggable}
             bootstrapURLKeys={{
               key: googleApiKey,
               libraries: ["places", "geometry"],
@@ -74,7 +89,69 @@ const Location = ({
             center={
               markerLatLng.lat && markerLatLng.lng ? markerLatLng : center
             }
-            zoom={markerLatLng.lat && markerLatLng.lng ? 15 : 11}
+            onChildMouseUp={(childKey, childProps, e) => {
+              setDraggable(true);
+            }}
+            onChildMouseDown={(childKey, childProps, e) => {
+              setDraggable(false);
+            }}
+            onChildMouseMove={(childKey, childProps, e) => {
+              setDraggable(true);
+              addressLookup(e.lat, e.lng).then((res) => {
+                if (res.status === "OK") {
+                  if (res.results.length > 0) {
+                    let address = res.results[0].formatted_address
+                      ? res.results[0].formatted_address
+                      : "";
+                    let county = res.results[0].address_components.filter(
+                      (e) => e.types[0] === "administrative_area_level_2"
+                    );
+                    setSelectedToEditSite({
+                      ...selectedToEditSite,
+                      latitude: e.lat,
+                      longitude: e.lng,
+                      address: address,
+                      county: county[0].long_name,
+                    });
+                  }
+                } else {
+                  setSelectedToEditSite({
+                    ...selectedToEditSite,
+                    latitude: e.lat,
+                    longitude: e.lng,
+                  });
+                }
+              });
+            }}
+            onClick={(e) => {
+              // setMarkerLatLng({ lat: e.center.lat, lng: e.center.lng });
+              addressLookup(e.lat, e.lng).then((res) => {
+                if (res.status === "OK") {
+                  if (res.results.length > 0) {
+                    let address = res.results[0].formatted_address
+                      ? res.results[0].formatted_address
+                      : "";
+                    let county = res.results[0].address_components.filter(
+                      (e) => e.types[0] === "administrative_area_level_2"
+                    );
+                    setSelectedToEditSite({
+                      ...selectedToEditSite,
+                      latitude: e.lat,
+                      longitude: e.lng,
+                      address: address,
+                      county: county[0].long_name,
+                    });
+                  }
+                } else {
+                  setSelectedToEditSite({
+                    ...selectedToEditSite,
+                    latitude: e.lat,
+                    longitude: e.lng,
+                  });
+                }
+              });
+            }}
+            zoom={markerLatLng.lat && markerLatLng.lng ? 15 : 14}
             defaultZoom={zoom}
             yesIWantToUseGoogleMapApiInternals
             onGoogleApiLoaded={({ map, maps }) => {

@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// Default function 
+// Default function
 const EditDataModal = (props) => {
   const open = props.open;
   const classes = useStyles();
@@ -149,16 +149,19 @@ const EditDataModal = (props) => {
     longitude: "",
   });
   useEffect(() => {
-    if (selectedToEditSite.address) {
-      setNewData({
-        ...newData,
-        address: selectedToEditSite.address,
-        latitude: selectedToEditSite.latitude,
-        longitude: selectedToEditSite.longitude,
-        county: selectedToEditSite.county,
-        latlng: `${selectedToEditSite.latitude},${selectedToEditSite.longitude}`,
-      });
-    }
+    setNewData({
+      ...newData,
+      address: selectedToEditSite.address ? selectedToEditSite.address : "",
+      latitude: selectedToEditSite.latitude ? selectedToEditSite.latitude : "",
+      longitude: selectedToEditSite.longitude
+        ? selectedToEditSite.longitude
+        : "",
+      county: selectedToEditSite.county ? selectedToEditSite.county : "",
+      latlng:
+        selectedToEditSite.latitude && selectedToEditSite.longitude
+          ? `${selectedToEditSite.latitude},${selectedToEditSite.longitude}`
+          : "",
+    });
   }, [selectedToEditSite]);
   useEffect(() => {
     setNewData({
@@ -271,8 +274,12 @@ const EditDataModal = (props) => {
                 setSelectedToEditSite={setSelectedToEditSite}
                 selectedToEditSite={selectedToEditSite}
                 markerLatLng={{
-                  lat: selectedToEditSite.latitude,
-                  lng: selectedToEditSite.longitude,
+                  lat: newData.latitude
+                    ? parseFloat(newData.latitude)
+                    : selectedToEditSite.latitude,
+                  lng: newData.longitude
+                    ? parseFloat(newData.longitude)
+                    : selectedToEditSite.longitude,
                 }}
               />
             </Grid>
@@ -336,7 +343,7 @@ const EditDataModal = (props) => {
           <Grid item sm={12} lg={12}>
             <TextField
               id="editAddress"
-              label="Address"
+              label="Field Address"
               margin="dense"
               name="address"
               value={

@@ -22,8 +22,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// Default function 
-export default function SearchBox({
+// Default function
+const SearchBox = ({
   mapInstance,
   mapsApi,
   latLng,
@@ -33,7 +33,7 @@ export default function SearchBox({
   setCounty,
   selectedToEditSite,
   setSelectedToEditSite,
-}) {
+}) => {
   const classes = useStyles();
   const [value, setValue] = React.useState(null);
   const [inputValue, setInputValue] = React.useState("");
@@ -234,4 +234,6 @@ export default function SearchBox({
       }}
     />
   );
-}
+};
+
+export default SearchBox;
