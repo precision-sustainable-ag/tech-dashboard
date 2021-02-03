@@ -36,6 +36,7 @@
     "react-phone-number-input": "^3.1.10",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.1",
+    "react-virtualized": "^9.22.3",
     "showdown": "^1.9.1",
     "typeface-roboto": "0.0.75"
   },
