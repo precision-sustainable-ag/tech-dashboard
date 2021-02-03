@@ -127,14 +127,18 @@ const EnrollNewSite = (props) => {
       .then((res) => {
         let affiliations = res.data.data;
         let permittedAffiliations = [];
-        const dbPermittedAffiliations = state.userInfo.state
-          .toUpperCase()
-          .split(",");
-        dbPermittedAffiliations.forEach((element) => {
-          let a = affiliations.filter((data) => data.affiliation === element);
-          permittedAffiliations.push(a);
-        });
-        setAllAffiliations(permittedAffiliations.flat());
+        if (state.userInfo.state === "all") {
+          setAllAffiliations(affiliations);
+        } else {
+          const dbPermittedAffiliations = state.userInfo.state
+            .toUpperCase()
+            .split(",");
+          dbPermittedAffiliations.forEach((element) => {
+            let a = affiliations.filter((data) => data.affiliation === element);
+            permittedAffiliations.push(a);
+          });
+          setAllAffiliations(permittedAffiliations.flat());
+        }
       })
       .then(() => {
         setLoading(false);
