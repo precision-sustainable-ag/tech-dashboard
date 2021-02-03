@@ -1,10 +1,10 @@
 // Dependency Imports
 import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
-import { Map, Marker, Popup, TileLayer } from "react-leaflet";
+// import { Map, Marker, Popup, TileLayer } from "react-leaflet";
 import Skeleton from "@material-ui/lab/Skeleton";
 import "leaflet/dist/leaflet.css";
-import L from "leaflet";
+
 import qs from "qs";
 import {
   Card,
@@ -50,18 +50,6 @@ import GoogleMap from "../../Location/GoogleMap";
 import { ScrollTop, useInfiniteScroll } from "../../utils/CustomComponents";
 import Loading from "react-loading";
 // import { theme } from "highcharts";
-
-const leafletIcon = new L.Icon({
-  iconUrl: require("leaflet/dist/images/marker-icon.png"),
-  iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
-  iconAnchor: null,
-  popupAnchor: null,
-  shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
-  shadowSize: null,
-  shadowAnchor: null,
-  iconSize: new L.Point(60, 75),
-  className: "leaflet-div-icon",
-});
 
 // Styles
 const StyledTableCell = withStyles((theme) => ({
@@ -183,39 +171,6 @@ const DeviceComponent = (props) => {
         });
     }
   }, []);
-
-  // Un-used function declaration
-  const renderCard = () => {
-    return (
-      <Card>
-        <CardHeader
-          title={deviceData.name}
-          subheader={`Device ID: ${deviceData.id}`}
-          action={
-            <Link to="/devices">
-              <IconButton aria-label="options">
-                <ArrowBackIosOutlined />
-              </IconButton>
-            </Link>
-          }
-        />
-
-        <CardContent>
-          <Map center={latLng.data} style={{ height: "300px" }} zoom={13}>
-            <TileLayer
-              attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            <Marker position={latLng.data}>
-              <Popup>Last Active Location</Popup>
-            </Marker>
-          </Map>
-          {/* <GoogleMap lat={latLng.data[0]} lng={latLng.data[1]} /> */}
-          <div className="belowMapContent"></div>
-        </CardContent>
-      </Card>
-    );
-  };
 
   const RenderGridListMap = () => {
     return (
