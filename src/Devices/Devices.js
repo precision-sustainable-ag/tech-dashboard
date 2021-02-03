@@ -13,8 +13,6 @@ import { apiUsername, apiPassword } from "../utils/api_secret";
 import { BannedRoleMessage } from "../utils/CustomComponents";
 import "./Devices.scss";
 import { Context } from "../Store/Store";
-import { getDevices } from "./factory/factory";
-import { Devices } from "./model/devices";
 
 // Default function
 const DevicesComponent = () => {
