@@ -135,7 +135,9 @@ const SearchBox = ({
     let active = true;
 
     if (!autocompleteService.current && window.google) {
-      autocompleteService.current = new window.google.maps.places.AutocompleteService();
+      if (window.google.maps) {
+        autocompleteService.current = new window.google.maps.places.AutocompleteService();
+      }
     }
     if (!autocompleteService.current) {
       return undefined;

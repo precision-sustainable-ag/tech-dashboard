@@ -211,8 +211,6 @@ const NewIssueDialog = (props) => {
   };
   const [isNewCollab, setIsNewCollab] = useState(false);
   useEffect(() => {
-    console.log("run run");
-
     //   check if a user is a collaborator to repo, else add the user to repo
 
     //   const collaboratorNames = res.data.map((data) => data.login);
