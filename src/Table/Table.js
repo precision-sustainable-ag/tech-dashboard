@@ -4,6 +4,7 @@ DEPRECATED: Please use AllDataTable.js instead
 
 */
 
+// Dependency Imports
 import React, { useEffect, useContext, useState } from "react";
 import { forwardRef } from "react";
 import MaterialTable from "material-table";
@@ -22,16 +23,15 @@ import Remove from "@material-ui/icons/Remove";
 import SaveAlt from "@material-ui/icons/SaveAlt";
 import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
-import { Context } from "../Store/Store";
 import Axios from "axios";
-import { useAuth0 } from "../Auth/react-auth0-spa";
 import { Box, Grid, Button, Typography, Paper } from "@material-ui/core";
+
+// Local Imports
+import { Context } from "../Store/Store";
+import { useAuth0 } from "../Auth/react-auth0-spa";
 import { bannedRoles } from "../utils/constants";
-// import ReactLoading from "react-loading";
-// import AddIcon from "@material-ui/icons/Add";
 
-// import { Fab } from "@material-ui/core";
-
+// Global Vars
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
@@ -56,6 +56,7 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
 };
 
+// Default function
 const TableComponent = () => {
   const [state, dispatch] = useContext(Context);
   const [tableState, setTableState] = useState(true);

@@ -1,6 +1,8 @@
+// Dependency Imports
 import React from "react";
 import TextField from "@material-ui/core/TextField";
 
+// Default function 
 const phoneInput = (props, ref) => {
   return (
     <TextField

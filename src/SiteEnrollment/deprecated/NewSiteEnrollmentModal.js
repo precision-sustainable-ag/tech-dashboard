@@ -52,16 +52,16 @@ import {
   apiUsername,
   apiPassword,
   googleApiKey,
-} from "../utils/api_secret";
+} from "../../utils/api_secret";
 import { Map, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { statesHash, fetchGrowerByLastName, ucFirst } from "../utils/constants";
+import { statesHash, fetchGrowerByLastName, ucFirst } from "../../utils/constants";
 import NewSiteEnrollmentYears from "./NewSiteEnrollmentYears";
 import NewSiteEnrollmentAffiliations from "./NewSiteEnrollmentAffiliations";
 import Loading from "react-loading";
-import { CustomLoader } from "../utils/CustomComponents";
-import { Context } from "../Store/Store";
+import { CustomLoader } from "../../utils/CustomComponents";
+import { Context } from "../../Store/Store";
 const qs = require("qs");
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({

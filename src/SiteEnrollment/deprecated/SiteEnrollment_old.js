@@ -1,12 +1,12 @@
 import * as React from "react";
 import { Grid, Button, Typography } from "@material-ui/core";
-import { Context } from "../Store/Store";
+import { Context } from "../../Store/Store";
 import NewSiteEnrollmentModal from "./NewSiteEnrollmentModal";
 import Axios from "axios";
-import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
+import { apiURL, apiUsername, apiPassword } from "../../utils/api_secret";
 
-import { bannedRoles } from "../utils/constants";
-import { BannedRoleMessage } from "../utils/CustomComponents";
+import { bannedRoles } from "../../utils/constants";
+import { BannedRoleMessage } from "../../utils/CustomComponents";
 
 const getCurrentYear = () => {
   return new Date().getFullYear();

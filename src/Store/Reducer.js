@@ -1,3 +1,4 @@
+// Default function 
 const Reducer = (state, action) => {
   switch (action.type) {
     case "UPDATE_HELLO_WORLD":
@@ -27,6 +28,7 @@ const Reducer = (state, action) => {
   }
 };
 
+// Helper functions
 const updateRole = (state, action) => {
   return {
     ...state,

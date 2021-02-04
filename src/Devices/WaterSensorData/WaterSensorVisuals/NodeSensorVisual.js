@@ -1,15 +1,19 @@
+// Dependency Imports
 import React, { useEffect, useState } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { Grid, Typography } from "@material-ui/core";
 import Axios from "axios";
-import { apiUsername, apiPassword, apiURL } from "../../../utils/api_secret";
 import moment from "moment-timezone";
+
+// Local Imports
+import { apiUsername, apiPassword, apiURL } from "../../../utils/api_secret";
 
 // Load Highcharts export modules
 // require("highcharts/modules/exporting")(Highcharts);
 // require("highcharts/modules/offline-exporting")(Highcharts);
 
+// Styles
 const styles = {
   chartStyle: {
     height: "400px",
@@ -17,6 +21,7 @@ const styles = {
   },
 };
 
+// Helper functions
 const fetchBareNodeData = async (nodeSerialNo, year) => {
   return await Axios({
     url: `${apiURL}/api/retrieve/table/water_node_data/by/node/${nodeSerialNo}/${year}`,
@@ -39,6 +44,7 @@ const fetchNodeSensorData = async (nodeSerialNo, year) => {
   });
 };
 
+//  Fucntion
 const NodeSensorVisual = (props) => {
   //NOTE:   lets assume for now that the above array length == 1
   const bareNodeSerialNo = props.bareNodeSerialNo;

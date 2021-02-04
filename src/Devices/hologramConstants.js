@@ -1,7 +1,7 @@
-import isIP from "is-ip";
+// Local Imports
 import { hologramAPIKey, apiURL } from "../utils/api_secret";
-import { FlipRounded } from "@material-ui/icons";
 
+// Global Vars
 export const apiCorsUrl = `${apiURL}/api/hologram/remote/devices`;
 
 // export const apiCorsCreds = () => {
@@ -15,6 +15,8 @@ export const apiCorsUrl = `${apiURL}/api/hologram/remote/devices`;
 //   };
 //   return options;
 // };
+
+// Helper Functions
 export const APIURL = () => {
   let mockServerURL =
     "https://private-anon-6a91fec95a-hologram.apiary-mock.com";

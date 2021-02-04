@@ -4,17 +4,20 @@ DEPRECATED
 NodeSensorVisual.js replaces this file
 */
 
+// Dependency Imports
 import React, { useState, useEffect, Fragment } from "react";
-import { apiUsername, apiURL, apiPassword } from "../../../utils/api_secret";
 import Axios from "axios";
 import { Grid, Typography } from "@material-ui/core";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
-import Loading from "react-loading";
+
+// Local Imports
+import { apiUsername, apiURL, apiPassword } from "../../../utils/api_secret";
 import { BarsLoader } from "../../../utils/CustomComponents";
 
 const qs = require("qs");
 
+// Default Function
 const NodeSensorVisuals = (props) => {
   const activeChip = props.activeChip;
   const year = props.year;
@@ -678,6 +681,7 @@ const NodeSensorVisuals = (props) => {
   );
 };
 
+// Helper functions
 const fetchBasicNodeData = async (nodeSerialNo, year) => {
   let dataObj = {
     serialNo: nodeSerialNo,

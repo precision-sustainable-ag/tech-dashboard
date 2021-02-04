@@ -7,7 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import parse from "autosuggest-highlight/parse";
 import throttle from "lodash/throttle";
-import { googleApiKey } from "../utils/api_secret";
+import { googleApiKey } from "../../utils/api_secret";
 
 function loadScript(src, position, id) {
   if (!position) {

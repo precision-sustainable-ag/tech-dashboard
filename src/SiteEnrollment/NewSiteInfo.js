@@ -1,3 +1,4 @@
+// Dependency Imports
 import {
   Button,
   Card,
@@ -7,7 +8,6 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  Divider,
   FormHelperText,
   Grid,
   MenuItem,
@@ -18,11 +18,16 @@ import {
   useMediaQuery,
   useTheme,
 } from "@material-ui/core";
+import { Close } from "@material-ui/icons";
 import Axios from "axios";
 import React, { useState, useEffect } from "react";
+
+// Local Imports
 import Location from "../Location/Location";
 import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
+import "./newSiteInfo.scss";
 
+// Default function
 export const NewSiteInfo = ({
   enrollmentData = {},
   setEnrollmentData = () => {},
@@ -126,6 +131,9 @@ export const NewSiteInfo = ({
             ? enrollmentData.growerInfo.sites.map((siteInfo, index) => (
                 <Grid item xs={12} md={4} key={`newSites-${index}`}>
                   <Card>
+                    {/* <span className="cardCloseIcon" title="">
+                      <Close />
+                    </span> */}
                     <CardHeader title={siteInfo.code} />
                     <CardContent>
                       <Grid container spacing={1}>
@@ -138,7 +146,7 @@ export const NewSiteInfo = ({
                           </Typography>
                         </Grid>
                         <Grid item xs={4}>
-                          <Typography variant="body2">Address</Typography>
+                          <Typography variant="body2">Field Address</Typography>
                         </Grid>
                         <Grid item xs={8}>
                           <Typography variant="body2">
@@ -260,14 +268,14 @@ export const NewSiteInfo = ({
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Address"
+                label="Field Address"
                 value={selectedToEditSite.address}
-                // onChange={(e) =>
-                //   setSelectedToEditSite({
-                //     ...selectedToEditSite,
-                //     address: e.target.value,
-                //   })
-                // }
+                onChange={(e) =>
+                  setSelectedToEditSite({
+                    ...selectedToEditSite,
+                    address: e.target.value,
+                  })
+                }
               />
             </Grid>
             <Grid item xs={12}>
@@ -377,6 +385,14 @@ export const NewSiteInfo = ({
                     variant="contained"
                     color="primary"
                     onClick={() => {
+                      // console.log(enrollmentData.growerInfo.sites);
+                      // console.log(selectedToEditSite);
+                      // let editableSite = enrollmentData.growerInfo.sites.filter(
+                      //   (sites) => {
+                      //     return sites.code === selectedToEditSite.code;
+                      //   }
+                      // );
+                      // console.log(editableSite);
                       //   get site with code not relevant to the modal (selectedtoeditsite)
                       let allSitesExceptCurrent = enrollmentData.growerInfo.sites.filter(
                         (sites) => {
@@ -387,14 +403,14 @@ export const NewSiteInfo = ({
                       allSitesExceptCurrent.push(selectedToEditSite);
 
                       //   sort Alphabetical
-                      const sortedAllSitesExceptCurrent = allSitesExceptCurrent.sort(
-                        (a, b) => b.code < a.code
-                      );
+                      // const sortedAllSitesExceptCurrent = allSitesExceptCurrent.sort(
+                      //   (a, b) => b.code < a.code
+                      // );
                       setEnrollmentData({
                         ...enrollmentData,
                         growerInfo: {
                           ...enrollmentData.growerInfo,
-                          sites: sortedAllSitesExceptCurrent,
+                          sites: allSitesExceptCurrent,
                         },
                       });
                       //   close the modal

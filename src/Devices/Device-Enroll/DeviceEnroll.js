@@ -1,13 +1,11 @@
+// Dependency Imports
 import React, { useState, useEffect } from "react";
-
 import {
   Paper,
   Container,
   FormControl,
   Typography,
   InputLabel,
-  Select,
-  MenuItem,
   makeStyles,
   Table,
   TableContainer,
@@ -19,7 +17,6 @@ import {
   Button,
   IconButton,
   TextField,
-  Fab,
   InputAdornment,
   Backdrop,
   useTheme,
@@ -30,21 +27,18 @@ import {
   FormHelperText,
   FormGroup
 } from "@material-ui/core";
-import SpeedDial from "@material-ui/lab/SpeedDial";
-import SpeedDialIcon from "@material-ui/lab/SpeedDialIcon";
-import SpeedDialAction from "@material-ui/lab/SpeedDialAction";
 import Axios from "axios";
-import { apiUsername, apiPassword } from "../../utils/api_secret";
 import {
   Add,
   CropFree,
-  DoneAll,
-  CheckCircle,
   Check,
   Save
 } from "@material-ui/icons";
-import ConfirmDialog from "./ConfirmDialog";
 
+// Local Imports
+import { apiUsername, apiPassword } from "../../utils/api_secret";
+
+// Styles
 const useStyles = makeStyles(theme => ({
   paper: {
     backgroundColor: theme.palette.background.paper,
@@ -78,6 +72,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+// Default function 
 const DeviceEnroll = () => {
   const theme = useTheme();
   const classes = useStyles();

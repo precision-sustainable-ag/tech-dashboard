@@ -1,9 +1,13 @@
+// Dependency Imports
 import React, { useEffect, Fragment } from "react";
 import { Grid, Paper, Box, Typography } from "@material-ui/core";
 import { Redirect } from "react-router-dom";
 import Axios from "axios";
+
+// Local Imports
 import { apiUsername, apiPassword, apiURL } from "../../utils/api_secret";
 
+// Default Function
 const WaterSensorDataParser = (props) => {
   let gatewaysno = props.gatewaysno;
   const [shouldRedirect, setShouldRedirect] = React.useState(false);

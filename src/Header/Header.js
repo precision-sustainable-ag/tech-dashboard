@@ -1,10 +1,8 @@
+// Dependency Imports
 import React, { useEffect, useContext, useState } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
-
-import { apiPassword, apiUsername, apiURL } from "../utils/api_secret";
-
 import {
   Drawer,
   AppBar,
@@ -20,7 +18,6 @@ import {
   MenuItem,
   Collapse,
 } from "@material-ui/core";
-
 import { Link } from "react-router-dom";
 import {
   ChevronRight,
@@ -32,19 +29,22 @@ import {
   AccountCircle,
   Lock,
   BrightnessHigh,
-  AddLocation,
   BrightnessLow,
-  Info,
   ExpandLess,
   ExpandMore,
 } from "@material-ui/icons";
-import { useAuth0 } from "../Auth/react-auth0-spa";
 import Axios from "axios";
-import { Context } from "../Store/Store";
 
+// Local Imports
+import { apiPassword, apiUsername, apiURL } from "../utils/api_secret";
+import { Context } from "../Store/Store";
+import { useAuth0 } from "../Auth/react-auth0-spa";
+
+//Global Vars
 const drawerWidth = 240;
 const qs = require("qs");
 
+// Styles
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -105,6 +105,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// Default function
 export default function Header(props) {
   const classes = useStyles();
   const theme = useTheme();
@@ -315,7 +316,6 @@ export default function Header(props) {
             onClick={() => handleOpenAllDataNav()}
             button
             key={"All Data"}
-            component={Link}
           >
             <ListItemIcon>
               <ViewList />

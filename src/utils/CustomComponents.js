@@ -1,8 +1,21 @@
-import React from "react";
-import { withStyles, Switch, Box, Typography, Paper } from "@material-ui/core";
-import { primaryContactPerson } from "./api_secret";
+// Dependency Imports
+import React, { useEffect, useState } from "react";
+import {
+  withStyles,
+  Switch,
+  Box,
+  Typography,
+  Paper,
+  Zoom,
+  useScrollTrigger,
+  makeStyles,
+} from "@material-ui/core";
 import Loading from "react-loading";
 
+// Local Imports
+import { primaryContactPerson } from "./api_secret";
+
+// Styles
 export const AntSwitch = withStyles((theme) => ({
   root: {
     width: 28,
@@ -37,6 +50,7 @@ export const AntSwitch = withStyles((theme) => ({
   checked: {},
 }))(Switch);
 
+// Helper functions
 export const BannedRoleMessage = (props) => {
   let title = props.title;
   if (title.length === 0) title = "Anything";
@@ -143,5 +157,67 @@ export const BarsLoader = (props) => {
         </path>
       </svg>
     </div>
+  );
+};
+
+export const useInfiniteScroll = (callback) => {
+  const [isFetching, setIsFetching] = useState(false);
+
+  useEffect(() => {
+    window.addEventListener("scroll", isScrolling);
+    return () => window.removeEventListener("scroll", isScrolling);
+  }, []);
+
+  useEffect(() => {
+    if (!isFetching) return;
+    callback();
+  }, [isFetching]);
+
+  const isScrolling = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop !==
+        document.documentElement.offsetHeight ||
+      isFetching
+    )
+      return;
+    setIsFetching(true);
+  };
+
+  return [isFetching, setIsFetching];
+};
+
+export const ScrollTop = (props) => {
+  const { children, window } = props;
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      position: "fixed",
+      bottom: theme.spacing(2),
+      right: theme.spacing(2),
+    },
+  }));
+  const classes = useStyles();
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 180,
+  });
+  const handleBackToTopClick = (event) => {
+    const anchor = (event.target.ownerDocument || document).querySelector(
+      ".topHead"
+    );
+    console.log(anchor);
+    if (anchor) {
+      anchor.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
+  return (
+    <Zoom in={trigger}>
+      <div
+        onClick={handleBackToTopClick}
+        role="presentation"
+        className={classes.root}
+      >
+        {children}
+      </div>
+    </Zoom>
   );
 };

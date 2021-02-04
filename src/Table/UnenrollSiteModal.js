@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+// Dependency Imports
+import React, { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -11,10 +12,14 @@ import {
   Typography,
 } from "@material-ui/core";
 import Axios from "axios";
+
+// Local Imports
 import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
 
+//Global Vars
 const qs = require("qs");
 
+// Default function 
 const UnenrollSiteModal = (props) => {
   const open = props.open;
   const [confirmText, setConfirmText] = useState("");

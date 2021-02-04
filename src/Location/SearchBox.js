@@ -1,3 +1,4 @@
+// Dependency Imports
 import React, { useEffect } from "react";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -7,12 +8,13 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import parse from "autosuggest-highlight/parse";
 import throttle from "lodash/throttle";
-import { googleApiKey } from "../utils/api_secret";
 
+//Global Vars
 const autocompleteService = { current: null };
 const placeService = { current: null };
 const geocodeService = { current: null };
 
+// Styles
 const useStyles = makeStyles((theme) => ({
   icon: {
     color: theme.palette.text.secondary,
@@ -20,7 +22,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SearchBox({
+// Default function
+const SearchBox = ({
   mapInstance,
   mapsApi,
   latLng,
@@ -30,7 +33,7 @@ export default function SearchBox({
   setCounty,
   selectedToEditSite,
   setSelectedToEditSite,
-}) {
+}) => {
   const classes = useStyles();
   const [value, setValue] = React.useState(null);
   const [inputValue, setInputValue] = React.useState("");
@@ -132,7 +135,9 @@ export default function SearchBox({
     let active = true;
 
     if (!autocompleteService.current && window.google) {
-      autocompleteService.current = new window.google.maps.places.AutocompleteService();
+      if (window.google.maps) {
+        autocompleteService.current = new window.google.maps.places.AutocompleteService();
+      }
     }
     if (!autocompleteService.current) {
       return undefined;
@@ -231,4 +236,6 @@ export default function SearchBox({
       }}
     />
   );
-}
+};
+
+export default SearchBox;

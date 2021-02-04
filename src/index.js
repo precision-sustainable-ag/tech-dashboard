@@ -1,17 +1,19 @@
+// Dependency Imports
 import "react-app-polyfill/ie9";
 import "react-app-polyfill/stable";
 import React from "react";
 import ReactDOM from "react-dom";
+import "typeface-roboto";
+import { BrowserRouter } from "react-router-dom";
+
+// Local Imports
+import { Auth0Provider } from "./Auth/react-auth0-spa";
+import history from "./utils/history";
+import config from "./Auth/auth_config.json";
 import "./Styles/index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import Store from "./Store/Store";
-import "typeface-roboto";
-import { BrowserRouter } from "react-router-dom";
-
-import { Auth0Provider } from "./Auth/react-auth0-spa";
-import history from "./utils/history";
-import config from "./Auth/auth_config.json";
 
 // a function that routes the user to the right place after login
 const onRedirectCallback = (appState) => {
@@ -42,4 +44,4 @@ ReactDOM.render(
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+serviceWorker.register();

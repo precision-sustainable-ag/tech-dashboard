@@ -1,3 +1,4 @@
+// Dependency Imports
 import React from "react";
 import {
   FormControl,
@@ -8,6 +9,7 @@ import {
   Typography,
 } from "@material-ui/core";
 
+// Styles
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
@@ -19,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// Default Function
 const NewSiteEnrollmentYears = (props) => {
   const classes = useStyles();
 
@@ -49,4 +52,5 @@ const NewSiteEnrollmentYears = (props) => {
     </FormControl>
   );
 };
+
 export default NewSiteEnrollmentYears;

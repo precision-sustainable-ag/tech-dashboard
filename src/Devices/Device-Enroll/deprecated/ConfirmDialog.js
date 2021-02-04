@@ -1,3 +1,4 @@
+// Dependency Imports
 import React from "react";
 import {
   Dialog,
@@ -8,6 +9,7 @@ import {
   Button
 } from "@material-ui/core";
 
+// Default function 
 const ConfirmDialog = props => {
   // const [open, setOpen] = React.useState(false);
 

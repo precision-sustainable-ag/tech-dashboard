@@ -1,17 +1,21 @@
+// Dependency Imports
 import React, { useEffect, useState } from "react";
 import Axios from "axios";
-import { apiUsername, apiPassword, apiURL } from "../../../utils/api_secret";
 import Highcharts from "highcharts";
-
 import HighchartsReact from "highcharts-react-official";
 import { Grid } from "@material-ui/core";
-
 import moment from "moment";
+
+
+// Local Imports
+import { apiUsername, apiPassword, apiURL } from "../../../utils/api_secret";
 
 // Load Highcharts modules
 require("highcharts/modules/exporting")(Highcharts);
 require("highcharts/modules/offline-exporting")(Highcharts);
+require("highcharts/modules/export-data")(Highcharts);
 
+// Helper functions
 const getGatewayVisialData = async (gatewayNo, token, year) => {
   //   try {
   return await Axios({
@@ -27,6 +31,7 @@ const getGatewayVisialData = async (gatewayNo, token, year) => {
   //   } catch (error) {}
 };
 
+// Default Function
 const GatewayVisual = (props) => {
   const gatewayNo = props.gatewayNo;
   const [gatewayData, setGatewayData] = useState({});

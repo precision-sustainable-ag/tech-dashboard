@@ -1,15 +1,13 @@
+// Dependency Imports
 import React, { useState } from "react";
 import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   DialogActions,
   Button,
 } from "@material-ui/core";
 import { Map, TileLayer, Marker, Popup } from "react-leaflet";
-// import Loading from "react-loading";
-// import Skeleton from "@material-ui/lab/Skeleton";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
@@ -20,6 +18,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
 });
 
+// Default function 
 const MapModal = (props) => {
   const [latlng, setLatLng] = useState([
     parseFloat(props.growerInfo.lat),

@@ -11,7 +11,7 @@
 .pnp.js
 
 # env
-/.env
+.env
 
 # Hide Auth0 access key
 /src/Auth/auth_config.json
@@ -37,3 +37,4 @@ yarn-debug.log*
 yarn-error.log*
 
 /api
+.eslintcache

@@ -1,4 +1,5 @@
-import React, { Fragment } from "react";
+// Dependency Imports
+import React from "react";
 import {
   Card,
   makeStyles,
@@ -10,6 +11,7 @@ import {
   Typography
 } from "@material-ui/core";
 
+// Styles
 const useStyles = makeStyles({
   card: {
     minWidth: 275,
@@ -28,6 +30,7 @@ const useStyles = makeStyles({
   }
 });
 
+// Default function 
 const RepositoriesComponent = props => {
   const repos = props.data;
   console.log(repos);
@@ -41,6 +44,7 @@ const RepositoriesComponent = props => {
   );
 };
 
+// Helper function
 const CardBuilder = props => {
   const repo = props.data;
   const classes = useStyles();

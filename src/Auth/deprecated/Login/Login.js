@@ -1,5 +1,4 @@
-import React from "react";
-
+// Default function
 const Login = () => {
   return "";
 };

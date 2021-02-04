@@ -1,13 +1,8 @@
-import React, { Fragment, useState, useEffect } from "react";
-
-import "./Styles/App.css";
-
-import Header from "./Header/Header";
-
+// Dependency Imports
+import React, { useState, useEffect } from "react";
 import {
   makeStyles,
   Box,
-  MuiThemeProvider,
   createMuiTheme,
   CssBaseline,
   ThemeProvider,
@@ -15,20 +10,13 @@ import {
   Typography,
   Container,
   Button,
+  Grid,
+  responsiveFontSizes,
 } from "@material-ui/core";
-import TableComponent from "./Table/Table";
-import { Switch, Route } from "react-router-dom";
-import { ReposComponent } from "./Issues/Issues";
-import DevicesComponent from "./Devices/Devices";
-import DeviceComponent from "./Devices/Device";
-import Forms from "./Forms/Forms";
-import LandingComponent from "./Landing/Landing";
-// import Login from "./Auth/Login/Login";
 
+// Local Imports
 import { useAuth0 } from "./Auth/react-auth0-spa";
-import Loading from "react-loading";
 import PrivateRoute from "./utils/private-routes";
-import Skeleton from "@material-ui/lab/Skeleton";
 import Profile from "./Profile/Profile";
 import DeviceEnroll from "./Devices/Device-Enroll/DeviceEnroll";
 import WaterSensorData from "./Devices/WaterSensorData/WaterSensorData";
@@ -37,7 +25,17 @@ import SiteEnrollment from "./SiteEnrollment/SiteEnrollment";
 import PageNotFound from "./PageNotFound";
 import AllDataTable from "./Table/AllDataTable";
 import Issue from "./Issues/Issue";
+import "./Styles/App.css";
+import Header from "./Header/Header";
+import { Switch, Route } from "react-router-dom";
+import { ReposComponent } from "./Issues/Issues";
+import DevicesComponent from "./Devices/Devices";
+import DeviceComponent from "./Devices/Device/Device";
+import Forms from "./Forms/Forms";
+import LandingComponent from "./Landing/Landing";
+import { WifiOff } from "@material-ui/icons";
 
+// Helper function
 function useOnlineStatus() {
   const [online, setOnline] = useState(window.navigator.onLine);
 
@@ -74,6 +72,7 @@ const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
 }));
 
+// Default function
 function App() {
   const online = useOnlineStatus();
   const {
@@ -102,9 +101,20 @@ function App() {
       useNextVariants: true,
       fontFamily: "bilo, sans-serif",
     },
+    overrides: {
+      MuiTooltip: {
+        tooltip: {
+          fontSize: "0.9em",
+          fontWeight: "bolder",
+          color: "black",
+          backgroundColor: "#eee",
+        },
+      },
+    },
   });
 
-  const muiTheme = createMuiTheme(theme);
+  let muiTheme = createMuiTheme(theme);
+  muiTheme = responsiveFontSizes(muiTheme);
 
   const toggleThemeDarkness = () => {
     let newPaletteType = theme.palette.type === "light" ? "dark" : "light";
@@ -115,10 +125,6 @@ function App() {
         type: newPaletteType,
       },
     });
-  };
-
-  const isDarkTheme = () => {
-    return theme.palette.type === "light" ? false : true;
   };
 
   useEffect(() => {
@@ -187,10 +193,9 @@ function App() {
           {/* <DrawerComponent /> */}
 
           <main className={classes.content}>
-            <div className={classes.toolbar} />
-            {/* <Paper elevation={0} style={{ minHeight: "100%" }}> */}
+            <div className={`${classes.toolbar} topHead`} />
+
             <Switch>
-              {/* <Route path="/" component={Login} exact /> */}
               <Route
                 render={(props) => (
                   <LandingComponent
@@ -201,10 +206,7 @@ function App() {
                 path="/"
                 exact
               />
-              {/* <PrivateRoute
-              path="/table"
-              render={(props) => <TableComponent {...props} />}
-            /> */}
+
               <PrivateRoute
                 path="/table"
                 render={(props) => <AllDataTable {...props} />}
@@ -213,7 +215,7 @@ function App() {
                 path="/site-enroll"
                 render={(props) => <SiteEnrollment {...props} />}
               />
-              {/* <PrivateRoute path="/table" component={TableComponent} /> */}
+
               <PrivateRoute path="/issues" component={ReposComponent} exact />
               <PrivateRoute path="/issues/:issueNumber" component={Issue} />
               <PrivateRoute
@@ -223,7 +225,12 @@ function App() {
               />
               <PrivateRoute
                 path={`/devices/:deviceId`}
-                component={DeviceComponent}
+                render={(props) => (
+                  <DeviceComponent
+                    {...props}
+                    isDarkTheme={theme.palette.type === "light" ? false : true}
+                  />
+                )}
               />
               <PrivateRoute path={`/kobo-forms`} component={Forms} />
               <PrivateRoute path="/profile" component={Profile} />
@@ -235,16 +242,13 @@ function App() {
               />
               <PrivateRoute
                 path={`/water-sensors/:gatewayId`}
-                // component={WaterSensorByGateway}
                 render={(props) => <WaterSensorByGateway {...props} />}
               />
               <Route path="*">
                 <PageNotFound />
               </Route>
             </Switch>
-            {/* </Paper> */}
           </main>
-          {/* </Paper> */}
         </Container>
       </ThemeProvider>
     ) : (
@@ -289,109 +293,21 @@ function App() {
           <Typography variant="h3" gutterBottom align="center">
             You are offline!
           </Typography>
-          <Typography variant="body1" gutterBottom align="center">
-            Unfortunately, this app requires an internet connection to work.
-            Please check back later!
-          </Typography>
+          <Grid container justify="center" alignItems="center" spacing={4}>
+            <Grid item>
+              <WifiOff />
+            </Grid>
+            <Grid item>
+              <Typography variant="body1" gutterBottom align="center">
+                &nbsp;This app requires an active internet connection. Please
+                check your network!
+              </Typography>
+            </Grid>
+          </Grid>
         </Paper>
       </ThemeProvider>
     </div>
   );
-
-  // return true ? ( // <CssBaseline>
-  //   <ThemeProvider theme={muiTheme}>
-  //     <Container maxWidth={"xl"} className="mainContainer">
-  //       <Header
-  //         isDarkTheme={theme.palette.type === "light" ? false : true}
-  //         setDarkTheme={toggleThemeDarkness}
-  //       />
-  //       {/* <DrawerComponent /> */}
-
-  //       <main className={classes.content}>
-  //         <div className={classes.toolbar} />
-  //         {/* <Paper elevation={0} style={{ minHeight: "100%" }}> */}
-  //         <Switch>
-  //           {/* <Route path="/" component={Login} exact /> */}
-  //           <Route
-  //             render={(props) => (
-  //               <LandingComponent
-  //                 {...props}
-  //                 isDarkTheme={theme.palette.type === "light" ? false : true}
-  //               />
-  //             )}
-  //             path="/"
-  //             exact
-  //           />
-  //           <PrivateRoute
-  //             path="/table"
-  //             render={(props) => <TableComponent {...props} />}
-  //           />
-  //           <PrivateRoute
-  //             path="/site-enroll"
-  //             render={(props) => <SiteEnrollment {...props} />}
-  //           />
-  //           {/* <PrivateRoute path="/table" component={TableComponent} /> */}
-  //           <PrivateRoute path="/issues" component={ReposComponent} exact />
-  //           <PrivateRoute path="/devices" component={DevicesComponent} exact />
-  //           <PrivateRoute
-  //             path={`/devices/:deviceId`}
-  //             component={DeviceComponent}
-  //           />
-  //           <PrivateRoute path={`/kobo-forms`} component={Forms} />
-  //           <PrivateRoute path="/profile" component={Profile} />
-  //           <PrivateRoute path="/device-enroll" component={DeviceEnroll} />
-  //           <PrivateRoute
-  //             path="/water-sensors"
-  //             component={WaterSensorData}
-  //             exact
-  //           />
-  //           <PrivateRoute
-  //             path={`/water-sensors/:gatewayId`}
-  //             // component={WaterSensorByGateway}
-  //             render={(props) => <WaterSensorByGateway {...props} />}
-  //           />
-  //           <Route path="*">
-  //             <PageNotFound />
-  //           </Route>
-  //         </Switch>
-  //         {/* </Paper> */}
-  //       </main>
-  //       {/* </Paper> */}
-  //     </Container>
-  //   </ThemeProvider>
-  // ) : (
-  //   <div className={classes.root}>
-  //     <CssBaseline />
-  //     <ThemeProvider theme={muiTheme}>
-  //       <Paper
-  //         style={{
-  //           height: "100vh",
-  //         }}
-  //       >
-  //         <Box height={"40vh"} />
-  //         <Typography variant="h3" gutterBottom align="center">
-  //           Please Log In To Continue
-  //         </Typography>
-  //         <Typography variant="body1" gutterBottom align="center">
-  //           <Button
-  //             variant="contained"
-  //             color="primary"
-  //             onClick={() => {
-  //               let params = {
-  //                 redirect_uri: window.location.href,
-  //               };
-  //               loginWithPopup(params);
-  //             }}
-  //           >
-  //             Log in
-  //           </Button>
-  //         </Typography>
-  //       </Paper>
-  //     </ThemeProvider>
-  //   </div>
-  // );
-
-  // return "hello";
 }
 
 export default App;
