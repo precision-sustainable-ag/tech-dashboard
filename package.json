@@ -1,6 +1,6 @@
 {
   "name": "tech-dashboard",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "private": true,
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.13.6",
