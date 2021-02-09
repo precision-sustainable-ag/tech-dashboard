@@ -451,15 +451,7 @@ const EditDataModal = (props) => {
         >
           Cancel
         </Button>
-        <Button
-          onClick={validateData}
-          color="primary"
-          variant={
-            window.localStorage.getItem("theme") === "dark"
-              ? "contained"
-              : "text"
-          }
-        >
+        <Button onClick={validateData} color="primary" variant="contained">
           Update
         </Button>
       </DialogActions>

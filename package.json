@@ -16,10 +16,8 @@
     "google-map-react": "^2.1.9",
     "highcharts": "^9.0.0",
     "highcharts-react-official": "^3.0.0",
-    "i": "^0.3.6",
     "install": "^0.13.0",
     "is-ip": "^3.1.0",
-    "leaflet": "^1.7.1",
     "markdown-table": "^2.0.0",
     "material-table": "^1.69.2",
     "moment": "^2.29.1",
@@ -31,14 +29,11 @@
     "react-data-grid": "^7.0.0-canary.36",
     "react-dom": "^16.14.0",
     "react-input-mask": "^2.0.4",
-    "react-leaflet": "^3.1.0",
     "react-loading": "^2.0.3",
     "react-phone-number-input": "^3.1.10",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.2",
-    "react-virtualized": "^9.22.3",
-    "showdown": "^1.9.1",
-    "typeface-roboto": "0.0.75"
+    "react-virtualized": "^9.22.3"
   },
   "scripts": {
     "start": "react-scripts start",

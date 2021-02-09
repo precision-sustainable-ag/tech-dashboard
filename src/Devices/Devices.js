@@ -3,7 +3,7 @@ import React, { useContext, useState, useEffect } from "react";
 import Axios from "axios";
 import Loading from "react-loading";
 import qs from "qs";
-import { Card } from "@material-ui/core";
+import { Card, Typography } from "@material-ui/core";
 
 // Local Imports
 import DataParser from "./DataParser";
@@ -200,20 +200,24 @@ const DevicesComponent = () => {
           <Loading type="bars" width="200px" height="200px" color="#3f51b5" />
         ) : (
           <div className="devices">
-            {state.devices.map((device) =>
-              device.lastsession ? (
-                <div className="device" key={device.id}>
-                  <Card
-                    variant="elevation"
-                    elevation={3}
-                    className="deviceDataWrapper"
-                  >
-                    <DataParser key={device.id} deviceData={device} />
-                  </Card>
-                </div>
-              ) : (
-                ""
+            {state.devices.length > 0 ? (
+              state.devices.map((device) =>
+                device.lastsession ? (
+                  <div className="device" key={device.id}>
+                    <Card
+                      variant="elevation"
+                      elevation={3}
+                      className="deviceDataWrapper"
+                    >
+                      <DataParser key={device.id} deviceData={device} />
+                    </Card>
+                  </div>
+                ) : (
+                  ""
+                )
               )
+            ) : (
+              <Typography variant="body1">No Devices Found</Typography>
             )}
           </div>
         )}
