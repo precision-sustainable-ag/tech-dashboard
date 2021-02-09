@@ -24,7 +24,7 @@
     "material-table": "^1.69.2",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.32",
-    "npm": "^7.5.2",
+    "node-email-reply-parser": "^0.1.1",
     "qs": "^6.9.6",
     "react": "^16.14.0",
     "react-app-polyfill": "^2.0.0",
