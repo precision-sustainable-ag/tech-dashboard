@@ -333,7 +333,13 @@ const AllDataTable = (props) => {
       )
     );
 
-    const blankEntities = Object.keys(filteredByValue).join(", ");
+    let blankEntities = Object.keys(filteredByValue).join(",").split(",");
+    blankEntities =
+      blankEntities.length > 1
+        ? blankEntities.map((e, i) =>
+            i === blankEntities.length - 1 ? ` and ${e}` : `${e}, `
+          )
+        : blankEntities.toString();
     return (
       <Grid
         container
@@ -348,9 +354,14 @@ const AllDataTable = (props) => {
       >
         <Grid item container>
           {Object.keys(filteredByValue).length > 0 ? (
-            <Typography variant="caption" align="center">
-              Values for {blankEntities} have not been entered for this field
-            </Typography>
+            <Grid item xs={12}>
+              <Alert severity="info">
+                <Typography variant="body2" align="center">
+                  Values for <strong>{blankEntities}</strong> have not been
+                  entered for this field
+                </Typography>
+              </Alert>
+            </Grid>
           ) : (
             ""
           )}
@@ -360,18 +371,26 @@ const AllDataTable = (props) => {
             <thead>
               <tr>
                 <th colSpan="2" align="center">
-                  Contact Information
+                  <Typography variant="body1">Contact Information</Typography>
                 </th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>Phone Number</td>
-                <td>{rowData.phone}</td>
+                <td>
+                  <Typography variant="body1">Phone Number</Typography>
+                </td>
+                <td>
+                  <Typography variant="body1">{rowData.phone}</Typography>
+                </td>
               </tr>
               <tr>
-                <td>Email</td>
-                <td>{rowData.email}</td>
+                <td>
+                  <Typography variant="body1">Email</Typography>
+                </td>
+                <td>
+                  <Typography variant="body1">{rowData.email}</Typography>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -423,7 +442,8 @@ const AllDataTable = (props) => {
             <MaterialTable
               detailPanel={[
                 {
-                  tooltip: "Actions Panel",
+                  tooltip: "Expand Actions Panel",
+
                   render: (rowData) => {
                     return <RenderActionsPanel rowData={rowData} />;
                   },
