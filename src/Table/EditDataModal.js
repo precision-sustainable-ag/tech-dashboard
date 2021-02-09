@@ -286,7 +286,7 @@ const EditDataModal = (props) => {
               />
             </Grid>
           )}
-          <Grid item sm={12}>
+          {/* <Grid item sm={12}>
             <Button
               size="small"
               variant="contained"
@@ -296,7 +296,7 @@ const EditDataModal = (props) => {
             >
               Locate Me
             </Button>
-          </Grid>
+          </Grid> */}
 
           <Grid item sm={12} lg={12}>
             <TextField
