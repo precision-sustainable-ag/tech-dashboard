@@ -102,11 +102,13 @@ const EditDataModal = (props) => {
   };
 
   const setPosition = (position) => {
-    console.log(position);
+    console.log("Server received: " + position);
 
     setNewData({
       ...newData,
       latlng: `${position.coords.latitude},${position.coords.longitude}`,
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude,
     });
     let time = new Date(position.timestamp).toLocaleTimeString("en-US");
     setLocationMsg(`Location updated on ${time}`);
@@ -284,6 +286,17 @@ const EditDataModal = (props) => {
               />
             </Grid>
           )}
+          <Grid item sm={12}>
+            <Button
+              size="small"
+              variant="contained"
+              color="primary"
+              startIcon={<GpsFixed />}
+              onClick={getCurrentLatLng}
+            >
+              Locate Me
+            </Button>
+          </Grid>
 
           <Grid item sm={12} lg={12}>
             <TextField
@@ -304,8 +317,40 @@ const EditDataModal = (props) => {
               }}
             />
           </Grid>
+          <Grid item sm={12}>
+            <TextField
+              label="Latitude"
+              fullWidth
+              id="editLat"
+              margin="dense"
+              value={newData.latitude ?? ""}
+              type="number"
+              onChange={(e) =>
+                setNewData({
+                  ...newData,
+                  latitude: parseFloat(e.target.value),
+                })
+              }
+              inputProps={{ step: 0.0001 }}
+            />
+          </Grid>
           <Grid item sm={12} lg={12}>
             <TextField
+              label="Longitude"
+              fullWidth
+              id="editLon"
+              margin="dense"
+              value={newData.longitude ?? ""}
+              type="number"
+              onChange={(e) =>
+                setNewData({
+                  ...newData,
+                  longitude: parseFloat(e.target.value),
+                })
+              }
+              inputProps={{ step: 0.0001 }}
+            />
+            {/* <TextField
               id="editLatLng"
               autoFocus
               margin="dense"
@@ -337,7 +382,7 @@ const EditDataModal = (props) => {
               onChange={(e) => {
                 setNewData({ ...newData, latlng: e.target.value });
               }}
-            />
+            /> */}
           </Grid>
 
           <Grid item sm={12} lg={12}>
