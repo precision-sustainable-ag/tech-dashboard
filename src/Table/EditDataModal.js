@@ -350,39 +350,6 @@ const EditDataModal = (props) => {
               }
               inputProps={{ step: 0.0001 }}
             />
-            {/* <TextField
-              id="editLatLng"
-              autoFocus
-              margin="dense"
-              value={
-                newData.latlng
-                  ? newData.latlng
-                  : props.data.latlng
-                  ? props.data.latlng
-                  : ""
-              }
-              name="latlng"
-              error={locationErr ? true : false}
-              helperText={locationMsg}
-              label="Lat,Long"
-              type="text"
-              fullWidth
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="Use Current Location"
-                      onClick={getCurrentLatLng}
-                    >
-                      <GpsFixed />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              onChange={(e) => {
-                setNewData({ ...newData, latlng: e.target.value });
-              }}
-            /> */}
           </Grid>
 
           <Grid item sm={12} lg={12}>
