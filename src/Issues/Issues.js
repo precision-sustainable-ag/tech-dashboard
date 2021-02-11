@@ -6,6 +6,11 @@ import Loading from "react-loading";
 import { RenderAllowedStatesTab } from "./components/RenderAllowedStatesTab";
 import { RenderIssues } from "./components/RenderIssues";
 
+/**
+ *
+ * A wrapper component for Issues that loads the RenderIssues component
+ */
+
 const Issues = (props) => {
   const [state] = useContext(Context);
   const [activeState, setActiveState] = useState("");

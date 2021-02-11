@@ -25,17 +25,12 @@ import "./RenderIssues.scss";
 
 /**
  * A component to render issues based on a given state label
- *
- * @example
- * const stateLabel = "NC"
- * const userRole = "all"
- * @returns {JSX.Element} Component template
  */
 export const RenderIssues = ({ stateLabel, userRole }) => {
   const [showIssues, setShowIssues] = useState(false);
   const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth0();
+  // const { user } = useAuth0();
   const [expanded, setExpanded] = useState(false);
 
   const handleAccordionChange = (panel) => (event, isExpanded) => {
@@ -277,8 +272,11 @@ const getIssues = async (octokit, label) => {
 // Property typings
 RenderIssues.defaultProps = {
   stateLabel: "NC",
+  userRole: "all",
 };
 RenderIssues.propTypes = {
+  /** State assigned to the user */
   stateLabel: PropTypes.string.isRequired,
+  /** User's role from the RAW database */
   userRole: PropTypes.string.isRequired,
 };
