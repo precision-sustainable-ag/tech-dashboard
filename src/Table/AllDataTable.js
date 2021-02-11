@@ -293,35 +293,37 @@ const AllDataTable = (props) => {
     );
   };
   const RenderLatLongMap = ({ rowData }) => {
-    const latLongExists =
+    const latLongNotPresent =
       rowData.latlng !== "" && rowData.latlng !== "-999" ? false : true;
 
     return (
       <Tooltip
         title={
-          latLongExists
-            ? "View this field on a map"
-            : "Lat, long data not available"
+          latLongNotPresent
+            ? "Lat, long data not available"
+            : "View this field on a map"
         }
       >
-        <Button
-          size="small"
-          disabled={latLongExists}
-          startIcon={<Search />}
-          variant="contained"
-          color={props.isDarkTheme ? "primary" : "default"}
-          onClick={() => {
-            if (latLongExists) {
-              setMapModalData([
-                parseFloat(rowData.latitude),
-                parseFloat(rowData.longitude),
-              ]);
-              setMapModalOpen(true);
-            }
-          }}
-        >
-          {"Map"}
-        </Button>
+        <span>
+          <Button
+            size="small"
+            disabled={latLongNotPresent}
+            startIcon={<Search />}
+            variant="contained"
+            color={props.isDarkTheme ? "primary" : "default"}
+            onClick={() => {
+              if (latLongNotPresent) {
+                setMapModalData([
+                  parseFloat(rowData.latitude),
+                  parseFloat(rowData.longitude),
+                ]);
+                setMapModalOpen(true);
+              }
+            }}
+          >
+            {"Map"}
+          </Button>
+        </span>
       </Tooltip>
     );
   };
@@ -329,7 +331,7 @@ const AllDataTable = (props) => {
   const RenderActionsPanel = ({ rowData }) => {
     const filteredByValue = Object.fromEntries(
       Object.entries(rowData).filter(
-        ([key, value]) => value === "" || value === "-999"
+        ([key, value]) => value === "" || value === "-999" || value === null
       )
     );
 
@@ -357,8 +359,7 @@ const AllDataTable = (props) => {
             <Grid item xs={12}>
               <Alert severity="info">
                 <Typography variant="body2" align="center">
-                  Values for <strong>{blankEntities}</strong> have not been
-                  entered for this field
+                  No record for <strong>{blankEntities}</strong>
                 </Typography>
               </Alert>
             </Grid>
