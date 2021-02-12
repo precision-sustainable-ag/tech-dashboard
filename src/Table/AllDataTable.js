@@ -28,9 +28,11 @@ import UnenrollSiteModal from "./UnenrollSiteModal";
 import NewIssueDialog from "./NewIssueModal";
 import { BannedRoleMessage } from "../utils/CustomComponents";
 import { apiUsername, apiPassword, apiURL } from "../utils/api_secret";
-import { UserIsEditor, useWindowResize, useWindowDimensions } from "../utils/SharedFunctions";
+import { UserIsEditor, useWindowDimensions } from "../utils/SharedFunctions";
 import MapModal from "./MapModal";
 import "./AllDataTable.scss";
+import DataParser from './../Devices/DataParser';
+import GoogleMap from './../Location/GoogleMap';
 
 const tableHeaderOptions = [
   {
@@ -109,25 +111,16 @@ const AllDataTable = (props) => {
     setUnenrollOpen(!unenrollOpen);
   };
 
-  
+  // fetch height from useWindowDimensions hook
+  let { height } = useWindowDimensions();
 
-  const { height } = useWindowDimensions();
-
-  const getTableHeight = (height) => {
-    var tableHeight = height;
-
-    if (tableHeight < 900 && tableHeight > 600){
-      tableHeight -= 130;
-    }
-    else if (tableHeight < 600) {
-      tableHeight -= 200;
-    }
-
-    console.log(tableHeight);
-    return tableHeight;
+  // scale height 
+  if (height < 900 && height > 600){
+    height -= 130;
   }
-
-  // const getWindowHeight = 
+  else if (height < 600) {
+    height -= 200;
+  }
 
   useEffect(() => {
     function init() {
@@ -478,8 +471,8 @@ const AllDataTable = (props) => {
                 exportFileName: "Site Information",
                 addRowPosition: "last",
                 exportAllData: true,
-                pageSize: tableData.length,
                 // pageSizeOptions: [5, 10, 20, 50, tableData.length],
+                pageSize: tableData.length,
                 groupRowSeparator: "  ",
                 grouping: true,
                 headerStyle: {
@@ -499,7 +492,7 @@ const AllDataTable = (props) => {
                 searchAutoFocus: true,
                 toolbarButtonAlignment: "left",
                 actionsColumnIndex: 1,
-                maxBodyHeight: getTableHeight(height) * 0.7,
+                maxBodyHeight: height * 0.7,
               }}
             />
           </Grid>

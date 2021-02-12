@@ -1,5 +1,6 @@
 import { useContext, useState, useEffect } from "react";
 import { Context } from "../Store/Store";
+import EditDataModal from "../Table/EditDataModal";
 
 export const UserIsEditor = () => {
   const [state] = useContext(Context);
@@ -12,9 +13,8 @@ export const UserIsEditor = () => {
   else return false;
 };
 
-// tried, performance issues
+// hook to fetch window size with no debounce
 export function useWindowResize() {
-  console.log("hi");
   const [width, setWidth] = useState(window.innerWidth);
   const [height, setHeight] = useState(window.innerHeight);
 
@@ -38,60 +38,7 @@ export function useWindowResize() {
   };
 }
 
-// tried, performance issues
-// function getWindowDimensions() {
-//   const { innerWidth: width, innerHeight: height } = window;
-//   return {
-//     width,
-//     height
-//   };
-// }
-
-// export default function useWindowDimensions() {
-//   const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
-
-//   useEffect(() => {
-//     function handleResize() {
-//       setWindowDimensions(getWindowDimensions());
-//     }
-
-//     window.addEventListener('resize', handleResize);
-//     return () => window.removeEventListener('resize', handleResize);
-//   }, []);
-
-//   return windowDimensions;
-// }
-
-// trying now
-// export function useWindowDimensions() {
-
-//   const hasWindow = typeof window !== 'undefined';
-
-//   function getWindowDimensions() {
-//     const width = hasWindow ? window.innerWidth : null;
-//     const height = hasWindow ? window.innerHeight : null;
-//     return {
-//       width,
-//       height,
-//     };
-//   }
-
-//   const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
-
-//   useEffect(() => {
-//     if (hasWindow) {
-//       function handleResize() {
-//         setWindowDimensions(getWindowDimensions());
-//       }
-
-//       window.addEventListener('resize', handleResize);
-//       return () => window.removeEventListener('resize', handleResize);
-//     }
-//   }, [hasWindow]);
-
-//   return windowDimensions;
-// }
-
+// debounce function delays function call 
 function debounce(fn, ms) {
   let timer
   return _ => {
@@ -103,11 +50,12 @@ function debounce(fn, ms) {
   };
 }
 
+// hook to fetch window dimensions using debounce, called in AllDataTable
 export function useWindowDimensions() {
   const [dimensions, setDimensions] = useState({ 
     height: window.innerHeight,
     width: window.innerWidth
-  })
+  });
 
   useEffect(() => {
     const debouncedHandleResize = debounce(function handleResize() {
@@ -115,14 +63,15 @@ export function useWindowDimensions() {
         height: window.innerHeight,
         width: window.innerWidth
       })
-    }, 1000)
+    }, 1500)
 
     window.addEventListener('resize', debouncedHandleResize)
 
+
     return _ => {
       window.removeEventListener('resize', debouncedHandleResize)
-    
-  }})
+    }
+  });
 
   return dimensions;
 }
