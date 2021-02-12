@@ -1,6 +1,5 @@
 import { useContext, useState, useEffect } from "react";
 import { Context } from "../Store/Store";
-import EditDataModal from "../Table/EditDataModal";
 
 export const UserIsEditor = () => {
   const [state] = useContext(Context);
@@ -19,13 +18,11 @@ export function useWindowResize() {
   const [height, setHeight] = useState(window.innerHeight);
 
   const listener = () => {
-    console.log("hi1");
     setWidth(window.innerWidth);
     setHeight(window.innerHeight);
   };
 
   useEffect(() => {
-    console.log("hi2");
     window.addEventListener("resize", listener);
     return () => {
       window.removeEventListener("resize", listener);

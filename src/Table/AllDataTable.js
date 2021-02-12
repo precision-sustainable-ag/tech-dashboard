@@ -31,8 +31,6 @@ import { apiUsername, apiPassword, apiURL } from "../utils/api_secret";
 import { UserIsEditor, useWindowDimensions } from "../utils/SharedFunctions";
 import MapModal from "./MapModal";
 import "./AllDataTable.scss";
-import DataParser from './../Devices/DataParser';
-import GoogleMap from './../Location/GoogleMap';
 
 const tableHeaderOptions = [
   {
