@@ -28,7 +28,7 @@ import UnenrollSiteModal from "./UnenrollSiteModal";
 import NewIssueDialog from "./NewIssueModal";
 import { BannedRoleMessage } from "../utils/CustomComponents";
 import { apiUsername, apiPassword, apiURL } from "../utils/api_secret";
-import { UserIsEditor, useWindowResize } from "../utils/SharedFunctions";
+import { UserIsEditor, useWindowResize, useWindowDimensions } from "../utils/SharedFunctions";
 import MapModal from "./MapModal";
 
 const tableHeaderOptions = [
@@ -113,7 +113,26 @@ const AllDataTable = (props) => {
   const handleUnenrollClose = () => {
     setUnenrollOpen(!unenrollOpen);
   };
-  const { height } = useWindowResize();
+
+  
+
+  const { height } = useWindowDimensions();
+
+  const getTableHeight = (height) => {
+    var tableHeight = height;
+
+    if (tableHeight < 900 && tableHeight > 600){
+      tableHeight -= 130;
+    }
+    else if (tableHeight < 600) {
+      tableHeight -= 200;
+    }
+
+    console.log(tableHeight);
+    return tableHeight;
+  }
+
+  // const getWindowHeight = 
 
   useEffect(() => {
     function init() {
@@ -444,7 +463,7 @@ const AllDataTable = (props) => {
                 searchAutoFocus: true,
                 toolbarButtonAlignment: "left",
                 actionsColumnIndex: 1,
-                maxBodyHeight: height - 48,
+                maxBodyHeight: getTableHeight(height) * 0.7,
               }}
             />
           </Grid>
