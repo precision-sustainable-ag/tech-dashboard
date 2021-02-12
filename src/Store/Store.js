@@ -12,10 +12,11 @@ const initialState = {
   psaForms: [],
   psassgForms: [],
   userRole: "default",
-  userInfo: {}
+  userInfo: {},
+  loadingUser: true,
 };
 
-// Default function 
+// Default function
 const Store = ({ children }) => {
   const [state, dispatch] = useReducer(Reducer, initialState);
   return (

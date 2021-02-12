@@ -1,4 +1,4 @@
-// Default function 
+// Default function
 const Reducer = (state, action) => {
   switch (action.type) {
     case "UPDATE_HELLO_WORLD":
@@ -32,42 +32,43 @@ const Reducer = (state, action) => {
 const updateRole = (state, action) => {
   return {
     ...state,
-    userRole: action.data.userRole
+    userRole: action.data.userRole,
   };
 };
 
 const updateUserInfo = (state, action) => {
   return {
     ...state,
-    userInfo: action.data.userInfo
+    userInfo: action.data.userInfo,
+    loadingUser: false,
   };
 };
 
 const setPsaForms = (state, action) => {
   return {
     ...state,
-    psaForms: action.data
+    psaForms: action.data,
   };
 };
 
 const setPsassgForms = (state, action) => {
   return {
     ...state,
-    psassgForms: action.data
+    psassgForms: action.data,
   };
 };
 
 const setDevicesInfo = (state, action) => {
   return {
     ...state,
-    devices: action.data
+    devices: action.data,
   };
 };
 
 const updateAllRepos = (state, action) => {
   return {
     ...state,
-    repositories: action.data
+    repositories: action.data,
   };
 };
 const updateHelloWorld = (state, action) => {
@@ -81,7 +82,7 @@ const setSiteInfo = (state, action) => {
 const setOneSiteInfo = (state, action) => {
   return {
     ...state,
-    site_information: state.site_information.push(action.data)
+    site_information: state.site_information.push(action.data),
   };
 };
 

@@ -23,7 +23,6 @@ import {
   ChevronRight,
   ChevronLeft,
   Radio,
-  Storage,
   QuestionAnswer,
   ViewList,
   AccountCircle,
@@ -169,7 +168,6 @@ export default function Header(props) {
     }
   };
   const fetchRole = async (user) => {
-    // console.log(apiPassword);
     await Axios.get(`${apiURL}/api/users/${user.email}`, {
       auth: {
         username: apiUsername,
@@ -204,18 +202,12 @@ export default function Header(props) {
   };
 
   useEffect(() => {
-    // RenderRoleURL(user);
-    // if (isAuthenticated) {
-    //   fetchRole(user);
-    // }
-
     if (user) {
       fetchRole(user);
     }
   }, [user]);
   return (
     <div className={classes.root}>
-      {/* <CssBaseline /> */}
       <AppBar
         position="fixed"
         className={clsx(classes.appBar, {
@@ -389,7 +381,7 @@ export default function Header(props) {
             </ListItemIcon>
             <ListItemText primary="Devices" />
           </ListItem>
-          <ListItem
+          {/* <ListItem
             onClick={() => setOpen(false)}
             button
             key="Forms"
@@ -400,18 +392,6 @@ export default function Header(props) {
               <Storage />
             </ListItemIcon>
             <ListItemText primary="Forms" />
-          </ListItem>
-          {/* <ListItem
-            onClick={() => setOpen(false)}
-            button
-            key="Device Enroll"
-            component={Link}
-            to="/device-enroll"
-          >
-            <ListItemIcon>
-              <AddLocation />
-            </ListItemIcon>
-            <ListItemText primary="Device Enroll" />
           </ListItem> */}
         </List>
       </Drawer>

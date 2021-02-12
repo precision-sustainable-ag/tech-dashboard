@@ -59,7 +59,7 @@ const Location = ({
   };
   const [draggable, setDraggable] = useState(true);
   return (
-    <Grid container spacing={0}>
+    <Grid container spacing={2}>
       <Grid item xs={12}>
         {apiStates.mapsApiLoaded && (
           <SearchBox

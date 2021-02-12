@@ -3,7 +3,6 @@ import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
 // import { Map, Marker, Popup, TileLayer } from "react-leaflet";
 import Skeleton from "@material-ui/lab/Skeleton";
-import "leaflet/dist/leaflet.css";
 
 import qs from "qs";
 import {
@@ -47,7 +46,11 @@ import { Link } from "react-router-dom";
 import { apiUsername, apiPassword } from "../../utils/api_secret";
 import { APIURL, APICreds, apiCorsUrl } from "../hologramConstants";
 import GoogleMap from "../../Location/GoogleMap";
-import { ScrollTop, useInfiniteScroll } from "../../utils/CustomComponents";
+import {
+  ScrollTop,
+  useAutoRefresh,
+  useInfiniteScroll,
+} from "../../utils/CustomComponents";
 import Loading from "react-loading";
 // import { theme } from "highcharts";
 
@@ -110,7 +113,7 @@ const DeviceComponent = (props) => {
   useEffect(() => {
     setUserTimezone(moment.tz.guess);
     if (props.location.state === undefined) {
-      console.log("undefined !");
+      // console.log("undefined !");
       // get data from api
       setDeviceData({ name: "Loading" });
       Axios.get(
@@ -118,20 +121,24 @@ const DeviceComponent = (props) => {
           props.match.params.deviceId
         }/?withlocation=true`,
         APICreds()
-      ).then((response) => {
-        if (response.data.success) {
-          setDeviceData(response.data.data);
-          setLatLng({
-            flag: true,
-            // data: [35.764221, -78.69976]
-            data: [
-              response.data.data.lastsession.latitude,
-              response.data.data.lastsession.longitude,
-            ],
-          });
-        } else {
-        }
-      });
+      )
+        .then((response) => {
+          if (response.data.success) {
+            setDeviceData(response.data.data);
+            setLatLng({
+              flag: true,
+              // data: [35.764221, -78.69976]
+              data: [
+                response.data.data.lastsession.latitude,
+                response.data.data.lastsession.longitude,
+              ],
+            });
+          } else {
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+        });
     } else {
       // data passed from component via prop
       setDeviceData(props.location.state);
@@ -168,6 +175,9 @@ const DeviceComponent = (props) => {
               props.location.state.lastsession.longitude,
             ],
           });
+        })
+        .catch((e) => {
+          console.error(e);
         });
     }
   }, []);
@@ -200,6 +210,17 @@ const DeviceComponent = (props) => {
       </Grid>
     );
   };
+
+  //TODO: Auto Reload data
+  // const [timer, setTimer] = useState(0);
+
+  // const interval = useAutoRefresh(() => {
+  //   setTimer(timer + 1);
+  // }, 1000);
+
+  // useEffect(() => {
+  //   console.log(timer);
+  // }, [timer]);
 
   const RenderDataTable = () => {
     return (

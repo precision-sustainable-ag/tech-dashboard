@@ -30,6 +30,7 @@ import { BannedRoleMessage } from "../utils/CustomComponents";
 import { apiUsername, apiPassword, apiURL } from "../utils/api_secret";
 import { UserIsEditor, useWindowResize, useWindowDimensions } from "../utils/SharedFunctions";
 import MapModal from "./MapModal";
+import "./AllDataTable.scss";
 
 const tableHeaderOptions = [
   {
@@ -53,12 +54,6 @@ const tableHeaderOptions = [
   {
     title: "County",
     field: "county",
-    type: "string",
-    align: "justify",
-  },
-  {
-    title: "Email",
-    field: "email",
     type: "string",
     align: "justify",
   },
@@ -317,32 +312,131 @@ const AllDataTable = (props) => {
     );
   };
   const RenderLatLongMap = ({ rowData }) => {
-    return rowData.latlng !== "" ? (
-      rowData.latlng !== "-999" ? (
-        <Tooltip title="View this field on a map">
+    const latLongNotPresent =
+      rowData.latlng !== "" && rowData.latlng !== "-999" ? false : true;
+
+    return (
+      <Tooltip
+        title={
+          latLongNotPresent
+            ? "Lat, long data not available"
+            : "View this field on a map"
+        }
+      >
+        <span>
           <Button
             size="small"
+            disabled={latLongNotPresent}
             startIcon={<Search />}
             variant="contained"
             color={props.isDarkTheme ? "primary" : "default"}
             onClick={() => {
-              setMapModalData([
-                parseFloat(rowData.latitude),
-                parseFloat(rowData.longitude),
-              ]);
-              setMapModalOpen(true);
+              if (latLongNotPresent) {
+                setMapModalData([
+                  parseFloat(rowData.latitude),
+                  parseFloat(rowData.longitude),
+                ]);
+                setMapModalOpen(true);
+              }
             }}
           >
             {"Map"}
           </Button>
-        </Tooltip>
-      ) : (
-        ""
-      )
-    ) : (
-      ""
+        </span>
+      </Tooltip>
     );
   };
+
+  const RenderActionsPanel = ({ rowData }) => {
+    const filteredByValue = Object.fromEntries(
+      Object.entries(rowData).filter(
+        ([key, value]) => value === "" || value === "-999" || value === null
+      )
+    );
+
+    let blankEntities = Object.keys(filteredByValue).join(",").split(",");
+    blankEntities =
+      blankEntities.length > 1
+        ? blankEntities.map((e, i) =>
+            i === blankEntities.length - 1 ? ` and ${e}` : `${e}, `
+          )
+        : blankEntities.toString();
+    return (
+      <Grid
+        container
+        spacing={3}
+        style={{
+          minHeight: "10vh",
+          paddingTop: "1em",
+          paddingBottom: "1em",
+          paddingLeft: "0.5em",
+          paddingRight: "0.5em",
+        }}
+      >
+        <Grid item container>
+          {Object.keys(filteredByValue).length > 0 ? (
+            <Grid item xs={12}>
+              <Alert severity="info">
+                <Typography variant="body2" align="center">
+                  No record for <strong>{blankEntities}</strong>
+                </Typography>
+              </Alert>
+            </Grid>
+          ) : (
+            ""
+          )}
+        </Grid>
+        <Grid item xs={12}>
+          <table border="0" className="growerContactInfoTable">
+            <thead>
+              <tr>
+                <th colSpan="2" align="center">
+                  <Typography variant="body1">Contact Information</Typography>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <Typography variant="body1">Phone Number</Typography>
+                </td>
+                <td>
+                  <Typography variant="body1">{rowData.phone}</Typography>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <Typography variant="body1">Email</Typography>
+                </td>
+                <td>
+                  <Typography variant="body1">{rowData.email}</Typography>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </Grid>
+        <Grid
+          item
+          container
+          spacing={3}
+          // justify="space-evenly"
+          // alignContent="center"
+          // alignItems="center"
+        >
+          <Grid item>
+            <RenderActionItems rowData={rowData} />
+          </Grid>
+          <Grid item>
+            <CreateNewIssue rowData={rowData} />
+          </Grid>
+          <Grid item>
+            <RenderLatLongMap rowData={rowData} />
+          </Grid>
+        </Grid>
+      </Grid>
+    );
+  };
+
   return showTable ? (
     loading ? (
       <div style={{ display: "flex", justifyContent: "center" }}>
@@ -368,68 +462,10 @@ const AllDataTable = (props) => {
             <MaterialTable
               detailPanel={[
                 {
-                  tooltip: "Actions Panel",
+                  tooltip: "Expand Actions Panel",
+
                   render: (rowData) => {
-                    const filteredByValue = Object.fromEntries(
-                      Object.entries(rowData).filter(
-                        ([key, value]) => value === "" || value === "-999"
-                      )
-                    );
-
-                    const blankEntities = Object.keys(filteredByValue).join(
-                      ", "
-                    );
-                    return (
-                      <Grid
-                        container
-                        spacing={3}
-                        style={{
-                          minHeight: "10vh",
-                          paddingTop: "1em",
-                          paddingBottom: "1em",
-                        }}
-                      >
-                        <Grid
-                          item
-                          container
-                          justify="center"
-                          alignItems="center"
-                        >
-                          {Object.keys(filteredByValue).length > 0 ? (
-                            <Typography variant="caption" align="center">
-                              Values for {blankEntities} have not been entered
-                              for this field
-                            </Typography>
-                          ) : (
-                            ""
-                          )}
-                        </Grid>
-                        <Grid
-                          item
-                          container
-                          // style={{
-                          //   display: "flex",
-                          //   justifyContent: "space-evenly",
-                          //   alignItems: "center",
-
-                          // }}
-                          spacing={3}
-                          justify="space-evenly"
-                          alignContent="center"
-                          alignItems="center"
-                        >
-                          <Grid item>
-                            <RenderActionItems rowData={rowData} />
-                          </Grid>
-                          <Grid item>
-                            <CreateNewIssue rowData={rowData} />
-                          </Grid>
-                          <Grid item>
-                            <RenderLatLongMap rowData={rowData} />
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                    );
+                    return <RenderActionsPanel rowData={rowData} />;
                   },
                 },
               ]}

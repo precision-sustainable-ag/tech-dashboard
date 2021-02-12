@@ -1,0 +1,35 @@
+table.growerContactInfoTable {
+  //   margin-left: auto;
+  //   margin-right: auto;
+  border: 0;
+  border-radius: 5px;
+  border-style: hidden;
+  box-shadow: 0 0 0 1px #666;
+  border-collapse: collapse;
+  //   margin: 25px 0;
+  font-size: 0.9em;
+  font-family: sans-serif;
+
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  tbody {
+    border-top: 2px solid #eceeef;
+    tr {
+      border-bottom: thin solid #dddddd;
+      &:nth-of-type(even) {
+        // background-color: #f3f3f3;
+      }
+      &:last-of-type {
+        border-bottom: 2px solid #009879;
+      }
+      &:first-of-type {
+        border-top: 2px solid #009878;
+      }
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.075);
+      }
+    }
+    td {
+      padding: 12px 15px;
+    }
+  }
+}

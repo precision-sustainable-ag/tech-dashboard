@@ -22,13 +22,8 @@ import { githubToken } from "../utils/api_secret";
 import { Context } from "../Store/Store";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 
-//Global Vars
-const showdown = require("showdown");
-let table = require("markdown-table");
-
 // Default function
 const NewIssueDialog = (props) => {
-  const markdownConvert = new showdown.Converter({ tables: true });
   const [state, dispatch] = useContext(Context);
   const { user } = useAuth0();
   const octokit = new Octokit({ auth: githubToken });
@@ -388,20 +383,30 @@ const NewIssueDialog = (props) => {
             )}
             <TextField
               fullWidth
+              placeholder="Give a title to this issue"
               error={checkValidation.title}
               variant="filled"
-              label="Title"
+              label="Issue Title"
               value={issueTitle}
               onChange={(e) => setIssueTitle(e.target.value)}
             />
           </Grid>
           <Grid item xs={12}>
-            {checkValidation.comment && (
-              <Typography variant="caption" color="error">
+            {checkValidation.comment || newComment.length === 0 ? (
+              <Typography
+                variant="caption"
+                color={checkValidation.comment ? "error" : "initial"}
+              >
                 Please describe the issue below
               </Typography>
+            ) : (
+              ""
             )}
-            <MDEditor val value={newComment} onChange={setNewComment} />
+            <MDEditor
+              preview="edit"
+              value={newComment}
+              onChange={setNewComment}
+            />
           </Grid>
         </Grid>
         <DialogActions>
