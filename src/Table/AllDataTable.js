@@ -28,7 +28,7 @@ import UnenrollSiteModal from "./UnenrollSiteModal";
 import NewIssueDialog from "./NewIssueModal";
 import { BannedRoleMessage } from "../utils/CustomComponents";
 import { apiUsername, apiPassword, apiURL } from "../utils/api_secret";
-import { UserIsEditor, useWindowResize } from "../utils/SharedFunctions";
+import { UserIsEditor, useWindowDimensions } from "../utils/SharedFunctions";
 import MapModal from "./MapModal";
 import "./AllDataTable.scss";
 
@@ -108,7 +108,17 @@ const AllDataTable = (props) => {
   const handleUnenrollClose = () => {
     setUnenrollOpen(!unenrollOpen);
   };
-  const { height } = useWindowResize();
+
+  // fetch height from useWindowDimensions hook
+  let { height } = useWindowDimensions();
+
+  // scale height 
+  if (height < 900 && height > 600){
+    height -= 130;
+  }
+  else if (height < 600) {
+    height -= 200;
+  }
 
   useEffect(() => {
     function init() {
@@ -459,8 +469,8 @@ const AllDataTable = (props) => {
                 exportFileName: "Site Information",
                 addRowPosition: "last",
                 exportAllData: true,
-                pageSize: tableData.length,
                 // pageSizeOptions: [5, 10, 20, 50, tableData.length],
+                pageSize: tableData.length,
                 groupRowSeparator: "  ",
                 grouping: true,
                 headerStyle: {
@@ -480,7 +490,7 @@ const AllDataTable = (props) => {
                 searchAutoFocus: true,
                 toolbarButtonAlignment: "left",
                 actionsColumnIndex: 1,
-                maxBodyHeight: height - 48,
+                maxBodyHeight: height * 0.7,
               }}
             />
           </Grid>

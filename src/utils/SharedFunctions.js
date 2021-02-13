@@ -12,6 +12,7 @@ export const UserIsEditor = () => {
   else return false;
 };
 
+// hook to fetch window size with no debounce
 export function useWindowResize() {
   const [width, setWidth] = useState(window.innerWidth);
   const [height, setHeight] = useState(window.innerHeight);
@@ -32,4 +33,42 @@ export function useWindowResize() {
     width,
     height,
   };
+}
+
+// debounce function delays function call 
+function debounce(fn, ms) {
+  let timer
+  return _ => {
+    clearTimeout(timer)
+    timer = setTimeout(_ => {
+      timer = null
+      fn.apply(this, arguments)
+    }, ms)
+  };
+}
+
+// hook to fetch window dimensions using debounce, called in AllDataTable
+export function useWindowDimensions() {
+  const [dimensions, setDimensions] = useState({ 
+    height: window.innerHeight,
+    width: window.innerWidth
+  });
+
+  useEffect(() => {
+    const debouncedHandleResize = debounce(function handleResize() {
+      setDimensions({
+        height: window.innerHeight,
+        width: window.innerWidth
+      })
+    }, 1500)
+
+    window.addEventListener('resize', debouncedHandleResize)
+
+
+    return _ => {
+      window.removeEventListener('resize', debouncedHandleResize)
+    }
+  });
+
+  return dimensions;
 }
