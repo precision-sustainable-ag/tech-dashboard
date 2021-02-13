@@ -6,28 +6,16 @@ import Avatar from "@material-ui/core/Avatar";
 
 import MDEditor from "@uiw/react-md-editor";
 
-import "./IssueBodyBubble.scss";
 import { IconButton, Grid, Tooltip } from "@material-ui/core";
+import "./IssueBodyBubble.scss";
 import { format_AM_PM } from "../../utils/constants";
 
-const IssueBubbleBody = ({ issueData, user, isDarkTheme }) => {
-  let side = issueData.hasMention
-    ? issueData.mention.split("@")[1].split("[")[0] === user.nickname
-      ? "flex-end"
-      : "flex-start"
-    : "flex-start";
-
-  const justify = issueData.hasMention
-    ? side
-    : issueData.user.login === user.nickname
-    ? "flex-end"
-    : "flex-start";
-
-  const issueAuthor = issueData.hasMention
-    ? issueData.mention.split("@")[1].split("[")[0]
-    : issueData.user.login;
-
-  const updateDate = new Date(issueData.updated_at);
+export const SingleIssueBodyBubble = ({
+  issue: { username = "TechDashboard-BOT", body = "", updated_at },
+  isDarkTheme = false,
+}) => {
+  const justify = "flex-start";
+  const updateDate = new Date(updated_at);
   return (
     <Grid container justify={justify}>
       <Grid item>
@@ -36,36 +24,22 @@ const IssueBubbleBody = ({ issueData, user, isDarkTheme }) => {
           spacing={2}
           alignItems="center"
           justify="flex-start"
-          direction={justify === "flex-start" ? "row" : "row-reverse"}
+          direction="row"
         >
           <Grid item>
-            <Tooltip placement="bottom-start" title={issueAuthor}>
+            <Tooltip placement="bottom-start" title={username}>
               <IconButton
-                href={`https://github.com/${issueAuthor}`}
+                href={`https://github.com/${username}`}
                 target="_blank"
                 rel="noreferrer"
               >
                 <Avatar
                   className="chatBubbleAvatar"
-                  src={
-                    issueData.hasMention
-                      ? `https://github.com/${
-                          issueData.mention.split("@")[1].split("[")[0]
-                        }.png`
-                      : issueData.user.avatar_url
-                  }
-                  alt={issueData.user.login}
+                  src={`https://github.com/${username}.png`}
+                  alt={username}
                 />
               </IconButton>
             </Tooltip>
-            {/* <Button
-              component={Link}
-              to={`/issues`}
-              variant="contained"
-              startIcon={<ArrowBack />}
-            >
-              All Issues
-            </Button> */}
           </Grid>
           <Grid item>
             <Grid
@@ -86,13 +60,7 @@ const IssueBubbleBody = ({ issueData, user, isDarkTheme }) => {
                     className="chatBubbleText"
                     align={justify === "flex-start" ? "left" : "right"}
                   >
-                    {issueData.viaEmail ? (
-                      <MDEditor.Markdown
-                        source={issueData.parsedEmailBody.getVisibleText()}
-                      />
-                    ) : (
-                      <MDEditor.Markdown source={issueData.body} />
-                    )}
+                    <MDEditor.Markdown source={body} />
                   </Typography>
                 </div>
               </Grid>
@@ -125,5 +93,3 @@ const IssueBubbleBody = ({ issueData, user, isDarkTheme }) => {
     </Grid>
   );
 };
-
-export default IssueBubbleBody;

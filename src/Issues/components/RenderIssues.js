@@ -13,7 +13,7 @@ import {
 import { BugReport, ExpandMore } from "@material-ui/icons";
 import { Octokit } from "@octokit/rest";
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Loading from "react-loading";
 import { useAuth0 } from "../../Auth/react-auth0-spa";
 import { githubToken } from "../../utils/api_secret";
@@ -26,6 +26,7 @@ import "./RenderIssues.scss";
 /**
  * A component to render issues based on a given state label
  */
+
 export const RenderIssues = ({ stateLabel, userRole }) => {
   const [showIssues, setShowIssues] = useState(false);
   const [issues, setIssues] = useState([]);
@@ -33,8 +34,11 @@ export const RenderIssues = ({ stateLabel, userRole }) => {
   // const { user } = useAuth0();
   const [expanded, setExpanded] = useState(false);
 
-  const handleAccordionChange = (panel) => (event, isExpanded) => {
+  const [clickedIssueData, setClickedIssueData] = useState({});
+  const handleAccordionChange = (panel, issueData) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
+
+    setClickedIssueData(issueData);
   };
   //   useEffect(() => {
   //     if (bannedRoles.includes(userRole)) {
@@ -69,6 +73,21 @@ export const RenderIssues = ({ stateLabel, userRole }) => {
   const [userNameData, setUserNameData] = useState({});
   // flag to make sure usernames gave been set in userNames state
   const [doneSettingUsernames, setDoneSettingUsernames] = useState(false);
+
+  const RouterLinkToIssue = React.useMemo(
+    () =>
+      React.forwardRef((linkProps, ref) => (
+        <Link
+          ref={ref}
+          {...linkProps}
+          to={{
+            pathname: `/issues/${clickedIssueData.number}`,
+            state: clickedIssueData,
+          }}
+        />
+      )),
+    [clickedIssueData]
+  );
 
   useEffect(() => {
     if (doneSettingUsernames) {
@@ -183,7 +202,7 @@ export const RenderIssues = ({ stateLabel, userRole }) => {
           <Grid item xs={12} key={index}>
             <Accordion
               expanded={expanded === index}
-              onChange={handleAccordionChange(index)}
+              onChange={handleAccordionChange(index, issue)}
             >
               <AccordionSummary expandIcon={<ExpandMore />}>
                 <Grid container alignItems="center" spacing={2}>
@@ -219,8 +238,12 @@ export const RenderIssues = ({ stateLabel, userRole }) => {
               </AccordionDetails>
               <AccordionActions style={{ justifyContent: "flex-start" }}>
                 <Button
-                  component={Link}
-                  to={`/issues/${issue.number}`}
+                  component={RouterLinkToIssue}
+                  // component={
+                  //   <Link
+                  //     to={{ pathname: `/issues/${issue.number}`, state: issue }}
+                  //   />
+                  // }
                   variant="contained"
                   color="primary"
                 >

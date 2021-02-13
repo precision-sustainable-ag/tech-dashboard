@@ -153,7 +153,6 @@ function App() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      console.log(isAuthenticated);
       if (isAuthenticated) {
         setIsLoggedIn(true);
       } else {

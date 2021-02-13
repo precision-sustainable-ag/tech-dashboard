@@ -25,12 +25,14 @@ import { Context } from "../Store/Store";
 import { bannedRoles } from "../utils/constants";
 import EditDataModal from "./EditDataModal";
 import UnenrollSiteModal from "./UnenrollSiteModal";
-import NewIssueDialog from "./NewIssueModal";
+import NewIssueModal from "./NewIssueModal";
 import { BannedRoleMessage } from "../utils/CustomComponents";
 import { apiUsername, apiPassword, apiURL } from "../utils/api_secret";
 import { UserIsEditor, useWindowResize } from "../utils/SharedFunctions";
 import MapModal from "./MapModal";
 import "./AllDataTable.scss";
+import { useAuth0 } from "../Auth/react-auth0-spa";
+import PropTypes from "prop-types";
 
 const tableHeaderOptions = [
   {
@@ -81,10 +83,15 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
+/**
+ * Site information table component
+ */
+
 // Default function
 const AllDataTable = (props) => {
   const [state, dispatch] = useContext(Context);
   const [showTable, setShowTable] = useState(false);
+  const { user } = useAuth0();
   const [bannedRolesCheckMessage, setBannedRolesCheckMessage] = useState(
     "Checking your permissions.."
   );
@@ -499,7 +506,7 @@ const AllDataTable = (props) => {
           handleUnenrollClose={handleUnenrollClose}
           setValuesEdited={setValuesEdited}
         />
-        <NewIssueDialog
+        <NewIssueModal
           open={showNewIssueDialog}
           handleNewIssueDialogClose={() => {
             setShowNewIssueDialog(!showNewIssueDialog);
@@ -507,6 +514,7 @@ const AllDataTable = (props) => {
           data={newIssueData}
           setSnackbarData={setSnackbarData}
           snackbarData={snackbarData}
+          nickname={user.nickname}
         />
         <MapModal
           open={mapModalOpen}
@@ -519,6 +527,11 @@ const AllDataTable = (props) => {
   ) : (
     bannedRolesCheckMessage
   );
+};
+
+AllDataTable.propTypes = {
+  /** Is dark theme enabled? */
+  isDarkTheme: PropTypes.bool.isRequired,
 };
 
 export default AllDataTable;
