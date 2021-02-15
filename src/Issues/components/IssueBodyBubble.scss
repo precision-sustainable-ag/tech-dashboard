@@ -1,0 +1,37 @@
+div.chatBubbleBody {
+  //   padding: 0.5rem;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  padding-left: 1.2em;
+  padding-right: 1.2em;
+  background-color: #f5f5f5;
+  border-radius: 20px;
+  font-size: 14px;
+  box-shadow: 0 2px 1px #2d2d2d;
+  //   box-shadow: 0 7px 0 #bfbaad, 0 0.5em 0 #a8a38c, 0 12px 12px #a8a38c;
+  //   border-top: 1px solid #f4f4f2;
+  &.dark {
+    color: black;
+  }
+  &.light {
+    color: black;
+  }
+
+  &.flex-end {
+    border-bottom-right-radius: 5px;
+    background-color: #2e7d32;
+    color: white;
+  }
+  &.flex-start {
+    border-top-left-radius: 5px;
+  }
+}
+
+.chatBubbleText::first-letter {
+  text-transform: capitalize;
+}
+
+.chatBubbleAvatar {
+  box-shadow: 0 0 6px 1px #2d2d2d;
+  border: 0;
+}

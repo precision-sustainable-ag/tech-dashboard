@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import GoogleMap from "../Location/GoogleMap";
 import { Close } from "@material-ui/icons";
+import PropTypes from "prop-types";
 
 const MapModal = ({
   open = false,
@@ -46,6 +47,17 @@ const MapModal = ({
       </DialogContent>
     </Dialog>
   );
+};
+
+MapModal.propTypes = {
+  /** Latitude */
+  lat: PropTypes.number,
+  /** Longitude */
+  lng: PropTypes.number,
+  /** Checks if modal needs to be open */
+  open: PropTypes.bool,
+  /** Dispatcher to mutate `open` */
+  setOpen: PropTypes.func,
 };
 
 export default MapModal;

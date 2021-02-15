@@ -199,7 +199,7 @@ const SearchBox = ({
           <TextField
             {...params}
             label={searchLabel}
-            variant="filled"
+            variant="standard"
             fullWidth
           />
         );

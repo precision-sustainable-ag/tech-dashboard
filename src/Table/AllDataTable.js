@@ -12,28 +12,86 @@ import {
 } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
 import MaterialTable from "material-table";
-import { GpsFixed, Edit, DeleteForever, Search } from "@material-ui/icons";
+import {
+  GpsFixed,
+  Edit,
+  DeleteForever,
+  Search,
+  QuestionAnswer,
+} from "@material-ui/icons";
 
 // Local Imports
 import { Context } from "../Store/Store";
 import { bannedRoles } from "../utils/constants";
 import EditDataModal from "./EditDataModal";
 import UnenrollSiteModal from "./UnenrollSiteModal";
-import NewIssueDialog from "./NewIssueModal";
+import NewIssueModal from "./NewIssueModal";
 import { BannedRoleMessage } from "../utils/CustomComponents";
 import { apiUsername, apiPassword, apiURL } from "../utils/api_secret";
-import { UserIsEditor, useWindowResize } from "../utils/SharedFunctions";
+import { UserIsEditor, useWindowDimensions } from "../utils/SharedFunctions";
 import MapModal from "./MapModal";
+import "./AllDataTable.scss";
+import { useAuth0 } from "../Auth/react-auth0-spa";
+import PropTypes from "prop-types";
 
+const tableHeaderOptions = [
+  {
+    title: "Code",
+    field: "code",
+    type: "string",
+    align: "justify",
+  },
+  {
+    title: "Grower",
+    field: "last_name",
+    type: "string",
+    align: "justify",
+  },
+  {
+    title: "State",
+    field: "affiliation",
+    type: "string",
+    align: "justify",
+  },
+  {
+    title: "County",
+    field: "county",
+    type: "string",
+    align: "justify",
+  },
+  {
+    title: "Year",
+    field: "year",
+    type: "numeric",
+    align: "justify",
+  },
+  {
+    title: "Field Address",
+    field: "address",
+    type: "string",
+    align: "justify",
+  },
+  {
+    title: "Notes",
+    field: "notes",
+    type: "string",
+    align: "justify",
+  },
+];
 // Helper function
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
+/**
+ * Site information table component
+ */
+
 // Default function
 const AllDataTable = (props) => {
   const [state, dispatch] = useContext(Context);
   const [showTable, setShowTable] = useState(false);
+  const { user } = useAuth0();
   const [bannedRolesCheckMessage, setBannedRolesCheckMessage] = useState(
     "Checking your permissions.."
   );
@@ -57,7 +115,18 @@ const AllDataTable = (props) => {
   const handleUnenrollClose = () => {
     setUnenrollOpen(!unenrollOpen);
   };
-  const { height } = useWindowResize();
+
+  // fetch height from useWindowDimensions hook
+  let height = window.innerHeight;
+
+  // scale height 
+  if (height < 900 && height > 600){
+    height -= 130;
+  }
+  else if (height < 600) {
+    height -= 200;
+  }
+
   useEffect(() => {
     function init() {
       if (valuesEdited) {
@@ -130,6 +199,7 @@ const AllDataTable = (props) => {
                 ? `${data.latitude},${data.longitude}`
                 : "-999"
               : "",
+          year: parseInt(data.year),
         };
       });
 
@@ -170,6 +240,201 @@ const AllDataTable = (props) => {
   const [mapModalOpen, setMapModalOpen] = useState(false);
   const [mapModalData, setMapModalData] = useState([]);
 
+  const ActionItems = ({ disabled = false, rowData }) => {
+    return (
+      <Grid container spacing={3}>
+        <Grid item>
+          <Tooltip title="Edit field data">
+            <Button
+              size="small"
+              variant="contained"
+              startIcon={<Edit />}
+              color={props.isDarkTheme ? "primary" : "default"}
+              disabled={disabled}
+              onClick={() => {
+                if (!disabled) {
+                  setEditModalOpen(true);
+                  setEditModalData(rowData);
+                }
+              }}
+            >
+              Edit Data
+            </Button>
+          </Tooltip>
+        </Grid>
+        <Grid item>
+          <Tooltip title="Unenroll this site">
+            <Button
+              size="small"
+              variant="contained"
+              startIcon={<DeleteForever />}
+              color={props.isDarkTheme ? "primary" : "default"}
+              disabled={disabled}
+              onClick={() => {
+                if (!disabled) {
+                  setUnenrollOpen(true);
+                  setUnenrollRowData(rowData);
+                }
+              }}
+            >
+              Unenroll
+            </Button>
+          </Tooltip>
+        </Grid>
+      </Grid>
+    );
+  };
+  const RenderActionItems = ({ rowData }) => {
+    return UserIsEditor() ? (
+      <ActionItems rowData={rowData} disabled={false} />
+    ) : (
+      <ActionItems rowData={rowData} disabled={true} />
+    );
+  };
+  const CreateNewIssue = ({ rowData }) => {
+    return (
+      <Tooltip title="Submit a new issue">
+        <Button
+          startIcon={<QuestionAnswer />}
+          size="small"
+          variant="contained"
+          color={props.isDarkTheme ? "primary" : "default"}
+          onClick={() => {
+            setShowNewIssueDialog(true);
+            setNewIssueData(rowData);
+          }}
+        >
+          Comment
+        </Button>
+      </Tooltip>
+    );
+  };
+  const RenderLatLongMap = ({ rowData }) => {
+    const latLongNotPresent =
+      rowData.latlng !== "" && rowData.latlng !== "-999" ? false : true;
+
+    return (
+      <Tooltip
+        title={
+          latLongNotPresent
+            ? "Lat, long data not available"
+            : "View this field on a map"
+        }
+      >
+        <span>
+          <Button
+            size="small"
+            disabled={latLongNotPresent}
+            startIcon={<Search />}
+            variant="contained"
+            color={props.isDarkTheme ? "primary" : "default"}
+            onClick={() => {
+              if (latLongNotPresent) {
+                setMapModalData([
+                  parseFloat(rowData.latitude),
+                  parseFloat(rowData.longitude),
+                ]);
+                setMapModalOpen(true);
+              }
+            }}
+          >
+            {"Map"}
+          </Button>
+        </span>
+      </Tooltip>
+    );
+  };
+
+  const RenderActionsPanel = ({ rowData }) => {
+    const filteredByValue = Object.fromEntries(
+      Object.entries(rowData).filter(
+        ([key, value]) => value === "" || value === "-999" || value === null
+      )
+    );
+
+    let blankEntities = Object.keys(filteredByValue).join(",").split(",");
+    blankEntities =
+      blankEntities.length > 1
+        ? blankEntities.map((e, i) =>
+            i === blankEntities.length - 1 ? ` and ${e}` : `${e}, `
+          )
+        : blankEntities.toString();
+    return (
+      <Grid
+        container
+        spacing={3}
+        style={{
+          minHeight: "10vh",
+          paddingTop: "1em",
+          paddingBottom: "1em",
+          paddingLeft: "0.5em",
+          paddingRight: "0.5em",
+        }}
+      >
+        <Grid item container>
+          {Object.keys(filteredByValue).length > 0 ? (
+            <Grid item xs={12}>
+              <Alert severity="info">
+                <Typography variant="body2" align="center">
+                  No record for <strong>{blankEntities}</strong>
+                </Typography>
+              </Alert>
+            </Grid>
+          ) : (
+            ""
+          )}
+        </Grid>
+        <Grid item xs={12}>
+          <table border="0" className="growerContactInfoTable">
+            <thead>
+              <tr>
+                <th colSpan="2" align="center">
+                  <Typography variant="body1">Contact Information</Typography>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <Typography variant="body1">Phone Number</Typography>
+                </td>
+                <td>
+                  <Typography variant="body1">{rowData.phone}</Typography>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <Typography variant="body1">Email</Typography>
+                </td>
+                <td>
+                  <Typography variant="body1">{rowData.email}</Typography>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </Grid>
+        <Grid
+          item
+          container
+          spacing={3}
+          // justify="space-evenly"
+          // alignContent="center"
+          // alignItems="center"
+        >
+          <Grid item>
+            <RenderActionItems rowData={rowData} />
+          </Grid>
+          <Grid item>
+            <CreateNewIssue rowData={rowData} />
+          </Grid>
+          <Grid item>
+            <RenderLatLongMap rowData={rowData} />
+          </Grid>
+        </Grid>
+      </Grid>
+    );
+  };
+
   return showTable ? (
     loading ? (
       <div style={{ display: "flex", justifyContent: "center" }}>
@@ -193,135 +458,26 @@ const AllDataTable = (props) => {
         <Grid container>
           <Grid item lg={12}>
             <MaterialTable
-              // detailPanel={[
-              //   {
-              //     tooltip: "Show Details",
-              //     render: (rowData) => {
-              //       return <>{rowData.address}</>;
-              //     },
-              //   },
-              // ]}
-              columns={[
-                UserIsEditor()
-                  ? {
-                      title: "Actions",
-                      render: (rowData) => (
-                        <div>
-                          <IconButton
-                            onClick={() => {
-                              // console.log(rowData);
-                              setEditModalOpen(true);
-                              setEditModalData(rowData);
-                            }}
-                          >
-                            <Edit />
-                          </IconButton>
-                          <IconButton
-                            onClick={() => {
-                              // console.log(rowData);
-                              setUnenrollOpen(true);
-                              setUnenrollRowData(rowData);
-                            }}
-                          >
-                            <DeleteForever />
-                          </IconButton>
-                        </div>
-                      ),
-                      sorting: false,
-                      grouping: false,
-                    }
-                  : {
-                      title: "Actions",
-                      render: (rowData) => (
-                        <div>
-                          <IconButton disabled>
-                            <Edit />
-                          </IconButton>
-                          <IconButton disabled>
-                            <DeleteForever />
-                          </IconButton>
-                        </div>
-                      ),
-                      sorting: false,
-                      grouping: false,
-                    },
-                { title: "Code", field: "code", type: "string" },
-                { title: "Grower", field: "last_name", type: "string" },
-                { title: "State", field: "affiliation", type: "string" },
-                { title: "County", field: "county", type: "string" },
-                { title: "Email", field: "email", type: "string" },
-                { title: "Year", field: "year" },
-                { title: "Field Address", field: "address" },
+              detailPanel={[
                 {
-                  title: "Lat, Long",
-                  field: "latlng",
-                  render: (rowData) =>
-                    rowData.latlng !== "" ? (
-                      rowData.latlng !== "-999" ? (
-                        <Button
-                          size="small"
-                          startIcon={<Search />}
-                          variant="contained"
-                          // href={`https://earth.google.com/web/search/${rowData.latlng}/@${rowData.latlng},75.78141996a,870.41248089d,35y,0h,45t,0r/data=ClQaKhIkGa36XG3FbkBAIVRSJ6CJkFTAKhAzMi44NjU0LC04Mi4yNTg0GAIgASImCiQJzF-JvuFuOEARyF-JvuFuOMAZThRMqkU0RMAh9HZjS910YsAoAg`}
-                          target="_blank"
-                          rel="noreferrer"
-                          onClick={() => {
-                            setMapModalData([
-                              parseFloat(rowData.latitude),
-                              parseFloat(rowData.longitude),
-                            ]);
-                            setMapModalOpen(true);
-                          }}
-                        >
-                          {"Map"}
-                        </Button>
-                      ) : (
-                        "-999"
-                      )
-                    ) : (
-                      ""
-                    ),
-                  sorting: false,
-                  grouping: false,
-                },
-                { title: "Notes", field: "notes" },
-                {
-                  title: "Issue",
+                  tooltip: "Expand Actions Panel",
+
                   render: (rowData) => {
-                    return (
-                      <Tooltip
-                        title={
-                          <Typography variant="body2">
-                            Submit a new issue
-                          </Typography>
-                        }
-                        placement="bottom"
-                      >
-                        <Button
-                          size="small"
-                          variant="contained"
-                          color="primary"
-                          onClick={() => {
-                            setShowNewIssueDialog(true);
-                            setNewIssueData(rowData);
-                          }}
-                        >
-                          Comment
-                        </Button>
-                      </Tooltip>
-                    );
+                    return <RenderActionsPanel rowData={rowData} />;
                   },
                 },
               ]}
+              columns={tableHeaderOptions}
               data={tableData}
               title="Site Information"
               options={{
+                padding: "default",
                 exportButton: true,
                 exportFileName: "Site Information",
                 addRowPosition: "last",
                 exportAllData: true,
-                pageSize: tableData.length,
                 // pageSizeOptions: [5, 10, 20, 50, tableData.length],
+                pageSize: tableData.length,
                 groupRowSeparator: "  ",
                 grouping: true,
                 headerStyle: {
@@ -341,7 +497,7 @@ const AllDataTable = (props) => {
                 searchAutoFocus: true,
                 toolbarButtonAlignment: "left",
                 actionsColumnIndex: 1,
-                maxBodyHeight: height - 48,
+                maxBodyHeight: height * 0.7,
               }}
             />
           </Grid>
@@ -360,7 +516,7 @@ const AllDataTable = (props) => {
           handleUnenrollClose={handleUnenrollClose}
           setValuesEdited={setValuesEdited}
         />
-        <NewIssueDialog
+        <NewIssueModal
           open={showNewIssueDialog}
           handleNewIssueDialogClose={() => {
             setShowNewIssueDialog(!showNewIssueDialog);
@@ -368,6 +524,7 @@ const AllDataTable = (props) => {
           data={newIssueData}
           setSnackbarData={setSnackbarData}
           snackbarData={snackbarData}
+          nickname={user.nickname}
         />
         <MapModal
           open={mapModalOpen}
@@ -380,6 +537,11 @@ const AllDataTable = (props) => {
   ) : (
     bannedRolesCheckMessage
   );
+};
+
+AllDataTable.propTypes = {
+  /** Is dark theme enabled? */
+  isDarkTheme: PropTypes.bool.isRequired,
 };
 
 export default AllDataTable;

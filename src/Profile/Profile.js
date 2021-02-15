@@ -20,7 +20,11 @@ import {
 import { Context } from "../Store/Store";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 
-// Default function 
+/**
+ * Logged in User's Profile Page
+ */
+
+// Default function
 const Profile = () => {
   const [state, dispatch] = useContext(Context);
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
@@ -92,7 +96,10 @@ const Profile = () => {
                 <CardContent>
                   <Grid container>
                     <Grid item lg={12}>
-                      <table style={{ width: "100%" }}>
+                      <table
+                        style={{ width: "100%" }}
+                        className="profilePageTable"
+                      >
                         <thead>
                           <tr>
                             <th>State</th>

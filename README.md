@@ -1,3 +1,5 @@
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/precision-sustainable-ag/tech-dashboard)
+
 ## Tech Dashboard
 
 ![Update Dev Server](https://github.com/precision-sustainable-ag/tech-dashboard/workflows/Update%20Dev%20Server/badge.svg?branch=dev&event=push)

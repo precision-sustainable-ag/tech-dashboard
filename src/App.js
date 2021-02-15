@@ -28,7 +28,7 @@ import Issue from "./Issues/Issue";
 import "./Styles/App.css";
 import Header from "./Header/Header";
 import { Switch, Route } from "react-router-dom";
-import { ReposComponent } from "./Issues/Issues";
+import Issues from "./Issues/Issues";
 import DevicesComponent from "./Devices/Devices";
 import DeviceComponent from "./Devices/Device/Device";
 import Forms from "./Forms/Forms";
@@ -60,7 +60,6 @@ function useOnlineStatus() {
   return online;
 }
 
-const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -153,7 +152,6 @@ function App() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      console.log(isAuthenticated);
       if (isAuthenticated) {
         setIsLoggedIn(true);
       } else {
@@ -209,15 +207,27 @@ function App() {
 
               <PrivateRoute
                 path="/table"
-                render={(props) => <AllDataTable {...props} />}
+                render={(props) => (
+                  <AllDataTable
+                    isDarkTheme={theme.palette.type === "light" ? false : true}
+                  />
+                )}
               />
               <PrivateRoute
                 path="/site-enroll"
                 render={(props) => <SiteEnrollment {...props} />}
               />
 
-              <PrivateRoute path="/issues" component={ReposComponent} exact />
-              <PrivateRoute path="/issues/:issueNumber" component={Issue} />
+              <PrivateRoute path="/issues" component={Issues} exact />
+              <PrivateRoute
+                path="/issues/:issueNumber"
+                render={(props) => (
+                  <Issue
+                    {...props}
+                    isDarkTheme={theme.palette.type === "light" ? false : true}
+                  />
+                )}
+              />
               <PrivateRoute
                 path="/devices"
                 component={DevicesComponent}
