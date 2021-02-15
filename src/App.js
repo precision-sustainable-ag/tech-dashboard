@@ -60,7 +60,6 @@ function useOnlineStatus() {
   return online;
 }
 
-const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
