@@ -117,7 +117,7 @@ const AllDataTable = (props) => {
   };
 
   // fetch height from useWindowDimensions hook
-  let { height } = useWindowDimensions();
+  let height = window.innerHeight;
 
   // scale height 
   if (height < 900 && height > 600){
