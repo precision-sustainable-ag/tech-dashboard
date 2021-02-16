@@ -4,4 +4,9 @@
 // learn more: https://github.com/testing-library/jest-dom
 
 // Dependency Imports
-import '@testing-library/jest-dom/extend-expect';
+import "@testing-library/jest-dom/extend-expect";
+
+import { configure } from "enzyme";
+import Adapter from "enzyme-adapter-react-16";
+
+configure({ adapter: new Adapter() });
