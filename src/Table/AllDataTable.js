@@ -119,11 +119,10 @@ const AllDataTable = (props) => {
   // fetch height from useWindowDimensions hook
   let height = window.innerHeight;
 
-  // scale height 
-  if (height < 900 && height > 600){
+  // scale height
+  if (height < 900 && height > 600) {
     height -= 130;
-  }
-  else if (height < 600) {
+  } else if (height < 600) {
     height -= 200;
   }
 
@@ -346,19 +345,19 @@ const AllDataTable = (props) => {
   };
 
   const RenderActionsPanel = ({ rowData }) => {
-    const filteredByValue = Object.fromEntries(
-      Object.entries(rowData).filter(
-        ([key, value]) => value === "" || value === "-999" || value === null
-      )
-    );
+    // const filteredByValue = Object.fromEntries(
+    //   Object.entries(rowData).filter(
+    //     ([key, value]) => value === "" || value === "-999" || value === null
+    //   )
+    // );
 
-    let blankEntities = Object.keys(filteredByValue).join(",").split(",");
-    blankEntities =
-      blankEntities.length > 1
-        ? blankEntities.map((e, i) =>
-            i === blankEntities.length - 1 ? ` and ${e}` : `${e}, `
-          )
-        : blankEntities.toString();
+    // let blankEntities = Object.keys(filteredByValue).join(",").split(",");
+    // blankEntities =
+    //   blankEntities.length > 1
+    //     ? blankEntities.map((e, i) =>
+    //         i === blankEntities.length - 1 ? ` and ${e}` : `${e}, `
+    //       )
+    //     : blankEntities.toString();
     return (
       <Grid
         container
@@ -371,7 +370,7 @@ const AllDataTable = (props) => {
           paddingRight: "0.5em",
         }}
       >
-        <Grid item container>
+        {/* <Grid item container>
           {Object.keys(filteredByValue).length > 0 ? (
             <Grid item xs={12}>
               <Alert severity="info">
@@ -383,7 +382,7 @@ const AllDataTable = (props) => {
           ) : (
             ""
           )}
-        </Grid>
+        </Grid> */}
         <Grid item xs={12}>
           <table border="0" className="growerContactInfoTable">
             <thead>
