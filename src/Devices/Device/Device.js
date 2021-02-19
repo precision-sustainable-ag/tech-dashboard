@@ -31,6 +31,7 @@ import {
   Typography,
   Fab,
   Button,
+  TextField,
 } from "@material-ui/core";
 import {
   Create,
@@ -109,6 +110,7 @@ const DeviceComponent = (props) => {
   const [userTimezone, setUserTimezone] = useState("America/New_York");
   const [pagesLoaded, setPagesLoaded] = useState(0);
   const [loadMoreDataURI, setLoadMoreDataURI] = useState("");
+  const [timeEnd, setTimeEnd] = useState(moment().add(1, "day").unix());
 
   useEffect(() => {
     setUserTimezone(moment.tz.guess);
@@ -119,7 +121,7 @@ const DeviceComponent = (props) => {
       Axios.get(
         `${APIURL()}/api/1/devices/${
           props.match.params.deviceId
-        }/?withlocation=true`,
+        }/?withlocation=true&timeend=${timeEnd}`,
         APICreds()
       )
         .then((response) => {
@@ -149,7 +151,7 @@ const DeviceComponent = (props) => {
         data: qs.stringify({
           url: `${APIURL()}/api/1/csr/rdm?deviceid=${
             props.location.state.id
-          }&withlocation=true`,
+          }&withlocation=true&timeend=${timeEnd}`,
         }),
         headers: {
           "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
@@ -180,7 +182,7 @@ const DeviceComponent = (props) => {
           console.error(e);
         });
     }
-  }, []);
+  }, [timeEnd]);
 
   const RenderGridListMap = () => {
     return (
@@ -329,6 +331,18 @@ const DeviceComponent = (props) => {
         </GridList>
 
         <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <TextField
+              type="date"
+              onChange={(e) =>
+                setTimeEnd(moment(e.target.value).add(1, "day").unix())
+              }
+              value={moment
+                .unix(timeEnd)
+                .subtract(1, "day")
+                .format("YYYY-MM-DD")}
+            />
+          </Grid>
           <Grid item xs={12}>
             <RenderDataTable />
           </Grid>
