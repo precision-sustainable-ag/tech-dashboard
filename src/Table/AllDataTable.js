@@ -463,10 +463,10 @@ const AllDataTable = (props) => {
               title="Site Information"
               options={{
                 padding: "default",
-                exportButton: true,
+                exportButton: false,
                 exportFileName: "Site Information",
                 addRowPosition: "last",
-                exportAllData: true,
+                exportAllData: false,
                 // pageSizeOptions: [5, 10, 20, 50, tableData.length],
                 pageSize: tableData.length,
                 groupRowSeparator: "  ",
