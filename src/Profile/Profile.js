@@ -14,11 +14,13 @@ import {
   TableRow,
   TableBody,
   TableCell,
+  Button,
 } from "@material-ui/core";
 
 // Local Imports
 import { Context } from "../Store/Store";
 import { useAuth0 } from "../Auth/react-auth0-spa";
+import { ucFirst } from "../utils/constants";
 
 /**
  * Logged in User's Profile Page
@@ -116,15 +118,19 @@ const Profile = () => {
                         <tbody>
                           {state.userInfo ? (
                             <tr style={{ textAlign: "center" }}>
-                              <td>{state.userInfo.state}</td>
-                              <td>{state.userInfo.role}</td>
-                              <td>{state.userInfo.permissions}</td>
+                              <td>{ucFirst(state.userInfo.state)}</td>
+                              <td>{ucFirst(state.userInfo.role)}</td>
+                              <td>{ucFirst(state.userInfo.permissions)}</td>
                               <td>
                                 {state.userInfo.view_protected === 1
                                   ? "Yes"
                                   : "No"}
                               </td>
-                              <td>{state.userInfo.apikey || "N/A"}</td>
+                              <td>
+                                {state.userInfo.apikey
+                                  ? showAPIKey(state.userInfo.apikey)
+                                  : "N/A"}
+                              </td>
                             </tr>
                           ) : (
                             ""
@@ -140,6 +146,28 @@ const Profile = () => {
         </Box>
       </Box>
     </Paper>
+  );
+};
+
+const showAPIKey = (apiKey) => {
+  return (
+    <span
+      id="showAPIKeyBtn"
+      style={{
+        fontFamily: "Menlo, sans-serif",
+        fontSize: "0.8em",
+        fontStyle: "italic",
+      }}
+    >
+      <Button
+        onClick={() =>
+          (document.getElementById("showAPIKeyBtn").innerHTML = apiKey)
+        }
+        size="small"
+      >
+        Show
+      </Button>
+    </span>
   );
 };
 
