@@ -3,7 +3,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
 // import { Map, Marker, Popup, TileLayer } from "react-leaflet";
 import Skeleton from "@material-ui/lab/Skeleton";
-
+import DateFnsUtils from "@date-io/date-fns";
 import qs from "qs";
 import {
   Card,
@@ -42,6 +42,11 @@ import {
 } from "@material-ui/icons";
 import moment from "moment-timezone";
 import { Link } from "react-router-dom";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
 
 // Local Imports
 import { apiUsername, apiPassword } from "../../utils/api_secret";
@@ -284,7 +289,12 @@ const DeviceComponent = (props) => {
       />
     ));
   };
-
+  const isSafari =
+    navigator.vendor &&
+    navigator.vendor.indexOf("Apple") > -1 &&
+    navigator.userAgent &&
+    navigator.userAgent.indexOf("CriOS") == -1 &&
+    navigator.userAgent.indexOf("FxiOS") == -1;
   const RenderGridListData = () => {
     return (
       <div key="griddata">
@@ -332,16 +342,35 @@ const DeviceComponent = (props) => {
 
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <TextField
-              type="date"
-              onChange={(e) =>
-                setTimeEnd(moment(e.target.value).add(1, "day").unix())
-              }
-              value={moment
-                .unix(timeEnd)
-                .subtract(1, "day")
-                .format("YYYY-MM-DD")}
-            />
+            {!isSafari && (
+              <TextField
+                type="date"
+                label="Show records from"
+                onChange={(e) =>
+                  setTimeEnd(moment(e.target.value).add(1, "day").unix())
+                }
+                value={moment
+                  .unix(timeEnd)
+                  .subtract(1, "day")
+                  .format("YYYY-MM-DD")}
+              />
+            )}
+
+            {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <KeyboardDatePicker
+                margin="normal"
+                id="date-picker-dialog"
+                label="Date picker dialog"
+                format="MM/dd/yyyy"
+                value={moment.unix(timeEnd).format("YYYY-MM-DD")}
+                onChange={(date) =>
+                  setTimeEnd(moment(date).add(1, "day").unix())
+                }
+                KeyboardButtonProps={{
+                  "aria-label": "change date",
+                }}
+              />
+            </MuiPickersUtilsProvider> */}
           </Grid>
           <Grid item xs={12}>
             <RenderDataTable />
