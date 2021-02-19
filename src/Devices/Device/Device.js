@@ -294,35 +294,6 @@ const DeviceComponent = (props) => {
             height: "auto",
           }}
         >
-          <GridListTile style={{ height: "auto" }}>
-            <List>
-              <ListItem alignItems="flex-start" key="created">
-                <ListItemIcon>
-                  <Create />
-                </ListItemIcon>
-                <ListItemText
-                  primary={"Created"}
-                  secondary={moment
-                    .tz(deviceData.whencreated, "UTC")
-                    .tz(userTimezone)
-                    .format("MM/DD/YYYY hh:mm A")}
-                />
-              </ListItem>
-            </List>
-          </GridListTile>
-          <GridListTile style={{ height: "auto" }}>
-            <List>
-              <ListItem alignItems="flex-start" key="network">
-                <ListItemIcon>
-                  <NetworkCell />
-                </ListItemIcon>
-                <ListItemText
-                  primary={"Network"}
-                  secondary={deviceData.links.cellular[0].last_network_used}
-                />
-              </ListItem>
-            </List>
-          </GridListTile>
           {deviceData.links && deviceData.links.cellular && (
             <GridListTile style={{ height: "auto" }}>
               <List>
@@ -342,6 +313,19 @@ const DeviceComponent = (props) => {
               </List>
             </GridListTile>
           )}
+          <GridListTile style={{ height: "auto" }}>
+            <List>
+              <ListItem alignItems="flex-start" key="network">
+                <ListItemIcon>
+                  <NetworkCell />
+                </ListItemIcon>
+                <ListItemText
+                  primary={"Network"}
+                  secondary={deviceData.links.cellular[0].last_network_used}
+                />
+              </ListItem>
+            </List>
+          </GridListTile>
         </GridList>
 
         <Grid container spacing={3}>
