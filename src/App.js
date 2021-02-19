@@ -32,7 +32,7 @@ import Issues from "./Issues/Issues";
 import DevicesComponent from "./Devices/Devices";
 import DeviceComponent from "./Devices/Device/Device";
 import Forms from "./Forms/Forms";
-import LandingComponent from "./Landing/Landing";
+import { LandingComponent } from "./Landing/Landing";
 import { WifiOff } from "@material-ui/icons";
 
 // Helper function
