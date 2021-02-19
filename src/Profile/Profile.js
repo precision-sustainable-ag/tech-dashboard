@@ -53,7 +53,11 @@ const Profile = () => {
                   }
                 />
                 <CardContent>
-                  <TableContainer component={Paper} elevation={0}>
+                  <TableContainer
+                    component={Paper}
+                    elevation={0}
+                    style={{ minHeight: "50vh" }}
+                  >
                     <Table>
                       <TableBody>
                         <TableRow>
@@ -94,7 +98,7 @@ const Profile = () => {
                   }
                 />
                 <CardContent>
-                  <Grid container>
+                  <Grid container style={{ minHeight: "50vh" }}>
                     <Grid item lg={12}>
                       <table
                         style={{ width: "100%" }}
@@ -106,6 +110,7 @@ const Profile = () => {
                             <th>Role</th>
                             <th>Permissions</th>
                             <th>View Protected</th>
+                            <th>API Key</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -119,6 +124,7 @@ const Profile = () => {
                                   ? "Yes"
                                   : "No"}
                               </td>
+                              <td>{state.userInfo.apikey || "N/A"}</td>
                             </tr>
                           ) : (
                             ""
@@ -132,31 +138,6 @@ const Profile = () => {
             </Grid>
           </Grid>
         </Box>
-        {/* <Grid container>
-          <Grid item lg={6}>
-            <Paper square>
-              <Tabs
-                value={value}
-                indicatorColor="primary"
-                textColor="primary"
-                onChange={handleChange}
-                aria-label="disabled tabs example"
-              >
-                <Tab label="Active" />
-                <Tab label="Disabled" disabled />
-                <Tab label="Active" />
-              </Tabs>
-            </Paper>
-          </Grid>
-        </Grid> */}
-
-        {/* <Grid container lg={12} spacing={2}>
-          <Grid item>
-            <Button>Request Access</Button>
-            <Button>API Access</Button>
-          </Grid>
-        </Grid> */}
-        {/* <Grid container lg={6}></Grid> */}
       </Box>
     </Paper>
   );
