@@ -14,11 +14,13 @@ import {
   TableRow,
   TableBody,
   TableCell,
+  Button,
 } from "@material-ui/core";
 
 // Local Imports
 import { Context } from "../Store/Store";
 import { useAuth0 } from "../Auth/react-auth0-spa";
+import { ucFirst } from "../utils/constants";
 
 /**
  * Logged in User's Profile Page
@@ -53,7 +55,11 @@ const Profile = () => {
                   }
                 />
                 <CardContent>
-                  <TableContainer component={Paper} elevation={0}>
+                  <TableContainer
+                    component={Paper}
+                    elevation={0}
+                    style={{ minHeight: "50vh" }}
+                  >
                     <Table>
                       <TableBody>
                         <TableRow>
@@ -94,7 +100,7 @@ const Profile = () => {
                   }
                 />
                 <CardContent>
-                  <Grid container>
+                  <Grid container style={{ minHeight: "50vh" }}>
                     <Grid item lg={12}>
                       <table
                         style={{ width: "100%" }}
@@ -106,18 +112,24 @@ const Profile = () => {
                             <th>Role</th>
                             <th>Permissions</th>
                             <th>View Protected</th>
+                            <th>API Key</th>
                           </tr>
                         </thead>
                         <tbody>
                           {state.userInfo ? (
                             <tr style={{ textAlign: "center" }}>
-                              <td>{state.userInfo.state}</td>
-                              <td>{state.userInfo.role}</td>
-                              <td>{state.userInfo.permissions}</td>
+                              <td>{ucFirst(state.userInfo.state)}</td>
+                              <td>{ucFirst(state.userInfo.role)}</td>
+                              <td>{ucFirst(state.userInfo.permissions)}</td>
                               <td>
                                 {state.userInfo.view_protected === 1
                                   ? "Yes"
                                   : "No"}
+                              </td>
+                              <td>
+                                {state.userInfo.apikey
+                                  ? showAPIKey(state.userInfo.apikey)
+                                  : "N/A"}
                               </td>
                             </tr>
                           ) : (
@@ -132,33 +144,30 @@ const Profile = () => {
             </Grid>
           </Grid>
         </Box>
-        {/* <Grid container>
-          <Grid item lg={6}>
-            <Paper square>
-              <Tabs
-                value={value}
-                indicatorColor="primary"
-                textColor="primary"
-                onChange={handleChange}
-                aria-label="disabled tabs example"
-              >
-                <Tab label="Active" />
-                <Tab label="Disabled" disabled />
-                <Tab label="Active" />
-              </Tabs>
-            </Paper>
-          </Grid>
-        </Grid> */}
-
-        {/* <Grid container lg={12} spacing={2}>
-          <Grid item>
-            <Button>Request Access</Button>
-            <Button>API Access</Button>
-          </Grid>
-        </Grid> */}
-        {/* <Grid container lg={6}></Grid> */}
       </Box>
     </Paper>
+  );
+};
+
+const showAPIKey = (apiKey) => {
+  return (
+    <span
+      id="showAPIKeyBtn"
+      style={{
+        fontFamily: "Menlo, sans-serif",
+        fontSize: "0.8em",
+        fontStyle: "italic",
+      }}
+    >
+      <Button
+        onClick={() =>
+          (document.getElementById("showAPIKeyBtn").innerHTML = apiKey)
+        }
+        size="small"
+      >
+        Show
+      </Button>
+    </span>
   );
 };
 

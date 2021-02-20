@@ -3,7 +3,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
 // import { Map, Marker, Popup, TileLayer } from "react-leaflet";
 import Skeleton from "@material-ui/lab/Skeleton";
-
+import DateFnsUtils from "@date-io/date-fns";
 import qs from "qs";
 import {
   Card,
@@ -31,6 +31,7 @@ import {
   Typography,
   Fab,
   Button,
+  TextField,
 } from "@material-ui/core";
 import {
   Create,
@@ -41,6 +42,11 @@ import {
 } from "@material-ui/icons";
 import moment from "moment-timezone";
 import { Link } from "react-router-dom";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
 
 // Local Imports
 import { apiUsername, apiPassword } from "../../utils/api_secret";
@@ -109,6 +115,7 @@ const DeviceComponent = (props) => {
   const [userTimezone, setUserTimezone] = useState("America/New_York");
   const [pagesLoaded, setPagesLoaded] = useState(0);
   const [loadMoreDataURI, setLoadMoreDataURI] = useState("");
+  const [timeEnd, setTimeEnd] = useState(moment().add(1, "day").unix());
 
   useEffect(() => {
     setUserTimezone(moment.tz.guess);
@@ -119,7 +126,7 @@ const DeviceComponent = (props) => {
       Axios.get(
         `${APIURL()}/api/1/devices/${
           props.match.params.deviceId
-        }/?withlocation=true`,
+        }/?withlocation=true&timeend=${timeEnd}`,
         APICreds()
       )
         .then((response) => {
@@ -149,7 +156,7 @@ const DeviceComponent = (props) => {
         data: qs.stringify({
           url: `${APIURL()}/api/1/csr/rdm?deviceid=${
             props.location.state.id
-          }&withlocation=true`,
+          }&withlocation=true&timeend=${timeEnd}`,
         }),
         headers: {
           "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
@@ -180,7 +187,7 @@ const DeviceComponent = (props) => {
           console.error(e);
         });
     }
-  }, []);
+  }, [timeEnd]);
 
   const RenderGridListMap = () => {
     return (
@@ -282,7 +289,12 @@ const DeviceComponent = (props) => {
       />
     ));
   };
-
+  const isSafari =
+    navigator.vendor &&
+    navigator.vendor.indexOf("Apple") > -1 &&
+    navigator.userAgent &&
+    navigator.userAgent.indexOf("CriOS") == -1 &&
+    navigator.userAgent.indexOf("FxiOS") == -1;
   const RenderGridListData = () => {
     return (
       <div key="griddata">
@@ -294,35 +306,6 @@ const DeviceComponent = (props) => {
             height: "auto",
           }}
         >
-          <GridListTile style={{ height: "auto" }}>
-            <List>
-              <ListItem alignItems="flex-start" key="created">
-                <ListItemIcon>
-                  <Create />
-                </ListItemIcon>
-                <ListItemText
-                  primary={"Created"}
-                  secondary={moment
-                    .tz(deviceData.whencreated, "UTC")
-                    .tz(userTimezone)
-                    .format("MM/DD/YYYY hh:mm A")}
-                />
-              </ListItem>
-            </List>
-          </GridListTile>
-          <GridListTile style={{ height: "auto" }}>
-            <List>
-              <ListItem alignItems="flex-start" key="network">
-                <ListItemIcon>
-                  <NetworkCell />
-                </ListItemIcon>
-                <ListItemText
-                  primary={"Network"}
-                  secondary={deviceData.links.cellular[0].last_network_used}
-                />
-              </ListItem>
-            </List>
-          </GridListTile>
           {deviceData.links && deviceData.links.cellular && (
             <GridListTile style={{ height: "auto" }}>
               <List>
@@ -342,9 +325,53 @@ const DeviceComponent = (props) => {
               </List>
             </GridListTile>
           )}
+          <GridListTile style={{ height: "auto" }}>
+            <List>
+              <ListItem alignItems="flex-start" key="network">
+                <ListItemIcon>
+                  <NetworkCell />
+                </ListItemIcon>
+                <ListItemText
+                  primary={"Network"}
+                  secondary={deviceData.links.cellular[0].last_network_used}
+                />
+              </ListItem>
+            </List>
+          </GridListTile>
         </GridList>
 
         <Grid container spacing={3}>
+          <Grid item xs={12}>
+            {!isSafari && (
+              <TextField
+                type="date"
+                label="Show records from"
+                onChange={(e) =>
+                  setTimeEnd(moment(e.target.value).add(1, "day").unix())
+                }
+                value={moment
+                  .unix(timeEnd)
+                  .subtract(1, "day")
+                  .format("YYYY-MM-DD")}
+              />
+            )}
+
+            {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <KeyboardDatePicker
+                margin="normal"
+                id="date-picker-dialog"
+                label="Date picker dialog"
+                format="MM/dd/yyyy"
+                value={moment.unix(timeEnd).format("YYYY-MM-DD")}
+                onChange={(date) =>
+                  setTimeEnd(moment(date).add(1, "day").unix())
+                }
+                KeyboardButtonProps={{
+                  "aria-label": "change date",
+                }}
+              />
+            </MuiPickersUtilsProvider> */}
+          </Grid>
           <Grid item xs={12}>
             <RenderDataTable />
           </Grid>

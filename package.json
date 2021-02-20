@@ -7,15 +7,15 @@
     "@material-ui/core": "^4.11.2",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
-    "@octokit/auth": "^3.0.2",
-    "@octokit/rest": "^18.1.1",
+    "@octokit/auth": "^3.0.3",
+    "@octokit/rest": "^18.2.0",
     "@uiw/react-md-editor": "^2.1.6",
     "autosuggest-highlight": "^3.1.1",
     "axios": "^0.21.1",
     "clsx": "^1.1.1",
     "d3": "^6.5.0",
     "google-map-react": "^2.1.9",
-    "highcharts": "^9.0.0",
+    "highcharts": "^9.0.1",
     "highcharts-react-official": "^3.0.0",
     "install": "^0.13.0",
     "is-ip": "^3.1.0",
@@ -51,7 +51,8 @@
     "production": [
       ">0.2%",
       "not dead",
-      "not op_mini all"
+      "not op_mini all",
+      "not IE 11"
     ],
     "development": [
       "last 1 chrome version",
@@ -59,11 +60,26 @@
       "last 1 safari version"
     ]
   },
+  "jest": {
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/index.js"
+    ],
+    "coverageReporters": [
+      "text"
+    ]
+  },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/react-hooks": "^5.0.3",
     "@testing-library/user-event": "^12.7.1",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.6",
+    "enzyme-to-json": "^3.6.1",
     "gh-pages": "^3.1.0",
     "node-sass": "^4.14.1",
     "react-styleguidist": "^11.1.5",
