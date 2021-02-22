@@ -37,10 +37,10 @@ const RenderTimelineContent = (props) => {
                   Enroll Growers -{" "}
                   <a
                     rel="noreferrer"
-                    href="https://ee.kobotoolbox.org/x/SfB2TBdv"
+                    href="/site-enrollment"
                     target="_blank"
                   >
-                    PSA Field Form
+                    Site Enrollment
                   </a>
                 </li>
                 <li>Ensure clean bare ground strips</li>
