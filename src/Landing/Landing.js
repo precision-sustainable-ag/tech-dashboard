@@ -37,7 +37,7 @@ const RenderTimelineContent = (props) => {
                   Enroll Growers -{" "}
                   <a
                     rel="noreferrer"
-                    href="/site-enrollment"
+                    href="/site-enroll"
                     target="_blank"
                   >
                     Site Enrollment
