@@ -39,7 +39,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "react-scripts test --env=jsdom --coverage",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
@@ -61,12 +61,9 @@
     ]
   },
   "jest": {
+    
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
-    ],
-    "collectCoverageFrom": [
-      "src/**/*.js",
-      "!src/index.js"
     ],
     "coverageReporters": [
       "text"
