@@ -21,9 +21,10 @@ import {
 // Local Imports
 import { Context } from "../Store/Store";
 import { useAuth0 } from "../Auth/react-auth0-spa";
-import { ucFirst } from "../utils/constants";
+import { bannedRoles, ucFirst } from "../utils/constants";
 import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
 import { Fragment } from "react";
+import { BannedRoleMessage } from "../utils/CustomComponents";
 
 /**
  * Logged in User's Profile Page
@@ -69,7 +70,11 @@ const Profile = () => {
   };
 
   return (
-    isAuthenticated && (
+    isAuthenticated &&
+    (bannedRoles.includes(state.userInfo.role) ||
+    bannedRoles.includes(state.userInfo.state) ? (
+      <BannedRoleMessage title="profile page" />
+    ) : (
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Typography variant="subtitle1">Welcome, {user.name}</Typography>
@@ -106,7 +111,7 @@ const Profile = () => {
           </Grid>
         )}
       </Grid>
-    )
+    ))
   );
 };
 
@@ -179,29 +184,6 @@ const RenderGeneralInfo = ({ userInfo }) => {
                 </TableRow>
               )
             )}
-          {/* <TableRow style={{ textAlign: "center" }}>
-            <TableCell>
-              <Typography variant="body1">{ucFirst(userInfo.state)}</Typography>
-            </TableCell>
-            <TableCell>
-              <Typography variant="body1">{ucFirst(userInfo.role)}</Typography>
-            </TableCell>
-            <TableCell>
-              <Typography variant="body1">
-                {ucFirst(userInfo.permissions)}
-              </Typography>
-            </TableCell>
-            <TableCell>
-              <Typography variant="body1">
-                {userInfo.view_protected === 1 ? "Yes" : "No"}
-              </Typography>
-            </TableCell>
-            <TableCell>
-              <Typography variant="body1" component="div">
-                {userInfo.apikey ? showAPIKey(userInfo.apikey) : "N/A"}
-              </Typography>
-            </TableCell>
-          </TableRow> */}
         </TableBody>
       </Table>
     </TableContainer>
@@ -278,201 +260,6 @@ const RenderKoboDetails = ({ koboData = { data: [], allStates: false } }) => {
     ""
   );
 };
-
-// <Grid item xs={12}>
-//   <Typography variant="h4">Your Roles and Permissions</Typography>
-// </Grid>
-// <Grid item>
-//   <Card>
-//     <CardHeader title="State" />
-//     <CardContent>{ucFirst(state.userInfo.state)}</CardContent>
-//   </Card>
-// </Grid>
-// <Grid item>
-//   <Card>
-//     <CardHeader title="Role" />
-//     <CardContent>{ucFirst(state.userInfo.role)}</CardContent>
-//   </Card>
-// </Grid>
-// <Grid item>
-//   <Card>
-//     <CardHeader title="Permissions" />
-//     <CardContent>
-//       {ucFirst(state.userInfo.permissions.split(",").join(", "))}
-//     </CardContent>
-//   </Card>
-// </Grid>
-// {state.userInfo.apikey ? (
-//   <Grid item>
-//     <Card>
-//       <CardHeader title="API Key" />
-//       <CardContent>
-//         {showAPIKey(state.userInfo.apikey)}
-//       </CardContent>
-//     </Card>
-//   </Grid>
-// ) : (
-//   "N/A"
-// )}
-
-// Default function
-// const Profile = () => {
-//   const [state, dispatch] = useContext(Context);
-//   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
-//   const [value, setValue] = React.useState(2);
-
-//   const handleChange = (event, newValue) => {
-//     setValue(newValue);
-//   };
-//   return (
-//     <Paper elevation={0}>
-//       <Box paddingTop={"2em"} padding={"1em"} minHeight={"80vh"} gridGap={2}>
-//         <Box>
-//           <Grid container spacing={2}>
-//             <Grid item lg={4}>
-//               <Card elevation={2}>
-//                 <CardHeader
-//                   title={
-//                     <Typography variant="h6" align="left">
-//                       {user.name}
-//                     </Typography>
-//                   }
-//                   avatar={
-//                     <Avatar alt={user.name} src={user.picture}>
-//                       A
-//                     </Avatar>
-//                   }
-//                 />
-//                 <CardContent>
-//                   <TableContainer
-//                     component={Paper}
-//                     elevation={0}
-//                     style={{ minHeight: "50vh" }}
-//                   >
-// <Table>
-//   <TableBody>
-//     <TableRow>
-//       <TableCell>Profile</TableCell>
-//       <TableCell>GitHub</TableCell>
-//     </TableRow>
-//     <TableRow>
-//       <TableCell>Nickname</TableCell>
-//       <TableCell>{user.nickname}</TableCell>
-//     </TableRow>
-//     <TableRow>
-//       <TableCell>Email</TableCell>
-//       <TableCell>{user.email}</TableCell>
-//     </TableRow>
-//     <TableRow>
-//       <TableCell>Verified</TableCell>
-//       <TableCell>
-//         {user.email_verified.toString()}
-//       </TableCell>
-//     </TableRow>
-//     <TableRow>
-//       <TableCell>Sub</TableCell>
-//       <TableCell>{user.sub}</TableCell>
-//     </TableRow>
-//   </TableBody>
-// </Table>
-//                   </TableContainer>
-//                 </CardContent>
-//               </Card>
-//             </Grid>
-//             <Grid item lg={8}>
-//               <Card elevation={2}>
-//                 <CardHeader
-//                   title={
-//                     <Typography variant="h6" align="left">
-//                       You have the following roles and permissions
-//                     </Typography>
-//                   }
-//                 />
-//                 <CardContent>
-//                   <Grid container style={{ minHeight: "50vh" }}>
-//                     <Grid item lg={12}>
-//                       <table
-//                         style={{ width: "100%" }}
-//                         className="profilePageTable"
-//                       >
-// <thead>
-//   <tr>
-//     <th>State</th>
-//     <th>Role</th>
-//     <th>Permissions</th>
-//     <th>View Protected</th>
-//     <th>API Key</th>
-//   </tr>
-// </thead>
-// <tbody>
-//   {state.userInfo ? (
-//     <tr style={{ textAlign: "center" }}>
-//       <td>{ucFirst(state.userInfo.state)}</td>
-//       <td>{ucFirst(state.userInfo.role)}</td>
-//       <td>{ucFirst(state.userInfo.permissions)}</td>
-//       <td>
-//         {state.userInfo.view_protected === 1
-//           ? "Yes"
-//           : "No"}
-//       </td>
-//       <td>
-//         {state.userInfo.apikey
-//           ? showAPIKey(state.userInfo.apikey)
-//           : "N/A"}
-//       </td>
-//     </tr>
-//   ) : (
-//     ""
-//   )}
-// </tbody>
-//                       </table>
-//                     </Grid>
-//                     <Grid item xs={12}>
-//                       <RenderKoboPasswords states={state.userInfo.state} />
-//                     </Grid>
-//                   </Grid>
-//                 </CardContent>
-//               </Card>
-//             </Grid>
-//           </Grid>
-//         </Box>
-//       </Box>
-//     </Paper>
-//   );
-// };
-
-// const showAPIKey = (apiKey) => {
-//   return (
-//     <span
-//       id="showAPIKeyBtn"
-//       style={{
-//         fontFamily: "Menlo, sans-serif",
-//         fontSize: "0.8em",
-//         fontStyle: "italic",
-//       }}
-//     >
-//       <Button
-//         onClick={() =>
-//           (document.getElementById("showAPIKeyBtn").innerHTML = apiKey)
-//         }
-//         size="small"
-//       >
-//         Show
-//       </Button>
-//     </span>
-//   );
-// };
-
-// const RenderKoboPasswords = ({ states }) => {
-//   return (
-//     <Grid container>
-//       <Grid item xs={12}>
-//         <Typography variant="h5">Kobo Account Details</Typography>
-//         {states}
-//       </Grid>
-//     </Grid>
-//   );
-// };
 
 const showAPIKey = (apiKey) => {
   return (
