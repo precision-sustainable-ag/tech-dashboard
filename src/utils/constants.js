@@ -100,16 +100,24 @@ export const fetchGrowerByLastName = async (query) => {
   });
 };
 
-export const ucFirst = (str) => {
-  if (str === null) {
-    return "Not Provided";
+export const ucFirst = (str = "") => {
+  if (typeof str === "undefined" || str === undefined || str.length === 0) {
+    return "";
+  } else if (typeof str !== "string") {
+    return str;
   } else {
-    if (str.length > 0) return str.charAt(0).toUpperCase() + str.slice(1);
-    else return str.toUpperCase();
+    let strArr = str.split(" ");
+    return strArr.reduce((accumulator, currentVal, currentIndex) => {
+      currentVal = currentVal[0].toUpperCase() + currentVal.slice(1);
+      if (currentIndex !== strArr.length - 1)
+        return accumulator + currentVal + " ";
+      else return accumulator + currentVal;
+    }, "");
   }
 };
 
 export const format_AM_PM = (date) => {
+  if (Object.prototype.toString.call(date) !== "[object Date]") return date;
   var hours = date.getHours();
   var minutes = date.getMinutes();
   var ampm = hours >= 12 ? "PM" : "AM";
