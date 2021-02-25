@@ -32,7 +32,7 @@ import Issues from "./Issues/Issues";
 import DevicesComponent from "./Devices/Devices";
 import DeviceComponent from "./Devices/Device/Device";
 import Forms from "./Forms/Forms";
-import { LandingComponent } from "./Landing/Landing";
+import { Landing } from "./Landing/Landing";
 import { WifiOff } from "@material-ui/icons";
 
 // Helper function
@@ -100,6 +100,7 @@ function App() {
       useNextVariants: true,
       fontFamily: "bilo, sans-serif",
     },
+
     overrides: {
       MuiTooltip: {
         tooltip: {
@@ -161,7 +162,7 @@ function App() {
     if (!loading) {
       checkAuth();
     }
-  }, [loading, getTokenSilently]);
+  }, [loading, getTokenSilently, isAuthenticated]);
 
   return online ? (
     loading ? (
@@ -196,8 +197,11 @@ function App() {
             <Switch>
               <Route
                 render={(props) => (
-                  <LandingComponent
-                    {...props}
+                  // <LandingComponent
+                  //   {...props}
+                  //   isDarkTheme={theme.palette.type === "light" ? false : true}
+                  // />
+                  <Landing
                     isDarkTheme={theme.palette.type === "light" ? false : true}
                   />
                 )}
