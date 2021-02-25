@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   withStyles,
   Switch,
@@ -9,11 +9,14 @@ import {
   Zoom,
   useScrollTrigger,
   makeStyles,
+  Grid,
+  Button,
 } from "@material-ui/core";
 import Loading from "react-loading";
 
 // Local Imports
 import { primaryContactPerson } from "./api_secret";
+import { Context } from "../Store/Store";
 
 // Styles
 export const AntSwitch = withStyles((theme) => ({
@@ -51,22 +54,45 @@ export const AntSwitch = withStyles((theme) => ({
 }))(Switch);
 
 // Helper functions
-export const BannedRoleMessage = (props) => {
-  let title = props.title;
-  if (title.length === 0) title = "Anything";
-
+export const BannedRoleMessage = ({ title }) => {
+  const [state] = useContext(Context);
   return (
-    <Box component={Paper} elevation={0}>
-      <Typography variant={"h6"} align="center">
-        Your access level does not permit this action. If you think you are
-        seeing this as an error, please report this to{" "}
-        {primaryContactPerson.name}{" "}
-        <a
-          href={`mailto:${primaryContactPerson.email}?subject=Unable to view ${title} on PSA Tech Dashboard`}
-        >
-          here
-        </a>
-      </Typography>
+    <Box component={Paper} elevation={1} p={2}>
+      <Grid
+        container
+        justify="center"
+        alignItems="center"
+        direction="column"
+        style={{ minHeight: "50vh" }}
+        spacing={3}
+      >
+        <Grid item>
+          <Typography variant={"h4"}>
+            Your access level does not permit this action
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Typography variant="body1">
+            If you think you are seeing this as an error, please report this to{" "}
+            {primaryContactPerson.name}
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Button
+            variant="contained"
+            color="primary"
+            target="_top"
+            href={`mailto:${primaryContactPerson.email}?subject=Unable%20to%20view%20${title}%20on%20PSA%20Tech%20Dashboard&body=I%20am%20unable%20to%20view%20${title}.%20Please verify my permissions. My login email for the dashboard is ${state.userInfo.email}`}
+          >
+            Report Error
+          </Button>
+        </Grid>
+      </Grid>{" "}
+      {/* <a
+        href={`mailto:${primaryContactPerson.email}?subject=Unable to view ${title} on PSA Tech Dashboard`}
+      >
+        here
+      </a> */}
     </Box>
   );
 };
