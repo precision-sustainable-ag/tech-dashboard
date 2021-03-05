@@ -29,15 +29,16 @@ import "./Styles/App.css";
 import Header from "./Header/Header";
 import { Switch, Route } from "react-router-dom";
 import Issues from "./Issues/Issues";
-import DevicesComponent from "./Devices/Devices";
+// import DevicesComponent from "./Devices/Devices";
 import DeviceComponent from "./Devices/Device/Device";
 import Forms from "./Forms/Forms";
-import { Landing } from "./Landing/Landing";
+// import { Landing } from "./Landing/Landing";
 import { WifiOff } from "@material-ui/icons";
 import Protocols from "./Protocols/Protocols";
 import StressCams from "./Devices/StressCams/StressCams";
 import WaterSensors from "./Devices/WaterSensors/WaterSensors";
 import DevicesWrapper from "./Devices/DevicesWrapper/DevicesWrapper";
+import TaskTimeline from "./Landing/TaskTimeline/TaskTimeline";
 
 // Helper function
 function useOnlineStatus() {
@@ -205,7 +206,7 @@ function App() {
                   //   {...props}
                   //   isDarkTheme={theme.palette.type === "light" ? false : true}
                   // />
-                  <Landing
+                  <TaskTimeline
                     isDarkTheme={theme.palette.type === "light" ? false : true}
                   />
                 )}
