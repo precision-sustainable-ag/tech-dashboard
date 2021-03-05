@@ -45,6 +45,7 @@ const DataParser = (props) => {
   const [dateStatus, setDateStatus] = useState("");
   const [dateStringFormatted, setDateStringFormatted] = useState("");
   let device = props.deviceData;
+  device.for = props.for;
   // console.log("deviceData", props.deviceData);
   const setDeviceState = (deviceId) => {
     setDeviceId(deviceId);

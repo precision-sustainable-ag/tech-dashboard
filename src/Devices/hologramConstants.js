@@ -1,20 +1,12 @@
 // Local Imports
-import { hologramAPIKey, apiURL } from "../utils/api_secret";
+import {
+  hologramAPIKey,
+  apiURL,
+  hologramStressCamAPIKey,
+} from "../utils/api_secret";
 
 // Global Vars
 export const apiCorsUrl = `${apiURL}/api/hologram/remote/devices`;
-
-// export const apiCorsCreds = () => {
-//   const authKey = `psaadmin:${hologramAPIKey}`;
-//   let authBase64 = btoa(authKey);
-//   let options = {
-//     responseType: "json",
-//     headers: {
-//       Authorization: `Basic ${authBase64}`
-//     }
-//   };
-//   return options;
-// };
 
 // Helper Functions
 export const APIURL = () => {
@@ -40,6 +32,18 @@ export const APIURL = () => {
 
 export const APICreds = () => {
   const authKey = `apikey:${hologramAPIKey}`;
+  let authBase64 = btoa(authKey);
+  let options = {
+    responseType: "json",
+    headers: {
+      Authorization: `Basic ${authBase64}`,
+    },
+  };
+  return options;
+};
+
+export const StressCamCreds = () => {
+  const authKey = `apikey:${hologramStressCamAPIKey}`;
   let authBase64 = btoa(authKey);
   let options = {
     responseType: "json",

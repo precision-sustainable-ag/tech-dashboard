@@ -34,6 +34,10 @@ import DeviceComponent from "./Devices/Device/Device";
 import Forms from "./Forms/Forms";
 import { Landing } from "./Landing/Landing";
 import { WifiOff } from "@material-ui/icons";
+import Protocols from "./Protocols/Protocols";
+import StressCams from "./Devices/StressCams/StressCams";
+import WaterSensors from "./Devices/WaterSensors/WaterSensors";
+import DevicesWrapper from "./Devices/DevicesWrapper/DevicesWrapper";
 
 // Helper function
 function useOnlineStatus() {
@@ -208,6 +212,30 @@ function App() {
                 path="/"
                 exact
               />
+              <PrivateRoute
+                path="/on-farm-protocols"
+                render={(props) => (
+                  <Protocols
+                    isDarkTheme={theme.palette.type === "light" ? false : true}
+                  />
+                )}
+              />
+              <PrivateRoute
+                path="/devices/stress-cams"
+                render={(props) => (
+                  <StressCams
+                    isDarkTheme={theme.palette.type === "light" ? false : true}
+                  />
+                )}
+              />
+              <PrivateRoute
+                path="/devices/water-sensors"
+                render={(props) => (
+                  <WaterSensors
+                    isDarkTheme={theme.palette.type === "light" ? false : true}
+                  />
+                )}
+              />
 
               <PrivateRoute
                 path="/table"
@@ -232,11 +260,7 @@ function App() {
                   />
                 )}
               />
-              <PrivateRoute
-                path="/devices"
-                component={DevicesComponent}
-                exact
-              />
+              <PrivateRoute path="/devices" component={DevicesWrapper} exact />
               <PrivateRoute
                 path={`/devices/:deviceId`}
                 render={(props) => (

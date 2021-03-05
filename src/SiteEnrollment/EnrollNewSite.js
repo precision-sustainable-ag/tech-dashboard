@@ -130,9 +130,7 @@ const EnrollNewSite = (props) => {
         if (state.userInfo.state === "all") {
           setAllAffiliations(affiliations);
         } else {
-          const dbPermittedAffiliations = state.userInfo.state
-            .toUpperCase()
-            .split(",");
+          const dbPermittedAffiliations = state.userInfo.state.split(",");
           dbPermittedAffiliations.forEach((element) => {
             let a = affiliations.filter((data) => data.affiliation === element);
             permittedAffiliations.push(a);

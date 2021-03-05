@@ -9,10 +9,10 @@ import { apiCorsUrl } from "../Devices/hologramConstants";
 // anyone with these roles are not supposed to view anything !
 export const bannedRoles = ["default", "Default", "none", ""];
 
-export const apiCall = async (url, options) => {
+export const apiCall = async (url, options, from) => {
   return await Axios({
     method: "post",
-    url: apiCorsUrl,
+    url: apiCorsUrl + `/${from}`,
     data: qs.stringify({
       url: url,
     }),
@@ -126,4 +126,18 @@ export const format_AM_PM = (date) => {
   minutes = minutes < 10 ? "0" + minutes : minutes;
   var strTime = hours + ":" + minutes + " " + ampm;
   return strTime;
+};
+
+export const compareStrings = (a, b) => {
+  // Use toUpperCase() to ignore character casing
+  let bandA = a.name.toUpperCase();
+  let bandB = b.name.toUpperCase();
+
+  let comparison = 0;
+  if (bandA > bandB) {
+    comparison = 1;
+  } else if (bandA < bandB) {
+    comparison = -1;
+  }
+  return comparison;
 };

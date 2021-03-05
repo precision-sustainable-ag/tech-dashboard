@@ -1,17 +1,15 @@
-import { Grid, makeStyles, Paper, Typography } from "@material-ui/core";
-import { teal } from "@material-ui/core/colors";
+// Dependency Imports
+import React, { useEffect } from "react";
+import { Typography, Grid, Paper, makeStyles } from "@material-ui/core";
 import {
   Timeline,
   TimelineItem,
-  TimelineConnector,
-  TimelineDot,
-  TimelineOppositeContent,
   TimelineSeparator,
+  TimelineDot,
+  TimelineConnector,
   TimelineContent,
-  Skeleton,
+  TimelineOppositeContent,
 } from "@material-ui/lab";
-import React, { useState, useEffect } from "react";
-import { ucFirst } from "../../utils/constants";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -21,141 +19,200 @@ const useStyles = makeStyles((theme) => ({
   secondaryTail: {
     backgroundColor: theme.palette.secondary.main,
   },
-  typography: {
-    color: theme.palette.type === "dark" ? teal[400] : "inherit",
-    fontWeight: theme.palette.type === "dark" ? "bolder" : "inherit",
-    transition: "all 0.3s linear",
-  },
 }));
 
-/**
- * On farm timeline component
- */
+const RenderTimelineContent = (props) => {
+  // const docBody =
 
-const TaskTimeline = () => {
-  const [wpData, setWPData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [plantingData, setPlantingData] = useState(null);
-  const [terminationData, setTerminationData] = useState(null);
-  const [fertilizerData, setFertilizerData] = useState(null);
-  const [harvestData, setHarvestData] = useState(null);
-  const style = useStyles();
-
-  useEffect(() => {
-    const fetchTimelineData = async () => {
-      const response = await fetch(
-        "https://precisionsustainableag.org/internal/wp-json/wp/v2/pages/1592"
-      );
-      const payload = await response.json();
-      const { title, status, content } = payload;
-      return { title, status, content };
-    };
-
-    fetchTimelineData()
-      .then((response) => {
-        const stripped = response.content.rendered.replace(/\[.*?\]/g, "");
-        var doc = new DOMParser().parseFromString(stripped, "text/html");
-        const timelineData = doc.getElementsByClassName("timeline-data");
-        const coverCropPlantingData = timelineData.namedItem(
-          "cover-crop-planting"
-        );
-        const coverCropTerminationData = timelineData.namedItem(
-          "cover-crop-termination"
-        );
-        const sideDressFertilizerData = timelineData.namedItem(
-          "side-dress-fertilizer"
-        );
-        const cropHarvestData = timelineData.namedItem("crop-harvest");
-
-        setFertilizerData(sideDressFertilizerData || null);
-        setHarvestData(cropHarvestData || null);
-        setPlantingData(coverCropPlantingData || null);
-        setTerminationData(coverCropTerminationData || null);
-        setWPData(response);
-      })
-      .then(() => {
-        setLoading(false);
-      });
-  }, []);
-
-  const RenderData = ({ data = Element, from, style }) => {
-    const [titles, setTitles] = useState([]);
-    const [innerData, setInnerData] = useState([]);
-
-    useEffect(() => {
-      if (data) {
-        switch (from) {
-          case "planting": {
-            const innerData = data.querySelectorAll(`.planting-inner`);
-            setInnerData(innerData);
-
-            break;
-          }
-          case "termination": {
-            const innerData = data.querySelectorAll(`.termination-inner`);
-            setInnerData(innerData);
-
-            break;
-          }
-          case "fertilizer": {
-            const innerData = data.querySelectorAll(`.fertilizer-inner`);
-            setInnerData(innerData);
-
-            break;
-          }
-          case "harvest": {
-            const innerData = data.querySelectorAll(`.harvest-inner`);
-            setInnerData(innerData);
-
-            break;
-          }
-          default:
-            break;
-        }
-      }
-      return () => setInnerData([]);
-    }, [from, data]);
-
-    useEffect(() => {
-      if (data) {
-        const titles = data.getElementsByTagName("h2");
-        setTitles(titles);
-      }
-      return () => setTitles([]);
-    }, [data]);
-
-    return (
-      data &&
-      innerData && (
+  useEffect(() => {}, []);
+  switch (props.for) {
+    case "cover-crop-planting":
+      return (
         <Grid container spacing={3}>
-          {titles.length > 0 && innerData.length > 0
-            ? Array.from(innerData).map((data, index) => {
-                // const anchor = data.innerHTML.replace(
-                //   /<a[\s]+([^>]+)>((?:.(?!\<\/a\>))*.)<\/a>/g,
-                //   ""
-                // );
-                // let a= "";
-                const anchor = data.innerHTML;
-                return (
-                  <Grid item xs={12} key={`plantingTitle${index}`}>
-                    <Typography variant="h6">
-                      {ucFirst(titles[index].innerHTML)}
-                    </Typography>
-                    <Paper elevation={3} className={style.paper}>
-                      <Typography
-                        className={style.typography}
-                        dangerouslySetInnerHTML={{ __html: anchor }}
-                      ></Typography>
-                    </Paper>
-                  </Grid>
-                );
-              })
-            : ""}
+          <Grid item xs={12}>
+            <Typography variant="h6">Fall</Typography>
+            <Paper elevation={3} className={props.style.paper}>
+              <ul>
+                <li>
+                  Enroll Growers -{" "}
+                  <a rel="noreferrer" href="/site-enroll" target="_blank">
+                    Site Enrollment
+                  </a>
+                </li>
+                <li>Ensure clean bare ground strips</li>
+              </ul>
+            </Paper>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="h6">Winter</Typography>
+            <Paper elevation={3} className={props.style.paper}>
+              <ul>
+                <li>
+                  Interview growers about field history and farm management -{" "}
+                  <a
+                    rel="noreferrer"
+                    href="https://ee.kobotoolbox.org/x/ggAJsJ8P"
+                    target="_blank"
+                  >
+                    PSA Farm History Survey
+                  </a>
+                </li>
+              </ul>
+            </Paper>
+          </Grid>
         </Grid>
-      )
-    );
-  };
+      );
+    case "cover-crop-termination":
+      return (
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Typography variant="h6">Spring</Typography>
+            <Paper elevation={3} className={props.style.paper}>
+              <ul>
+                <li>Cover Crop biomass collection and decomp bag deployment</li>
+                <ul>
+                  <li>
+                    <a
+                      rel="noreferrer"
+                      href="https://ee.kobotoolbox.org/x/A0vJkKxS"
+                      target="_blank"
+                    >
+                      PSA decomp bag pre weight form
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      rel="noreferrer"
+                      href="https://ee.kobotoolbox.org/x/v82BT9fq"
+                      target="_blank"
+                    >
+                      PSA biomass decomp bag form
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      rel="noreferrer"
+                      href="https://ee.kobotoolbox.org/x/nQY7I8Z5"
+                      target="_blank"
+                    >
+                      PSA GPS form
+                    </a>
+                  </li>
+                </ul>
 
+                <li>
+                  Water sensor installation -{" "}
+                  <a
+                    rel="noreferrer"
+                    href="https://ee.kobotoolbox.org/x/dcm60P5u"
+                    target="_blank"
+                  >
+                    PSA water sensor install form
+                  </a>
+                </li>
+                <li>
+                  Decomp bag retrieval 2 weeks, 4 weeks -{" "}
+                  <a
+                    rel="noreferrer"
+                    href="https://ee.kobotoolbox.org/x/mWXqWfvy"
+                    target="_blank"
+                  >
+                    PSA decomp bag collect form
+                  </a>
+                </li>
+              </ul>
+            </Paper>
+          </Grid>
+        </Grid>
+      );
+    case "side-dress-fertilizer":
+      return (
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Typography variant="h6">Summer</Typography>
+            <Paper elevation={3} className={props.style.paper}>
+              <ul>
+                <li>Raise water sensor solar panels</li>
+                <li>
+                  Decomp bag retrieval 8 weeks, 12 weeks -{" "}
+                  <a
+                    rel="noreferrer"
+                    href="https://ee.kobotoolbox.org/x/mWXqWfvy"
+                    target="_blank"
+                  >
+                    PSA decomp bag collect form
+                  </a>
+                </li>
+              </ul>
+            </Paper>
+          </Grid>
+        </Grid>
+      );
+    case "crop-harvest":
+      return (
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Typography variant="h6">Fall</Typography>
+            <Paper elevation={3} className={props.style.paper}>
+              <ul>
+                <li>
+                  Remove sensors -{" "}
+                  <a
+                    rel="noreferrer"
+                    href="https://ee.kobotoolbox.org/x/becz2BBJ"
+                    target="_blank"
+                  >
+                    PSA water sensor uninstall form
+                  </a>
+                </li>
+                <li>
+                  Yield samples -{" "}
+                  <a
+                    rel="noreferrer"
+                    href="https://ee.kobotoolbox.org/x/TvRNAAyF"
+                    target="_blank"
+                  >
+                    PSA yield and texture form
+                  </a>
+                </li>
+                <li>Soil texture samples, bulk density samples</li>
+                <li>
+                  Last decomp bag pickup -{" "}
+                  <a
+                    rel="noreferrer"
+                    href="https://ee.kobotoolbox.org/x/mWXqWfvy"
+                    target="_blank"
+                  >
+                    PSA decomp bag collect form
+                  </a>
+                </li>
+                <li>
+                  Weigh decomp bags -{" "}
+                  <a
+                    rel="noreferrer"
+                    href="https://ee.kobotoolbox.org/x/UUEvjBK0"
+                    target="_blank"
+                  >
+                    PSA decomp bag dry weight form
+                  </a>
+                </li>
+              </ul>
+            </Paper>
+          </Grid>
+        </Grid>
+      );
+    default:
+      return (
+        <div>
+          <div></div>
+        </div>
+      );
+  }
+};
+
+// Default function
+const TaskTimeline = (props) => {
+  const style = useStyles();
   return (
     <Grid container>
       <Grid item xs={12}>
@@ -163,6 +220,7 @@ const TaskTimeline = () => {
           Task Timeline
         </Typography>
       </Grid>
+
       <Grid item xs={12}>
         <Timeline align="left">
           <TimelineItem>
@@ -174,11 +232,10 @@ const TaskTimeline = () => {
               <TimelineConnector />
             </TimelineSeparator>
             <TimelineContent>
-              {loading ? (
-                <RenderSkeleton />
-              ) : (
-                <RenderData from="planting" data={plantingData} style={style} />
-              )}
+              <RenderTimelineContent
+                for="cover-crop-planting"
+                style={{ ...style }}
+              />
             </TimelineContent>
           </TimelineItem>
 
@@ -191,15 +248,10 @@ const TaskTimeline = () => {
               <TimelineConnector />
             </TimelineSeparator>
             <TimelineContent>
-              {loading ? (
-                <RenderSkeleton />
-              ) : (
-                <RenderData
-                  from="termination"
-                  data={terminationData}
-                  style={style}
-                />
-              )}
+              <RenderTimelineContent
+                for="cover-crop-termination"
+                style={{ ...style }}
+              />
             </TimelineContent>
           </TimelineItem>
 
@@ -212,15 +264,10 @@ const TaskTimeline = () => {
               <TimelineConnector />
             </TimelineSeparator>
             <TimelineContent>
-              {loading ? (
-                <RenderSkeleton />
-              ) : (
-                <RenderData
-                  from="fertilizer"
-                  data={fertilizerData}
-                  style={style}
-                />
-              )}
+              <RenderTimelineContent
+                for="side-dress-fertilizer"
+                style={{ ...style }}
+              />
             </TimelineContent>
           </TimelineItem>
 
@@ -231,21 +278,13 @@ const TaskTimeline = () => {
               <TimelineConnector />
             </TimelineSeparator>
             <TimelineContent>
-              {loading ? (
-                <RenderSkeleton />
-              ) : (
-                <RenderData from="harvest" data={harvestData} style={style} />
-              )}
+              <RenderTimelineContent for="crop-harvest" style={{ ...style }} />
             </TimelineContent>
           </TimelineItem>
         </Timeline>
       </Grid>
     </Grid>
   );
-};
-
-const RenderSkeleton = () => {
-  return <Skeleton height="200px" width="100%" />;
 };
 
 export default TaskTimeline;
