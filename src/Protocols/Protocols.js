@@ -15,7 +15,7 @@ import {
 } from "@material-ui/core";
 import { FiberManualRecord } from "@material-ui/icons";
 import { useEffect, useMemo, useState } from "react";
-const WPAPI = require("wpapi");
+// const WPAPI = require("wpapi");
 
 const linkData = [
   {
