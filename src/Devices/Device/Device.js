@@ -152,7 +152,7 @@ const DeviceComponent = (props) => {
 
       Axios({
         method: "post",
-        url: apiCorsUrl,
+        url: apiCorsUrl + `/${props.location.state.for}`,
         data: qs.stringify({
           url: `${APIURL()}/api/1/csr/rdm?deviceid=${
             props.location.state.id
@@ -199,7 +199,11 @@ const DeviceComponent = (props) => {
             aria-label={`All Devices`}
             component={Link}
             tooltip="All Devices"
-            to={"/devices"}
+            to={
+              props.location.state.for === "watersensors"
+                ? "/devices/water-sensors"
+                : "/devices/stress-cams"
+            }
             startIcon={<ArrowBackIosOutlined />}
           >
             All Devices
@@ -246,11 +250,21 @@ const DeviceComponent = (props) => {
               <StyledTableRow key={`row-${index}`}>
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>
-                  <code>{getDataFromJSON(data.data, "dataString")}</code>
+                  <code>
+                    {getDataFromJSON(
+                      data.data,
+                      "dataString",
+                      props.location.state.for
+                    )}
+                  </code>
                 </TableCell>
                 {/* <TableCell>{getDataFromJSON(data.data, "tags")}</TableCell> */}
                 <TableCell datatype="">
-                  {getDataFromJSON(data.data, "timestamp")}
+                  {getDataFromJSON(
+                    data.data,
+                    "timestamp",
+                    props.location.state.for
+                  )}
                 </TableCell>
               </StyledTableRow>
             ))}
@@ -260,10 +274,11 @@ const DeviceComponent = (props) => {
     );
   };
 
-  const getDataFromJSON = (jsonData, type) => {
+  const getDataFromJSON = (jsonData, type, sensorType) => {
     jsonData = JSON.parse(jsonData);
 
-    let dataStringParsed = atob(jsonData.data);
+    let dataStringParsed =
+      sensorType === "watersensors" ? atob(jsonData.data) : jsonData.data;
     switch (type) {
       case "dataString":
         return dataStringParsed;
@@ -405,7 +420,7 @@ const DeviceComponent = (props) => {
       console.log("Fetching..");
       await Axios({
         method: "post",
-        url: apiCorsUrl,
+        url: apiCorsUrl + `/${props.location.state.for}`,
         data: qs.stringify({
           url: `${APIURL()}${loadMoreDataURI}`,
         }),
