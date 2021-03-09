@@ -37,8 +37,9 @@ const WaterSensors = () => {
         // check if the string has commas and split it into an array
         if (state.userInfo) {
           let deviceState = state.userInfo.state;
-          deviceState = deviceState.toUpperCase().split(",");
-          if (deviceState[0] === "ALL") {
+          deviceState = deviceState.split(",");
+
+          if (deviceState[0] === "all") {
             apiParams = "";
             fetchRecords(
               `${finalAPIURL}/api/1/devices?withlocation=true${apiParams}`
