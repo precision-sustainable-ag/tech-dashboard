@@ -100,22 +100,29 @@ export const fetchGrowerByLastName = async (query) => {
   });
 };
 
-export const ucFirst = (str = "") => {
-  if (typeof str === "undefined" || str === undefined || str.length === 0) {
-    return "";
-  } else if (typeof str !== "string") {
-    return str;
+// export const ucFirst = (str = "") => {
+//   if (typeof str === "undefined" || str === undefined || str.length === 0) {
+//     return "";
+//   } else if (typeof str !== "string") {
+//     return str;
+//   } else {
+//     let strArr = str.split(" ");
+//     return strArr.reduce((accumulator, currentVal, currentIndex) => {
+//       currentVal = currentVal[0].toUpperCase() + currentVal.slice(1);
+//       if (currentIndex !== strArr.length - 1)
+//         return accumulator + currentVal + " ";
+//       else return accumulator + currentVal;
+//     }, "");
+//   }
+// };
+export const ucFirst = (str) => {
+  if (str === null) {
+    return "Not Provided";
   } else {
-    let strArr = str.split(" ");
-    return strArr.reduce((accumulator, currentVal, currentIndex) => {
-      currentVal = currentVal[0].toUpperCase() + currentVal.slice(1);
-      if (currentIndex !== strArr.length - 1)
-        return accumulator + currentVal + " ";
-      else return accumulator + currentVal;
-    }, "");
+    if (str.length > 0) return str.charAt(0).toUpperCase() + str.slice(1);
+    else return str;
   }
 };
-
 export const format_AM_PM = (date) => {
   if (Object.prototype.toString.call(date) !== "[object Date]") return date;
   var hours = date.getHours();
