@@ -14,7 +14,9 @@ import {
   Typography,
 } from "@material-ui/core";
 import { FiberManualRecord } from "@material-ui/icons";
+import { Skeleton } from "@material-ui/lab";
 import { useEffect, useMemo, useState } from "react";
+import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
 // const WPAPI = require("wpapi");
 
 const linkData = [
@@ -148,69 +150,43 @@ const linkData = [
 ];
 
 const Protocols = () => {
-  const [data, setData] = useState([]);
-  // let response = useMemo(() => {
-  //   let wp = new WPAPI({
-  //     endpoint: "https://precisionsustainableag.org/internal/wp-json",
-  //   });
-  //   return wp
-  //     .pages()
-  //     .id(957)
-  //     .get((e, d) => {
-  //       return d;
-  //     });
-  // }, []);
+  const [htmlData, setHtmlData] = useState("");
 
-  // response.then((d) => {
-  //   console.log(d);
-  // });
+  let data = useMemo(() => {
+    const fetchData = async () => {
+      let data = await fetch(`${apiURL}/api/psa/internal/pages/957`, {
+        headers: {
+          Authorization: "Basic " + btoa(`${apiUsername}:${apiPassword}`),
+        },
+      });
+
+      return await data.text();
+    };
+
+    return fetchData();
+  }, []);
+
+  data.then((resp) => {
+    setHtmlData(resp);
+  });
 
   return (
-    <Grid container spacing={4}>
+    <Grid container>
       <Grid item xs={12}>
-        <Typography variant="h5" align="center">
+        <Typography variant="h5" align="left" gutterBottom>
           On-Farm Protocols
         </Typography>
       </Grid>
+
       <Grid item xs={12}>
-        <Grid container spacing={3}>
-          {linkData.map((val, i) => (
-            <Grid item key={`${i}-${val.title}`} xs={3}>
-              <Card style={{ minHeight: "440px" }}>
-                <CardHeader title={val.title} />
-                <Divider />
-                <CardContent>
-                  <List>
-                    {val.data.length > 0 ? (
-                      val.data.map((entries, index) => (
-                        <ListItemLink
-                          href={entries.url}
-                          key={`${i}${index}-${entries.label}`}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          <ListItemText primary={entries.label} />
-                        </ListItemLink>
-                      ))
-                    ) : (
-                      <ListItem>
-                        <Typography variant="body1">
-                          Coming Spring 2021
-                        </Typography>
-                      </ListItem>
-                    )}
-                  </List>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+        {!htmlData ? (
+          <Skeleton width="100%" height="50vh" />
+        ) : (
+          <div dangerouslySetInnerHTML={{ __html: htmlData ? htmlData : "" }} />
+        )}
       </Grid>
     </Grid>
   );
 };
 
-function ListItemLink(props) {
-  return <ListItem button component="a" {...props} />;
-}
 export default Protocols;
