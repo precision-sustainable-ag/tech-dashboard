@@ -1,23 +1,8 @@
 // import React, { useState, useEffect } from "react";
-import {
-  Button,
-  ButtonBase,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Grid,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-} from "@material-ui/core";
-import { FiberManualRecord } from "@material-ui/icons";
+import { Paper, Typography, Grid } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
-// const WPAPI = require("wpapi");
 
 const linkData = [
   {
@@ -182,7 +167,11 @@ const Protocols = () => {
         {!htmlData ? (
           <Skeleton width="100%" height="50vh" />
         ) : (
-          <div dangerouslySetInnerHTML={{ __html: htmlData ? htmlData : "" }} />
+          <Paper
+            style={{ padding: "1em" }}
+            elevation={3}
+            dangerouslySetInnerHTML={{ __html: htmlData ? htmlData : "" }}
+          />
         )}
       </Grid>
     </Grid>

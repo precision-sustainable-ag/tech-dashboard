@@ -1,6 +1,6 @@
 // Dependency Imports
 import React, { useMemo, useState } from "react";
-import { Typography, Grid } from "@material-ui/core";
+import { Typography, Grid, Paper } from "@material-ui/core";
 import { apiPassword, apiURL, apiUsername } from "../../utils/api_secret";
 import { Skeleton } from "@material-ui/lab";
 
@@ -38,7 +38,11 @@ const TaskTimeline = () => {
         {!htmlData ? (
           <Skeleton width="100%" height="50vh" />
         ) : (
-          <div dangerouslySetInnerHTML={{ __html: htmlData ? htmlData : "" }} />
+          <Paper
+            style={{ padding: "1em" }}
+            elevation={3}
+            dangerouslySetInnerHTML={{ __html: htmlData ? htmlData : "" }}
+          />
         )}
       </Grid>
     </Grid>
