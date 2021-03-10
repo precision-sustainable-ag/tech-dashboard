@@ -271,7 +271,16 @@ function App() {
                   />
                 )}
               />
-              <PrivateRoute path={`/kobo-forms`} component={Forms} />
+              <PrivateRoute
+                path={`/kobo-forms`}
+                render={(props) => (
+                  <Forms
+                    {...props}
+                    isDarkTheme={theme.palette.type === "light" ? false : true}
+                  />
+                )}
+              />
+
               <PrivateRoute path="/profile" component={Profile} />
               <PrivateRoute path="/device-enroll" component={DeviceEnroll} />
               <PrivateRoute

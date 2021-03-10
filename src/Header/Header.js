@@ -36,6 +36,7 @@ import {
   ListAlt,
   Info,
   BugReport,
+  Storage,
 } from "@material-ui/icons";
 import Axios from "axios";
 
@@ -446,7 +447,7 @@ export default function Header(props) {
             </ListItemIcon>
             <ListItemText primary="Devices" />
           </ListItem> */}
-          {/* <ListItem
+          <ListItem
             onClick={() => setOpen(false)}
             button
             key="Forms"
@@ -457,7 +458,7 @@ export default function Header(props) {
               <Storage />
             </ListItemIcon>
             <ListItemText primary="Forms" />
-          </ListItem> */}
+          </ListItem>
         </List>
       </Drawer>
     </div>
