@@ -122,10 +122,14 @@ export const RenderIssues = ({ stateLabel, userRole }) => {
             // get username from response body
 
             let username = res.body.split("By: @");
-            username = username[1].split("**")[0].replace(/\s/g, "");
-            setUserNames((old) =>
-              !old.includes(username) ? [...old, username] : [username]
-            );
+            try {
+              username = username[1].split("**")[0].replace(/\s/g, "");
+              setUserNames((old) =>
+                !old.includes(username) ? [...old, username] : [username]
+              );
+            } catch (err) {
+              setUserNames((old) => [...old, username]);
+            }
             // convert date strings to date objects
             return {
               ...res,
