@@ -352,6 +352,17 @@ export default function Header(props) {
               >
                 <ListItemText inset primary="Site Information" />
               </ListItem>
+              <ListItem
+                button
+                to="/producers"
+                component={Link}
+                onClick={() => {
+                  setOpen(false);
+                  handleOpenAllDataNav();
+                }}
+              >
+                <ListItemText inset primary="Producer Information" />
+              </ListItem>
             </List>
           </Collapse>
 
@@ -433,20 +444,6 @@ export default function Header(props) {
             </List>
           </Collapse>
 
-          {/* <ListItem
-            onClick={() => setOpen(false)}
-            button
-            key="Devices"
-            component={Link}
-            to="/devices"
-          >
-            <ListItemIcon>
-              <Icon>
-                <BiDevices />
-              </Icon>
-            </ListItemIcon>
-            <ListItemText primary="Devices" />
-          </ListItem> */}
           <ListItem
             onClick={() => setOpen(false)}
             button
