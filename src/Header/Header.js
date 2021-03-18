@@ -178,6 +178,9 @@ export default function Header(props) {
     }
   };
   const fetchRole = async (user) => {
+    dispatch({
+      type: "UPDATING_USER_INFO",
+    });
     await Axios.get(`${apiURL}/api/users/${user.email}`, {
       auth: {
         username: apiUsername,
@@ -193,7 +196,6 @@ export default function Header(props) {
 
         addUserToDatabase(qs.stringify(obj));
       } else {
-        console.log("welcome back!");
         dispatch({
           type: "UPDATE_ROLE",
           data: {

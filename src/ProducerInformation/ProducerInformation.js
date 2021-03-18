@@ -60,7 +60,7 @@ const ProducerInformation = (props) => {
 
   useEffect(() => {
     const fetchProducers = async () => {
-      let response = await fetch(`${onfarmDevAPI}/producers`, {
+      let response = await fetch(`${onfarmProdAPI}/producers`, {
         headers: {
           "x-api-key": state.userInfo.apikey,
         },

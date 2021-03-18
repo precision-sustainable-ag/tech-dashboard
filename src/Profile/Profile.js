@@ -19,8 +19,7 @@ import PropTypes from "prop-types";
 // Local Imports
 import { Context } from "../Store/Store";
 import { useAuth0 } from "../Auth/react-auth0-spa";
-import { bannedRoles, ucFirst } from "../utils/constants";
-import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
+import { bannedRoles, fetchKoboPasswords, ucFirst } from "../utils/constants";
 import { BannedRoleMessage } from "../utils/CustomComponents";
 
 /**
@@ -53,18 +52,6 @@ const Profile = () => {
     return () => {};
   }, [state.userInfo.state]);
 
-  const fetchKoboPasswords = async ({ state, showAllStates }) => {
-    let response = await fetch(`${apiURL}/api/kobo/passwords/${state}`, {
-      headers: new Headers({
-        Authorization: `Basic ${btoa(`${apiUsername}:${apiPassword}`)}`,
-      }),
-    });
-
-    let payload = await response.json();
-    let { status, data } = payload;
-
-    return { status, data, showAllStates };
-  };
   return (
     isAuthenticated &&
     (bannedRoles.includes(state.userInfo.role) ||
@@ -295,7 +282,7 @@ RenderKoboDetails.propTypes = {
   koboData: PropTypes.shape({
     data: PropTypes.array.isRequired,
   }).isRequired,
-  allStates: PropTypes.bool.isRequired,
+  allStates: PropTypes.bool,
 };
 
 showAPIKey.propTypes = {

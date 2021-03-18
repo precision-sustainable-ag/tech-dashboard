@@ -40,7 +40,7 @@ const tableHeaderOptions = [
     align: "justify",
   },
   {
-    title: "State",
+    title: "Affiliation",
     field: "affiliation",
     type: "string",
     align: "justify",
