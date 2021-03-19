@@ -1,11 +1,13 @@
 // Dependency Imports
 import React, { Fragment, useState, useEffect } from "react";
-import { red, green } from "@material-ui/core/colors";
+import { red, green, yellow, grey } from "@material-ui/core/colors";
 import { Redirect } from "react-router-dom";
 import {
   Button,
   CardActionArea,
+  CardActions,
   CardContent,
+  Divider,
   Grid,
   IconButton,
   Input,
@@ -19,20 +21,12 @@ import Axios from "axios";
 import qs from "qs";
 import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
 
-// Global Vars
-const deadDeviceBG = red[300];
-// const deadDeviceCol = red[50];
-const deadDeviceCol = "#360000 !important";
-const activeDeviceBG = green[100];
-// const activeDeviceCol = green[50];
-const activeDeviceCol = "#114C2A !important";
-
 // Styles
 const deviceColors = {
-  withinLastHour: "#2e7d32",
-  lastFourHours: "#28a745",
-  lastThirtySixHours: "#fdd835",
-  lastMonth: "#bdbdbd",
+  withinLastHour: green[800],
+  lastFourHours: green[400],
+  lastThirtySixHours: yellow[400],
+  lastMonth: grey[400],
   default: "white",
 };
 
@@ -158,7 +152,7 @@ const DataParser = (props) => {
       .then(() => {
         setCheckingNickname(false);
       });
-  }, []);
+  }, [props.deviceData.id]);
 
   const handleMouseEnter = (deviceName) => {
     setShowEditBtn(true);
@@ -285,58 +279,90 @@ const DataParser = (props) => {
             ""
           )}
         </Typography>
-
-        {/* <p style={{ fontWeight: "bold" }}>{device.name}</p> */}
       </CardContent>
-      <hr
-        style={{ marginBottom: 0, width: "100%", border: "0.5px solid #eee" }}
-      />
-      <>
+      <Divider />
+      <CardContent
+        style={
+          deviceBGColor === "white"
+            ? {
+                backgroundColor: "white",
+                color: "black",
+                height: "100%",
+                cursor: "pointer",
+              }
+            : deviceBGColor === "#fdd835"
+            ? {
+                backgroundColor: deviceBGColor,
+                color: "black",
+                height: "100%",
+                cursor: "pointer",
+              }
+            : {
+                backgroundColor: deviceBGColor,
+                height: "100%",
+                cursor: "pointer",
+              }
+        }
+        onClick={() => {
+          setDeviceState(device.id);
+        }}
+      >
         <Tooltip
           title={`Last Update: ${dateStringFormatted}`}
           arrow
           placeholder="top-right"
         >
-          <CardActionArea
+          <Grid
+            container
             className={
               !device.lastsession
                 ? "deviceActionArea deadDevice"
                 : "deviceActionArea aliveDevice"
             }
-            style={
-              deviceBGColor === "white"
-                ? { backgroundColor: "white", color: "black" }
-                : deviceBGColor === "#fdd835"
-                ? {
-                    backgroundColor: deviceBGColor,
-                    color: "black",
-                  }
-                : {
-                    backgroundColor: deviceBGColor,
-                  }
-            }
+            // style={{ height: "100%" }}
             disabled={!device.lastsession ? true : false}
             onClick={() => {
               setDeviceState(device.id);
             }}
           >
             {device.lastsession ? (
-              <Fragment>
-                {deviceNickname && <p>{props.deviceData.name}</p>}
-                <p>Last Session: {deviceDateStr}</p>
-                <p style={{ fontWeight: "bold" }}>{dateStatus}</p>
-              </Fragment>
+              <Grid item xs={12}>
+                {deviceNickname && (
+                  <Typography variant="body1">
+                    {props.deviceData.name}
+                  </Typography>
+                )}
+                <Typography variant="body1">
+                  Last Session: {deviceDateStr}
+                </Typography>
+                <Typography variant="body2" style={{ fontWeight: "bold" }}>
+                  {dateStatus}
+                </Typography>
+              </Grid>
             ) : (
-              <Fragment>
-                <p style={{ fontWeight: "bold" }}>
+              <Grid item xs={12}>
+                <Typography variant="body2" style={{ fontWeight: "bold" }}>
                   Last Session: Not Available
-                </p>
-                <p style={{ fontWeight: "bold" }}>Device Dead</p>
-              </Fragment>
+                </Typography>
+                <Typography variant="body2" style={{ fontWeight: "bold" }}>
+                  Device Dead
+                </Typography>
+              </Grid>
             )}
-          </CardActionArea>
+          </Grid>
         </Tooltip>
-      </>
+      </CardContent>
+      {/* <CardActions>
+        <Button
+          variant="text"
+          size="small"
+          onClick={() => {
+            setDeviceState(device.id);
+          }}
+        >
+          View Device
+        </Button>
+      </CardActions> */}
     </>
   );
 };

@@ -1,141 +1,82 @@
 // Dependency Imports
 import React, { useEffect, useState, useContext } from "react";
-import {
-  Typography,
-  makeStyles,
-  Card,
-  CardContent,
-  Paper,
-  Box
-} from "@material-ui/core";
+import { Typography, Grid, List, Paper } from "@material-ui/core";
 
 // Local Imports
 import getAllKoboAssets from "./KoboFormAuth";
 import FormsLoadingSkeleton from "./FormsLoadingSkeleton";
 import { Context } from "../Store/Store";
 import { bannedRoles } from "../utils/constants";
-import "./Forms.scss";
 
-// Styles
-const useStyles = makeStyles({
-  card: {
-    maxWidth: 400,
-    width: 300
-  },
-  bullet: {
-    display: "inline-block",
-    margin: "0 2px",
-    transform: "scale(0.8)"
-  },
-  title: {
-    fontSize: 14
-  },
-  pos: {
-    marginBottom: 12
-  }
-});
+import { BannedRoleMessage } from "../utils/CustomComponents";
 
-// Default function 
-const Forms = () => {
-  const classes = useStyles();
+import FormsStatus from "./components/FormsStatus";
 
+// Default function
+const Forms = ({ isDarkTheme }) => {
   const [isPSALoading, setIsPSALoading] = useState(true);
-  const [isPSASSGLoading, setIsPSASSGLoading] = useState(true);
   const [showForms, setShowForms] = useState(false);
-  const [state, dispatch] = useContext(Context);
+  const [state] = useContext(Context);
+
+  const [psaForms, setPsaForms] = useState([]);
 
   useEffect(() => {
+    setIsPSALoading(true);
     if (bannedRoles.includes(state.userRole)) {
       setShowForms(false);
+      setIsPSALoading(false);
     } else {
-      console.log("hello from forms");
-
       getAllKoboAssets("psa")
-        .then(response => {
-          setIsPSALoading(false);
-          // console.log(data);
-
-          dispatch({
-            type: "SET_PSA_FORMS",
-            data: response.data.results
-          });
+        .then((response) => {
+          setPsaForms(response.data.data.results);
         })
-        .then(async () => {
-          await getAllKoboAssets("psassg").then(response => {
-            setIsPSASSGLoading(false);
-            dispatch({
-              type: "SET_PSASSG_FORMS",
-              data: response.data.results
-            });
-          });
+        .then(() => {
+          setShowForms(true);
+          setIsPSALoading(false);
         });
-      setShowForms(true);
     }
   }, [state.userRole]);
 
+  // useEffect(() => {
+  //   if (state.userInfo) getKoboUsernames(state);
+  // }, [state]);
+
   return showForms ? (
-    <Paper elevation={0}>
-      <Box className="koboFormsWrapper">
+    <Grid container spacing={3}>
+      <Grid item xs={12}>
         <Typography variant="h5" className="mb-2">
           PSA Forms
         </Typography>
-        {isPSALoading ? (
+      </Grid>
+
+      {isPSALoading ? (
+        <Grid item xs={12}>
           <FormsLoadingSkeleton />
-        ) : state.psaForms.length !== 0 ? (
-          <div className="koboForms">
-            {state.psaForms.map((form, index) =>
+        </Grid>
+      ) : psaForms.length > 0 ? (
+        <List>
+          <Grid item xs={12} container spacing={2}>
+            {psaForms.map((form, index) =>
               form.name !== "" && form.deployment__active ? (
-                <Card className={classes.card} variant="outlined" key={index}>
-                  <CardContent>
-                    <Typography variant="body1">{form.name}</Typography>
-                    <Typography variant="body2">
-                      Total Submission Count:{" "}
-                      {form.deployment__submission_count}
-                    </Typography>
-                  </CardContent>
-                </Card>
+                <Grid item xs={12} key={`psa-form-${index}`}>
+                  <Paper elevation={isDarkTheme ? 3 : 1}>
+                    <FormsStatus form={form} />
+                  </Paper>
+                </Grid>
               ) : (
                 ""
               )
             )}
-          </div>
-        ) : (
-          ""
-        )}
-        <Typography variant="h5" className="mt-2">
-          Social Science Group Forms
-        </Typography>
-        {isPSASSGLoading ? (
-          <FormsLoadingSkeleton />
-        ) : state.psassgForms.length !== 0 ? (
-          <div className="koboForms">
-            {state.psassgForms.map((form, index) =>
-              form.name !== "" && form.deployment__active ? (
-                <Card className={classes.card} variant="outlined" key={index}>
-                  <CardContent>
-                    <Typography variant="body1">{form.name}</Typography>
-                    <Typography variant="body2">
-                      Total Submission Count:{" "}
-                      {form.deployment__submission_count}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              ) : (
-                ""
-              )
-            )}
-          </div>
-        ) : (
-          ""
-        )}
-      </Box>
-    </Paper>
+          </Grid>
+        </List>
+      ) : (
+        ""
+      )}
+    </Grid>
+  ) : isPSALoading ? (
+    <FormsLoadingSkeleton />
   ) : (
-    <Box component={Paper} elevation={0}>
-      <Typography variant={"h6"} align="center">
-        Your access level does not permit this action.
-      </Typography>
-    </Box>
+    <BannedRoleMessage title="Forms Page" />
   );
 };
 

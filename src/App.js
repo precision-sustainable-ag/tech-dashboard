@@ -39,6 +39,8 @@ import StressCams from "./Devices/StressCams/StressCams";
 import WaterSensors from "./Devices/WaterSensors/WaterSensors";
 import DevicesWrapper from "./Devices/DevicesWrapper/DevicesWrapper";
 import TaskTimeline from "./Landing/TaskTimeline/TaskTimeline";
+import ProducerInformation from "./ProducerInformation/ProducerInformation";
+import FormData from "./Forms/components/FormData";
 
 // Helper function
 function useOnlineStatus() {
@@ -271,7 +273,36 @@ function App() {
                   />
                 )}
               />
-              <PrivateRoute path={`/kobo-forms`} component={Forms} />
+              <PrivateRoute
+                path={`/kobo-forms/`}
+                exact
+                render={(props) => (
+                  <Forms
+                    {...props}
+                    isDarkTheme={theme.palette.type === "light" ? false : true}
+                  />
+                )}
+              />
+              <PrivateRoute
+                path={`/kobo-forms/:formId`}
+                render={(props) => (
+                  <FormData
+                    assetId={props}
+                    isDarkTheme={theme.palette.type === "light" ? false : true}
+                  />
+                )}
+              />
+
+              <PrivateRoute
+                path={`/producers`}
+                render={(props) => (
+                  <ProducerInformation
+                    {...props}
+                    isDarkTheme={theme.palette.type === "light" ? false : true}
+                  />
+                )}
+              />
+
               <PrivateRoute path="/profile" component={Profile} />
               <PrivateRoute path="/device-enroll" component={DeviceEnroll} />
               <PrivateRoute

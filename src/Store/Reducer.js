@@ -1,9 +1,6 @@
 // Default function
 const Reducer = (state, action) => {
   switch (action.type) {
-    case "UPDATE_HELLO_WORLD":
-      return updateHelloWorld(state, action);
-
     case "SET_SITE_INFO":
       return setSiteInfo(state, action);
     case "ADD_ONE_SITE_INFO_TO_STATE":
@@ -12,16 +9,15 @@ const Reducer = (state, action) => {
       return updateAllRepos(state, action);
     case "SET_DEVICES_INFO":
       return setDevicesInfo(state, action);
-    case "SET_PSA_FORMS":
-      return setPsaForms(state, action);
-    case "SET_PSASSG_FORMS":
-      return setPsassgForms(state, action);
     case "CHECK_USERNAME_PASSWORD":
       return checkAuth(state, action);
     case "UPDATE_ROLE":
       return updateRole(state, action);
     case "UPDATE_USER_INFO":
       return updateUserInfo(state, action);
+
+    case "UPDATING_USER_INFO":
+      return updatingUserInfo(state, action);
 
     default:
       return { ...state };
@@ -36,25 +32,18 @@ const updateRole = (state, action) => {
   };
 };
 
+const updatingUserInfo = (state, action) => {
+  return {
+    ...state,
+    loadingUser: true,
+  };
+};
+
 const updateUserInfo = (state, action) => {
   return {
     ...state,
     userInfo: action.data.userInfo,
     loadingUser: false,
-  };
-};
-
-const setPsaForms = (state, action) => {
-  return {
-    ...state,
-    psaForms: action.data,
-  };
-};
-
-const setPsassgForms = (state, action) => {
-  return {
-    ...state,
-    psassgForms: action.data,
   };
 };
 
@@ -70,9 +59,6 @@ const updateAllRepos = (state, action) => {
     ...state,
     repositories: action.data,
   };
-};
-const updateHelloWorld = (state, action) => {
-  return { ...state, helloText: "hi world" };
 };
 
 const setSiteInfo = (state, action) => {

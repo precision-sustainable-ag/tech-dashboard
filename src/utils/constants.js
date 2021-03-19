@@ -9,6 +9,24 @@ import { apiCorsUrl } from "../Devices/hologramConstants";
 // anyone with these roles are not supposed to view anything !
 export const bannedRoles = ["default", "Default", "none", ""];
 
+/**
+ * Fetch Kobo usernames and passwords
+ * @param {{state: string, showAllStates: boolean}} User  - User
+ * @returns {Promise} A promise object
+ */
+export const fetchKoboPasswords = async ({ state, showAllStates }) => {
+  let response = await fetch(`${apiURL}/api/kobo/passwords/${state}`, {
+    headers: new Headers({
+      Authorization: `Basic ${btoa(`${apiUsername}:${apiPassword}`)}`,
+    }),
+  });
+
+  let payload = await response.json();
+  let { status, data } = payload;
+
+  return { status, data, showAllStates };
+};
+
 export const apiCall = async (url, options, from) => {
   return await Axios({
     method: "post",

@@ -36,6 +36,7 @@ import {
   ListAlt,
   Info,
   BugReport,
+  Storage,
 } from "@material-ui/icons";
 import Axios from "axios";
 
@@ -177,6 +178,9 @@ export default function Header(props) {
     }
   };
   const fetchRole = async (user) => {
+    dispatch({
+      type: "UPDATING_USER_INFO",
+    });
     await Axios.get(`${apiURL}/api/users/${user.email}`, {
       auth: {
         username: apiUsername,
@@ -192,7 +196,6 @@ export default function Header(props) {
 
         addUserToDatabase(qs.stringify(obj));
       } else {
-        console.log("welcome back!");
         dispatch({
           type: "UPDATE_ROLE",
           data: {
@@ -351,6 +354,17 @@ export default function Header(props) {
               >
                 <ListItemText inset primary="Site Information" />
               </ListItem>
+              <ListItem
+                button
+                to="/producers"
+                component={Link}
+                onClick={() => {
+                  setOpen(false);
+                  handleOpenAllDataNav();
+                }}
+              >
+                <ListItemText inset primary="Producer Information" />
+              </ListItem>
             </List>
           </Collapse>
 
@@ -432,21 +446,7 @@ export default function Header(props) {
             </List>
           </Collapse>
 
-          {/* <ListItem
-            onClick={() => setOpen(false)}
-            button
-            key="Devices"
-            component={Link}
-            to="/devices"
-          >
-            <ListItemIcon>
-              <Icon>
-                <BiDevices />
-              </Icon>
-            </ListItemIcon>
-            <ListItemText primary="Devices" />
-          </ListItem> */}
-          {/* <ListItem
+          <ListItem
             onClick={() => setOpen(false)}
             button
             key="Forms"
@@ -457,7 +457,7 @@ export default function Header(props) {
               <Storage />
             </ListItemIcon>
             <ListItemText primary="Forms" />
-          </ListItem> */}
+          </ListItem>
         </List>
       </Drawer>
     </div>

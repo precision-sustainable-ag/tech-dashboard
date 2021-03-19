@@ -162,6 +162,7 @@ const StressCams = () => {
       devices={devices}
       loading={devicesLoadingState}
       for={"stresscams"}
+      userInfo={state.userInfo}
     />
   );
 };

@@ -14,7 +14,7 @@
         .deviceDataWrapper {
           display: flex;
           flex-direction: column;
-
+          min-height: 210px;
           outline: none;
           .deviceActionArea {
             width: 100%;
