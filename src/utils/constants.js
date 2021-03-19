@@ -9,10 +9,28 @@ import { apiCorsUrl } from "../Devices/hologramConstants";
 // anyone with these roles are not supposed to view anything !
 export const bannedRoles = ["default", "Default", "none", ""];
 
-export const apiCall = async (url, options) => {
+/**
+ * Fetch Kobo usernames and passwords
+ * @param {{state: string, showAllStates: boolean}} User  - User
+ * @returns {Promise} A promise object
+ */
+export const fetchKoboPasswords = async ({ state, showAllStates }) => {
+  let response = await fetch(`${apiURL}/api/kobo/passwords/${state}`, {
+    headers: new Headers({
+      Authorization: `Basic ${btoa(`${apiUsername}:${apiPassword}`)}`,
+    }),
+  });
+
+  let payload = await response.json();
+  let { status, data } = payload;
+
+  return { status, data, showAllStates };
+};
+
+export const apiCall = async (url, options, from) => {
   return await Axios({
     method: "post",
-    url: apiCorsUrl,
+    url: apiCorsUrl + `/${from}`,
     data: qs.stringify({
       url: url,
     }),
@@ -100,22 +118,29 @@ export const fetchGrowerByLastName = async (query) => {
   });
 };
 
-export const ucFirst = (str = "") => {
-  if (typeof str === "undefined" || str === undefined || str.length === 0) {
-    return "";
-  } else if (typeof str !== "string") {
-    return str;
+// export const ucFirst = (str = "") => {
+//   if (typeof str === "undefined" || str === undefined || str.length === 0) {
+//     return "";
+//   } else if (typeof str !== "string") {
+//     return str;
+//   } else {
+//     let strArr = str.split(" ");
+//     return strArr.reduce((accumulator, currentVal, currentIndex) => {
+//       currentVal = currentVal[0].toUpperCase() + currentVal.slice(1);
+//       if (currentIndex !== strArr.length - 1)
+//         return accumulator + currentVal + " ";
+//       else return accumulator + currentVal;
+//     }, "");
+//   }
+// };
+export const ucFirst = (str) => {
+  if (str === null) {
+    return "Not Provided";
   } else {
-    let strArr = str.split(" ");
-    return strArr.reduce((accumulator, currentVal, currentIndex) => {
-      currentVal = currentVal[0].toUpperCase() + currentVal.slice(1);
-      if (currentIndex !== strArr.length - 1)
-        return accumulator + currentVal + " ";
-      else return accumulator + currentVal;
-    }, "");
+    if (str.length > 0) return str.charAt(0).toUpperCase() + str.slice(1);
+    else return str;
   }
 };
-
 export const format_AM_PM = (date) => {
   if (Object.prototype.toString.call(date) !== "[object Date]") return date;
   var hours = date.getHours();
@@ -126,4 +151,18 @@ export const format_AM_PM = (date) => {
   minutes = minutes < 10 ? "0" + minutes : minutes;
   var strTime = hours + ":" + minutes + " " + ampm;
   return strTime;
+};
+
+export const compareStrings = (a, b) => {
+  // Use toUpperCase() to ignore character casing
+  let bandA = a.name.toUpperCase();
+  let bandB = b.name.toUpperCase();
+
+  let comparison = 0;
+  if (bandA > bandB) {
+    comparison = 1;
+  } else if (bandA < bandB) {
+    comparison = -1;
+  }
+  return comparison;
 };

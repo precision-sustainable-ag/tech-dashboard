@@ -109,12 +109,13 @@ const Issue = (props) => {
   };
 
   const handleNewComment = () => {
-    addNewComment()
-      .then((resp) => {})
-      .then(() => {
-        setNewCommentAdded(!newCommentAdded);
-        setNewComment("");
-      });
+    // addNewComment()
+    //   .then((resp) => {})
+    //   .then(() => {
+    //     setNewCommentAdded(!newCommentAdded);
+    //     setNewComment("");
+    //   });
+    setGitHubCommenter(user.nickname, newComment, issueNumber, "wxyz")
   };
 
   useEffect(() => {
@@ -389,5 +390,48 @@ const Issue = (props) => {
     </Slide>
   );
 };
+
+const setGitHubCommenter = async (
+  nickname,
+  newComment,
+  number,
+  token
+  ) => {
+    const data = {
+      action: 'comment',
+      user: nickname,
+      comment: newComment,
+      number: number,
+      token: token,
+    };
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data),
+      mode: 'cors', // no-cors, *cors, same-origin
+    }
+
+    console.log("token =" + data.token);
+
+    let res = await fetch(`http://localhost:7071/api/GithubIssues`, options)
+    // .then(response => response.json())
+    .then(response => {
+      console.log(response)
+      return response;
+    })
+    .catch(err => {
+      console.log("error reading data " + err)
+    })
+
+    
+    // let json = await res.json();
+    console.log(res.status)
+
+
+    return res;
+}
 
 export default Issue;

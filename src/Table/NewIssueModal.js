@@ -29,7 +29,23 @@ import PropTypes from "prop-types";
 
 // Default function
 const NewIssueModal = (props) => {
+  const {
+    getTokenSilently,
+    loading
+  } = useAuth0();
   // const [state, dispatch] = useContext(Context);
+
+  
+  
+  // useEffect(() => {
+  //   const callAPI = async () => {
+  //     token = await getTokenSilently();
+  //     console.log("token in useEffect = " + token);
+  //   };
+  //   if (!loading) {
+  //     callAPI();
+  //   }
+  // }, [loading, getTokenSilently]);
 
   const octokit = new Octokit({ auth: githubToken });
   const [fullWidth, setFullWidth] = useState(true);
@@ -96,7 +112,7 @@ const NewIssueModal = (props) => {
   //     // setNewComment(tableStr.toString());
   //   };
 
-  const fileNewIssue = () => {
+  async function fileNewIssue() {
     if (issueTitle && newComment) {
       console.log("yes");
       setCheckValidation({ title: false, comment: false });
@@ -147,14 +163,24 @@ const NewIssueModal = (props) => {
         </tr>
       </tbody>
     </table>`;
-      const issueSet = setIssue(
-        octokit,
+
+      // let token = await getTokenSilently({
+      //   audience: 'https://precision-sustaibale-ag/tech-dashboard',
+      // });
+
+      let token = await getTokenSilently();
+
+      console.log("this is my token " + token)
+
+      console.log("token out useEffect = " + token);
+      const issueSet = setGitHubIssuer(
         issueTitle,
         newComment,
         labels,
         assignedPeople,
         tableData,
-        props.nickname
+        props.nickname,
+        token
       );
 
       issueSet.then((res) => {
@@ -496,6 +522,57 @@ const setIssue = async (
     assignees: assignees,
   });
 };
+
+const setGitHubIssuer = async (
+  issueTitle,
+  newComment,
+  labels,
+  assignees,
+  table,
+  nickname,
+  token
+  ) => {
+    const data = {
+      action: 'create',
+      user: nickname,
+      title: issueTitle,
+      assignees: ['mikahpinegar'],
+      labels: labels,
+      body: 
+        table +
+        " <br/> " +
+        newComment,
+      token: token,
+    };
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data),
+      mode: 'cors', // no-cors, *cors, same-origin
+    }
+
+    console.log("token =" + data.token);
+
+    let res = await fetch(`http://localhost:7071/api/GithubIssues`, options)
+    // .then(response => response.json())
+    .then(response => {
+      console.log(response)
+      return response;
+    })
+    .catch(err => {
+      console.log("error reading data " + err)
+    })
+
+    
+    // let json = await res.json();
+    console.log(res.status)
+
+
+    return res;
+}
 
 NewIssueModal.defaultProps = {
   data: {
