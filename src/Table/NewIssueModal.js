@@ -556,7 +556,7 @@ const setGitHubIssuer = async (
 
     console.log("token =" + data.token);
 
-    let res = await fetch(`https://githubissues.azurewebsites.us/api/GithubIssues?`, options)
+    let res = await fetch(`http://localhost:7071/api/GithubIssues`, options)
     // .then(response => response.json())
     .then(response => {
       console.log(response)

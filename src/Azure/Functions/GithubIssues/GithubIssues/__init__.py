@@ -126,24 +126,23 @@ class GithubIssues:
             print (self.RESPONSE_STRING, response.content)	
 
     def authenticate(self, token):	
-        # # setup management api request 	
-        # auth0_users_authorization =  "Bearer " + token
-        # auth0_users_headers = { 'authorization': auth0_users_authorization }	
-        # # request users	
-        # self.auth0_connection.request("GET", "/api/private", headers=auth0_users_headers)
-        # auth0_users_res = self.auth0_connection.getresponse()	
-        # auth0_users_data = auth0_users_res.read()	
-        # # convert to json	
-        # json_auth0_users_data = auth0_users_data.decode('utf8').replace("'", '"')	
+        # setup management api request 	
+        auth0_users_authorization =  "Bearer " + token
+        auth0_users_headers = { 'authorization': auth0_users_authorization }	
+        # request users	
+        self.auth0_connection.request("GET", "/api/private", headers=auth0_users_headers)
+        auth0_users_res = self.auth0_connection.getresponse()	
+        auth0_users_data = auth0_users_res.read()	
+        # convert to json	
+        json_auth0_users_data = auth0_users_data.decode('utf8').replace("'", '"')	
         
-        # print("data = " + json_auth0_users_data)
+        print("data = " + json_auth0_users_data)
 
-        # if json_auth0_users_data == "Unauthorized":
-        #     print("You are not authorized to access this function")
-        #     return "Not Authenticated"
-        # else:
-        	
-        return "Authenticated"
+        if json_auth0_users_data == "Unauthorized":
+            print("You are not authorized to access this function")
+            return "Not Authenticated"
+        else:
+            return "Authenticated"
 
     def set_class_variables(self):
         self.get_token()	
@@ -204,7 +203,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         if authenticated == "Not Authenticated":
             return func.HttpResponse(	
                 # body may be unneeded
-                body = "You are not authorized",	
+                body = token + " You are not authorized",	
                 status_code=401,	
                 headers=HEADER	
             )
