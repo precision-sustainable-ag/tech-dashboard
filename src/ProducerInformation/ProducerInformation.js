@@ -1,16 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Grid, Typography } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { Context } from "../Store/Store";
 import MaterialTable from "material-table";
 import { bannedRoles } from "../utils/constants";
 import { BannedRoleMessage, CustomLoader } from "../utils/CustomComponents";
-import { onfarmDevAPI, onfarmProdAPI } from "../utils/api_secret";
-
-const editableRows = [
-  "Last Name or Organization/Corporation Name",
-  "Email",
-  "Phone",
-];
+import { onfarmAPI } from "../utils/api_secret";
+import { UserIsEditor } from "../utils/SharedFunctions";
+import EditProducerModal from "./EditProducerModal";
 
 const tableHeaderOptions = [
   {
@@ -56,11 +52,13 @@ const ProducerInformation = (props) => {
   const [tableData, setTableData] = useState([]);
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [editModalData, setEditModalData] = useState({});
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const [state] = useContext(Context);
 
   useEffect(() => {
     const fetchProducers = async () => {
-      let response = await fetch(`${onfarmProdAPI}/producers`, {
+      let response = await fetch(`${onfarmAPI}/producers`, {
         headers: {
           "x-api-key": state.userInfo.apikey,
         },
@@ -113,6 +111,17 @@ const ProducerInformation = (props) => {
       ) : (
         <Grid item xs={12}>
           <MaterialTable
+            // actions={[
+            //   {
+            //     icon: "edit",
+            //     tooltip: "Edit Data",
+            //     onClick: (e, rowData) => {
+            //       setEditModalData(rowData);
+            //       setEditModalOpen(true);
+            //       // console.log(e);
+            //     },
+            //   },
+            // ]}
             columns={tableHeaderOptions}
             data={tableData}
             title="Producer Information"
@@ -147,6 +156,12 @@ const ProducerInformation = (props) => {
           />
         </Grid>
       )}
+      <EditProducerModal
+        open={editModalOpen}
+        setOpen={setEditModalOpen}
+        data={editModalData}
+        setData={setEditModalData}
+      />
     </Grid>
   ) : (
     <BannedRoleMessage title="Producer Information" />
