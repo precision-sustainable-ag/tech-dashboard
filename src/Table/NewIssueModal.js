@@ -164,11 +164,11 @@ const NewIssueModal = (props) => {
       </tbody>
     </table>`;
 
-      // let token = await getTokenSilently({
-      //   audience: 'https://precision-sustaibale-ag/tech-dashboard',
-      // });
+      let token = await getTokenSilently({
+        audience: 'https://precision-sustaibale-ag/tech-dashboard',
+      });
 
-      let token = await getTokenSilently();
+      // let token = await getTokenSilently();
 
       console.log("this is my token " + token)
 
