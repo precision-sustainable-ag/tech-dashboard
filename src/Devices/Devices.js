@@ -81,13 +81,18 @@ const DevicesComponent = (props) => {
                   </Grid>
                 ))
               : ""}
-            <Grid item>
-              <Chip
-                color={activeTag === "Untagged" ? "primary" : "default"}
-                label={"Untagged"}
-                onClick={() => setActiveTag("Untagged")}
-              />
-            </Grid>
+            {props.userInfo.state === "all" ||
+            props.userInfo.state === "All" ? (
+              <Grid item>
+                <Chip
+                  color={activeTag === "Untagged" ? "primary" : "default"}
+                  label={"Untagged"}
+                  onClick={() => setActiveTag("Untagged")}
+                />
+              </Grid>
+            ) : (
+              ""
+            )}
           </Grid>
           {validDevices.length > 0 ? (
             validDevices.map((device) =>
@@ -161,12 +166,18 @@ const filterDevicesByTags = (devices = [], activeTag) => {
 const filterAllDevicesWithoutTags = (devices) => {
   const devicesWithoutTags = devices.filter((device) => {
     if (device.tags.length === 0) return true;
-    else if (device.tags.includes("PSA_GLOBAL") && device.tags.length === 1)
+    else if (
+      device.tags.length === 1 &&
+      device.tags.filter((tag) => tag.name === "PSA_GLOBAL").length !== 0
+    ) {
       return true;
-    else return false;
+    } else return false;
   });
+
   return devicesWithoutTags;
 };
+
+// not being invoked
 const filterAllDevices = (devices) => {
   const devicesWithTags = devices.filter((device) => {
     if (device.tags.length > 0) {
@@ -185,6 +196,7 @@ DevicesComponent.propTypes = {
   showDevices: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,
   devices: PropTypes.array.isRequired,
+  userInfo: PropTypes.object,
 };
 
 export default DevicesComponent;

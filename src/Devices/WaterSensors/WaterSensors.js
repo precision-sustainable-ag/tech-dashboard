@@ -162,6 +162,7 @@ const WaterSensors = () => {
       devices={devices}
       loading={devicesLoadingState}
       for={"watersensors"}
+      userInfo={state.userInfo}
     />
   );
 };
