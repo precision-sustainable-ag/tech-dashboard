@@ -16,9 +16,6 @@
 # Hide Auth0 access key
 /src/Auth/auth_config.json
 
-# Hide api_secret.js
-/src/utils/api_secret.js
-
 # testing
 /coverage
 
