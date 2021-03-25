@@ -139,6 +139,7 @@ const Issue = (props) => {
   };
 
   useEffect(() => {
+    console.log("entered use effect");
     fetchIssueComments();
   }, [newCommentAdded]);
 
@@ -156,6 +157,9 @@ const Issue = (props) => {
         owner: "precision-sustainable-ag",
         repo: "data_corrections",
         issue_number: issueNumber,
+        headers: {
+          'If-None-Match': ''
+        }
       }
     );
   };

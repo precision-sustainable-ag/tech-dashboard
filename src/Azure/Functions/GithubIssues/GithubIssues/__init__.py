@@ -32,10 +32,10 @@ class GithubIssues:
         # convert to json	
         json_auth0_token_data = auth0_token_data.decode('utf8').replace("'", '"')	
         auth0_token_json_data = json.loads(json_auth0_token_data)	
-        # print and store access token	
+        # logging.info and store access token	
         if DEBUG:
-            print("Auth 0 Management API Token = " + auth0_token_json_data['access_token'] + '\n')	
-            print("\n\n")
+            logging.info("Auth 0 Management API Token = " + auth0_token_json_data['access_token'] + '\n')	
+            logging.info("\n\n")
         management_api_token = auth0_token_json_data['access_token']	
         # set class variable for management toke	
         self.management_api_token = management_api_token	
@@ -51,12 +51,12 @@ class GithubIssues:
         # convert to json	
         json_auth0_users_data = auth0_users_data.decode('utf8').replace("'", '"')	
         auth0_users_json_data = json.loads(json_auth0_users_data)	
-        # iterate through users and print out for debugging	
+        # iterate through users and logging.info out for debugging	
         if DEBUG:
-            # print out all users tokens tokens
+            # logging.info out all users tokens tokens
             for user in auth0_users_json_data:	
-                print(user.get("nickname") + "'s token = " + user.get("identities")[0].get("access_token"))	
-            print("\n\n")
+                logging.info(user.get("nickname") + "'s token = " + user.get("identities")[0].get("access_token"))	
+            logging.info("\n\n")
         # set class variable for users in json format	
         self.auth0_users_json_data = auth0_users_json_data	
     # method to search for a users github token in self.auth0_users_json_data	
@@ -64,11 +64,11 @@ class GithubIssues:
         for user in self.auth0_users_json_data:	
             if user.get("nickname") == self.user:	
                 github_user_token = user.get("identities")[0].get("access_token")	
-        # prints users token for debugging	
+        # logging.infos users token for debugging	
         if DEBUG:
-            # print users token 
-            print(self.user + "'s token is: " + github_user_token)	
-            print("\n\n")
+            # logging.info users token 
+            logging.info(self.user + "'s token is: " + github_user_token)	
+            logging.info("\n\n")
         # sets class variable for the users github token	
         self.github_user_token = github_user_token	
     # method to make an issue using a specific users github token	
@@ -94,11 +94,11 @@ class GithubIssues:
         # Add the issue to our repository	
         response = requests.request("POST", url, data=payload, headers=headers)	
         if response.status_code == 201:	
-            print ('Successfully created issue "%s"' % title)	
-            # print (self.RESPONSE_STRING, response.content)	
+            logging.info ('Successfully created issue "%s"' % title)	
+            # logging.info (self.RESPONSE_STRING, response.content)	
         else:	
-            print ('Could not create Issue "%s"' % title)	
-            print (self.RESPONSE_STRING, response.content)	
+            logging.info ('Could not create Issue "%s"' % title)	
+            logging.info (self.RESPONSE_STRING, response.content)	
     def create_github_comment(self, issue_number, body):	
         # Create an issue on github.com using the given parameters	
         # Url to create issues via POST	
@@ -117,33 +117,33 @@ class GithubIssues:
         payload = json.dumps(data)	
         # Add the issue to our repository	
         response = requests.request("POST", url, data=payload, headers=headers)	
-        print(response.status_code)	
+        logging.info(response.status_code)	
         if response.status_code == 201:	
-            print ('Successfully created Comment "%s" on issue #%s' % (body, issue_number))	
-            # print (self.RESPONSE_STRING, response.content)	
+            logging.info ('Successfully created Comment "%s" on issue #%s' % (body, issue_number))	
+            # logging.info (self.RESPONSE_STRING, response.content)	
         else:	
-            print ('Could not create Comment "%s"' % body)	
-            print (self.RESPONSE_STRING, response.content)	
+            logging.info ('Could not create Comment "%s"' % body)	
+            logging.info (self.RESPONSE_STRING, response.content)	
 
     def authenticate(self, token):	
         # setup management api request 	
         auth0_users_authorization =  "Bearer " + token
         
         auth0_connection =  http.client.HTTPSConnection("dev.onfarmtech.org")	
-        print("hi")
+        logging.info("hi")
         auth0_users_headers = { 'authorization': auth0_users_authorization }	
         # request users	
-        print(auth0_users_headers)
+        logging.info(auth0_users_headers)
         auth0_connection.request("GET", "/api/private", headers=auth0_users_headers)
         auth0_users_res = auth0_connection.getresponse()	
         auth0_users_data = auth0_users_res.read()	
         # convert to json	
         json_auth0_users_data = auth0_users_data.decode('utf8').replace("'", '"')	
         
-        print("data = " + json_auth0_users_data)
-        print("hi")
+        logging.info("data = " + json_auth0_users_data)
+        logging.info("hi")
         if json_auth0_users_data == "Unauthorized":
-            print("You are not authorized to access this function")
+            logging.info("You are not authorized to access this function")
             return "Not Authenticated"
         else:
             return "Authenticated"
@@ -165,8 +165,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         # get the body as a json object
         req_body = req.get_json()	
         if DEBUG:
-            print("Request body = " + json.dumps(req_body))	
-            print("\n\n")
+            logging.info("Request body = " + json.dumps(req_body))	
+            logging.info("\n\n")
 
         # get params
         action = req_body.get('action')	
@@ -186,19 +186,19 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         token = req_body.get('token')	
 
         if DEBUG:
-            # debug prints
-            print("Action param = " + action)	
-            print("User param = " + user)
+            # debug logging.infos
+            logging.info("Action param = " + action)	
+            logging.info("User param = " + user)
             if title and body and assignees and labels:	
-                print("Title param = " + title)	
-                print("Body param = " + body)	
-                print("Assignees = " + str(assignees))	
-                print("Labels = " + str(labels))
+                logging.info("Title param = " + title)	
+                logging.info("Body param = " + body)	
+                logging.info("Assignees = " + str(assignees))	
+                logging.info("Labels = " + str(labels))
             if comment and number:
-                print("Comment param = " + comment)	
-                print("Number param = " + str(number))	
-            print("Token param = " + token)	
-            print("\n")
+                logging.info("Comment param = " + comment)	
+                logging.info("Number param = " + str(number))	
+            logging.info("Token param = " + token)	
+            logging.info("\n")
 
         # instantiate GithupIssues class
         ghi = GithubIssues(user)
@@ -238,7 +238,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 )	
     # handle exceptions 
     except Exception as error:
-        print("Program encountered exception: " + str(error))
+        logging.info("Program encountered exception: " + str(error))
         return func.HttpResponse(
             body = str(error),
             status_code=400,
