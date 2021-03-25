@@ -1,231 +1,202 @@
 // Dependency Imports
 import React, { useContext, useState, useEffect } from "react";
-import Axios from "axios";
 import Loading from "react-loading";
-import qs from "qs";
-import { Card, Typography } from "@material-ui/core";
+import { Card, Chip, Grid, Typography } from "@material-ui/core";
 
 // Local Imports
 import DataParser from "./DataParser";
-import * as Constants from "./hologramConstants";
-import { bannedRoles, apiCall } from "../utils/constants";
-import { apiUsername, apiPassword } from "../utils/api_secret";
 import { BannedRoleMessage } from "../utils/CustomComponents";
 import "./Devices.scss";
-import { Context } from "../Store/Store";
+import PropTypes from "prop-types";
+
+const deviceCardStyle = {
+  height: "200px",
+};
 
 // Default function
-const DevicesComponent = () => {
-  const [state, dispatch] = useContext(Context);
-  const [showDevices, setShowDevices] = useState(false);
-  const [devicesLoadingState, setDevicesLoadingState] = useState(true);
+const DevicesComponent = (props) => {
+  const [validDevices, setValidDevices] = useState([]);
+  const [deviceTags, setDeviceTags] = useState([]);
+  const [activeTag, setActiveTag] = useState("All");
 
-  //   const dateTime = new Date().toDateString();
-
-  //   let mockServerURL = "https://private-anon-3185b3b9ae-hologram.apiary-mock.com";
-  let devicesData = [];
-  let finalAPIURL = "";
   useEffect(() => {
-    // console.log(moment)
-    if (Reflect.ownKeys(state.userInfo).length > 0) {
-      if (bannedRoles.includes(state.userInfo.role)) {
-        setShowDevices(false);
+    if (activeTag === "All" && props.devices.length > 0) {
+      if (props.from === "watersensors") {
+        const devicesWithTags = filterAllDevices(props.devices);
+        setValidDevices(devicesWithTags);
       } else {
-        // console.log("hello from devices");
-
-        // get tag id for
-
-        // let interval = setInterval(
-        finalAPIURL = Constants.APIURL();
-        // console.log(finalAPIURL);
-        // Check user state or retrieve all devices
-        let apiParams;
-        // if (state.userInfo.role === "all") {
-        //   apiParams = "";
-        //   fetchRecords(
-        //     `${finalAPIURL}/api/1/devices?withlocation=true${apiParams}`
-        //   ).then(() => {
-        //     setDevicesLoadingState(false);
-        //     console.log(
-        //       "This is just intended to retrieve basic info, rest of the data should technically come from websockets"
-        //     );
-        //   });
-        // } else {
-        // console.log('user role !== all');
-
-        // // check if the string has commas and split it into an array
-        if (state.userInfo) {
-          let deviceState = state.userInfo.state;
-          deviceState = deviceState.toUpperCase();
-          deviceState = deviceState.split(",");
-          if (deviceState[0] === "ALL") {
-            apiParams = "";
-            fetchRecords(
-              `${finalAPIURL}/api/1/devices?withlocation=true${apiParams}`
-            ).then(() => {
-              setDevicesLoadingState(false);
-            });
+        setValidDevices(props.devices);
+      }
+    } else {
+      if (props.devices.length > 0) {
+        if (activeTag === "All") {
+          if (props.from === "watersensors") {
+            const devicesWithTags = filterAllDevices(props.devices);
+            setValidDevices(devicesWithTags);
           } else {
-            getTags(
-              `${finalAPIURL}/api/1/devices/tags?limit=1000&withlocation=true`
-            ).then((tagsObject) => {
-              // console.log("Tags Object: ", tagsObject);
-              let tags = tagsObject.data.tags;
-              let matchedResult = tags.filter((obj) => {
-                if (deviceState.includes(obj.name)) return obj;
-              });
-              // console.log(matchedResult);
-              let tagsIdArray = [];
-              let tagsId = matchedResult.map((val, index) => {
-                // console.log(val);
-                // console.log(val.id);
-                // let tagId = val.id;
-                return val.id;
-              });
-              // console.log(tagsId);
-              tagsId.forEach((tagId) => {
-                fetchRecords(
-                  `${finalAPIURL}/api/1/devices?tagid=${tagId}&withlocation=true`
-                ).then(() => {
-                  setDevicesLoadingState(false);
-                });
-              });
-              // get tag ids from matched objects
-            });
+            setValidDevices(props.devices);
           }
-
-          // var result = jsObjects.filter(obj => {
-          //   return obj.b === 6
-          // })
-          // }
-
-          // get tag id from hologram for this specific
+        } else if (activeTag === "Untagged") {
+          const devicesWithoutTags = filterAllDevicesWithoutTags(props.devices);
+          setValidDevices(devicesWithoutTags);
+        } else {
+          const filteredDevices = filterDevicesByTags(props.devices, activeTag);
+          setValidDevices(filteredDevices);
         }
-
-        setShowDevices(true);
       }
     }
+  }, [activeTag, props]);
 
-    //   30 * 1000
-    // );
-    // return () => clearInterval(interval);
-  }, [state.userInfo]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const getTags = async (apiURL) => {
-    let options = Constants.APICreds();
-    let tagsData = [];
-    await tagsApiCall(apiURL, options).then((response) => {
-      // console.log(response);
-      tagsData = response;
-    });
-    return tagsData;
-  };
-
-  const fetchRecords = async (apiURL) => {
-    let options = Constants.APICreds();
-
-    await apiCall(apiURL, options)
-      .then((response) => {
-        // save whatever we get for a specific state or "all"
-        // console.log(response.data.data);
-        // TODO: Set a model to be used for devices
-        // let device = new Devices(response.data.data);
-        // console.log(device);
-        devicesData.push(response.data.data);
-
-        return response;
-      })
-      .then(async (response) => {
-        if (response.data.continues) {
-          // recursive call to get more data
-          await fetchRecords(`${finalAPIURL}${response.data.links.next}`);
-        } else {
-          let devicesFlatData = [];
-          devicesFlatData = devicesData.flat();
-          devicesFlatData = devicesFlatData.sort(compare);
-          // console.log("devicesFlatData", devicesFlatData);
-          // TODO: Change to local state
-          dispatch({
-            type: "SET_DEVICES_INFO",
-            data: devicesFlatData,
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const tagsApiCall = async (url, options) => {
-    let tagsData = [];
-
-    await Axios({
-      method: "post",
-      url: Constants.apiCorsUrl,
-      data: qs.stringify({
-        url: url,
-      }),
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
-      },
-      auth: {
-        username: apiUsername,
-        password: apiPassword,
-      },
-      responseType: "json",
-    }).then((response) => {
-      // console.log(response.data);
-      tagsData = response.data;
-    });
-    return tagsData;
-  };
-
-  const compare = (a, b) => {
-    // Use toUpperCase() to ignore character casing
-    let bandA = a.name.toUpperCase();
-    let bandB = b.name.toUpperCase();
-
-    let comparison = 0;
-    if (bandA > bandB) {
-      comparison = 1;
-    } else if (bandA < bandB) {
-      comparison = -1;
+  useEffect(() => {
+    if (props.devices.length > 0) {
+      const tags = getAllTags(props.devices);
+      setDeviceTags(tags);
     }
-    return comparison;
-  };
-  return showDevices ? (
-    <div className="devicesWrapper">
-      <div className="devicesListWrapper">
-        {devicesLoadingState ? (
+  }, [props]);
+
+  return props.showDevices ? (
+    <Grid container>
+      {props.loading ? (
+        <Grid item xs={12}>
           <Loading type="bars" width="200px" height="200px" color="#3f51b5" />
-        ) : (
-          <div className="devices">
-            {state.devices.length > 0 ? (
-              state.devices.map((device) =>
-                device.lastsession ? (
-                  <div className="device" key={device.id}>
-                    <Card
-                      variant="elevation"
-                      elevation={3}
-                      className="deviceDataWrapper"
-                    >
-                      <DataParser key={device.id} deviceData={device} />
-                    </Card>
-                  </div>
-                ) : (
-                  ""
-                )
-              )
+        </Grid>
+      ) : (
+        <Grid item container spacing={3}>
+          <Grid container item xs={12} spacing={3}>
+            <Grid item>
+              <Chip
+                color={activeTag === "All" ? "primary" : "default"}
+                label={"All"}
+                onClick={() => setActiveTag("All")}
+              />
+            </Grid>
+            {deviceTags.length > 0
+              ? deviceTags.map((tag) => (
+                  <Grid item key={`tag-${tag}`}>
+                    <Chip
+                      color={activeTag === tag ? "primary" : "default"}
+                      label={tag}
+                      onClick={() => setActiveTag(tag)}
+                    />
+                  </Grid>
+                ))
+              : ""}
+            {props.userInfo.state === "all" ||
+            props.userInfo.state === "All" ? (
+              <Grid item>
+                <Chip
+                  color={activeTag === "Untagged" ? "primary" : "default"}
+                  label={"Untagged"}
+                  onClick={() => setActiveTag("Untagged")}
+                />
+              </Grid>
             ) : (
-              <Typography variant="body1">No Devices Found</Typography>
+              ""
             )}
-          </div>
-        )}
-      </div>
-    </div>
+          </Grid>
+          {validDevices.length > 0 ? (
+            validDevices.map((device) =>
+              device.lastsession ? (
+                <Grid item xs={12} md={2} key={device.id}>
+                  <Card
+                    style={deviceCardStyle}
+                    variant="elevation"
+                    elevation={3}
+                    className="deviceDataWrapper"
+                  >
+                    <DataParser
+                      for={props.for}
+                      key={device.id}
+                      deviceData={device}
+                    />
+                  </Card>
+                </Grid>
+              ) : (
+                ""
+              )
+            )
+          ) : (
+            <Typography variant="body1">No Devices Found</Typography>
+          )}
+        </Grid>
+      )}
+    </Grid>
   ) : (
     <BannedRoleMessage title="Devices" />
   );
+};
+
+const getAllTags = (devices) => {
+  const uniqueTags = [];
+  const devicesWithTags = devices.filter(
+    (device) => device.tags.length > 0 && device.tags.filter((tag) => tag.name)
+  );
+  const tags = devicesWithTags.map((device) => {
+    return [...device.tags];
+  });
+
+  const tagsArray = tags.flat();
+
+  tagsArray.forEach((tag) => {
+    if (uniqueTags.includes(tag.name) || tag.name === "PSA_GLOBAL") {
+    } else {
+      uniqueTags.push(tag.name);
+    }
+  });
+
+  return uniqueTags;
+};
+const filterDevicesByTags = (devices = [], activeTag) => {
+  let tagSpecificDevices = [];
+
+  devices.forEach((device) => {
+    if (device.tags.length > 0) {
+      device.tags.forEach((tag) => {
+        if (tag.name === activeTag) {
+          tagSpecificDevices.push(device);
+        }
+      });
+    }
+  });
+
+  // console.log(tagSpecificDevices);
+  return tagSpecificDevices;
+};
+
+const filterAllDevicesWithoutTags = (devices) => {
+  const devicesWithoutTags = devices.filter((device) => {
+    if (device.tags.length === 0) return true;
+    else if (
+      device.tags.length === 1 &&
+      device.tags.filter((tag) => tag.name === "PSA_GLOBAL").length !== 0
+    ) {
+      return true;
+    } else return false;
+  });
+
+  return devicesWithoutTags;
+};
+
+// not being invoked
+const filterAllDevices = (devices) => {
+  const devicesWithTags = devices.filter((device) => {
+    if (device.tags.length > 0) {
+      let globalTag = device.tags.filter((tag) => tag.name === "PSA_GLOBAL");
+
+      if (globalTag.length > 0) {
+        return true;
+      } else return false;
+    } else return false;
+  });
+
+  return devicesWithTags;
+};
+
+DevicesComponent.propTypes = {
+  showDevices: PropTypes.bool.isRequired,
+  loading: PropTypes.bool.isRequired,
+  devices: PropTypes.array.isRequired,
+  userInfo: PropTypes.object,
 };
 
 export default DevicesComponent;

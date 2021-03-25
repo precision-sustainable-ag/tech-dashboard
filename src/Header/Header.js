@@ -3,6 +3,7 @@ import React, { useEffect, useContext, useState } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
+import { RiSensorFill, BiDevices, RiTimeLine } from "react-icons/all";
 import {
   Drawer,
   AppBar,
@@ -17,6 +18,7 @@ import {
   Menu,
   MenuItem,
   Collapse,
+  Icon,
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import {
@@ -31,6 +33,10 @@ import {
   BrightnessLow,
   ExpandLess,
   ExpandMore,
+  ListAlt,
+  Info,
+  BugReport,
+  Storage,
 } from "@material-ui/icons";
 import Axios from "axios";
 
@@ -115,9 +121,13 @@ export default function Header(props) {
 
   const { logout, user, loginWithRedirect } = useAuth0();
   const [openAllDataNav, setOpenAllDataNav] = useState(false);
+  const [openDevicesNav, setOpenDevicesNav] = useState(false);
 
   const handleOpenAllDataNav = () => {
     setOpenAllDataNav(!openAllDataNav);
+  };
+  const handleOpenDevicesNav = () => {
+    setOpenDevicesNav(!openDevicesNav);
   };
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -168,6 +178,10 @@ export default function Header(props) {
     }
   };
   const fetchRole = async (user) => {
+    dispatch({
+      type: "UPDATING_USER_INFO",
+    });
+    console.log("api url = " + apiURL)
     await Axios.get(`${apiURL}/api/users/${user.email}`, {
       auth: {
         username: apiUsername,
@@ -183,7 +197,6 @@ export default function Header(props) {
 
         addUserToDatabase(qs.stringify(obj));
       } else {
-        console.log("welcome back!");
         dispatch({
           type: "UPDATE_ROLE",
           data: {
@@ -300,9 +313,23 @@ export default function Header(props) {
             to="/"
           >
             <ListItemIcon>
-              <ViewList />
+              <Icon>
+                <RiTimeLine />
+              </Icon>
             </ListItemIcon>
-            <ListItemText primary={"Quick Links"} />
+            <ListItemText primary={"Timeline"} />
+          </ListItem>
+          <ListItem
+            onClick={() => setOpen(false)}
+            button
+            key={"Protocols"}
+            component={Link}
+            to="/on-farm-protocols"
+          >
+            <ListItemIcon>
+              <ListAlt />
+            </ListItemIcon>
+            <ListItemText primary={"Protocols"} />
           </ListItem>
           <ListItem
             onClick={() => handleOpenAllDataNav()}
@@ -310,7 +337,7 @@ export default function Header(props) {
             key={"All Data"}
           >
             <ListItemIcon>
-              <ViewList />
+              <Info />
             </ListItemIcon>
             <ListItemText primary={"All Data"} />
             {openAllDataNav ? <ExpandLess /> : <ExpandMore />}
@@ -327,6 +354,17 @@ export default function Header(props) {
                 }}
               >
                 <ListItemText inset primary="Site Information" />
+              </ListItem>
+              <ListItem
+                button
+                to="/producers"
+                component={Link}
+                onClick={() => {
+                  setOpen(false);
+                  handleOpenAllDataNav();
+                }}
+              >
+                <ListItemText inset primary="Producer Information" />
               </ListItem>
             </List>
           </Collapse>
@@ -352,7 +390,7 @@ export default function Header(props) {
             to="/issues"
           >
             <ListItemIcon>
-              <QuestionAnswer />
+              <BugReport />
             </ListItemIcon>
             <ListItemText primary={"Issues"} />
           </ListItem>
@@ -364,24 +402,52 @@ export default function Header(props) {
             to="/water-sensors"
           >
             <ListItemIcon>
-              <QuestionAnswer />
+              <Icon>
+                <RiSensorFill />
+              </Icon>
             </ListItemIcon>
             <ListItemText primary={"Water Sensors"} />
           </ListItem>
 
           <ListItem
-            onClick={() => setOpen(false)}
+            onClick={() => handleOpenDevicesNav()}
             button
-            key="Devices"
-            component={Link}
-            to="/devices"
+            key={"Devices"}
           >
             <ListItemIcon>
-              <Radio />
+              <Info />
             </ListItemIcon>
-            <ListItemText primary="Devices" />
+            <ListItemText primary={"Devices"} />
+            {openDevicesNav ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
-          {/* <ListItem
+          <Collapse in={openDevicesNav} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem
+                button
+                to="/devices/water-sensors"
+                component={Link}
+                onClick={() => {
+                  setOpen(false);
+                  handleOpenDevicesNav();
+                }}
+              >
+                <ListItemText inset primary="Water Sensors" />
+              </ListItem>
+              <ListItem
+                button
+                to="/devices/stress-cams"
+                component={Link}
+                onClick={() => {
+                  setOpen(false);
+                  handleOpenDevicesNav();
+                }}
+              >
+                <ListItemText inset primary="Stress Cams" />
+              </ListItem>
+            </List>
+          </Collapse>
+
+          <ListItem
             onClick={() => setOpen(false)}
             button
             key="Forms"
@@ -392,7 +458,7 @@ export default function Header(props) {
               <Storage />
             </ListItemIcon>
             <ListItemText primary="Forms" />
-          </ListItem> */}
+          </ListItem>
         </List>
       </Drawer>
     </div>

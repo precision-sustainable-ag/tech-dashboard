@@ -29,11 +29,18 @@ import "./Styles/App.css";
 import Header from "./Header/Header";
 import { Switch, Route } from "react-router-dom";
 import Issues from "./Issues/Issues";
-import DevicesComponent from "./Devices/Devices";
+// import DevicesComponent from "./Devices/Devices";
 import DeviceComponent from "./Devices/Device/Device";
 import Forms from "./Forms/Forms";
-import { Landing } from "./Landing/Landing";
+// import { Landing } from "./Landing/Landing";
 import { WifiOff } from "@material-ui/icons";
+import Protocols from "./Protocols/Protocols";
+import StressCams from "./Devices/StressCams/StressCams";
+import WaterSensors from "./Devices/WaterSensors/WaterSensors";
+import DevicesWrapper from "./Devices/DevicesWrapper/DevicesWrapper";
+import TaskTimeline from "./Landing/TaskTimeline/TaskTimeline";
+import ProducerInformation from "./ProducerInformation/ProducerInformation";
+import FormData from "./Forms/components/FormData";
 
 // Helper function
 function useOnlineStatus() {
@@ -201,12 +208,36 @@ function App() {
                   //   {...props}
                   //   isDarkTheme={theme.palette.type === "light" ? false : true}
                   // />
-                  <Landing
+                  <TaskTimeline
                     isDarkTheme={theme.palette.type === "light" ? false : true}
                   />
                 )}
                 path="/"
                 exact
+              />
+              <PrivateRoute
+                path="/on-farm-protocols"
+                render={(props) => (
+                  <Protocols
+                    isDarkTheme={theme.palette.type === "light" ? false : true}
+                  />
+                )}
+              />
+              <PrivateRoute
+                path="/devices/stress-cams"
+                render={(props) => (
+                  <StressCams
+                    isDarkTheme={theme.palette.type === "light" ? false : true}
+                  />
+                )}
+              />
+              <PrivateRoute
+                path="/devices/water-sensors"
+                render={(props) => (
+                  <WaterSensors
+                    isDarkTheme={theme.palette.type === "light" ? false : true}
+                  />
+                )}
               />
 
               <PrivateRoute
@@ -232,11 +263,7 @@ function App() {
                   />
                 )}
               />
-              <PrivateRoute
-                path="/devices"
-                component={DevicesComponent}
-                exact
-              />
+              <PrivateRoute path="/devices" component={DevicesWrapper} exact />
               <PrivateRoute
                 path={`/devices/:deviceId`}
                 render={(props) => (
@@ -246,7 +273,36 @@ function App() {
                   />
                 )}
               />
-              <PrivateRoute path={`/kobo-forms`} component={Forms} />
+              <PrivateRoute
+                path={`/kobo-forms/`}
+                exact
+                render={(props) => (
+                  <Forms
+                    {...props}
+                    isDarkTheme={theme.palette.type === "light" ? false : true}
+                  />
+                )}
+              />
+              <PrivateRoute
+                path={`/kobo-forms/:formId`}
+                render={(props) => (
+                  <FormData
+                    assetId={props}
+                    isDarkTheme={theme.palette.type === "light" ? false : true}
+                  />
+                )}
+              />
+
+              <PrivateRoute
+                path={`/producers`}
+                render={(props) => (
+                  <ProducerInformation
+                    {...props}
+                    isDarkTheme={theme.palette.type === "light" ? false : true}
+                  />
+                )}
+              />
+
               <PrivateRoute path="/profile" component={Profile} />
               <PrivateRoute path="/device-enroll" component={DeviceEnroll} />
               <PrivateRoute

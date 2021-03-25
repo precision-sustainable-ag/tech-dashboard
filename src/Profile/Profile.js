@@ -2,10 +2,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import {
   Grid,
-  Box,
   Typography,
-  Paper,
-  Avatar,
   Card,
   CardHeader,
   CardContent,
@@ -17,13 +14,12 @@ import {
   Button,
   TableHead,
 } from "@material-ui/core";
+import PropTypes from "prop-types";
 
 // Local Imports
 import { Context } from "../Store/Store";
 import { useAuth0 } from "../Auth/react-auth0-spa";
-import { bannedRoles, ucFirst } from "../utils/constants";
-import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
-import { Fragment } from "react";
+import { bannedRoles, fetchKoboPasswords, ucFirst } from "../utils/constants";
 import { BannedRoleMessage } from "../utils/CustomComponents";
 
 /**
@@ -56,19 +52,6 @@ const Profile = () => {
     return () => {};
   }, [state.userInfo.state]);
 
-  const fetchKoboPasswords = async ({ state, showAllStates }) => {
-    let response = await fetch(`${apiURL}/api/kobo/passwords/${state}`, {
-      headers: new Headers({
-        Authorization: `Basic ${btoa(`${apiUsername}:${apiPassword}`)}`,
-      }),
-    });
-
-    let payload = await response.json();
-    let { status, data } = payload;
-
-    return { status, data, showAllStates };
-  };
-
   return (
     isAuthenticated &&
     (bannedRoles.includes(state.userInfo.role) ||
@@ -77,36 +60,36 @@ const Profile = () => {
     ) : (
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="subtitle1">Welcome, {user.name}</Typography>
+          <Typography variant="h4">
+            Welcome, {user.name || user.nickname}
+          </Typography>
         </Grid>
 
         {Object.keys(state.userInfo).length > 0 && (
-          <Grid item xs={12}>
-            <Grid container spacing={6}>
-              <Grid item>
-                <Card>
-                  <CardHeader title="Github Details" />
-                  <CardContent style={{ minHeight: "50vh" }}>
-                    <RenderGithubDetails user={user} />
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item>
-                <Card>
-                  <CardHeader title="Account Details" />
-                  <CardContent style={{ minHeight: "50vh" }}>
-                    <RenderGeneralInfo userInfo={state.userInfo} />
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item>
-                <Card>
-                  <CardHeader title="Kobo Details" />
-                  <CardContent style={{ minHeight: "50vh" }}>
-                    <RenderKoboDetails koboData={koboDetails} />
-                  </CardContent>
-                </Card>
-              </Grid>
+          <Grid item container xs={12} spacing={3}>
+            <Grid item xs={12} md={3}>
+              <Card elevation={3}>
+                <CardHeader title="Github Details" />
+                <CardContent style={{ minHeight: "50vh" }}>
+                  <RenderGithubDetails user={user} />
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <Card elevation={3}>
+                <CardHeader title="Account Details" />
+                <CardContent style={{ minHeight: "50vh" }}>
+                  <RenderGeneralInfo userInfo={state.userInfo} />
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <Card elevation={3}>
+                <CardHeader title="Kobo Details" />
+                <CardContent style={{ minHeight: "50vh" }}>
+                  <RenderKoboDetails koboData={koboDetails} />
+                </CardContent>
+              </Card>
             </Grid>
           </Grid>
         )}
@@ -207,7 +190,7 @@ const RenderGithubDetails = ({ user }) => {
           {Object.keys(user).map(
             (userKey, index) =>
               !invisibleKeys.includes(userKey) && (
-                <TableRow>
+                <TableRow key={`githubRow${index}`}>
                   <TableCell>
                     <Typography variant="body1">{ucFirst(userKey)}</Typography>
                   </TableCell>
@@ -222,7 +205,7 @@ const RenderGithubDetails = ({ user }) => {
     </TableContainer>
   );
 };
-const RenderKoboDetails = ({ koboData = { data: [], allStates: false } }) => {
+const RenderKoboDetails = ({ koboData = { data: [{}], allStates: false } }) => {
   return koboData.data.length > 0 ? (
     <TableContainer>
       <Table>
@@ -286,4 +269,24 @@ const showAPIKey = (apiKey) => {
     </span>
   );
 };
+
+RenderGeneralInfo.propTypes = {
+  userInfo: PropTypes.object.isRequired,
+};
+
+RenderGithubDetails.propTypes = {
+  user: PropTypes.object.isRequired,
+};
+
+RenderKoboDetails.propTypes = {
+  koboData: PropTypes.shape({
+    data: PropTypes.array.isRequired,
+  }).isRequired,
+  allStates: PropTypes.bool,
+};
+
+showAPIKey.propTypes = {
+  apiKey: PropTypes.string.isRequired,
+};
+
 export default Profile;

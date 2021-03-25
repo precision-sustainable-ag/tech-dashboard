@@ -3,16 +3,14 @@ import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
 // import { Map, Marker, Popup, TileLayer } from "react-leaflet";
 import Skeleton from "@material-ui/lab/Skeleton";
+import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
+
+import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
+import docco from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light";
+import dark from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-dark";
 import DateFnsUtils from "@date-io/date-fns";
 import qs from "qs";
 import {
-  Card,
-  CardHeader,
-  CardContent,
-  IconButton,
-  GridList,
-  GridListTile,
-  GridListTileBar,
   makeStyles,
   ListItem,
   ListItemIcon,
@@ -32,6 +30,7 @@ import {
   Fab,
   Button,
   TextField,
+  Tooltip,
 } from "@material-ui/core";
 import {
   Create,
@@ -39,14 +38,11 @@ import {
   Router,
   ArrowBackIosOutlined,
   KeyboardArrowUp,
+  CalendarToday,
 } from "@material-ui/icons";
 import moment from "moment-timezone";
 import { Link } from "react-router-dom";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
+import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
 
 // Local Imports
 import { apiUsername, apiPassword } from "../../utils/api_secret";
@@ -59,6 +55,8 @@ import {
 } from "../../utils/CustomComponents";
 import Loading from "react-loading";
 // import { theme } from "highcharts";
+
+SyntaxHighlighter.registerLanguage("json", json);
 
 // Styles
 const StyledTableCell = withStyles((theme) => ({
@@ -115,7 +113,7 @@ const DeviceComponent = (props) => {
   const [userTimezone, setUserTimezone] = useState("America/New_York");
   const [pagesLoaded, setPagesLoaded] = useState(0);
   const [loadMoreDataURI, setLoadMoreDataURI] = useState("");
-  const [timeEnd, setTimeEnd] = useState(moment().add(1, "day").unix());
+  const [timeEnd, setTimeEnd] = useState(Math.floor(Date.now() / 1000));
 
   useEffect(() => {
     setUserTimezone(moment.tz.guess);
@@ -152,7 +150,7 @@ const DeviceComponent = (props) => {
 
       Axios({
         method: "post",
-        url: apiCorsUrl,
+        url: apiCorsUrl + `/${props.location.state.for}`,
         data: qs.stringify({
           url: `${APIURL()}/api/1/csr/rdm?deviceid=${
             props.location.state.id
@@ -199,7 +197,11 @@ const DeviceComponent = (props) => {
             aria-label={`All Devices`}
             component={Link}
             tooltip="All Devices"
-            to={"/devices"}
+            to={
+              props.location.state.for === "watersensors"
+                ? "/devices/water-sensors"
+                : "/devices/stress-cams"
+            }
             startIcon={<ArrowBackIosOutlined />}
           >
             All Devices
@@ -242,28 +244,94 @@ const DeviceComponent = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {mostRecentData.map((data, index) => (
-              <StyledTableRow key={`row-${index}`}>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>
-                  <code>{getDataFromJSON(data.data, "dataString")}</code>
-                </TableCell>
-                {/* <TableCell>{getDataFromJSON(data.data, "tags")}</TableCell> */}
-                <TableCell datatype="">
-                  {getDataFromJSON(data.data, "timestamp")}
+            {mostRecentData.length > 0 ? (
+              mostRecentData.map((data, index) => (
+                <StyledTableRow key={`row-${index}`}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>
+                    {props.location.state.for !== "watersensors" ? (
+                      isBase64(
+                        getDataFromJSON(
+                          data.data,
+                          "dataString",
+                          props.location.state.for
+                        )
+                      ) ? (
+                        <Tooltip
+                          title={
+                            <code style={{ minHeight: "50px", width: "300px" }}>
+                              {atob(
+                                getDataFromJSON(
+                                  data.data,
+                                  "dataString",
+                                  props.location.state.for
+                                )
+                              )}
+                            </code>
+                          }
+                        >
+                          <code>
+                            {getDataFromJSON(
+                              data.data,
+                              "dataString",
+                              props.location.state.for
+                            )}
+                          </code>
+                        </Tooltip>
+                      ) : (
+                        <SyntaxHighlighter
+                          language="json"
+                          style={props.isDarkTheme ? dark : docco}
+                        >
+                          {getDataFromJSON(
+                            data.data,
+                            "dataString",
+                            props.location.state.for
+                          )}
+                        </SyntaxHighlighter>
+                      )
+                    ) : (
+                      <code>
+                        {getDataFromJSON(
+                          data.data,
+                          "dataString",
+                          props.location.state.for
+                        )}
+                      </code>
+                    )}
+                  </TableCell>
+                  {/* <TableCell>{getDataFromJSON(data.data, "tags")}</TableCell> */}
+                  <TableCell datatype="">
+                    {getDataFromJSON(
+                      data.data,
+                      "timestamp",
+                      props.location.state.for
+                    )}
+                  </TableCell>
+                </StyledTableRow>
+              ))
+            ) : (
+              <StyledTableRow>
+                <TableCell colSpan={3} align="center">
+                  <Typography variant="body1">No Data</Typography>
                 </TableCell>
               </StyledTableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </TableContainer>
     );
   };
 
-  const getDataFromJSON = (jsonData, type) => {
+  const getDataFromJSON = (jsonData, type, sensorType) => {
     jsonData = JSON.parse(jsonData);
 
-    let dataStringParsed = atob(jsonData.data);
+    let dataStringParsed =
+      sensorType === "watersensors"
+        ? atob(jsonData.data)
+        : isValidJson(jsonData.data)
+        ? JSON.stringify(JSON.parse(jsonData.data), null, 2)
+        : jsonData.data;
     switch (type) {
       case "dataString":
         return dataStringParsed;
@@ -289,114 +357,95 @@ const DeviceComponent = (props) => {
       />
     ));
   };
-  const isSafari =
-    navigator.vendor &&
-    navigator.vendor.indexOf("Apple") > -1 &&
-    navigator.userAgent &&
-    navigator.userAgent.indexOf("CriOS") == -1 &&
-    navigator.userAgent.indexOf("FxiOS") == -1;
+
+  const DateProvider = () => {
+    return (
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <DatePicker
+          disableFuture
+          autoOk
+          label="Show records from"
+          format="MM/dd/yyyy"
+          value={moment.unix(timeEnd)}
+          onChange={(date) => {
+            setTimeEnd(moment(date).unix());
+          }}
+          animateYearScrolling
+        />
+      </MuiPickersUtilsProvider>
+    );
+  };
+
   const RenderGridListData = () => {
     return (
-      <div key="griddata">
-        <GridList
-          // cols={1}
-          style={{
-            flexWrap: "nowrap",
-            transform: "translateZ(0)",
-            height: "auto",
-          }}
-        >
-          {deviceData.links && deviceData.links.cellular && (
-            <GridListTile style={{ height: "auto" }}>
-              <List>
-                <ListItem alignItems="flex-start" key="lastconnect">
-                  <ListItemIcon>
-                    <Router />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={"Last Connection"}
-                    secondary={moment
-                      .tz(deviceData.links.cellular[0].last_connect_time, "UTC")
-                      .tz(userTimezone)
-                      .format("MM/DD/YYYY hh:mm A")
-                      .toString()}
-                  />
-                </ListItem>
-              </List>
-            </GridListTile>
-          )}
-          <GridListTile style={{ height: "auto" }}>
+      <Grid container spacing={3}>
+        <Grid item>
+          <List>
+            <ListItem alignItems="center" key="last-date">
+              <ListItemIcon>
+                <CalendarToday />
+              </ListItemIcon>
+              <ListItemText primary={<DateProvider />} />
+            </ListItem>
+          </List>
+        </Grid>
+        {deviceData.links && deviceData.links.cellular && (
+          <Grid item xs={12} md={4}>
             <List>
-              <ListItem alignItems="flex-start" key="network">
+              <ListItem alignItems="center" key="lastconnect">
                 <ListItemIcon>
-                  <NetworkCell />
+                  <Router />
                 </ListItemIcon>
                 <ListItemText
-                  primary={"Network"}
-                  secondary={deviceData.links.cellular[0].last_network_used}
+                  primary={"Last Connection"}
+                  secondary={moment
+                    .tz(deviceData.links.cellular[0].last_connect_time, "UTC")
+                    .tz(userTimezone)
+                    .format("MM/DD/YYYY hh:mm A")
+                    .toString()}
                 />
               </ListItem>
             </List>
-          </GridListTile>
-        </GridList>
-
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            {!isSafari && (
-              <TextField
-                type="date"
-                label="Show records from"
-                onChange={(e) =>
-                  setTimeEnd(moment(e.target.value).add(1, "day").unix())
-                }
-                value={moment
-                  .unix(timeEnd)
-                  .subtract(1, "day")
-                  .format("YYYY-MM-DD")}
-              />
-            )}
-
-            {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <KeyboardDatePicker
-                margin="normal"
-                id="date-picker-dialog"
-                label="Date picker dialog"
-                format="MM/dd/yyyy"
-                value={moment.unix(timeEnd).format("YYYY-MM-DD")}
-                onChange={(date) =>
-                  setTimeEnd(moment(date).add(1, "day").unix())
-                }
-                KeyboardButtonProps={{
-                  "aria-label": "change date",
-                }}
-              />
-            </MuiPickersUtilsProvider> */}
           </Grid>
+        )}
+        <Grid item xs={12} md={4}>
+          <List>
+            <ListItem alignItems="center" key="network">
+              <ListItemIcon>
+                <NetworkCell />
+              </ListItemIcon>
+              <ListItemText
+                primary={"Network"}
+                secondary={deviceData.links.cellular[0].last_network_used}
+              />
+            </ListItem>
+          </List>
+        </Grid>
+
+        <Grid item xs={12}>
+          <RenderDataTable />
+        </Grid>
+        {isFetching && (
           <Grid item xs={12}>
-            <RenderDataTable />
-          </Grid>
-          {isFetching && (
-            <Grid item xs={12}>
-              <Grid container justify="center" alignItems="center" spacing={3}>
-                <Grid item>
-                  <Loading
-                    className="scrollLoadingSpinner"
-                    width={50}
-                    height={50}
-                    type="spinningBubbles"
-                    color="#2d2d2d"
-                  />
-                </Grid>
-                <Grid item>
-                  <Typography variant="h5">
-                    Fetching Page {pagesLoaded + 1}
-                  </Typography>
-                </Grid>
+            <Grid container justify="center" alignItems="center" spacing={3}>
+              <Grid item>
+                <Loading
+                  className="scrollLoadingSpinner"
+                  width={50}
+                  height={50}
+                  type="spinningBubbles"
+                  color="#2d2d2d"
+                />
+              </Grid>
+              <Grid item>
+                <Typography variant="h5">
+                  Fetching Page {pagesLoaded + 1}
+                </Typography>
               </Grid>
             </Grid>
-          )}
-        </Grid>
-      </div>
+          </Grid>
+        )}
+      </Grid>
     );
   };
 
@@ -405,7 +454,7 @@ const DeviceComponent = (props) => {
       console.log("Fetching..");
       await Axios({
         method: "post",
-        url: apiCorsUrl,
+        url: apiCorsUrl + `/${props.location.state.for}`,
         data: qs.stringify({
           url: `${APIURL()}${loadMoreDataURI}`,
         }),
@@ -460,4 +509,22 @@ const DeviceComponent = (props) => {
   );
 };
 
+const isValidJson = (json) => {
+  if (!(json && typeof json === "string")) {
+    return false;
+  }
+
+  try {
+    JSON.parse(json);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+const isBase64 = (str = "") => {
+  const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+
+  return base64regex.test(str);
+};
 export default DeviceComponent;

@@ -16,9 +16,6 @@
 # Hide Auth0 access key
 /src/Auth/auth_config.json
 
-# Hide api_secret.js
-/src/utils/api_secret.js
-
 # testing
 /coverage
 
@@ -44,3 +41,5 @@ yarn-error.log*
 
 .dockerignore
 styleguide.config.js
+
+set_env_windows.ps1
