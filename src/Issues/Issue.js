@@ -90,9 +90,12 @@ const Issue = (props) => {
 
   const fetchIssueComments = () => {
     getIssueDetails().then((resp) => {
+      console.log("resp = " + resp)
       const data = resp.data.map((data) => {
         const viaEmail = data.body.includes("<notifications@github.com>");
         const hasMention = data.body.includes("<br/> ** From");
+
+        console.log("body = " + data.body)
 
         return {
           ...data,
@@ -252,6 +255,7 @@ const Issue = (props) => {
             </Grid>
             {issueBody.length > 0 ? (
               issueBody.map((issueData, index) => {
+                console.log("this is the body" + JSON.stringify(issueData))
                 return (
                   <Grid item xs={12} key={index}>
                     {/* <RenderIssue issueData={issueData} /> */}
