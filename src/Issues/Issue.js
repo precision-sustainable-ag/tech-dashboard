@@ -32,11 +32,19 @@ import IssueBubbleBody from "./components/IssueBodyBubble";
 import { Fragment } from "react";
 import { SingleIssueBodyBubble } from "./components/SingleIssueBodyBubble";
 
+  
+
 // Global vars
 var replyParser = require("node-email-reply-parser");
 
 // Default function
 const Issue = (props) => {
+  const {
+    getTokenSilently,
+    loading,
+    config
+  } = useAuth0();
+
   const issueNumber = props.match.params.issueNumber
     ? parseInt(props.match.params.issueNumber)
     : null;
@@ -108,14 +116,18 @@ const Issue = (props) => {
     });
   };
 
-  const handleNewComment = () => {
+  async function handleNewComment() {
     // addNewComment()
     //   .then((resp) => {})
     //   .then(() => {
     //     setNewCommentAdded(!newCommentAdded);
     //     setNewComment("");
     //   });
-    setGitHubCommenter(user.nickname, newComment, issueNumber, "wxyz")
+    let token = await getTokenSilently({
+      audience: `https://precision-sustaibale-ag/tech-dashboard`
+    });
+
+    setGitHubCommenter(user.nickname, newComment, issueNumber, token)
   };
 
   useEffect(() => {
@@ -414,7 +426,7 @@ const setGitHubCommenter = async (
       mode: 'cors', // no-cors, *cors, same-origin
     }
 
-    console.log("token =" + data.token);
+    // console.log("token =" + data.token);
 
     let res = await fetch(`http://localhost:7071/api/GithubIssues`, options)
     // .then(response => response.json())
@@ -428,7 +440,7 @@ const setGitHubCommenter = async (
 
     
     // let json = await res.json();
-    console.log(res.status)
+    // console.log(res.status)
 
 
     return res;

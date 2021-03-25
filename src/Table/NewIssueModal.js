@@ -31,7 +31,8 @@ import PropTypes from "prop-types";
 const NewIssueModal = (props) => {
   const {
     getTokenSilently,
-    loading
+    loading,
+    config
   } = useAuth0();
   // const [state, dispatch] = useContext(Context);
 
@@ -164,15 +165,16 @@ const NewIssueModal = (props) => {
       </tbody>
     </table>`;
 
+      console.log(config)
+      
       let token = await getTokenSilently({
-        audience: 'https://precision-sustaibale-ag/tech-dashboard',
+        audience: `https://precision-sustaibale-ag/tech-dashboard`
       });
 
       // let token = await getTokenSilently();
+      
 
-      console.log("this is my token " + token)
-
-      console.log("token out useEffect = " + token);
+      // console.log("token out useEffect = " + token);
       const issueSet = setGitHubIssuer(
         issueTitle,
         newComment,
@@ -553,8 +555,6 @@ const setGitHubIssuer = async (
       body: JSON.stringify(data),
       mode: 'cors', // no-cors, *cors, same-origin
     }
-
-    console.log("token =" + data.token);
 
     let res = await fetch(`http://localhost:7071/api/GithubIssues`, options)
     // .then(response => response.json())

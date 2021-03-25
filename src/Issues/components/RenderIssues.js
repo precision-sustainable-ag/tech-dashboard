@@ -118,9 +118,12 @@ export const RenderIssues = ({ stateLabel, userRole }) => {
           setLoading(false);
           setShowIssues(true);
 
+          console.log(resp);
+
           const data = resp.data.map((res) => {
             // get username from response body
 
+            // let username = user.nickname;
             let username = res.body.split("By: @");
             username = username[1].split("**")[0].replace(/\s/g, "");
             setUserNames((old) =>

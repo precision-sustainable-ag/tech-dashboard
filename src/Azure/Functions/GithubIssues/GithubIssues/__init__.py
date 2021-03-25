@@ -13,8 +13,8 @@ class GithubIssues:
     auth0_connection =  http.client.HTTPSConnection("psa-tech-dashboard.auth0.com")	
     # class variable to avoid repeating the same text	
     RESPONSE_STRING = 'Response:'	
-    GITHUB_REPO_OWNER = 'mikahpinegar'	
-    GITHUB_REPO_NAME = '309-proj'	
+    GITHUB_REPO_OWNER = 'precision-sustainable-ag'	
+    GITHUB_REPO_NAME = 'data_corrections'	
     HEADER = { 'content-type': 'application/json' }
     
     # constructor sets the user variable	
@@ -128,16 +128,20 @@ class GithubIssues:
     def authenticate(self, token):	
         # setup management api request 	
         auth0_users_authorization =  "Bearer " + token
+        
+        auth0_connection =  http.client.HTTPSConnection("dev.onfarmtech.org")	
+        print("hi")
         auth0_users_headers = { 'authorization': auth0_users_authorization }	
         # request users	
-        self.auth0_connection.request("GET", "/api/private", headers=auth0_users_headers)
-        auth0_users_res = self.auth0_connection.getresponse()	
+        print(auth0_users_headers)
+        auth0_connection.request("GET", "/api/private", headers=auth0_users_headers)
+        auth0_users_res = auth0_connection.getresponse()	
         auth0_users_data = auth0_users_res.read()	
         # convert to json	
         json_auth0_users_data = auth0_users_data.decode('utf8').replace("'", '"')	
         
         print("data = " + json_auth0_users_data)
-
+        print("hi")
         if json_auth0_users_data == "Unauthorized":
             print("You are not authorized to access this function")
             return "Not Authenticated"
@@ -234,7 +238,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 )	
     # handle exceptions 
     except Exception as error:
-        print("Program encourted exception: " + str(error))
+        print("Program encountered exception: " + str(error))
         return func.HttpResponse(
             body = str(error),
             status_code=400,
