@@ -41,6 +41,7 @@ import DevicesWrapper from "./Devices/DevicesWrapper/DevicesWrapper";
 import TaskTimeline from "./Landing/TaskTimeline/TaskTimeline";
 import ProducerInformation from "./ProducerInformation/ProducerInformation";
 import FormData from "./Forms/components/FormData";
+import FarmDates from "./SiteInformation/FarmDates/FarmDates";
 
 // Helper function
 function useOnlineStatus() {
@@ -241,13 +242,22 @@ function App() {
               />
 
               <PrivateRoute
-                path="/table"
+                path="/site-information/contact-enrollment"
                 render={(props) => (
                   <AllDataTable
                     isDarkTheme={theme.palette.type === "light" ? false : true}
                   />
                 )}
               />
+              <PrivateRoute
+                path="/site-information/farm-dates"
+                render={(props) => (
+                  <FarmDates
+                    isDarkTheme={theme.palette.type === "light" ? false : true}
+                  />
+                )}
+              />
+
               <PrivateRoute
                 path="/site-enroll"
                 render={(props) => <SiteEnrollment {...props} />}
