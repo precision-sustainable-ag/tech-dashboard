@@ -128,6 +128,11 @@ const Issue = (props) => {
     });
 
     setGitHubCommenter(user.nickname, newComment, issueNumber, token)
+      .then((resp) => {})
+      .then(() => {
+        setNewCommentAdded(!newCommentAdded);
+        setNewComment("");
+      });
   };
 
   useEffect(() => {
@@ -428,7 +433,7 @@ const setGitHubCommenter = async (
 
     // console.log("token =" + data.token);
 
-    let res = await fetch(`http://localhost:7071/api/GithubIssues`, options)
+    let res = await fetch(`https://githubissues.azurewebsites.us/api/githubissues`, options)
     // .then(response => response.json())
     .then(response => {
       console.log(response)

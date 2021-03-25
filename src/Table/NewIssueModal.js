@@ -556,7 +556,7 @@ const setGitHubIssuer = async (
       mode: 'cors', // no-cors, *cors, same-origin
     }
 
-    let res = await fetch(`http://localhost:7071/api/GithubIssues`, options)
+    let res = await fetch(`https://githubissues.azurewebsites.us/api/githubissues`, options)
     // .then(response => response.json())
     .then(response => {
       console.log(response)
