@@ -181,7 +181,6 @@ export default function Header(props) {
     dispatch({
       type: "UPDATING_USER_INFO",
     });
-    console.log("api url = " + apiURL)
     await Axios.get(`${apiURL}/api/users/${user.email}`, {
       auth: {
         username: apiUsername,

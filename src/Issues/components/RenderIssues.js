@@ -118,20 +118,33 @@ export const RenderIssues = ({ stateLabel, userRole }) => {
           setLoading(false);
           setShowIssues(true);
 
-          console.log(resp);
+          // console.log(resp);
 
           const data = resp.data.map((res) => {
             // get username from response body
 
             // let username = user.nickname;
-            let username = res.body.split("By: @");
-            try {
+            let username;
+
+            if(res.body.includes("**")){
+              // console.log("includes");
+              username = res.body.split("By: @");
               username = username[1].split("**")[0].replace(/\s/g, "");
+            }
+            else{
+              // console.log("not includes" + JSON.stringify(res));
+              username = res.user.login;
+            }
+            // console.log(username);
+            try {
+              
               setUserNames((old) =>
-                !old.includes(username) ? [...old, username] : [username]
+                !old.includes(username) ? [...old, username] : [...old]
               );
+              // console.log(userNames);
             } catch (err) {
               setUserNames((old) => [...old, username]);
+              // console.log(userNames);
             }
             // convert date strings to date objects
             return {
@@ -186,7 +199,7 @@ export const RenderIssues = ({ stateLabel, userRole }) => {
                 rel="noreferrer"
                 target="_blank"
               >
-                {userNameData[username] ? userNameData[username].name : ""}
+                {userNameData[username].name ? userNameData[username].name : userNameData[username].login}
               </Button>
             </Typography>
           </Grid>
