@@ -21,9 +21,9 @@ import {
 import MDEditor, { commands } from "@uiw/react-md-editor";
 import { ArrowBack, PersonAdd } from "@material-ui/icons";
 
-export default function FormData(props) {
-  console.log(JSON.stringify(props))
-  console.log(props.username)
+export default function NewFormComment(props) {
+  // console.log(JSON.stringify(props))
+  // console.log(props.username)
   // console.log(JSON.stringify(props))
 
     const { 
@@ -56,47 +56,56 @@ export default function FormData(props) {
         });
     }
 
-    // async function fileNewIssue(record) {
-    //     console.log("yes");
-    //     // setCheckValidation({ title: false, comment: false });
+    async function fileNewIssue() {
+        console.log("yes");
+        // setCheckValidation({ title: false, comment: false });
   
-    //     // const labels = [`${props.data.code}`, `${props.data.affiliation}`];
+        // const labels = [`${props.data.code}`, `${props.data.affiliation}`];
   
-    //     //   const labels = [`${props.data.code}`, `${props.data.state}`];
-    //     const assignedPeople =
-    //       personName.length > 0 ? personName : [`${props.nickname}`];
-    //     //   console.log(assignedPeople);
+        //   const labels = [`${props.data.code}`, `${props.data.state}`];
+        const assignedPeople = ['mikahpinegar']
+          // personName.length > 0 ? personName : [`${props.nickname}`];
+        //   console.log(assignedPeople);
   
-    //     console.log(config)
+        // console.log(config)
         
-    //     let token = await getTokenSilently({
-    //       audience: `https://precision-sustaibale-ag/tech-dashboard`
-    //     });
+        let token = await getTokenSilently({
+          audience: `https://precision-sustaibale-ag/tech-dashboard`
+        });
+
+        let labels = [props.record._id, props.record._submitted_by];
+        let tableData = props.record;
+        let issueTitle = props.record._id
   
-    //     // let token = await getTokenSilently();
+        // let token = await getTokenSilently();
+
+        console.log("title " + issueTitle + " comment " 
+                    + newComment + " labels " + labels
+                    + " assignees " + assignedPeople + " tableData " + tableData
+                    + " nickname " + props.nickname + " token " + token)
         
   
-    //     // console.log("token out useEffect = " + token);
-    //     const issueSet = setGitHubIssuer(
-    //       issueTitle,
-    //       newComment,
-    //       labels,
-    //       assignedPeople,
-    //       tableData,
-    //       props.nickname,
-    //       token
-    //     );
+        // console.log("token out useEffect = " + token);
+        // const issueSet = setGitHubIssuer(
+        //   issueTitle,
+        //   newComment,
+        //   labels,
+        //   assignedPeople,
+        //   tableData,
+        //   props.nickname,
+        //   token
+        // );
   
-    //     issueSet.then((res) => {
-    //       if (res.status === 201) {
-    //         props.handleNewIssueDialogClose();
-    //         props.setSnackbarData({
-    //           open: true,
-    //           text: `New Issue has been created for ${props.data.code}`,
-    //         });
-    //       }
-    //     });
-    //   } 
+        // issueSet.then((res) => {
+        //   if (res.status === 201) {
+        //     props.handleNewIssueDialogClose();
+        //     props.setSnackbarData({
+        //       open: true,
+        //       text: `New Issue has been created for ${props.data.code}`,
+        //     });
+        //   }
+        // });
+      } 
 
     const githubUserMentionCommand = {
         name: "MentionUser",
@@ -161,7 +170,7 @@ export default function FormData(props) {
             <Button
                 variant="contained"
                 color="primary"
-                onClick={() => handleNewComment()}
+                onClick={() => fileNewIssue()}
             >
                 Add Comment
             </Button>

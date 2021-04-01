@@ -1,9 +1,16 @@
 import React, { useState, useEffect, useMemo, useContext } from "react";
-import { Button, Chip, Grid, Typography } from "@material-ui/core";
+import { Button, Chip, Grid, Typography, Tooltip, Snackbar } from "@material-ui/core";
 import axios from "axios";
 import { apiPassword, apiURL, apiUsername } from "../../utils/api_secret";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import { useAuth0 } from "../../Auth/react-auth0-spa";
+import {
+  Edit,
+  DeleteForever,
+  Search,
+  QuestionAnswer,
+} from "@material-ui/icons";
+
 
 import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
 import docco from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light";
@@ -13,7 +20,8 @@ import { ArrowBackIosOutlined } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import { Context } from "../../Store/Store";
 import { fetchKoboPasswords } from "../../utils/constants";
-import FormComment from "./FormComment"
+import NewFormComment from "./NewFormComment"
+import NewFormIssue from "./NewFormIssue"
 
 SyntaxHighlighter.registerLanguage("json", json);
 
@@ -32,6 +40,9 @@ const FormData = ({ isDarkTheme = false }) => {
 
   const { formId } = useParams();
   const { user } = useAuth0();
+
+  const [showNewIssueDialog, setShowNewIssueDialog] = useState(false);
+  
 
   useEffect(() => {
     const fetchData = async (assetId, userType = "psa") => {
@@ -115,6 +126,150 @@ const FormData = ({ isDarkTheme = false }) => {
     });
   }, [activeAccount, originalData]);
 
+    const [snackbarData, setSnackbarData] = useState({ open: false, text: "" });
+    const [newIssueData, setNewIssueData] = useState({});
+  
+    const CreateNewIssue = ({ issueData }) => {
+      return (
+        <Tooltip title="Submit a new issue">
+          <Button
+            startIcon={<QuestionAnswer />}
+            size="small"
+            variant="contained"
+            // color={props.isDarkTheme ? "primary" : "default"}
+            onClick={() => {
+              setShowNewIssueDialog(true);
+              setNewIssueData(issueData);
+              ShowNewFormIssue();
+            }}
+          >
+            Comment
+          </Button>
+        </Tooltip>
+      );
+    };
+
+  const ShowNewFormIssue = () => {
+    if (showNewIssueDialog) {
+      // setShowNewIssueDialog(false)
+      return(
+        <NewFormIssue
+          open={showNewIssueDialog}
+          handleNewIssueDialogClose={() => {
+            setShowNewIssueDialog(!showNewIssueDialog);
+          }}
+          data={newIssueData}
+          setSnackbarData={setSnackbarData}
+          snackbarData={snackbarData}
+          nickname={user.nickname}
+        />
+      )
+    }
+    else return("")
+    // return showNewIssueDialog ? 
+    //   <NewFormIssue
+    //     open={showNewIssueDialog}
+    //     handleNewIssueDialogClose={() => {
+    //       setShowNewIssueDialog(!showNewIssueDialog);
+    //     }}
+    //     data={newIssueData}
+    //     setSnackbarData={setSnackbarData}
+    //     snackbarData={snackbarData}
+    //     nickname={user.nickname}
+    //   /> 
+    //   : "";
+  }
+
+  const RenderFormsData = ({
+    fetching,
+    originalData,
+    data,
+    isDarkTheme,
+    allowedAccounts,
+    user,
+  }) => {
+    
+  
+    return fetching ? (
+      <Grid item xs={12}>
+        <Typography variant="h5">Fetching Data...</Typography>
+      </Grid>
+    ) : data.length === 0 && originalData.length === 0 ? (
+      <Grid item xs={12}>
+        <Typography variant="h5">
+          {" "}
+          {allowedAccounts.length !== 0
+            ? `No submissions on this form via account${
+                allowedAccounts.length > 1 ? `s` : ""
+              } ${allowedAccounts.join(", ")}`
+            : "No Data"}
+        </Typography>
+      </Grid>
+    ) : (
+      <>
+        <Grid item xs={12}>
+          <Typography variant="body1">{data.length} submissions</Typography>
+        </Grid>
+        {data.map((record = {}, index) => {
+          // const metaKeys = [
+          //   "_id",
+          //   "_bamboo_dataset_id",
+          //   "_xform_id_string",
+          //   "form_version",
+          //   "_tags",
+          //   "_submitted_by",
+          //   "_status",
+          //   "_submission_time",
+          //   "meta/instanceID",
+          //   "__version__",
+          //   "_validation_status",
+          //   "_uuid",
+          //   "formhub/uuid",
+          //   "start",
+          //   "end",
+          // ];
+          // let slimRecord = Object.keys(record)
+          //   .filter((key) => !metaKeys.includes(key))
+          //   .reduce((obj, key) => {
+          //     obj[key] = record[key];
+          //     return obj;
+          //   }, {});
+          let slimRecord = record;
+          const submittedDate = new Date(record._submission_time);
+          const {
+            submittedHours,
+            submittedMinutes,
+            submittedSeconds,
+            am_pm,
+          } = parseDate(submittedDate);
+  
+          return (
+            <>
+              <Grid item xs={12} key={`record${index}`}>
+                <Typography variant="h6">
+                  {submittedDate.toDateString()} at{" "}
+                  {`${submittedHours}:${submittedMinutes}:${submittedSeconds} ${am_pm}`}
+                </Typography>
+                <SyntaxHighlighter
+                  language="json"
+                  style={isDarkTheme ? dark : docco}
+                >
+                  {JSON.stringify(slimRecord, undefined, 2)}
+                </SyntaxHighlighter>
+              </Grid>
+  
+  
+              <CreateNewIssue issueData={record} />
+              
+              
+              {/* <NewFormComment record={record}/> */}
+            </>
+          );
+        })}
+      </>
+    );
+  };
+
   return (
     <Grid container spacing={2}>
       <Grid item>
@@ -170,91 +325,10 @@ const FormData = ({ isDarkTheme = false }) => {
           user={user}
         />
       )}
+      <ShowNewFormIssue/>
     </Grid>
-  );
-};
-
-const RenderFormsData = ({
-  fetching,
-  originalData,
-  data,
-  isDarkTheme,
-  allowedAccounts,
-  user,
-}) => {
-  return fetching ? (
-    <Grid item xs={12}>
-      <Typography variant="h5">Fetching Data...</Typography>
-    </Grid>
-  ) : data.length === 0 && originalData.length === 0 ? (
-    <Grid item xs={12}>
-      <Typography variant="h5">
-        {" "}
-        {allowedAccounts.length !== 0
-          ? `No submissions on this form via account${
-              allowedAccounts.length > 1 ? `s` : ""
-            } ${allowedAccounts.join(", ")}`
-          : "No Data"}
-      </Typography>
-    </Grid>
-  ) : (
-    <>
-      <Grid item xs={12}>
-        <Typography variant="body1">{data.length} submissions</Typography>
-      </Grid>
-      {data.map((record = {}, index) => {
-        // const metaKeys = [
-        //   "_id",
-        //   "_bamboo_dataset_id",
-        //   "_xform_id_string",
-        //   "form_version",
-        //   "_tags",
-        //   "_submitted_by",
-        //   "_status",
-        //   "_submission_time",
-        //   "meta/instanceID",
-        //   "__version__",
-        //   "_validation_status",
-        //   "_uuid",
-        //   "formhub/uuid",
-        //   "start",
-        //   "end",
-        // ];
-        // let slimRecord = Object.keys(record)
-        //   .filter((key) => !metaKeys.includes(key))
-        //   .reduce((obj, key) => {
-        //     obj[key] = record[key];
-        //     return obj;
-        //   }, {});
-        let slimRecord = record;
-        const submittedDate = new Date(record._submission_time);
-        const {
-          submittedHours,
-          submittedMinutes,
-          submittedSeconds,
-          am_pm,
-        } = parseDate(submittedDate);
-
-        return (
-          <>
-            <Grid item xs={12} key={`record${index}`}>
-              <Typography variant="h6">
-                {submittedDate.toDateString()} at{" "}
-                {`${submittedHours}:${submittedMinutes}:${submittedSeconds} ${am_pm}`}
-              </Typography>
-              <SyntaxHighlighter
-                language="json"
-                style={isDarkTheme ? dark : docco}
-              >
-                {JSON.stringify(slimRecord, undefined, 2)}
-              </SyntaxHighlighter>
-            </Grid>
-
-            <FormComment record={record}/>
-          </>
-        );
-      })}
-    </>
+    
+    
   );
 };
 
@@ -287,5 +361,7 @@ const parseDate = (submittedDate) => {
     am_pm,
   };
 };
+
+
 
 export default FormData;
