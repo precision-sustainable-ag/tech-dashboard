@@ -120,12 +120,6 @@ const Issue = (props) => {
   };
 
   async function handleNewComment() {
-    // addNewComment()
-    //   .then((resp) => {})
-    //   .then(() => {
-    //     setNewCommentAdded(!newCommentAdded);
-    //     setNewComment("");
-    //   });
     let token = await getTokenSilently({
       audience: `https://precision-sustaibale-ag/tech-dashboard`
     });
@@ -136,7 +130,7 @@ const Issue = (props) => {
         setNewCommentAdded(!newCommentAdded);
         setNewComment("");
       });
-  };
+  }
 
   useEffect(() => {
     console.log("entered use effect");

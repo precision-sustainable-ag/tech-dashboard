@@ -538,7 +538,7 @@ const setGitHubIssuer = async (
       action: 'create',
       user: nickname,
       title: issueTitle,
-      assignees: ['mikahpinegar'],
+      assignees: assignees,
       labels: labels,
       body: 
         table +

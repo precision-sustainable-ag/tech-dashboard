@@ -3,6 +3,7 @@ import { Button, Chip, Grid, Typography } from "@material-ui/core";
 import axios from "axios";
 import { apiPassword, apiURL, apiUsername } from "../../utils/api_secret";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
+import { useAuth0 } from "../../Auth/react-auth0-spa";
 
 import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
 import docco from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light";
@@ -12,6 +13,8 @@ import { ArrowBackIosOutlined } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import { Context } from "../../Store/Store";
 import { fetchKoboPasswords } from "../../utils/constants";
+import FormComment from "./FormComment"
+
 SyntaxHighlighter.registerLanguage("json", json);
 
 const FormData = ({ isDarkTheme = false }) => {
@@ -23,7 +26,12 @@ const FormData = ({ isDarkTheme = false }) => {
   const [allowedAccounts, setAllowedAccounts] = useState([]);
   const [activeAccount, setActiveAccount] = useState("all");
 
+  const [newComment, setNewComment] = useState("");
+  const [showUsersDialog, setShowUsersDialog] = useState(false);
+  const [searchUser, setSearchUser] = useState("");
+
   const { formId } = useParams();
+  const { user } = useAuth0();
 
   useEffect(() => {
     const fetchData = async (assetId, userType = "psa") => {
@@ -159,6 +167,7 @@ const FormData = ({ isDarkTheme = false }) => {
           originalData={originalData}
           isDarkTheme={isDarkTheme}
           allowedAccounts={allowedAccounts}
+          user={user}
         />
       )}
     </Grid>
@@ -171,6 +180,7 @@ const RenderFormsData = ({
   data,
   isDarkTheme,
   allowedAccounts,
+  user,
 }) => {
   return fetching ? (
     <Grid item xs={12}>
@@ -226,23 +236,28 @@ const RenderFormsData = ({
         } = parseDate(submittedDate);
 
         return (
-          <Grid item xs={12} key={`record${index}`}>
-            <Typography variant="h6">
-              {submittedDate.toDateString()} at{" "}
-              {`${submittedHours}:${submittedMinutes}:${submittedSeconds} ${am_pm}`}
-            </Typography>
-            <SyntaxHighlighter
-              language="json"
-              style={isDarkTheme ? dark : docco}
-            >
-              {JSON.stringify(slimRecord, undefined, 2)}
-            </SyntaxHighlighter>
-          </Grid>
+          <>
+            <Grid item xs={12} key={`record${index}`}>
+              <Typography variant="h6">
+                {submittedDate.toDateString()} at{" "}
+                {`${submittedHours}:${submittedMinutes}:${submittedSeconds} ${am_pm}`}
+              </Typography>
+              <SyntaxHighlighter
+                language="json"
+                style={isDarkTheme ? dark : docco}
+              >
+                {JSON.stringify(slimRecord, undefined, 2)}
+              </SyntaxHighlighter>
+            </Grid>
+
+            <FormComment record={record}/>
+          </>
         );
       })}
     </>
   );
 };
+
 
 /**
  *
