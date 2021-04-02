@@ -34,10 +34,6 @@ const FormData = ({ isDarkTheme = false }) => {
   const [allowedAccounts, setAllowedAccounts] = useState([]);
   const [activeAccount, setActiveAccount] = useState("all");
 
-  const [newComment, setNewComment] = useState("");
-  const [showUsersDialog, setShowUsersDialog] = useState(false);
-  const [searchUser, setSearchUser] = useState("");
-
   const { formId } = useParams();
   const { user } = useAuth0();
 
@@ -96,15 +92,6 @@ const FormData = ({ isDarkTheme = false }) => {
       }
     });
   }, [formId, state.userInfo.state]);
-
-  // useEffect(() => {
-  //   const parseJSON = (data) => {
-  //     setJSONData(JSON.stringify(data, undefined, 2));
-  //   };
-  //   if (Object.keys(data).length > 0) {
-  //     parseJSON(data);
-  //   }
-  // }, [data]);
 
   useEffect(() => {
     const recalculate = async () => {
@@ -166,30 +153,9 @@ const FormData = ({ isDarkTheme = false }) => {
       )
     }
     else return("")
-    // return showNewIssueDialog ? 
-    //   <NewFormIssue
-    //     open={showNewIssueDialog}
-    //     handleNewIssueDialogClose={() => {
-    //       setShowNewIssueDialog(!showNewIssueDialog);
-    //     }}
-    //     data={newIssueData}
-    //     setSnackbarData={setSnackbarData}
-    //     snackbarData={snackbarData}
-    //     nickname={user.nickname}
-    //   /> 
-    //   : "";
   }
 
-  const RenderFormsData = ({
-    fetching,
-    originalData,
-    data,
-    isDarkTheme,
-    allowedAccounts,
-    user,
-  }) => {
-    
-  
+  const RenderFormsData = () => {
     return fetching ? (
       <Grid item xs={12}>
         <Typography variant="h5">Fetching Data...</Typography>
@@ -211,29 +177,6 @@ const FormData = ({ isDarkTheme = false }) => {
           <Typography variant="body1">{data.length} submissions</Typography>
         </Grid>
         {data.map((record = {}, index) => {
-          // const metaKeys = [
-          //   "_id",
-          //   "_bamboo_dataset_id",
-          //   "_xform_id_string",
-          //   "form_version",
-          //   "_tags",
-          //   "_submitted_by",
-          //   "_status",
-          //   "_submission_time",
-          //   "meta/instanceID",
-          //   "__version__",
-          //   "_validation_status",
-          //   "_uuid",
-          //   "formhub/uuid",
-          //   "start",
-          //   "end",
-          // ];
-          // let slimRecord = Object.keys(record)
-          //   .filter((key) => !metaKeys.includes(key))
-          //   .reduce((obj, key) => {
-          //     obj[key] = record[key];
-          //     return obj;
-          //   }, {});
           let slimRecord = record;
           const submittedDate = new Date(record._submission_time);
           const {
@@ -257,12 +200,8 @@ const FormData = ({ isDarkTheme = false }) => {
                   {JSON.stringify(slimRecord, undefined, 2)}
                 </SyntaxHighlighter>
               </Grid>
-  
-  
-              <CreateNewIssue issueData={record} />
-              
-              
-              {/* <NewFormComment record={record}/> */}
+
+              <CreateNewIssue issueData={record} /> 
             </>
           );
         })}
