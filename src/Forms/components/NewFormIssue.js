@@ -132,18 +132,19 @@ import {
 
         console.log(config)
 
-        let tableData = "test";
+        let tableData = JSON.stringify(props.data, null, "\t");
         
         let token = await getTokenSilently({
           audience: `https://precision-sustaibale-ag/tech-dashboard`
         });
 
-        let labels = ["bug"]
+        let labels = [props.data._id.toString(), props.data._submitted_by]
   
         // let token = await getTokenSilently();
         
-  
-        // console.log("token out useEffect = " + token);
+        console.log("title " + issueTitle + " comment " + newComment + " labels " + labels + " assigned " + assignedPeople + " tableData " + tableData + " name " + props.nickname + " token " + token)
+        console.log("token out useEffect = " + token);
+
         const issueSet = setGitHubIssuer(
           issueTitle,
           newComment,

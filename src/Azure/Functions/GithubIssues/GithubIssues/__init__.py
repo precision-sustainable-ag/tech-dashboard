@@ -98,7 +98,7 @@ class GithubIssues:
             # logging.info (self.RESPONSE_STRING, response.content)	
         else:	
             logging.info ('Could not create Issue "%s"' % title)	
-            logging.info (self.RESPONSE_STRING, response.content)	
+            logging.info (self.RESPONSE_STRING + str(response.content))	
     def create_github_comment(self, issue_number, body):	
         # Create an issue on github.com using the given parameters	
         # Url to create issues via POST	
@@ -123,7 +123,7 @@ class GithubIssues:
             # logging.info (self.RESPONSE_STRING, response.content)	
         else:	
             logging.info ('Could not create Comment "%s"' % body)	
-            logging.info (self.RESPONSE_STRING, response.content)	
+            logging.info (self.RESPONSE_STRING, str(response.content))	
 
     def authenticate(self, token):	
         # setup management api request 	
@@ -239,6 +239,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     # handle exceptions 
     except Exception as error:
         logging.info("Program encountered exception: " + str(error))
+        logging.exception(error)
         return func.HttpResponse(
             body = str(error),
             status_code=400,
