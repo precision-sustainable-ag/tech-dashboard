@@ -8,7 +8,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@octokit/auth": "^3.0.3",
-    "@octokit/rest": "^18.3.5",
+    "@octokit/rest": "^18.5.2",
     "@uiw/react-md-editor": "^2.1.10",
     "autosuggest-highlight": "^3.1.1",
     "axios": "^0.21.1",
