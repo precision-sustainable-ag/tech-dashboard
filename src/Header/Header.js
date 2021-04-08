@@ -123,6 +123,12 @@ export default function Header(props) {
   const { logout, user, loginWithRedirect } = useAuth0();
   const [openAllDataNav, setOpenAllDataNav] = useState(false);
   const [openDevicesNav, setOpenDevicesNav] = useState(false);
+  const [openNav, setOpenNav] = useState({
+    decomp: false,
+    biomass: false,
+    site_info: false,
+    devices: false,
+  });
 
   const handleOpenAllDataNav = () => {
     setOpenAllDataNav(!openAllDataNav);
@@ -379,17 +385,36 @@ export default function Header(props) {
           </Collapse>
 
           <ListItem
-            onClick={() => setOpen(false)}
+            onClick={() =>
+              setOpenNav({ ...openNav, biomass: !openNav.biomass })
+            }
             button
-            key={"Site Enrollment"}
-            component={Link}
-            to="/site-enroll"
           >
             <ListItemIcon>
-              <ViewList />
+              <Info />
             </ListItemIcon>
-            <ListItemText primary={"Site Enrollment"} />
+            <ListItemText primary={"Biomass"} />
+            {openNav.biomass ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
+          <Collapse in={openNav.biomass} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem
+                onClick={() => {
+                  setOpenNav({ ...openNav, biomass: !openNav.biomass });
+                  setOpen(false);
+                }}
+                button
+                key={"Farm Values"}
+                component={Link}
+                to="/biomass/farm-values"
+              >
+                <ListItemIcon>
+                  <ViewList />
+                </ListItemIcon>
+                <ListItemText primary={"Farm Values"} />
+              </ListItem>
+            </List>
+          </Collapse>
 
           <ListItem
             onClick={() => setOpen(false)}

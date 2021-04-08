@@ -41,7 +41,8 @@
     "test": "react-scripts test --env=jsdom --coverage",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "docs": "jsdoc -c jsdoc.conf.json"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -72,10 +73,12 @@
     "@testing-library/react": "^11.2.6",
     "@testing-library/react-hooks": "^5.1.1",
     "@testing-library/user-event": "^13.1.1",
+    "better-docs": "^2.3.2",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.6",
     "enzyme-to-json": "^3.6.1",
     "gh-pages": "^3.1.0",
+    "jsdoc": "^3.6.6",
     "node-sass": "^4.14.1",
     "react-test-renderer": "^16.14.0"
   }
