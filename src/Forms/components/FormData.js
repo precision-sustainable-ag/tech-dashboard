@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Button, Chip, Grid, Typography } from "@material-ui/core";
 import axios from "axios";
 import { apiPassword, apiURL, apiUsername } from "../../utils/api_secret";
@@ -78,15 +78,6 @@ const FormData = ({ isDarkTheme = false }) => {
     });
   }, [formId, state.userInfo.state]);
 
-  // useEffect(() => {
-  //   const parseJSON = (data) => {
-  //     setJSONData(JSON.stringify(data, undefined, 2));
-  //   };
-  //   if (Object.keys(data).length > 0) {
-  //     parseJSON(data);
-  //   }
-  // }, [data]);
-
   useEffect(() => {
     const recalculate = async () => {
       return await new Promise((resolve, reject) => {
@@ -136,8 +127,8 @@ const FormData = ({ isDarkTheme = false }) => {
                 onClick={() => setActiveAccount("all")}
               />
             </Grid>
-            {allowedAccounts.map((account) => (
-              <Grid item>
+            {allowedAccounts.map((account, index) => (
+              <Grid item key={`koboAccount${index}`}>
                 <Chip
                   label={account}
                   color={activeAccount === account ? "primary" : "default"}
@@ -218,18 +209,18 @@ const RenderFormsData = ({
         //   }, {});
         let slimRecord = record;
         const submittedDate = new Date(record._submission_time);
-        const {
-          submittedHours,
-          submittedMinutes,
-          submittedSeconds,
-          am_pm,
-        } = parseDate(submittedDate);
 
         return (
           <Grid item xs={12} key={`record${index}`}>
             <Typography variant="h6">
-              {submittedDate.toDateString()} at{" "}
-              {`${submittedHours}:${submittedMinutes}:${submittedSeconds} ${am_pm}`}
+              {submittedDate.toLocaleString("en-US", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+                hour: "numeric",
+                minute: "numeric",
+                timeZone: "UTC",
+              })}
             </Typography>
             <SyntaxHighlighter
               language="json"
