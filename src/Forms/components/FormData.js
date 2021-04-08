@@ -235,33 +235,4 @@ const RenderFormsData = ({
   );
 };
 
-/**
- *
- * @param {Date} submittedDate
- * @returns {{submittedHours: Number, submittedMinutes: String | Number, submittedSeconds: String | Number, am_pm: String}} Formatted Date items
- */
-
-const parseDate = (submittedDate) => {
-  const submittedHours =
-    submittedDate.getHours() > 12
-      ? submittedDate.getHours() - 12
-      : submittedDate.getHours();
-  const submittedMinutes =
-    submittedDate.getMinutes() < 10
-      ? "0" + submittedDate.getMinutes()
-      : submittedDate.getMinutes();
-  var submittedSeconds =
-    submittedDate.getSeconds() < 10
-      ? "0" + submittedDate.getSeconds()
-      : submittedDate.getSeconds();
-  const am_pm = submittedDate.getHours() >= 12 ? "PM" : "AM";
-
-  return {
-    submittedHours,
-    submittedMinutes,
-    submittedSeconds,
-    am_pm,
-  };
-};
-
 export default FormData;
