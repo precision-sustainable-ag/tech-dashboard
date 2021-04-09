@@ -112,7 +112,7 @@ export const RenderIssues = ({ stateLabel, userRole, filter }) => {
       setLoading(true);
       setShowIssues(false);
 
-      console.log(filter, stateLabel)
+      // console.log(filter, stateLabel)
 
       getIssues(octokit, [stateLabel, filter])
         .then((resp) => {

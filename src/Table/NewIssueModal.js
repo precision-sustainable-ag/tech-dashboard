@@ -50,7 +50,6 @@ const NewIssueModal = (props) => {
 
   async function fileNewIssue() {
     if (issueTitle && newComment) {
-      console.log("yes");
       setCheckValidation({ title: false, comment: false });
 
       const labels = [`${props.data.code}`, `${props.data.affiliation}`, "sites"];

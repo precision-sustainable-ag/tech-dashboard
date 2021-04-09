@@ -32,7 +32,7 @@ function Alert(props) {
 }
 
 const FormData = (props) => {
-  console.log(JSON.stringify(props))
+  // console.log(JSON.stringify(props))
 
   const [data, setData] = useState([]);
   const [originalData, setOriginalData] = useState([]);
@@ -98,7 +98,6 @@ const FormData = (props) => {
               let newLookup = affiliationLookup;
               newLookup[kobo_account] = affiliation;
               setAffiliationLookup(newLookup)
-              console.log("after " + JSON.stringify(affiliationLookup));
             });
 
             

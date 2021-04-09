@@ -34,7 +34,6 @@ import {
   const NewFormIssue = (props) => {
     const {
       getTokenSilently,
-      config
     } = useAuth0();
   
     const octokit = new Octokit({ auth: githubToken });
@@ -49,20 +48,14 @@ import {
     });
     const [collaborators, setCollaborators] = useState([]);
     const handleMaxWidthChange = (event) => {
-        console.log("1")
         setMaxWidth(event.target.value);
     };
 
     async function fileNewIssue() {
-        console.log("2")
       if (issueTitle && newComment) {
-        console.log("yes");
         setCheckValidation({ title: false, comment: false });
 
-        const assignedPeople =
-          personName.length > 0 ? personName : [`${props.nickname}`];
-
-        console.log(config)
+        const assignedPeople = personName.length > 0 ? personName : [`${props.nickname}`];
 
         let jsonData = JSON.stringify(props.data, null, "\t");
         
@@ -70,13 +63,10 @@ import {
           audience: `https://precision-sustaibale-ag/tech-dashboard`
         });
 
-        console.log(JSON.stringify(props))
+        // console.log(JSON.stringify(props))
         let labels = [props.data._id.toString(), props.affiliationLookup[props.data._submitted_by], props.formName, "kobo-forms"]
 
         const body = "```json\n" + jsonData + "\n```\n" + " <br/> " + newComment;
-          
-        console.log("title " + issueTitle + " comment " + newComment + " labels " + labels + " assigned " + assignedPeople + " jsonData " + jsonData + " name " + props.nickname + " token " + token)
-        console.log("token out useEffect = " + token);
         
         const issueSet = createGithubIssue(
           issueTitle,
@@ -111,7 +101,6 @@ import {
     }
   
     const fetchCollabs = async () => {
-        console.log("3")
       return await octokit.request("GET /repos/{owner}/{repo}/collaborators", {
         owner: "precision-sustainable-ag",
         repo: "data_corrections",
@@ -119,7 +108,6 @@ import {
     };
 
     const checkIfUserIsCollaborator = async (username) => {
-        console.log("4")
       return await octokit.request(
         "GET /repos/{owner}/{repo}/collaborators/{username}",
         {
@@ -131,12 +119,10 @@ import {
     };
 
     const getGithubResourceLimit = async () => {
-        console.log("5")
       return await octokit.request("GET /rate_limit");
     };
 
     const addNewCollaboratorToRepo = async (username) => {
-        console.log("6")
       return await octokit.request(
         "PUT /repos/{owner}/{repo}/collaborators/{username}",
         {
@@ -151,9 +137,7 @@ import {
     const [isNewCollab, setIsNewCollab] = useState(false);
     
     useEffect(() => {
-        console.log("7")
       //   check if a user is a collaborator to repo, else add the user to repo
-    
       fetchCollabs()
         .then((res) => {
           const status = res.status;
