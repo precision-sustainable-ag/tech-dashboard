@@ -10,6 +10,8 @@ import {
   Search,
   QuestionAnswer,
 } from "@material-ui/icons";
+import MuiAlert from "@material-ui/lab/Alert";
+
 
 
 import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
@@ -25,7 +27,14 @@ import NewFormIssue from "./NewFormIssue"
 
 SyntaxHighlighter.registerLanguage("json", json);
 
-const FormData = ({ isDarkTheme = false }) => {
+// Helper function
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+const FormData = (props) => {
+  console.log(JSON.stringify(props))
+
   const [data, setData] = useState([]);
   const [originalData, setOriginalData] = useState([]);
   const [fetching, setFetching] = useState(false);
@@ -38,6 +47,8 @@ const FormData = ({ isDarkTheme = false }) => {
   const { user } = useAuth0();
 
   const [showNewIssueDialog, setShowNewIssueDialog] = useState(false);
+
+  const [affiliationLookup, setAffiliationLookup] = useState({});
   
 
   useEffect(() => {
@@ -80,6 +91,18 @@ const FormData = ({ isDarkTheme = false }) => {
               (acc, curr) => [...acc, curr.kobo_account],
               []
             );
+            setAffiliationLookup({})
+            data.forEach(function (item, index) {
+              const kobo_account = item.kobo_account;
+              const affiliation = item.state;
+
+              let newLookup = affiliationLookup;
+              newLookup[kobo_account] = affiliation;
+              setAffiliationLookup(newLookup)
+              console.log("after " + JSON.stringify(affiliationLookup));
+            });
+
+            
 
             setAllowedAccounts(allowedKoboAccounts);
             const filteredRecords = recs.filter((rec) =>
@@ -123,7 +146,7 @@ const FormData = ({ isDarkTheme = false }) => {
             startIcon={<QuestionAnswer />}
             size="small"
             variant="contained"
-            // color={props.isDarkTheme ? "primary" : "default"}
+            // color={props.props.isDarkTheme ? "primary" : "default"}
             onClick={() => {
               setShowNewIssueDialog(true);
               setNewIssueData(issueData);
@@ -149,6 +172,8 @@ const FormData = ({ isDarkTheme = false }) => {
           setSnackbarData={setSnackbarData}
           snackbarData={snackbarData}
           nickname={user.nickname}
+          affiliationLookup={affiliationLookup}
+          formName = {props.history.location.state.name}
         />
       )
     }
@@ -195,7 +220,7 @@ const FormData = ({ isDarkTheme = false }) => {
                 </Typography>
                 <SyntaxHighlighter
                   language="json"
-                  style={isDarkTheme ? dark : docco}
+                  style={props.isDarkTheme ? dark : docco}
                 >
                   {JSON.stringify(slimRecord, undefined, 2)}
                 </SyntaxHighlighter>
@@ -210,64 +235,77 @@ const FormData = ({ isDarkTheme = false }) => {
   };
 
   return (
-    <Grid container spacing={2}>
-      <Grid item>
-        <Button
-          variant="contained"
-          color={isDarkTheme ? "primary" : "default"}
-          aria-label={`All Forms`}
-          component={Link}
-          tooltip="All Forms"
-          to={"/kobo-forms"}
-          startIcon={<ArrowBackIosOutlined />}
+    <div>
+      <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "center",
+          }}
+          open={snackbarData.open}
+          autoHideDuration={2000}
+          onClose={() =>
+            setSnackbarData({ ...snackbarData, open: !snackbarData.open })
+          }
         >
-          All Forms
-        </Button>
-      </Grid>
-      <Grid container item spacing={1}>
-        {allowedAccounts.length > 0 && allowedAccounts.length === 1 ? (
-          <Grid item>
-            <Chip label={allowedAccounts[0]} color={"primary"} />
-          </Grid>
-        ) : (
-          <>
+          <Alert severity="success">{snackbarData.text}</Alert>
+      </Snackbar>
+      <Grid container spacing={2}>
+        <Grid item>
+          <Button
+            variant="contained"
+            color={props.isDarkTheme ? "primary" : "default"}
+            aria-label={`All Forms`}
+            component={Link}
+            tooltip="All Forms"
+            to={"/kobo-forms"}
+            startIcon={<ArrowBackIosOutlined />}
+          >
+            All Forms
+          </Button>
+        </Grid>
+        <Grid container item spacing={1}>
+          {allowedAccounts.length > 0 && allowedAccounts.length === 1 ? (
             <Grid item>
-              <Chip
-                label={"All"}
-                color={activeAccount === "all" ? "primary" : "default"}
-                onClick={() => setActiveAccount("all")}
-              />
+              <Chip label={allowedAccounts[0]} color={"primary"} />
             </Grid>
-            {allowedAccounts.map((account) => (
+          ) : (
+            <>
               <Grid item>
                 <Chip
-                  label={account}
-                  color={activeAccount === account ? "primary" : "default"}
-                  onClick={() => setActiveAccount(account)}
+                  label={"All"}
+                  color={activeAccount === "all" ? "primary" : "default"}
+                  onClick={() => setActiveAccount("all")}
                 />
               </Grid>
-            ))}
-          </>
-        )}
-      </Grid>
-      {state.loadingUser ? (
-        <Grid item xs={12}>
-          <Typography variant="h5">Fetching Data...</Typography>
+              {allowedAccounts.map((account) => (
+                <Grid item>
+                  <Chip
+                    label={account}
+                    color={activeAccount === account ? "primary" : "default"}
+                    onClick={() => setActiveAccount(account)}
+                  />
+                </Grid>
+              ))}
+            </>
+          )}
         </Grid>
-      ) : (
-        <RenderFormsData
-          fetching={fetching}
-          data={data}
-          originalData={originalData}
-          isDarkTheme={isDarkTheme}
-          allowedAccounts={allowedAccounts}
-          user={user}
-        />
-      )}
-      <ShowNewFormIssue/>
-    </Grid>
-    
-    
+        {state.loadingUser ? (
+          <Grid item xs={12}>
+            <Typography variant="h5">Fetching Data...</Typography>
+          </Grid>
+        ) : (
+          <RenderFormsData
+            fetching={fetching}
+            data={data}
+            originalData={originalData}
+            isDarkTheme={props.isDarkTheme}
+            allowedAccounts={allowedAccounts}
+            user={user}
+          />
+        )}
+        <ShowNewFormIssue/>
+      </Grid>
+    </div>
   );
 };
 

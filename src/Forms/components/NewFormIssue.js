@@ -33,22 +33,8 @@ import {
   const NewFormIssue = (props) => {
     const {
       getTokenSilently,
-      loading,
       config
     } = useAuth0();
-    // const [state, dispatch] = useContext(Context);
-  
-    
-    
-    // useEffect(() => {
-    //   const callAPI = async () => {
-    //     token = await getTokenSilently();
-    //     console.log("token in useEffect = " + token);
-    //   };
-    //   if (!loading) {
-    //     callAPI();
-    //   }
-    // }, [loading, getTokenSilently]);
   
     const octokit = new Octokit({ auth: githubToken });
     const [fullWidth, setFullWidth] = useState(true);
@@ -66,91 +52,37 @@ import {
         setMaxWidth(event.target.value);
     };
 
-    
-    //   const fileNewIssue = () => {
-    //     // const tableHtml = document.getElementById("mdTable").innerHTML;
-    //     // console.log(tableHtml);
-    //     const tableHtml = (
-    //       <table border="1">
-    //         <tbody>
-    //           <tr>
-    //             <td>Code</td>
-    //             <td>{props.data.code}</td>
-    //           </tr>
-    //           <tr>
-    //             <td>Grower</td>
-    //             <td>{props.data.last_name}</td>
-    //           </tr>
-    //           <tr>
-    //             <td>State</td>
-    //             <td>{props.data.state}</td>
-    //           </tr>
-    //           <tr>
-    //             <td>County</td>
-    //             <td>{props.data.county}</td>
-    //           </tr>
-    //           <tr>
-    //             <td>Email</td>
-    //             <td>{props.data.email}</td>
-    //           </tr>
-    //           <tr>
-    //             <td>Year</td>
-    //             <td>{props.data.year}</td>
-    //           </tr>
-    //           <tr>
-    //             <td>Address</td>
-    //             <td>{props.data.address}</td>
-    //           </tr>
-    //           <tr>
-    //             <td>Location</td>
-    //             <td>{props.data.latlng}</td>
-    //           </tr>
-    //           <tr>
-    //             <td>Notes</td>
-    //             <td>{props.data.notes}</td>
-    //           </tr>
-    //         </tbody>
-    //       </table>
-    //     );
-    //     const tableStr = markdownConvert.makeMarkdown("" + tableHtml + "");
-    //     console.log(JSON.stringify(tableStr));
-  
-    //     // setNewComment(tableStr.toString());
-    //   };
-  
     async function fileNewIssue() {
         console.log("2")
       if (issueTitle && newComment) {
         console.log("yes");
         setCheckValidation({ title: false, comment: false });
-  
-        // const labels = [`${props.data.code}`, `${props.data.affiliation}`];
-  
-        //   const labels = [`${props.data.code}`, `${props.data.state}`];
+
         const assignedPeople =
           personName.length > 0 ? personName : [`${props.nickname}`];
 
         console.log(config)
 
-        let tableData = JSON.stringify(props.data, null, "\t");
+        let jsonData = JSON.stringify(props.data, null, "\t");
         
         let token = await getTokenSilently({
           audience: `https://precision-sustaibale-ag/tech-dashboard`
         });
 
-        let labels = [props.data._id.toString(), props.data._submitted_by]
-  
-        // let token = await getTokenSilently();
-        
-        console.log("title " + issueTitle + " comment " + newComment + " labels " + labels + " assigned " + assignedPeople + " tableData " + tableData + " name " + props.nickname + " token " + token)
+        console.log(JSON.stringify(props))
+        let labels = [props.data._id.toString(), props.affiliationLookup[props.data._submitted_by], props.formName, "kobo-forms"]
+          
+        console.log("title " + issueTitle + " comment " + newComment + " labels " + labels + " assigned " + assignedPeople + " jsonData " + jsonData + " name " + props.nickname + " token " + token)
         console.log("token out useEffect = " + token);
+
+        
 
         const issueSet = setGitHubIssuer(
           issueTitle,
           newComment,
           labels,
           assignedPeople,
-          tableData,
+          jsonData,
           props.nickname,
           token
         );
@@ -160,8 +92,8 @@ import {
             props.handleNewIssueDialogClose();
             props.setSnackbarData({
               open: true,
-            //   text: `New Issue has been created for ${props.data.code}`,
-              text: "created test issue"
+              text: `New Issue has been created for ${props.data._id.toString()}`,
+              // text: "created test issue"
             });
           }
         });
@@ -277,7 +209,8 @@ import {
     }, [isNewCollab]);
   
     const [personName, setPersonName] = React.useState(alwaysTaggedPeople);
-    console.log("8")
+
+    
     return (
       <Dialog
         open={props.open}
@@ -312,52 +245,7 @@ import {
         </DialogTitle>
         <DialogContent>
           <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <div id="mdTable">
-                <SyntaxHighlighter
-                  language="json"
-                //   style={isDarkTheme ? dark : docco}
-                >
-                  {JSON.stringify(props.data, undefined, 2)}
-                </SyntaxHighlighter>
-              </div>
-            </Grid>
-            <Grid item xs={12}>
-              <Grid container spacing={1}>
-                <Grid item xs={12}>
-                  <Typography variant="body1">Select Assignees</Typography>
-                </Grid>
-                {collaborators.map((name, index) => (
-                  <Grid item key={`collab${index}`}>
-                    <Chip
-                      disabled={
-                        alwaysTaggedPeople.includes(name.username) ? true : false
-                      }
-                      color={
-                        personName.includes(name.username) ? "primary" : "default"
-                      }
-                      avatar={
-                        <Avatar
-                          alt={name.username}
-                          src={`${name.picture}&s=50`}
-                        />
-                      }
-                      label={name.username}
-                      onClick={(e) => {
-                        if (personName.includes(name.username)) {
-                          let newPerson = personName.filter(
-                            (e) => e !== name.username
-                          );
-                          setPersonName(newPerson);
-                        } else {
-                          setPersonName([...personName, name.username]);
-                        }
-                      }}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
-            </Grid>
+
             <Grid item xs={12}>
               {checkValidation.title && (
                 <Typography variant="caption" color="error">
@@ -403,31 +291,6 @@ import {
     );
   };
   
-  // Helper functions
-  const setIssue = async (
-    octokit,
-    issueTitle,
-    newComment,
-    labels,
-    assignees,
-    table,
-    nickname
-  ) => {
-    console.log("9")
-    return await octokit.issues.create({
-      owner: "precision-sustainable-ag",
-      repo: "data_corrections",
-      title: issueTitle,
-      body:
-        table +
-        " <br/> " +
-        newComment +
-        ` <br/> ** Issue Created By: @${nickname} ** `,
-      labels: labels,
-      assignees: assignees,
-    });
-  };
-  
   const setGitHubIssuer = async (
     issueTitle,
     newComment,
@@ -444,7 +307,7 @@ import {
         assignees: assignees,
         labels: labels,
         body: 
-          table +
+          "```json\n" + table + "\n```\n" +
           " <br/> " +
           newComment,
         token: token,
@@ -460,7 +323,6 @@ import {
       }
   
       let res = await fetch(`https://githubissues.azurewebsites.us/api/githubissues`, options)
-      // .then(response => response.json())
       .then(response => {
         console.log(response)
         return response;
@@ -468,11 +330,8 @@ import {
       .catch(err => {
         console.log("error reading data " + err)
       })
-  
       
-      // let json = await res.json();
       console.log(res.status)
-  
   
       return res;
   }
@@ -495,29 +354,6 @@ import {
   };
   
   NewFormIssue.propTypes = {
-    /** Site information data */
-    // data: PropTypes.shape({
-    //   /** Site code */
-    //   code: PropTypes.string.isRequired,
-    //   /** Enrollment year */
-    //   year: PropTypes.number.isRequired,
-    //   /** Grower's last name */
-    //   last_name: PropTypes.string.isRequired,
-    //   /** Grower's email */
-    //   email: PropTypes.string,
-    //   /** Grower's phone */
-    //   phone: PropTypes.string,
-    //   /** Site affiliation */
-    //   affiliation: PropTypes.string.isRequired,
-    //   /** Site county */
-    //   county: PropTypes.string,
-    //   /** Site address */
-    //   address: PropTypes.string,
-    //   /** Site Lat,Lng */
-    //   latlng: PropTypes.string,
-    //   /** Notes or other information recorded about the site */
-    //   notes: PropTypes.string,
-    // }).isRequired,
     /** Data displayed in snackbar */
     snackbarData: PropTypes.shape({
       open: PropTypes.bool.isRequired,
