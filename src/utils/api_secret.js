@@ -10,7 +10,8 @@ const {
   REACT_APP_ONFARM_DEV_API_URL,
   REACT_APP_HOLOGRAM_WATER_SENSOR_API_KEY,
   REACT_APP_HOLOGRAM_STRESS_CAM_API_KEY,
-  REACT_APP_GOOGLE_API_KEY,
+  REACT_APP_GOOGLE_API_KEY_PROD,
+  REACT_APP_GOOGLE_API_KEY_DEV,
   REACT_APP_GITHUB_AUTH_TOKEN,
   REACT_APP_ONFARM_OLD_API_USERNAME,
   REACT_APP_ONFARM_OLD_API_PASSWORD,
@@ -40,6 +41,9 @@ export const primaryContactPerson = {
 
 // make sure to modify HTTP Referrers on Google Console
 
-export const googleApiKey = REACT_APP_GOOGLE_API_KEY;
+export const googleApiKey =
+  NODE_ENV === "production"
+    ? REACT_APP_GOOGLE_API_KEY_PROD
+    : REACT_APP_GOOGLE_API_KEY_DEV;
 
 export const githubToken = REACT_APP_GITHUB_AUTH_TOKEN;

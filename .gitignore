@@ -28,7 +28,7 @@
 .env.development.local
 .env.test.local
 .env.production.local
-.vscode/*
+.vscode
 
 npm-debug.log*
 yarn-debug.log*
@@ -42,4 +42,8 @@ yarn-error.log*
 .dockerignore
 styleguide.config.js
 
-set_env_windows.ps1
+
+# Ignore Docs
+
+/docs
+jsdoc.conf.json

@@ -8,7 +8,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@octokit/auth": "^3.0.3",
-    "@octokit/rest": "^18.3.5",
+    "@octokit/rest": "^18.5.2",
     "@uiw/react-md-editor": "^2.1.10",
     "autosuggest-highlight": "^3.1.1",
     "axios": "^0.21.1",
@@ -30,7 +30,7 @@
     "react-icons": "^4.2.0",
     "react-input-mask": "^2.0.4",
     "react-loading": "^2.0.3",
-    "react-phone-number-input": "^3.1.17",
+    "react-phone-number-input": "^3.1.18",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.3",
     "react-syntax-highlighter": "^15.4.3"
@@ -41,7 +41,8 @@
     "test": "react-scripts test --env=jsdom --coverage",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "docs": "jsdoc -c jsdoc.conf.json"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -68,14 +69,16 @@
     ]
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.11.9",
-    "@testing-library/react": "^11.2.5",
-    "@testing-library/react-hooks": "^5.1.0",
-    "@testing-library/user-event": "^12.8.3",
+    "@testing-library/jest-dom": "^5.11.10",
+    "@testing-library/react": "^11.2.6",
+    "@testing-library/react-hooks": "^5.1.1",
+    "@testing-library/user-event": "^13.1.1",
+    "better-docs": "^2.3.2",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.6",
     "enzyme-to-json": "^3.6.1",
     "gh-pages": "^3.1.0",
+    "jsdoc": "^3.6.6",
     "node-sass": "^4.14.1",
     "react-test-renderer": "^16.14.0"
   }
