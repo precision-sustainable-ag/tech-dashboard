@@ -37,6 +37,7 @@ import {
   Info,
   BugReport,
   Storage,
+  Person,
 } from "@material-ui/icons";
 import Axios from "axios";
 
@@ -122,6 +123,12 @@ export default function Header(props) {
   const { logout, user, loginWithRedirect } = useAuth0();
   const [openAllDataNav, setOpenAllDataNav] = useState(false);
   const [openDevicesNav, setOpenDevicesNav] = useState(false);
+  const [openNav, setOpenNav] = useState({
+    decomp: false,
+    biomass: false,
+    site_info: false,
+    devices: false,
+  });
 
   const handleOpenAllDataNav = () => {
     setOpenAllDataNav(!openAllDataNav);
@@ -331,55 +338,83 @@ export default function Header(props) {
             <ListItemText primary={"Protocols"} />
           </ListItem>
           <ListItem
-            onClick={() => handleOpenAllDataNav()}
             button
-            key={"All Data"}
+            to="/producers"
+            component={Link}
+            onClick={() => {
+              setOpen(false);
+            }}
           >
+            <ListItemIcon>
+              <Person />
+            </ListItemIcon>
+            <ListItemText primary="Producer Information" />
+          </ListItem>
+          <ListItem onClick={() => handleOpenAllDataNav()} button>
             <ListItemIcon>
               <Info />
             </ListItemIcon>
-            <ListItemText primary={"All Data"} />
+            <ListItemText primary={"Site Information"} />
             {openAllDataNav ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
           <Collapse in={openAllDataNav} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
               <ListItem
                 button
-                to="/table"
+                to="/site-information/contact-enrollment"
                 component={Link}
                 onClick={() => {
                   setOpen(false);
                   handleOpenAllDataNav();
                 }}
               >
-                <ListItemText inset primary="Site Information" />
+                <ListItemText inset primary="Contact and Location/Enrollment" />
               </ListItem>
               <ListItem
                 button
-                to="/producers"
+                to="/site-information/farm-dates"
                 component={Link}
                 onClick={() => {
                   setOpen(false);
                   handleOpenAllDataNav();
                 }}
               >
-                <ListItemText inset primary="Producer Information" />
+                <ListItemText inset primary="Farm Dates" />
               </ListItem>
             </List>
           </Collapse>
 
           <ListItem
-            onClick={() => setOpen(false)}
+            onClick={() =>
+              setOpenNav({ ...openNav, biomass: !openNav.biomass })
+            }
             button
-            key={"Site Enrollment"}
-            component={Link}
-            to="/site-enroll"
           >
             <ListItemIcon>
-              <ViewList />
+              <Info />
             </ListItemIcon>
-            <ListItemText primary={"Site Enrollment"} />
+            <ListItemText primary={"Biomass"} />
+            {openNav.biomass ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
+          <Collapse in={openNav.biomass} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem
+                onClick={() => {
+                  setOpenNav({ ...openNav, biomass: !openNav.biomass });
+                  setOpen(false);
+                }}
+                button
+                key={"Farm Values"}
+                component={Link}
+                to="/biomass/farm-values"
+              >
+                <ListItemIcon>
+                  <ViewList />
+                </ListItemIcon>
+                <ListItemText primary={"Farm Values"} />
+              </ListItem>
+            </List>
+          </Collapse>
 
           <ListItem
             onClick={() => setOpen(false)}
