@@ -7,7 +7,7 @@ export const RenderAllowedStatesTab = ({
   activeState,
 }) => {
   return assignedStates[0] !== "all" ? (
-    <Grid container justify="flex-start" alignItems="center" spacing={3}>
+    <Grid container justify="flex-start" alignItems="center" >
       <Grid item>
         <Paper square>
           <Tabs value={activeState} indicatorColor="primary">
@@ -25,7 +25,7 @@ export const RenderAllowedStatesTab = ({
       </Grid>
     </Grid>
   ) : (
-    <Grid container justify="flex-start" alignItems="center" spacing={3}>
+    <Grid container justify="flex-start" alignItems="center" >
       <Typography variant="body1">Showing Issues for All States</Typography>
     </Grid>
   );

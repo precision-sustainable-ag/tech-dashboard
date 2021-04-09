@@ -27,7 +27,7 @@ import "./RenderIssues.scss";
  * A component to render issues based on a given state label
  */
 
-export const RenderIssues = ({ stateLabel, userRole }) => {
+export const RenderIssues = ({ stateLabel, userRole, filter }) => {
   const [showIssues, setShowIssues] = useState(false);
   const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -112,7 +112,9 @@ export const RenderIssues = ({ stateLabel, userRole }) => {
       setLoading(true);
       setShowIssues(false);
 
-      getIssues(octokit, stateLabel)
+      console.log(filter, stateLabel)
+
+      getIssues(octokit, [stateLabel, filter])
         .then((resp) => {
           // console.log(resp);
           setLoading(false);
@@ -124,6 +126,9 @@ export const RenderIssues = ({ stateLabel, userRole }) => {
             // get username from response body
 
             // let username = user.nickname;
+
+            console.log(res.updated_at)
+
             let username;
 
             if(res.body.includes("**")){
@@ -157,7 +162,7 @@ export const RenderIssues = ({ stateLabel, userRole }) => {
           });
 
           // sorting based on most recent updated first
-          const sortedIssues = data.sort((a, b) => a.updated_at - b.updated_at);
+          const sortedIssues = data.sort((a, b) => Date(b.updated_at) - Date(a.updated_at));
           setIssues(sortedIssues);
         })
         .then(() => setDoneSettingUsernames(true))
@@ -165,7 +170,7 @@ export const RenderIssues = ({ stateLabel, userRole }) => {
           console.error(e);
         });
     }
-  }, [stateLabel]);
+  }, [stateLabel, filter]);
 
   const RenderUserCredits = ({ username, show }) => {
     if (show && Object.keys(userNameData).length === userNames.length) {
@@ -296,13 +301,23 @@ const getUser = async (octokit, username) => {
 };
 
 const getIssues = async (octokit, label) => {
-  if (label === "all") {
-    return await octokit.request("GET /repos/{owner}/{repo}/issues", {
-      owner: "precision-sustainable-ag",
-      repo: "data_corrections",
-      state: "open",
-    });
-  } else {
+  if (label[0] === "all"){
+    if (label[1] === "all") {
+      return await octokit.request("GET /repos/{owner}/{repo}/issues", {
+        owner: "precision-sustainable-ag",
+        repo: "data_corrections",
+        state: "open",
+      });
+    } else {
+      return await octokit.request("GET /repos/{owner}/{repo}/issues", {
+        owner: "precision-sustainable-ag",
+        repo: "data_corrections",
+        state: "open",
+        labels: label[1],
+      });
+    }
+  }
+  else {
     return await octokit.request("GET /repos/{owner}/{repo}/issues", {
       owner: "precision-sustainable-ag",
       repo: "data_corrections",
@@ -310,6 +325,7 @@ const getIssues = async (octokit, label) => {
       labels: label,
     });
   }
+  
 };
 
 // Property typings

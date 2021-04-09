@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { Box, Grid, Slide } from "@material-ui/core";
+import { Box, Grid, Slide, Select, MenuItem, Typography } from "@material-ui/core";
 import { Context } from "../Store/Store";
 import Loading from "react-loading";
 
@@ -16,6 +16,11 @@ const Issues = (props) => {
   const [activeState, setActiveState] = useState("");
   const [assignedStates, setAssignedStates] = useState([]);
   const [showLoader, setShowLoader] = useState(true);
+  const [filter, setFilter] = useState("all");
+
+  const handleFilterChange = (event) => {
+    setFilter(event.target.value)
+  }
 
   useEffect(() => {
     if (Object.keys(state.userInfo).length > 0 && state.userInfo.state) {
@@ -31,20 +36,47 @@ const Issues = (props) => {
     <Loading type="bars" width="200px" height="200px" color="#3f51b5" />
   ) : (
     <>
-      <Grid container>
-        <Slide
-          in={!showLoader || !state.loadingUser}
-          direction="down"
-          timeout={200}
-        >
-          <Grid item xs={12}>
-            <RenderAllowedStatesTab
-              activeState={activeState}
-              setActiveState={setActiveState}
-              assignedStates={assignedStates}
-            />
+      <Grid container spacing={3} direction="column">
+        <Grid item spacing={2} direction="column">
+          <Slide
+            in={!showLoader || !state.loadingUser}
+            direction="down"
+            timeout={200}
+          >
+            <Grid item xs={12}>
+              <RenderAllowedStatesTab
+                activeState={activeState}
+                setActiveState={setActiveState}
+                assignedStates={assignedStates}
+              />
+            </Grid>
+          </Slide>
+        </Grid>
+        <Grid item spacing={2} direction="column">
+          <Grid container spacing = {1}>
+            <Grid item><Typography variant="body1">Filter Issues</Typography></Grid>
+            <Grid item>
+              <Select
+                autoFocus
+                value={filter}
+                onChange={handleFilterChange}
+                displayEmpty
+                
+                defaultValue="all"
+                // defaultChecked="all"
+                // inputProps={{
+                //   name: "max-width",
+                //   id: "max-width",
+                // }}
+              >
+                <MenuItem value="">all</MenuItem>
+                <MenuItem value="kobo-forms">kobo-forms</MenuItem>
+                <MenuItem value="sites">sites</MenuItem>
+              </Select>
+            </Grid>
           </Grid>
-        </Slide>
+        </Grid>
+        
       </Grid>
       <Slide
         in={!showLoader || !state.loadingUser}
@@ -52,7 +84,7 @@ const Issues = (props) => {
         timeout={800}
       >
         <div style={{ paddingTop: "20px" }}>
-          <RenderIssues stateLabel={activeState} userRole={state.userRole} />
+          <RenderIssues stateLabel={activeState} userRole={state.userRole} filter={filter}/>
         </div>
       </Slide>
     </>

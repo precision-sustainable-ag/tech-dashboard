@@ -118,7 +118,7 @@ const NewIssueModal = (props) => {
       console.log("yes");
       setCheckValidation({ title: false, comment: false });
 
-      const labels = [`${props.data.code}`, `${props.data.affiliation}`];
+      const labels = [`${props.data.code}`, `${props.data.affiliation}`, "sites"];
 
       //   const labels = [`${props.data.code}`, `${props.data.state}`];
       const assignedPeople =
