@@ -19,9 +19,9 @@ import MDEditor from "@uiw/react-md-editor";
 
 // Local Imports
 import { githubToken } from "../utils/api_secret";
-import { Context } from "../Store/Store";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 import PropTypes from "prop-types";
+import { createGithubIssue } from "../utils/SharedFunctions"
 
 /**
  *  A component to allow users to create "New Issue" in a modal
@@ -31,22 +31,7 @@ import PropTypes from "prop-types";
 const NewIssueModal = (props) => {
   const {
     getTokenSilently,
-    loading,
-    config
   } = useAuth0();
-  // const [state, dispatch] = useContext(Context);
-
-  
-  
-  // useEffect(() => {
-  //   const callAPI = async () => {
-  //     token = await getTokenSilently();
-  //     console.log("token in useEffect = " + token);
-  //   };
-  //   if (!loading) {
-  //     callAPI();
-  //   }
-  // }, [loading, getTokenSilently]);
 
   const octokit = new Octokit({ auth: githubToken });
   const [fullWidth, setFullWidth] = useState(true);
@@ -62,56 +47,6 @@ const NewIssueModal = (props) => {
   const handleMaxWidthChange = (event) => {
     setMaxWidth(event.target.value);
   };
-  //   const fileNewIssue = () => {
-  //     // const tableHtml = document.getElementById("mdTable").innerHTML;
-  //     // console.log(tableHtml);
-  //     const tableHtml = (
-  //       <table border="1">
-  //         <tbody>
-  //           <tr>
-  //             <td>Code</td>
-  //             <td>{props.data.code}</td>
-  //           </tr>
-  //           <tr>
-  //             <td>Grower</td>
-  //             <td>{props.data.last_name}</td>
-  //           </tr>
-  //           <tr>
-  //             <td>State</td>
-  //             <td>{props.data.state}</td>
-  //           </tr>
-  //           <tr>
-  //             <td>County</td>
-  //             <td>{props.data.county}</td>
-  //           </tr>
-  //           <tr>
-  //             <td>Email</td>
-  //             <td>{props.data.email}</td>
-  //           </tr>
-  //           <tr>
-  //             <td>Year</td>
-  //             <td>{props.data.year}</td>
-  //           </tr>
-  //           <tr>
-  //             <td>Address</td>
-  //             <td>{props.data.address}</td>
-  //           </tr>
-  //           <tr>
-  //             <td>Location</td>
-  //             <td>{props.data.latlng}</td>
-  //           </tr>
-  //           <tr>
-  //             <td>Notes</td>
-  //             <td>{props.data.notes}</td>
-  //           </tr>
-  //         </tbody>
-  //       </table>
-  //     );
-  //     const tableStr = markdownConvert.makeMarkdown("" + tableHtml + "");
-  //     console.log(JSON.stringify(tableStr));
-
-  //     // setNewComment(tableStr.toString());
-  //   };
 
   async function fileNewIssue() {
     if (issueTitle && newComment) {
@@ -120,67 +55,61 @@ const NewIssueModal = (props) => {
 
       const labels = [`${props.data.code}`, `${props.data.affiliation}`, "sites"];
 
-      //   const labels = [`${props.data.code}`, `${props.data.state}`];
       const assignedPeople =
         personName.length > 0 ? personName : [`${props.nickname}`];
-      //   console.log(assignedPeople);
-      const tableData = `<table>
-      <tbody>
-        <tr>
-          <td>Code</td>
-          <td>${props.data.code}</td>
-        </tr>
-        <tr>
-          <td>Grower</td>
-          <td>${props.data.last_name}</td>
-        </tr>
-        <tr>
-          <td>State</td>
-          <td>${props.data.affiliation}</td>
-        </tr>
-        <tr>
-          <td>County</td>
-          <td>${props.data.county}</td>
-        </tr>
-        <tr>
-          <td>Email</td>
-          <td>${props.data.email}</td>
-        </tr>
-        <tr>
-          <td>Year</td>
-          <td>${props.data.year}</td>
-        </tr>
-        <tr>
-          <td>Address</td>
-          <td>${props.data.address}</td>
-        </tr>
-        <tr>
-          <td>Location</td>
-          <td>${props.data.latlng}</td>
-        </tr>
-        <tr>
-          <td>Notes</td>
-          <td>${props.data.notes}</td>
-        </tr>
-      </tbody>
-    </table>`;
 
-      console.log(config)
-      
+      const tableData = `<table>
+        <tbody>
+          <tr>
+            <td>Code</td>
+            <td>${props.data.code}</td>
+          </tr>
+          <tr>
+            <td>Grower</td>
+            <td>${props.data.last_name}</td>
+          </tr>
+          <tr>
+            <td>State</td>
+            <td>${props.data.affiliation}</td>
+          </tr>
+          <tr>
+            <td>County</td>
+            <td>${props.data.county}</td>
+          </tr>
+          <tr>
+            <td>Email</td>
+            <td>${props.data.email}</td>
+          </tr>
+          <tr>
+            <td>Year</td>
+            <td>${props.data.year}</td>
+          </tr>
+          <tr>
+            <td>Address</td>
+            <td>${props.data.address}</td>
+          </tr>
+          <tr>
+            <td>Location</td>
+            <td>${props.data.latlng}</td>
+          </tr>
+          <tr>
+            <td>Notes</td>
+            <td>${props.data.notes}</td>
+          </tr>
+        </tbody>
+      </table>`;
+
+      const body = tableData + " <br/> " + newComment;
+
       let token = await getTokenSilently({
         audience: `https://precision-sustaibale-ag/tech-dashboard`
       });
-
-      // let token = await getTokenSilently();
       
-
-      // console.log("token out useEffect = " + token);
-      const issueSet = setGitHubIssuer(
+      const issueSet = createGithubIssue(
         issueTitle,
-        newComment,
+        body,
         labels,
         assignedPeople,
-        tableData,
         props.nickname,
         token
       );
@@ -240,9 +169,6 @@ const NewIssueModal = (props) => {
   const [isNewCollab, setIsNewCollab] = useState(false);
   useEffect(() => {
     //   check if a user is a collaborator to repo, else add the user to repo
-
-    //   const collaboratorNames = res.data.map((data) => data.login);
-
     fetchCollabs()
       .then((res) => {
         const status = res.status;
@@ -524,55 +450,6 @@ const setIssue = async (
     assignees: assignees,
   });
 };
-
-const setGitHubIssuer = async (
-  issueTitle,
-  newComment,
-  labels,
-  assignees,
-  table,
-  nickname,
-  token
-  ) => {
-    const data = {
-      action: 'create',
-      user: nickname,
-      title: issueTitle,
-      assignees: assignees,
-      labels: labels,
-      body: 
-        table +
-        " <br/> " +
-        newComment,
-      token: token,
-    };
-
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data),
-      mode: 'cors', // no-cors, *cors, same-origin
-    }
-
-    let res = await fetch(`https://githubissues.azurewebsites.us/api/githubissues`, options)
-    // .then(response => response.json())
-    .then(response => {
-      console.log(response)
-      return response;
-    })
-    .catch(err => {
-      console.log("error reading data " + err)
-    })
-
-    
-    // let json = await res.json();
-    console.log(res.status)
-
-
-    return res;
-}
 
 NewIssueModal.defaultProps = {
   data: {

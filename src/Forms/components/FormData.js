@@ -22,7 +22,6 @@ import { ArrowBackIosOutlined } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import { Context } from "../../Store/Store";
 import { fetchKoboPasswords } from "../../utils/constants";
-import NewFormComment from "./NewFormComment"
 import NewFormIssue from "./NewFormIssue"
 
 SyntaxHighlighter.registerLanguage("json", json);
@@ -173,7 +172,7 @@ const FormData = (props) => {
           snackbarData={snackbarData}
           nickname={user.nickname}
           affiliationLookup={affiliationLookup}
-          formName = {props.history.location.state.name}
+          formName = {props.assetId.history.location.state.name}
         />
       )
     }

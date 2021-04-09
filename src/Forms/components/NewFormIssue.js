@@ -24,6 +24,7 @@ import {
   import { Context } from "../../Store/Store";
   import { useAuth0 } from "../../Auth/react-auth0-spa";
   import PropTypes from "prop-types";
+  import { createGithubIssue } from "../../utils/SharedFunctions"
   
   /**
    *  A component to allow users to create "New Issue" in a modal
@@ -71,18 +72,17 @@ import {
 
         console.log(JSON.stringify(props))
         let labels = [props.data._id.toString(), props.affiliationLookup[props.data._submitted_by], props.formName, "kobo-forms"]
+
+        const body = "```json\n" + jsonData + "\n```\n" + " <br/> " + newComment;
           
         console.log("title " + issueTitle + " comment " + newComment + " labels " + labels + " assigned " + assignedPeople + " jsonData " + jsonData + " name " + props.nickname + " token " + token)
         console.log("token out useEffect = " + token);
-
         
-
-        const issueSet = setGitHubIssuer(
+        const issueSet = createGithubIssue(
           issueTitle,
-          newComment,
+          body,
           labels,
           assignedPeople,
-          jsonData,
           props.nickname,
           token
         );
@@ -153,9 +153,7 @@ import {
     useEffect(() => {
         console.log("7")
       //   check if a user is a collaborator to repo, else add the user to repo
-  
-      //   const collaboratorNames = res.data.map((data) => data.login);
-  
+    
       fetchCollabs()
         .then((res) => {
           const status = res.status;
@@ -290,51 +288,6 @@ import {
       </Dialog>
     );
   };
-  
-  const setGitHubIssuer = async (
-    issueTitle,
-    newComment,
-    labels,
-    assignees,
-    table,
-    nickname,
-    token
-    ) => {
-      const data = {
-        action: 'create',
-        user: nickname,
-        title: issueTitle,
-        assignees: assignees,
-        labels: labels,
-        body: 
-          "```json\n" + table + "\n```\n" +
-          " <br/> " +
-          newComment,
-        token: token,
-      };
-  
-      const options = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data),
-        mode: 'cors', // no-cors, *cors, same-origin
-      }
-  
-      let res = await fetch(`https://githubissues.azurewebsites.us/api/githubissues`, options)
-      .then(response => {
-        console.log(response)
-        return response;
-      })
-      .catch(err => {
-        console.log("error reading data " + err)
-      })
-      
-      console.log(res.status)
-  
-      return res;
-  }
   
   NewFormIssue.defaultProps = {
     data: {

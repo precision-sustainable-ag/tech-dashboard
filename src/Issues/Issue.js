@@ -31,6 +31,8 @@ import { useAuth0 } from "../Auth/react-auth0-spa";
 import IssueBubbleBody from "./components/IssueBodyBubble";
 import { Fragment } from "react";
 import { SingleIssueBodyBubble } from "./components/SingleIssueBodyBubble";
+import { createGithubComment } from "../utils/SharedFunctions"
+
 
   
 
@@ -124,7 +126,7 @@ const Issue = (props) => {
       audience: `https://precision-sustaibale-ag/tech-dashboard`
     });
 
-    setGitHubCommenter(user.nickname, newComment, issueNumber, token)
+    createGithubComment(user.nickname, newComment, issueNumber, token)
       .then((resp) => {})
       .then(() => {
         setNewCommentAdded(!newCommentAdded);
@@ -410,47 +412,47 @@ const Issue = (props) => {
   );
 };
 
-const setGitHubCommenter = async (
-  nickname,
-  newComment,
-  number,
-  token
-  ) => {
-    const data = {
-      action: 'comment',
-      user: nickname,
-      comment: newComment,
-      number: number,
-      token: token,
-    };
+// const createGithubComment = async (
+//   nickname,
+//   newComment,
+//   number,
+//   token
+//   ) => {
+//     const data = {
+//       action: 'comment',
+//       user: nickname,
+//       comment: newComment,
+//       number: number,
+//       token: token,
+//     };
 
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data),
-      mode: 'cors', // no-cors, *cors, same-origin
-    }
+//     const options = {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json'
+//       },
+//       body: JSON.stringify(data),
+//       mode: 'cors', // no-cors, *cors, same-origin
+//     }
 
-    // console.log("token =" + data.token);
+//     // console.log("token =" + data.token);
 
-    let res = await fetch(`https://githubissues.azurewebsites.us/api/githubissues`, options)
-    // .then(response => response.json())
-    .then(response => {
-      console.log(response)
-      return response;
-    })
-    .catch(err => {
-      console.log("error reading data " + err)
-    })
+//     let res = await fetch(`https://githubissues.azurewebsites.us/api/githubissues`, options)
+//     // .then(response => response.json())
+//     .then(response => {
+//       console.log(response)
+//       return response;
+//     })
+//     .catch(err => {
+//       console.log("error reading data " + err)
+//     })
 
     
-    // let json = await res.json();
-    // console.log(res.status)
+//     // let json = await res.json();
+//     // console.log(res.status)
 
 
-    return res;
-}
+//     return res;
+// }
 
 export default Issue;

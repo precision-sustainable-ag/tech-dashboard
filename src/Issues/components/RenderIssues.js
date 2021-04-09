@@ -127,8 +127,6 @@ export const RenderIssues = ({ stateLabel, userRole, filter }) => {
 
             // let username = user.nickname;
 
-            console.log(res.updated_at)
-
             let username;
 
             if(res.body.includes("**")){
