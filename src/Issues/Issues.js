@@ -37,7 +37,7 @@ const Issues = (props) => {
   ) : (
     <>
       <Grid container spacing={3} direction="column">
-        <Grid item spacing={2} direction="column">
+        <Grid item>
           <Slide
             in={!showLoader || !state.loadingUser}
             direction="down"
@@ -52,7 +52,7 @@ const Issues = (props) => {
             </Grid>
           </Slide>
         </Grid>
-        <Grid item spacing={2} direction="column">
+        <Grid item>
           <Grid container spacing = {1}>
             <Grid item><Typography variant="body1">Filter Issues</Typography></Grid>
             <Grid item>
@@ -60,7 +60,6 @@ const Issues = (props) => {
                 autoFocus
                 value={filter}
                 onChange={handleFilterChange}
-                displayEmpty
                 
                 defaultValue="all"
                 // defaultChecked="all"
@@ -69,7 +68,7 @@ const Issues = (props) => {
                 //   id: "max-width",
                 // }}
               >
-                <MenuItem value="">all</MenuItem>
+                <MenuItem value="all">all</MenuItem>
                 <MenuItem value="kobo-forms">kobo-forms</MenuItem>
                 <MenuItem value="sites">sites</MenuItem>
               </Select>

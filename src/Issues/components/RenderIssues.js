@@ -24,7 +24,7 @@ import { Link } from "react-router-dom";
 import "./RenderIssues.scss";
 
 /**
- * A component to render issues based on a given state label
+ * A component to render issues based on a given state labels
  */
 
 export const RenderIssues = ({ stateLabel, userRole, filter }) => {
@@ -298,9 +298,10 @@ const getUser = async (octokit, username) => {
   });
 };
 
-const getIssues = async (octokit, label) => {
-  if (label[0] === "all"){
-    if (label[1] === "all") {
+const getIssues = async (octokit, labels) => {
+  // console.log(labels)
+  if (labels[0] === "all"){
+    if (labels[1] === "all") {
       return await octokit.request("GET /repos/{owner}/{repo}/issues", {
         owner: "precision-sustainable-ag",
         repo: "data_corrections",
@@ -311,16 +312,24 @@ const getIssues = async (octokit, label) => {
         owner: "precision-sustainable-ag",
         repo: "data_corrections",
         state: "open",
-        labels: label[1],
+        labels: labels[1],
       });
     }
+  }
+  else if (labels[1] === "all"){
+    return await octokit.request("GET /repos/{owner}/{repo}/issues", {
+      owner: "precision-sustainable-ag",
+      repo: "data_corrections",
+      state: "open",
+      labels: labels[0],
+    });
   }
   else {
     return await octokit.request("GET /repos/{owner}/{repo}/issues", {
       owner: "precision-sustainable-ag",
       repo: "data_corrections",
       state: "open",
-      labels: label,
+      labels: labels,
     });
   }
   

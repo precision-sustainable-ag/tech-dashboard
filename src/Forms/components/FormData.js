@@ -210,7 +210,7 @@ const FormData = (props) => {
           } = parseDate(submittedDate);
   
           return (
-            <>
+            <div key={index}>
               <Grid item xs={12} key={`record${index}`}>
                 <Typography variant="h6">
                   {submittedDate.toDateString()} at{" "}
@@ -225,7 +225,7 @@ const FormData = (props) => {
               </Grid>
 
               <CreateNewIssue issueData={record} /> 
-            </>
+            </div>
           );
         })}
       </>
@@ -275,8 +275,8 @@ const FormData = (props) => {
                   onClick={() => setActiveAccount("all")}
                 />
               </Grid>
-              {allowedAccounts.map((account) => (
-                <Grid item>
+              {allowedAccounts.map((account, index) => (
+                <Grid item key={index}>
                   <Chip
                     label={account}
                     color={activeAccount === account ? "primary" : "default"}

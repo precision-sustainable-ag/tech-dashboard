@@ -5,7 +5,8 @@ import requests
 import json	
 import sys	
 
-DEBUG = True
+# DEBUG = True
+DEBUG = False
 
 # github issues class to handle actions on github issues	
 class GithubIssues:	
@@ -221,7 +222,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 # send back response
                 return func.HttpResponse(	
                     # body may be unneeded
-                    body = json.dumps({"test": "test"}),	
+                    body = json.dumps({"Message": "Successfully created issue"}),	
                     status_code=201,	
                     headers=HEADER	
                 )	
@@ -232,7 +233,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 # send back response
                 return func.HttpResponse(	
                     # body may be unneeded
-                    body = json.dumps({"test": "test"}),	
+                    body = json.dumps({"Message": "Successfully created comment"}),	
                     status_code=201,	
                     headers=HEADER	
                 )	
