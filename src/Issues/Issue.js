@@ -31,12 +31,22 @@ import { useAuth0 } from "../Auth/react-auth0-spa";
 import IssueBubbleBody from "./components/IssueBodyBubble";
 import { Fragment } from "react";
 import { SingleIssueBodyBubble } from "./components/SingleIssueBodyBubble";
+import { createGithubComment } from "../utils/SharedFunctions"
+
+
+  
 
 // Global vars
 var replyParser = require("node-email-reply-parser");
 
 // Default function
 const Issue = (props) => {
+  const {
+    getTokenSilently,
+    loading,
+    config
+  } = useAuth0();
+
   const issueNumber = props.match.params.issueNumber
     ? parseInt(props.match.params.issueNumber)
     : null;
@@ -82,9 +92,12 @@ const Issue = (props) => {
 
   const fetchIssueComments = () => {
     getIssueDetails().then((resp) => {
+      // console.log("resp = " + resp)
       const data = resp.data.map((data) => {
         const viaEmail = data.body.includes("<notifications@github.com>");
         const hasMention = data.body.includes("<br/> ** From");
+
+        // console.log("body = " + data.body)
 
         return {
           ...data,
@@ -108,14 +121,18 @@ const Issue = (props) => {
     });
   };
 
-  const handleNewComment = () => {
-    addNewComment()
+  async function handleNewComment() {
+    let token = await getTokenSilently({
+      audience: `https://precision-sustaibale-ag/tech-dashboard`
+    });
+
+    createGithubComment(user.nickname, newComment, issueNumber, token)
       .then((resp) => {})
       .then(() => {
         setNewCommentAdded(!newCommentAdded);
         setNewComment("");
       });
-  };
+  }
 
   useEffect(() => {
     fetchIssueComments();
@@ -135,6 +152,9 @@ const Issue = (props) => {
         owner: "precision-sustainable-ag",
         repo: "data_corrections",
         issue_number: issueNumber,
+        headers: {
+          'If-None-Match': ''
+        }
       }
     );
   };
@@ -234,6 +254,7 @@ const Issue = (props) => {
             </Grid>
             {issueBody.length > 0 ? (
               issueBody.map((issueData, index) => {
+                // console.log("this is the body" + JSON.stringify(issueData))
                 return (
                   <Grid item xs={12} key={index}>
                     {/* <RenderIssue issueData={issueData} /> */}

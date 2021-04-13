@@ -24,10 +24,10 @@ import { Link } from "react-router-dom";
 import "./RenderIssues.scss";
 
 /**
- * A component to render issues based on a given state label
+ * A component to render issues based on a given state labels
  */
 
-export const RenderIssues = ({ stateLabel, userRole }) => {
+export const RenderIssues = ({ stateLabel, userRole, filter }) => {
   const [showIssues, setShowIssues] = useState(false);
   const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -112,23 +112,42 @@ export const RenderIssues = ({ stateLabel, userRole }) => {
       setLoading(true);
       setShowIssues(false);
 
-      getIssues(octokit, stateLabel)
+      // console.log(filter, stateLabel)
+
+      getIssues(octokit, [stateLabel, filter])
         .then((resp) => {
           // console.log(resp);
           setLoading(false);
           setShowIssues(true);
 
+          // console.log(resp);
+
           const data = resp.data.map((res) => {
             // get username from response body
 
-            let username = res.body.split("By: @");
-            try {
+            // let username = user.nickname;
+
+            let username;
+
+            if(res.body.includes("**")){
+              // console.log("includes");
+              username = res.body.split("By: @");
               username = username[1].split("**")[0].replace(/\s/g, "");
+            }
+            else{
+              // console.log("not includes" + JSON.stringify(res));
+              username = res.user.login;
+            }
+            // console.log(username);
+            try {
+              
               setUserNames((old) =>
-                !old.includes(username) ? [...old, username] : [username]
+                !old.includes(username) ? [...old, username] : [...old]
               );
+              // console.log(userNames);
             } catch (err) {
               setUserNames((old) => [...old, username]);
+              // console.log(userNames);
             }
             // convert date strings to date objects
             return {
@@ -141,7 +160,7 @@ export const RenderIssues = ({ stateLabel, userRole }) => {
           });
 
           // sorting based on most recent updated first
-          const sortedIssues = data.sort((a, b) => a.updated_at - b.updated_at);
+          const sortedIssues = data.sort((a, b) => Date(b.updated_at) - Date(a.updated_at));
           setIssues(sortedIssues);
         })
         .then(() => setDoneSettingUsernames(true))
@@ -149,7 +168,7 @@ export const RenderIssues = ({ stateLabel, userRole }) => {
           console.error(e);
         });
     }
-  }, [stateLabel]);
+  }, [stateLabel, filter]);
 
   const RenderUserCredits = ({ username, show }) => {
     if (show && Object.keys(userNameData).length === userNames.length) {
@@ -183,7 +202,7 @@ export const RenderIssues = ({ stateLabel, userRole }) => {
                 rel="noreferrer"
                 target="_blank"
               >
-                {userNameData[username] ? userNameData[username].name : ""}
+                {userNameData[username].name ? userNameData[username].name : userNameData[username].login}
               </Button>
             </Typography>
           </Grid>
@@ -279,21 +298,41 @@ const getUser = async (octokit, username) => {
   });
 };
 
-const getIssues = async (octokit, label) => {
-  if (label === "all") {
+const getIssues = async (octokit, labels) => {
+  // console.log(labels)
+  if (labels[0] === "all"){
+    if (labels[1] === "all") {
+      return await octokit.request("GET /repos/{owner}/{repo}/issues", {
+        owner: "precision-sustainable-ag",
+        repo: "data_corrections",
+        state: "open",
+      });
+    } else {
+      return await octokit.request("GET /repos/{owner}/{repo}/issues", {
+        owner: "precision-sustainable-ag",
+        repo: "data_corrections",
+        state: "open",
+        labels: labels[1],
+      });
+    }
+  }
+  else if (labels[1] === "all"){
     return await octokit.request("GET /repos/{owner}/{repo}/issues", {
       owner: "precision-sustainable-ag",
       repo: "data_corrections",
       state: "open",
-    });
-  } else {
-    return await octokit.request("GET /repos/{owner}/{repo}/issues", {
-      owner: "precision-sustainable-ag",
-      repo: "data_corrections",
-      state: "open",
-      labels: label,
+      labels: labels[0],
     });
   }
+  else {
+    return await octokit.request("GET /repos/{owner}/{repo}/issues", {
+      owner: "precision-sustainable-ag",
+      repo: "data_corrections",
+      state: "open",
+      labels: labels,
+    });
+  }
+  
 };
 
 // Property typings

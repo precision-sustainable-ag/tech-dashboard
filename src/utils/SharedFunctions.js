@@ -78,6 +78,80 @@ export function useWindowDimensions() {
   return dimensions;
 }
 
+export const createGithubIssue = async (
+  issueTitle,
+  body,
+  labels,
+  assignees,
+  nickname,
+  token
+  ) => {
+    const data = {
+      action: 'create',
+      user: nickname,
+      title: issueTitle,
+      assignees: assignees,
+      labels: labels,
+      body: body,
+      token: token,
+    };
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data),
+      mode: 'cors', // no-cors, *cors, same-origin
+    }
+
+    let res = await fetch(`https://githubissues.azurewebsites.us/api/githubissues`, options)
+    .then(response => {
+      console.log(response)
+      return response;
+    })
+    .catch(err => {
+      console.log("error reading data " + err)
+    })
+    
+    // console.log(res.status)
+
+    return res;
+}
+export const createGithubComment = async (
+  nickname,
+  newComment,
+  number,
+  token
+  ) => {
+    const data = {
+      action: 'comment',
+      user: nickname,
+      comment: newComment,
+      number: number,
+      token: token,
+    };
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data),
+      mode: 'cors', // no-cors, *cors, same-origin
+    }
+
+    let res = await fetch(`https://githubissues.azurewebsites.us/api/githubissues`, options)
+    .then(response => {
+      console.log(response)
+      return response;
+    })
+    .catch(err => {
+      console.log("error reading data " + err)
+    })
+
+    return res;
+}
 export const tableOptions = (tableDataLength) => ({
   padding: "dense",
   exportButton: true,

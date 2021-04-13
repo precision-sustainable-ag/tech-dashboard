@@ -11,10 +11,15 @@ import { useHistory } from "react-router-dom";
 
 const FormsStatus = ({ form }) => {
   const history = useHistory();
-  const loadRoute = useCallback(() => history.push(`/kobo-forms/${form.uid}`), [
-    history,
-    form.uid,
-  ]);
+  // const loadRoute = useCallback(() => history.push(`/kobo-forms/${form.uid}`), [
+  //   history,
+  //   form.uid,
+  // ]);
+
+  const loadRoute = useCallback(() => history.push({
+    pathname: `/kobo-forms/${form.uid}`,
+    state: { name: form.name }
+  }))
 
   return (
     <ListItem
