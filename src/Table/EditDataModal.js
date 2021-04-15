@@ -18,7 +18,6 @@ import {
   Checkbox,
   FormLabel,
 } from "@material-ui/core";
-import { GpsFixed } from "@material-ui/icons";
 import Axios from "axios";
 
 // Local Imports
@@ -127,7 +126,8 @@ const EditDataModal = (props) => {
       if (resp) {
         props.handleEditModalClose();
         props.setValuesEdited(!props.valuesEdited);
-        console.log(newData);
+        // console.log(newData);
+        window.location.reload();
       } else {
         console.error("AJAX Error!");
       }

@@ -19,12 +19,46 @@ import EditDataModal from "./EditDataModal";
 import UnenrollSiteModal from "./UnenrollSiteModal";
 import NewIssueModal from "./NewIssueModal";
 import { BannedRoleMessage } from "../utils/CustomComponents";
-import { apiUsername, apiPassword, apiURL } from "../utils/api_secret";
-import { UserIsEditor, useWindowDimensions } from "../utils/SharedFunctions";
+import { apiUsername, apiPassword, onfarmAPI } from "../utils/api_secret";
+import { UserIsEditor } from "../utils/SharedFunctions";
 import MapModal from "./MapModal";
-import "./AllDataTable.scss";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 import PropTypes from "prop-types";
+import styled from "styled-components";
+
+const siteInfoAPI_URL = `${onfarmAPI}/raw?output=json&table=site_information&options=showtest`;
+
+const InnerTable = styled.table`
+  border: 0;
+  border-radius: 5px;
+  border-style: hidden;
+  box-shadow: 0 0 0 1px #666;
+  border-collapse: collapse;
+  font-size: 0.9em;
+  font-family: sans-serif;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+`;
+
+const InnerTableBody = styled.tbody`
+  border-top: 2px solid #eceeef;
+`;
+
+const InnerTableRow = styled.tr`
+  border-bottom: thin solid #dddddd;
+  &:last-of-type {
+    border-bottom: 2px solid #009879;
+  }
+  &:first-of-type {
+    border-top: 2px solid #009878;
+  }
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.075);
+  }
+`;
+
+const InnerTableCell = styled.td`
+  padding: 12px 15px;
+`;
 
 const tableHeaderOptions = [
   {
@@ -81,7 +115,7 @@ function Alert(props) {
 
 // Default function
 const AllDataTable = (props) => {
-  const [state, dispatch] = useContext(Context);
+  const [state] = useContext(Context);
   const [showTable, setShowTable] = useState(false);
   const { user } = useAuth0();
   const [bannedRolesCheckMessage, setBannedRolesCheckMessage] = useState(
@@ -119,61 +153,104 @@ const AllDataTable = (props) => {
   }
 
   useEffect(() => {
-    function init() {
-      if (valuesEdited) {
-        setBannedRolesCheckMessage("Updating database..");
-      }
-      if (state.userInfo.state) {
-        setLoading(true);
-        let returnData = getAllTableData(
-          `${apiURL}/api/tablerecords/${state.userInfo.state}`
-        );
-        returnData
-          .then((responseData) => {
-            return parseXHRResponse(responseData.data);
-          })
-          .then((resp) => {
-            if (resp) {
-              setLoading(false);
-            } else {
-              setLoading(true);
-              console.log("Check API");
-            }
-          })
-          .catch((error) => {
-            if (error.response) {
-              // The request was made and the server responded with a status code
-              // that falls out of the range of 2xx
-              console.log(error.response.data);
-              console.log(error.response.status);
-              console.log(error.response.headers);
-            } else if (error.request) {
-              // The request was made but no response was received
-              // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-              // http.ClientRequest in node.js
-              console.log(error.request);
-            } else {
-              // Something happened in setting up the request that triggered an Error
-              console.log("Error", error.message);
-            }
-            console.log(error.config);
+    const init = () => {
+      if (Object.keys(state.userInfo).length > 0) {
+        if (state.userInfo.role) {
+          if (bannedRoles.includes(state.userInfo.role)) {
+            setShowTable(false);
+            setBannedRolesCheckMessage(
+              <BannedRoleMessage title="All Site Information" />
+            );
+          } else {
+            setShowTable(true);
+          }
+        }
+        if (state.userInfo.apikey) {
+          let records = fetch(siteInfoAPI_URL, {
+            headers: {
+              "x-api-key": state.userInfo.apikey,
+            },
           });
-      }
 
-      if (state.userInfo.role) {
-        if (bannedRoles.includes(state.userRole)) {
-          setShowTable(false);
-          setBannedRolesCheckMessage(
-            <BannedRoleMessage title="All Site Information" />
-          );
-        } else {
-          setShowTable(true);
+          records.then((response) => {
+            let res = response.json();
+            res
+              .then((records) => {
+                return parseXHRResponse({ status: "success", data: records });
+              })
+              .then((resp) => {
+                if (resp) {
+                  setLoading(false);
+                } else {
+                  setLoading(true);
+                  console.log("Check API");
+                }
+              });
+          });
         }
       }
-    }
+    };
 
-    setTimeout(init, 1000);
-  }, [state.userInfo, valuesEdited, state.userRole]);
+    init();
+  }, [state.userInfo, valuesEdited]);
+
+  // useEffect(() => {
+  //   function init() {
+  //     if (valuesEdited) {
+  //       setBannedRolesCheckMessage("Updating database..");
+  //     }
+  //     if (state.userInfo.state) {
+  //       setLoading(true);
+  //       let returnData = getAllTableData(
+  //         `${apiURL}/api/tablerecords/${state.userInfo.state}`
+  //       );
+
+  //       returnData
+  //         .then((responseData) => {
+  //           return parseXHRResponse(responseData.data);
+  //         })
+  //         .then((resp) => {
+  //           if (resp) {
+  //             setLoading(false);
+  //           } else {
+  //             setLoading(true);
+  //             console.log("Check API");
+  //           }
+  //         })
+  //         .catch((error) => {
+  //           if (error.response) {
+  //             // The request was made and the server responded with a status code
+  //             // that falls out of the range of 2xx
+  //             console.log(error.response.data);
+  //             console.log(error.response.status);
+  //             console.log(error.response.headers);
+  //           } else if (error.request) {
+  //             // The request was made but no response was received
+  //             // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+  //             // http.ClientRequest in node.js
+  //             console.log(error.request);
+  //           } else {
+  //             // Something happened in setting up the request that triggered an Error
+  //             console.log("Error", error.message);
+  //           }
+  //           console.log(error.config);
+  //         });
+  //     }
+
+  //     if (state.userInfo.role) {
+  //       if (bannedRoles.includes(state.userRole)) {
+  //         setShowTable(false);
+  //         setBannedRolesCheckMessage(
+  //           <BannedRoleMessage title="All Site Information" />
+  //         );
+  //       } else {
+  //         setShowTable(true);
+  //       }
+  //     }
+  //   }
+
+  //   setTimeout(init, 1000);
+  // }, [state.userInfo, valuesEdited, state.userRole]);
 
   const parseXHRResponse = (data) => {
     if (data.status === "success") {
@@ -376,7 +453,7 @@ const AllDataTable = (props) => {
           )}
         </Grid> */}
         <Grid item xs={12}>
-          <table border="0" className="growerContactInfoTable">
+          <InnerTable border="0">
             <thead>
               <tr>
                 <th colSpan="2" align="center">
@@ -384,25 +461,25 @@ const AllDataTable = (props) => {
                 </th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>
+            <InnerTableBody>
+              <InnerTableRow>
+                <InnerTableCell>
                   <Typography variant="body1">Phone Number</Typography>
-                </td>
-                <td>
+                </InnerTableCell>
+                <InnerTableCell>
                   <Typography variant="body1">{rowData.phone}</Typography>
-                </td>
-              </tr>
-              <tr>
-                <td>
+                </InnerTableCell>
+              </InnerTableRow>
+              <InnerTableRow>
+                <InnerTableCell>
                   <Typography variant="body1">Email</Typography>
-                </td>
-                <td>
+                </InnerTableCell>
+                <InnerTableCell>
                   <Typography variant="body1">{rowData.email}</Typography>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                </InnerTableCell>
+              </InnerTableRow>
+            </InnerTableBody>
+          </InnerTable>
         </Grid>
         <Grid
           item
