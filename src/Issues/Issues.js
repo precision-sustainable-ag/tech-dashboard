@@ -70,7 +70,7 @@ const Issues = (props) => {
               >
                 <MenuItem value="all">all</MenuItem>
                 <MenuItem value="kobo-forms">kobo-forms</MenuItem>
-                <MenuItem value="sites">sites</MenuItem>
+                <MenuItem value="site-information">site-information</MenuItem>
               </Select>
             </Grid>
           </Grid>

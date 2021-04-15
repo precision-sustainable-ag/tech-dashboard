@@ -52,7 +52,7 @@ const NewIssueModal = (props) => {
     if (issueTitle && newComment) {
       setCheckValidation({ title: false, comment: false });
 
-      const labels = [`${props.data.code}`, `${props.data.affiliation}`, "sites"];
+      const labels = [`${props.data.code}`, `${props.data.affiliation}`, "site-information"];
 
       const assignedPeople =
         personName.length > 0 ? personName : [`${props.nickname}`];
