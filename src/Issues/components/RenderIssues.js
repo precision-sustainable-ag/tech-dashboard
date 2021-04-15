@@ -112,7 +112,7 @@ export const RenderIssues = ({ stateLabel, userRole, filter }) => {
       setLoading(true);
       setShowIssues(false);
 
-      // console.log(filter, stateLabel)
+      console.log(filter, stateLabel)
 
       getIssues(octokit, [stateLabel, filter])
         .then((resp) => {
@@ -129,8 +129,10 @@ export const RenderIssues = ({ stateLabel, userRole, filter }) => {
 
             let username;
 
-            if(res.body.includes("**")){
-              // console.log("includes");
+            console.log(JSON.stringify(res) + "\n")
+
+            if(res.body.includes("**") && res.body.includes("Created By:")){
+              console.log("includes");
               username = res.body.split("By: @");
               username = username[1].split("**")[0].replace(/\s/g, "");
             }
@@ -298,7 +300,7 @@ const getUser = async (octokit, username) => {
   });
 };
 
-const getIssues = async (octokit, labels) => {
+const getIssues = async (octokit, labels) => { // labels = [stateLabel, filter]
   // console.log(labels)
   if (labels[0] === "all"){
     if (labels[1] === "all") {

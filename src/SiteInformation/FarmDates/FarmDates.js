@@ -5,6 +5,7 @@ import MaterialTable from "material-table";
 import { bannedRoles } from "../../utils/constants";
 import { BannedRoleMessage, CustomLoader } from "../../utils/CustomComponents";
 import { onfarmAPI } from "../../utils/api_secret";
+import Comments from "../../Comments/Comments"
 import { addDays } from "date-fns";
 const farmDatesURL = `${onfarmAPI}/dates`;
 
@@ -197,7 +198,7 @@ const FarmDates = () => {
                       >
                           <RenderExistingComments />
                       </Grid> */}
-                      <form
+                      {/* <form
                         onSubmit={(e) => {
                           e.preventDefault();
                           console.log(JSON.stringify(rowData));
@@ -234,7 +235,8 @@ const FarmDates = () => {
                             </Button>
                           </Grid>
                         </Grid>
-                      </form>
+                      </form> */}
+                      <Comments/>
                     </>
                   );
                 },

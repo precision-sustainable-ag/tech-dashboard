@@ -18,6 +18,8 @@ const Issues = (props) => {
   const [showLoader, setShowLoader] = useState(true);
   const [filter, setFilter] = useState("all");
 
+  // setFilter("all")
+
   const handleFilterChange = (event) => {
     setFilter(event.target.value)
   }

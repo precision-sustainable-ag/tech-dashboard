@@ -50,6 +50,12 @@ const NewIssueModal = (props) => {
 
   async function fileNewIssue() {
     if (issueTitle && newComment) {
+      props.setSnackbarData({
+        open: true,
+        text: `Creating new issue for ${props.data.code}`,
+      });
+
+
       setCheckValidation({ title: false, comment: false });
 
       const labels = [`${props.data.code}`, `${props.data.affiliation}`, "site-information"];
@@ -114,6 +120,8 @@ const NewIssueModal = (props) => {
       );
 
       issueSet.then((res) => {
+        setNewComment("");
+        setIssueTitle("");
         if (res.status === 201) {
           props.handleNewIssueDialogClose();
           props.setSnackbarData({
@@ -344,42 +352,6 @@ const NewIssueModal = (props) => {
                 </tbody>
               </table>
             </div>
-          </Grid>
-          <Grid item xs={12}>
-            <Grid container spacing={1}>
-              <Grid item xs={12}>
-                <Typography variant="body1">Select Assignees</Typography>
-              </Grid>
-              {collaborators.map((name, index) => (
-                <Grid item key={`collab${index}`}>
-                  <Chip
-                    disabled={
-                      alwaysTaggedPeople.includes(name.username) ? true : false
-                    }
-                    color={
-                      personName.includes(name.username) ? "primary" : "default"
-                    }
-                    avatar={
-                      <Avatar
-                        alt={name.username}
-                        src={`${name.picture}&s=50`}
-                      />
-                    }
-                    label={name.username}
-                    onClick={(e) => {
-                      if (personName.includes(name.username)) {
-                        let newPerson = personName.filter(
-                          (e) => e !== name.username
-                        );
-                        setPersonName(newPerson);
-                      } else {
-                        setPersonName([...personName, name.username]);
-                      }
-                    }}
-                  />
-                </Grid>
-              ))}
-            </Grid>
           </Grid>
           <Grid item xs={12}>
             {checkValidation.title && (
