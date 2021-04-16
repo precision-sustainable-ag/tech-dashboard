@@ -24,7 +24,7 @@ import {
 
 const Comments = (props) => {
     //props = handleNewComment={fileNewIssue} nickname={props.nickname} rowData={props.rowData} tableHeaderOptions={props.tableHeaderOptions} dataType={props.dataType}
-    console.log(JSON.stringify(props.nickname) + " rowData " + JSON.stringify(props.rowData) + " Header " + JSON.stringify(props.tableHeaderOptions) + " Type " + JSON.stringify(props.dataType) + " disabled " + props.disabled)
+    // console.log(JSON.stringify(props.nickname) + " rowData " + JSON.stringify(props.rowData) + " Header " + JSON.stringify(props.tableHeaderOptions) + " Type " + JSON.stringify(props.dataType) + " disabled " + props.disabled)
 
     // let tableData = forEach((data) => {
     //     return {
@@ -32,23 +32,8 @@ const Comments = (props) => {
     //     }
     // })
 
-    let tableData = `<table>
-        <tbody>`
     
-    for(var key in props.rowData) {
-        var value = props.rowData[key];
-
-        tableData = tableData + `<tr>
-                                    <td>${key}</td>
-                                    <td>${value}</td>
-                                </tr>`
-
-        // console.log(tableData)
-        // return("")
-    }
-
-    tableData = tableData + `</tbody>
-    </table>`;
+    
 
     // console.log(tableData)
 
@@ -112,6 +97,33 @@ const Comments = (props) => {
         };
       }, []);
 
+    let body;
+
+    if(props.dataType === "table"){
+        let tableData = `<table>
+            <tbody>`
+        
+        for(var key in props.rowData) {
+            var value = props.rowData[key];
+
+            tableData = tableData + `<tr>
+                                        <td>${key}</td>
+                                        <td>${value}</td>
+                                    </tr>`
+
+            // console.log(tableData)
+            // return("")
+        }
+
+        tableData = tableData + `</tbody>
+        </table>`;
+        body = tableData + " <br/> " + newComment
+    }
+
+    if(props.dataType === "json"){
+        body = "```json\n" + props.rowData + "\n```\n" + " <br/> " + newComment;
+    }
+
     return(
         <Grid container spacing={1}>
             <Grid item xs={12}>
@@ -149,7 +161,7 @@ const Comments = (props) => {
                                 variant="contained"
                                 color="primary"
                                 disabled={props.buttonDisabled}
-                                onClick={() => {props.handleNewComment(tableData + " <br/> " + newComment); setNewCommentBody("")}}
+                                onClick={() => {props.handleNewComment(body); setNewCommentBody("")}}
                             >
                                 {props.buttonDisabled ? "Creating Issue" : "Add Comment"}
                             </Button>

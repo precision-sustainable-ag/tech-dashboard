@@ -27,7 +27,7 @@ const IssueDialogue = (props) => {
         getTokenSilently,
     } = useAuth0();
     
-    console.log(JSON.stringify(props))
+    // console.log(JSON.stringify(props))
     
     const alwaysTaggedPeople = ["brianwdavis", "saseehav", props.nickname];
     const [personName, setPersonName] = React.useState(alwaysTaggedPeople);
@@ -104,7 +104,7 @@ const IssueDialogue = (props) => {
                 />
             </Grid>
             <Grid item xs={12}>
-                <Comments handleNewComment={fileNewIssue} nickname={props.nickname} rowData={props.rowData} tableHeaderOptions={props.tableHeaderOptions} dataType={props.dataType} buttonDisabled={buttonDisabled}/>
+                <Comments handleNewComment={fileNewIssue} nickname={props.nickname} rowData={props.rowData} dataType={props.dataType} buttonDisabled={buttonDisabled}/>
             </Grid>
         </Grid>
     )

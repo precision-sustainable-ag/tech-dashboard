@@ -271,7 +271,7 @@ const FarmDates = () => {
                           </Grid>
                         </Grid>
                       </form> */}
-                      <IssueDialogue nickname={user.nickname} rowData={rowData} tableHeaderOptions={tableHeaderOptions} dataType="table" setSnackbarData={setSnackbarData}/>
+                      <IssueDialogue nickname={user.nickname} rowData={rowData} dataType="table" setSnackbarData={setSnackbarData}/>
                     </>
                   );
                 },

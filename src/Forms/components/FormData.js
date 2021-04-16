@@ -140,41 +140,56 @@ const FormData = (props) => {
   
     const CreateNewIssue = ({ issueData }) => {
       return (
-        <Tooltip title="Submit a new issue">
-          <Button
-            startIcon={<QuestionAnswer />}
-            size="small"
-            variant="contained"
-            // color={props.props.isDarkTheme ? "primary" : "default"}
-            onClick={() => {
-              setShowNewIssueDialog(true);
-              setNewIssueData(issueData);
-              ShowNewFormIssue();
-            }}
-          >
-            Comment
-          </Button>
-        </Tooltip>
+        <div>
+          {showNewIssueDialog ? 
+           "" : <Tooltip title="Submit a new issue">
+           <Button
+             startIcon={<QuestionAnswer />}
+             size="small"
+             variant="contained"
+             // color={props.props.isDarkTheme ? "primary" : "default"}
+             onClick={() => {
+               setShowNewIssueDialog(true);
+               setNewIssueData(issueData);
+               ShowNewFormIssue();
+             }}
+           >
+             Comment
+           </Button>
+         </Tooltip>}
+          
+          <ShowNewFormIssue/>
+        </div>
+        
       );
     };
 
   const ShowNewFormIssue = () => {
     if (showNewIssueDialog) {
       // setShowNewIssueDialog(false)
+
+      console.log(JSON.stringify(newIssueData))
       return(
-        <NewFormIssue
-          open={showNewIssueDialog}
-          handleNewIssueDialogClose={() => {
-            setShowNewIssueDialog(!showNewIssueDialog);
-          }}
-          data={newIssueData}
-          setSnackbarData={setSnackbarData}
-          snackbarData={snackbarData}
-          nickname={user.nickname}
-          affiliationLookup={affiliationLookup}
+        // <NewFormIssue
+        //   open={showNewIssueDialog}
+        //   handleNewIssueDialogClose={() => {
+        //     setShowNewIssueDialog(!showNewIssueDialog);
+        //   }}
+        //   data={newIssueData}
+        //   setSnackbarData={setSnackbarData}
+        //   snackbarData={snackbarData}
+        //   nickname={user.nickname}
+        //   affiliationLookup={affiliationLookup}
+        //   formName = {props.assetId.history.location.state.name}
+        // />
+        <IssueDialogue 
+          nickname={user.nickname} 
+          rowData={JSON.stringify(newIssueData, null, "\t")} 
+          dataType="json" 
+          setSnackbarData={setSnackbarData} 
           formName = {props.assetId.history.location.state.name}
+          affiliationLookup={affiliationLookup}
         />
-        // <IssueDialogue/>
       )
     }
     else return("")
