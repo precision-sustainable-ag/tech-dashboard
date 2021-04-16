@@ -10,7 +10,6 @@ import {
   apiUsername,
   onfarmAPI,
 } from "../utils/api_secret";
-import { UserIsEditor } from "../utils/SharedFunctions";
 
 import axios from "axios";
 import QueryString from "qs";
@@ -47,7 +46,6 @@ const tableOptions = (tableData) => ({
   toolbarButtonAlignment: "left",
   actionsColumnIndex: 0,
 });
-
 const tableHeaderOptions = [
   {
     title: "Producer ID",
@@ -109,6 +107,13 @@ const ProducerInformation = (props) => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [state] = useContext(Context);
 
+  const allowEditing = () => {
+    let permissions = state.userInfo.permissions;
+    const allowedPermissions = ["edit, update, all"];
+
+    return permissions.split(",").some((i) => allowedPermissions.includes(i));
+  };
+
   useEffect(() => {
     const fetchProducers = async () => {
       let response = await fetch(producersURL, {
@@ -152,19 +157,6 @@ const ProducerInformation = (props) => {
     }
   }, [state.userInfo]);
 
-  const cellEditor = (newValue, oldValue, rowData, columnDef) => {
-    return new Promise((resolve, reject) => {
-      // console.log(oldValue + " : " + newValue, producerId);
-      console.log(rowData);
-      console.log(columnDef);
-      setTimeout(resolve, 1000);
-    });
-
-    // const newData = tableData.map((data) => {
-
-    // })
-  };
-
   return isAuthorized ? (
     <Grid container>
       {loading ? (
@@ -174,68 +166,53 @@ const ProducerInformation = (props) => {
       ) : (
         <Grid item xs={12}>
           <MaterialTable
-            // actions={[
-            //   {
-            //     icon: "edit",
-            //     tooltip: "Edit Data",
-            //     onClick: (e, rowData) => {
-            //       setEditModalData(rowData);
-            //       setEditModalOpen(true);
-            //       // console.log(e);
-            //     },
-            //   },
-            // ]}
-            // cellEditable={{
-            //   onCellEditApproved: (newValue, oldValue, rowData, columnDef) => {
-            //     return cellEditor(newValue, oldValue, rowData, columnDef);
-            //   },
-            // }}
-            editable={{
-              // isEditable: UserIsEditor(state.userInfo.permissions)
-              //   ? true
-              //   : false,
-              onRowUpdate: (newData, oldData) => {
-                return new Promise((resolve, reject) => {
-                  const { producer_id } = oldData;
-                  const { email, last_name, phone, first_name } = newData;
-                  // const filteredData = tableData.filter((records) => records.producer_id !== producer_id);
-                  if (!producer_id) {
-                    reject("Producer id missing");
-                  } else {
-                    const preparedData = {
-                      first_name: first_name || "",
-                      last_name: last_name || "",
-                      email: email || "",
-                      phone: phone || "",
-                    };
+            editable={
+              allowEditing()
+                ? {
+                    onRowUpdate: (newData, oldData) => {
+                      return new Promise((resolve, reject) => {
+                        const { producer_id } = oldData;
+                        const { email, last_name, phone, first_name } = newData;
+                        // const filteredData = tableData.filter((records) => records.producer_id !== producer_id);
+                        if (!producer_id) {
+                          reject("Producer id missing");
+                        } else {
+                          const preparedData = {
+                            first_name: first_name || "",
+                            last_name: last_name || "",
+                            email: email || "",
+                            phone: phone || "",
+                          };
 
-                    axios({
-                      url: `${apiURL}/api/producers/${producer_id}`,
-                      method: "POST",
-                      data: QueryString.stringify(preparedData),
-                      auth: {
-                        username: apiUsername,
-                        password: apiPassword,
-                      },
-                    })
-                      .then((res) => {
-                        if (res.data.data) {
-                          const dataUpdate = [...tableData];
-                          const index = oldData.tableData.id;
-                          dataUpdate[index] = newData;
-                          setTableData([...dataUpdate]);
+                          axios({
+                            url: `${apiURL}/api/producers/${producer_id}`,
+                            method: "POST",
+                            data: QueryString.stringify(preparedData),
+                            auth: {
+                              username: apiUsername,
+                              password: apiPassword,
+                            },
+                          })
+                            .then((res) => {
+                              if (res.data.data) {
+                                const dataUpdate = [...tableData];
+                                const index = oldData.tableData.id;
+                                dataUpdate[index] = newData;
+                                setTableData([...dataUpdate]);
+                              }
+                            })
+                            .then(() => {
+                              resolve();
+                            })
+                            .catch((e) => {
+                              reject(e);
+                            });
                         }
-                      })
-                      .then(() => {
-                        resolve();
-                      })
-                      .catch((e) => {
-                        reject(e);
                       });
+                    },
                   }
-                });
-              },
-            }}
+                : {}
+            }
             columns={tableHeaderOptions}
             data={tableData}
             title="Producer Information"
