@@ -13,7 +13,7 @@ import PropTypes from "prop-types";
 import { useMemo } from "react";
 import { parseISO, format } from "date-fns";
 
-const RenderFarmValues = ({ data = [], year, affiliation = "all" }) => {
+const FarmValuesTable = ({ data = [], year, affiliation = "all" }) => {
   const record = useMemo(() => {
     return data
       .filter((rec) => {
@@ -174,10 +174,10 @@ UnavailableText.propTypes = {
   text: PropTypes.string,
 };
 
-RenderFarmValues.propTypes = {
+FarmValuesTable.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
   year: PropTypes.number.isRequired,
   affiliation: PropTypes.string,
 };
 
-export default RenderFarmValues;
+export default FarmValuesTable;
