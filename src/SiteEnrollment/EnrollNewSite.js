@@ -75,6 +75,7 @@ const EnrollNewSite = (props) => {
         irrigation: sitesData.irrigation,
         county: sitesData.county,
         address: sitesData.address,
+        state: sitesData.state,
         additionalContact: sitesData.additionalContact,
         notes: sitesData.notes,
         latitude: sitesData.latitude,

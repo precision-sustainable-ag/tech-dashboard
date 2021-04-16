@@ -87,6 +87,7 @@ export const NewSiteInfo = ({
     code: "",
     irrigation: false,
     address: "",
+    state: "",
     county: "",
     latitude: null,
     longitude: null,
@@ -151,6 +152,14 @@ export const NewSiteInfo = ({
                         <Grid item xs={8}>
                           <Typography variant="body2">
                             {siteInfo.address ? siteInfo.address : "No Data"}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                          <Typography variant="body2">State</Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                          <Typography variant="body2">
+                            {siteInfo.state ? siteInfo.state : "No Data"}
                           </Typography>
                         </Grid>
                         <Grid item xs={4}>
@@ -274,6 +283,19 @@ export const NewSiteInfo = ({
                   setSelectedToEditSite({
                     ...selectedToEditSite,
                     address: e.target.value,
+                  })
+                }
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="State"
+                value={selectedToEditSite.state}
+                onChange={(e) =>
+                  setSelectedToEditSite({
+                    ...selectedToEditSite,
+                    state: e.target.value,
                   })
                 }
               />
