@@ -32,14 +32,14 @@ const tableOptions = (tableData) => ({
     fontWeight: "bold",
     fontFamily: "Bilo, sans-serif",
     fontSize: "0.8em",
-    textAlign: "right",
+    textAlign: "justify",
     position: "sticky",
     top: 0,
   },
   rowStyle: {
     fontFamily: "Roboto, sans-serif",
     fontSize: "0.8em",
-    textAlign: "right",
+    textAlign: "justify",
   },
   selection: false,
   searchAutoFocus: true,
@@ -51,35 +51,35 @@ const tableHeaderOptions = [
     title: "Producer ID",
     field: "producer_id",
     type: "string",
-    align: "right",
+    align: "justify",
     editable: "never",
   },
   {
     title: "First Name",
     field: "first_name",
     type: "string",
-    align: "right",
+    align: "justify",
     editable: "always",
   },
   {
     title: "Last Name or Organization Name",
     field: "last_name",
     type: "string",
-    align: "right",
+    align: "justify",
     editable: "always",
   },
   {
     title: "Site Codes",
     field: "codes",
     type: "string",
-    align: "right",
+    align: "justify",
     editable: "never",
   },
   {
     title: "Years",
     field: "years",
     type: "string",
-    align: "right",
+    align: "justify",
     editable: "never",
   },
 
@@ -87,14 +87,14 @@ const tableHeaderOptions = [
     title: "Email",
     field: "email",
     type: "string",
-    align: "right",
+    align: "justify",
     editable: "always",
   },
   {
     title: "Phone",
     field: "phone",
-    type: "numeric",
-    align: "right",
+    type: "string",
+    align: "justify",
     editable: "always",
   },
 ];
@@ -109,7 +109,7 @@ const ProducerInformation = (props) => {
 
   const allowEditing = () => {
     let permissions = state.userInfo.permissions;
-    const allowedPermissions = ["edit, update, all"];
+    const allowedPermissions = ["edit", "update", "all"];
 
     return permissions.split(",").some((i) => allowedPermissions.includes(i));
   };
@@ -167,51 +167,49 @@ const ProducerInformation = (props) => {
         <Grid item xs={12}>
           <MaterialTable
             editable={
-              allowEditing()
-                ? {
-                    onRowUpdate: (newData, oldData) => {
-                      return new Promise((resolve, reject) => {
-                        const { producer_id } = oldData;
-                        const { email, last_name, phone, first_name } = newData;
-                        // const filteredData = tableData.filter((records) => records.producer_id !== producer_id);
-                        if (!producer_id) {
-                          reject("Producer id missing");
-                        } else {
-                          const preparedData = {
-                            first_name: first_name || "",
-                            last_name: last_name || "",
-                            email: email || "",
-                            phone: phone || "",
-                          };
+              allowEditing() && {
+                onRowUpdate: (newData, oldData) => {
+                  return new Promise((resolve, reject) => {
+                    const { producer_id } = oldData;
+                    const { email, last_name, phone, first_name } = newData;
+                    // const filteredData = tableData.filter((records) => records.producer_id !== producer_id);
+                    if (!producer_id) {
+                      reject("Producer id missing");
+                    } else {
+                      const preparedData = {
+                        first_name: first_name || "",
+                        last_name: last_name || "",
+                        email: email || "",
+                        phone: phone || "",
+                      };
 
-                          axios({
-                            url: `${apiURL}/api/producers/${producer_id}`,
-                            method: "POST",
-                            data: QueryString.stringify(preparedData),
-                            auth: {
-                              username: apiUsername,
-                              password: apiPassword,
-                            },
-                          })
-                            .then((res) => {
-                              if (res.data.data) {
-                                const dataUpdate = [...tableData];
-                                const index = oldData.tableData.id;
-                                dataUpdate[index] = newData;
-                                setTableData([...dataUpdate]);
-                              }
-                            })
-                            .then(() => {
-                              resolve();
-                            })
-                            .catch((e) => {
-                              reject(e);
-                            });
-                        }
-                      });
-                    },
-                  }
-                : {}
+                      axios({
+                        url: `${apiURL}/api/producers/${producer_id}`,
+                        method: "POST",
+                        data: QueryString.stringify(preparedData),
+                        auth: {
+                          username: apiUsername,
+                          password: apiPassword,
+                        },
+                      })
+                        .then((res) => {
+                          if (res.data.data) {
+                            const dataUpdate = [...tableData];
+                            const index = oldData.tableData.id;
+                            dataUpdate[index] = newData;
+                            setTableData([...dataUpdate]);
+                          }
+                        })
+                        .then(() => {
+                          resolve();
+                        })
+                        .catch((e) => {
+                          reject(e);
+                        });
+                    }
+                  });
+                },
+              }
             }
             columns={tableHeaderOptions}
             data={tableData}
