@@ -102,6 +102,15 @@ const ProducerInformation = (props) => {
     }
   }, [state.userInfo]);
 
+  let height = window.innerHeight;
+
+  // scale height
+  if (height < 900 && height > 600) {
+    height -= 130;
+  } else if (height < 600) {
+    height -= 200;
+  }
+
   return isAuthorized ? (
     <Grid container>
       {loading ? (
@@ -152,6 +161,8 @@ const ProducerInformation = (props) => {
               searchAutoFocus: true,
               toolbarButtonAlignment: "left",
               actionsColumnIndex: 0,
+              actionsColumnIndex: 1,
+              maxBodyHeight: height * 0.7,
             }}
           />
         </Grid>

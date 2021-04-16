@@ -23,6 +23,35 @@ import {
   } from "@material-ui/core";
 
 const Comments = (props) => {
+    //props = handleNewComment={fileNewIssue} nickname={props.nickname} rowData={props.rowData} tableHeaderOptions={props.tableHeaderOptions} dataType={props.dataType}
+    console.log(JSON.stringify(props.nickname) + " rowData " + JSON.stringify(props.rowData) + " Header " + JSON.stringify(props.tableHeaderOptions) + " Type " + JSON.stringify(props.dataType) + " disabled " + props.disabled)
+
+    // let tableData = forEach((data) => {
+    //     return {
+    //         <table>
+    //     }
+    // })
+
+    let tableData = `<table>
+        <tbody>`
+    
+    for(var key in props.rowData) {
+        var value = props.rowData[key];
+
+        tableData = tableData + `<tr>
+                                    <td>${key}</td>
+                                    <td>${value}</td>
+                                </tr>`
+
+        // console.log(tableData)
+        // return("")
+    }
+
+    tableData = tableData + `</tbody>
+    </table>`;
+
+    // console.log(tableData)
+
     const [newComment, setNewComment] = useState("");
     const [searchUser, setSearchUser] = useState("");
     const [showUsersDialog, setShowUsersDialog] = useState(false);
@@ -84,46 +113,49 @@ const Comments = (props) => {
       }, []);
 
     return(
-        <Grid container spacing={5}>
+        <Grid container spacing={1}>
             <Grid item xs={12}>
-                <Grid container spacing={2}>
-                    <Grid item>
-                    <Typography variant="caption">
-                        Please enter your comments below
-                    </Typography>
+                <Grid container spacing={1}>
+                    <Grid item lg={6}>
+                        <Typography variant="caption">
+                            Please enter your comments below
+                        </Typography>
+                        <MDEditor
+                            preview="edit"
+                            value={newComment}
+                            height={110}
+                            onChange={setNewCommentBody}
+                            commands={[
+                            commands.bold,
+                            commands.italic,
+                            commands.hr,
+                            commands.code,
+                            commands.checkedListCommand,
+                            commands.unorderedListCommand,
+                            commands.quote,
+                            commands.title,
+                            commands.fullscreen,
+                            commands.codeLive,
+                            commands.codeEdit,
+                            githubUserMentionCommand,
+                            ]}
+                        />
                     </Grid>
                     <Grid item xs={12}>
-                    <MDEditor
-                        preview="edit"
-                        value={newComment}
-                        onChange={setNewCommentBody}
-                        commands={[
-                        commands.bold,
-                        commands.italic,
-                        commands.hr,
-                        commands.code,
-                        commands.checkedListCommand,
-                        commands.unorderedListCommand,
-                        commands.quote,
-                        commands.title,
-                        commands.fullscreen,
-                        commands.codeLive,
-                        commands.codeEdit,
-                        githubUserMentionCommand,
-                        ]}
-                    />
+                    
                     </Grid>
                         <Grid item>
                             <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={() => props.handleNewComment()}
+                                disabled={props.buttonDisabled}
+                                onClick={() => {props.handleNewComment(tableData + " <br/> " + newComment); setNewCommentBody("")}}
                             >
-                                Add Comment
+                                {props.buttonDisabled ? "Creating Issue" : "Add Comment"}
                             </Button>
                         </Grid>
                     <Grid item>
-                    <FormControlLabel
+                    {/* <FormControlLabel
                         control={
                         <Switch
                             color={showPreview ? "primary" : "default"}
@@ -132,7 +164,7 @@ const Comments = (props) => {
                         />
                         }
                         label="Show Markdown Preview"
-                    />
+                    /> */}
                     </Grid>
                 </Grid>
             </Grid>
@@ -146,7 +178,7 @@ const Comments = (props) => {
             >
                 <DialogTitle id="form-dialog-title">Github Users</DialogTitle>
                 <DialogContent>
-                    <Grid container spacing={3}>
+                    <Grid container spacing={1}>
                     {githubUsers.length > 0 ? (
                         <>
                         <Grid item xs={12}>
@@ -164,7 +196,7 @@ const Comments = (props) => {
                                 container
                                 direction="row"
                                 justify="flex-start"
-                                spacing={3}
+                                spacing={1}
                             >
                                 <Grid item xs="auto" md="auto">
                                 <Avatar

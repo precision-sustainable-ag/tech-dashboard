@@ -29,7 +29,7 @@ const RenderFarmValues = ({ data = [], year, affiliation = "all" }) => {
 
   return record.length > 0 ? (
     <TableContainer aria-label="Biomass farm values" component={Paper}>
-      <Table size="medium" stickyHeader>
+      <Table stickyHeader size="medium" >
         <TableHead>
           <TableRow>
             <TableCell align="right">Code</TableCell>

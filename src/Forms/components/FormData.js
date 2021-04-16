@@ -23,6 +23,7 @@ import { Link } from "react-router-dom";
 import { Context } from "../../Store/Store";
 import { fetchKoboPasswords } from "../../utils/constants";
 import NewFormIssue from "./NewFormIssue"
+import IssueDialogue from "../../Comments/IssueDialogue"
 
 SyntaxHighlighter.registerLanguage("json", json);
 
@@ -173,6 +174,7 @@ const FormData = (props) => {
           affiliationLookup={affiliationLookup}
           formName = {props.assetId.history.location.state.name}
         />
+        // <IssueDialogue/>
       )
     }
     else return("")

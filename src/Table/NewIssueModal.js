@@ -398,30 +398,6 @@ const NewIssueModal = (props) => {
   );
 };
 
-// Helper functions
-const setIssue = async (
-  octokit,
-  issueTitle,
-  newComment,
-  labels,
-  assignees,
-  table,
-  nickname
-) => {
-  return await octokit.issues.create({
-    owner: "precision-sustainable-ag",
-    repo: "data_corrections",
-    title: issueTitle,
-    body:
-      table +
-      " <br/> " +
-      newComment +
-      ` <br/> ** Issue Created By: @${nickname} ** `,
-    labels: labels,
-    assignees: assignees,
-  });
-};
-
 NewIssueModal.defaultProps = {
   data: {
     code: "XYZ",
