@@ -1,15 +1,6 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState } from "react";
 import {
-    Avatar,
-    Button,
-    Chip,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
     Grid,
-    MenuItem,
-    Select,
     TextField,
     Typography,
   } from "@material-ui/core";
@@ -26,9 +17,7 @@ const IssueDialogue = (props) => {
     const {
         getTokenSilently,
     } = useAuth0();
-    
-    // console.log(JSON.stringify(props))
-    
+        
     const alwaysTaggedPeople = ["brianwdavis", "saseehav", props.nickname];
     const [personName, setPersonName] = React.useState(alwaysTaggedPeople);
     const [buttonDisabled, setButtonDisabled] = useState(false);
@@ -46,9 +35,6 @@ const IssueDialogue = (props) => {
           let token = await getTokenSilently({
             audience: `https://precision-sustaibale-ag/tech-dashboard`
           });
-  
-          // console.log(JSON.stringify(props))
-          // let labels = ["farm-dates"]
   
           const body = newComment;
           

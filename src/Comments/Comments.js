@@ -1,46 +1,24 @@
 import MDEditor, { commands } from "@uiw/react-md-editor";
-import React, { useState, useEffect, useContext } from "react";
-import { ArrowBack, PersonAdd } from "@material-ui/icons";
+import React, { useState, useEffect } from "react";
+import { PersonAdd } from "@material-ui/icons";
 import { Octokit } from "@octokit/rest";
 import { githubToken } from "../utils/api_secret";
 import {
     Avatar,
     Button,
-    Card,
-    CardContent,
-    Chip,
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
-    FormControlLabel,
     Grid,
-    Grow,
-    Slide,
-    Switch,
     TextField,
     Typography,
   } from "@material-ui/core";
 
 const Comments = (props) => {
-    //props = handleNewComment={fileNewIssue} nickname={props.nickname} rowData={props.rowData} tableHeaderOptions={props.tableHeaderOptions} dataType={props.dataType}
-    // console.log(JSON.stringify(props.nickname) + " rowData " + JSON.stringify(props.rowData) + " Header " + JSON.stringify(props.tableHeaderOptions) + " Type " + JSON.stringify(props.dataType) + " disabled " + props.disabled)
-
-    // let tableData = forEach((data) => {
-    //     return {
-    //         <table>
-    //     }
-    // })
-
-    
-    
-
-    // console.log(tableData)
-
     const [newComment, setNewComment] = useState("");
     const [searchUser, setSearchUser] = useState("");
     const [showUsersDialog, setShowUsersDialog] = useState(false);
-    const [showPreview, setShowPreview] = useState(false);
     const [githubUsers, setGithubUsers] = useState([]);
 
     const setNewCommentBody = (text) => {
@@ -167,18 +145,6 @@ const Comments = (props) => {
                                 {props.buttonDisabled ? "Creating Comment" : "Add Comment"}
                             </Button>
                         </Grid>
-                    <Grid item>
-                    {/* <FormControlLabel
-                        control={
-                        <Switch
-                            color={showPreview ? "primary" : "default"}
-                            checked={showPreview}
-                            onChange={(e) => setShowPreview(e.target.checked)}
-                        />
-                        }
-                        label="Show Markdown Preview"
-                    /> */}
-                    </Grid>
                 </Grid>
             </Grid>
             <Dialog

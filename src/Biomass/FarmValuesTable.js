@@ -14,7 +14,7 @@ import PropTypes from "prop-types";
 import { useMemo } from "react";
 import { parseISO, format } from "date-fns";
 import { Comment  } from "@material-ui/icons";
-import React, { useState, useEffect, useContext } from "react";
+import React from "react";
 
 const FarmValuesTable = ({ data = [], year, affiliation = "all" }) => {
   const record = useMemo(() => {

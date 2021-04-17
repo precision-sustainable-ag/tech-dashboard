@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Button, Chip, Grid, Typography, Tooltip, Snackbar } from "@material-ui/core";
 import axios from "axios";
 import { apiPassword, apiURL, apiUsername } from "../../utils/api_secret";
@@ -19,7 +19,6 @@ import { ArrowBackIosOutlined } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import { Context } from "../../Store/Store";
 import { fetchKoboPasswords } from "../../utils/constants";
-import NewFormIssue from "./NewFormIssue";
 import IssueDialogue from "../../Comments/IssueDialogue";
 
 SyntaxHighlighter.registerLanguage("json", json);
@@ -30,12 +29,9 @@ function Alert(props) {
 }
 
 const FormData = (props) => {
-  // console.log(JSON.stringify(props))
-
   const [data, setData] = useState([]);
   const [originalData, setOriginalData] = useState([]);
   const [fetching, setFetching] = useState(false);
-  // const [JSONData, setJSONData] = useState({});
   const [state] = useContext(Context);
   const [allowedAccounts, setAllowedAccounts] = useState([]);
   const [activeAccount, setActiveAccount] = useState("all");
@@ -166,20 +162,8 @@ const FormData = (props) => {
     if (showNewIssueDialog) {
       // setShowNewIssueDialog(false)
 
-      console.log(JSON.stringify(props))
+      // console.log(JSON.stringify(props))
       return(
-        // <NewFormIssue
-        //   open={showNewIssueDialog}
-        //   handleNewIssueDialogClose={() => {
-        //     setShowNewIssueDialog(!showNewIssueDialog);
-        //   }}
-        //   data={newIssueData}
-        //   setSnackbarData={setSnackbarData}
-        //   snackbarData={snackbarData}
-        //   nickname={user.nickname}
-        //   affiliationLookup={affiliationLookup}
-        //   formName={props.assetId.history.location.state.name}
-        // />
         <IssueDialogue 
           nickname={user.nickname} 
           rowData={JSON.stringify(newIssueData, null, "\t")} 
@@ -193,7 +177,7 @@ const FormData = (props) => {
       )
     }
     else return"";
-  }
+  };
 
   const RenderFormsData = () => {
     return fetching ? (
@@ -351,87 +335,6 @@ const parseDate = (submittedDate) => {
     submittedSeconds,
     am_pm,
   };
-};
-
-
-
-const RenderFormsData = ({
-  fetching,
-  originalData,
-  data,
-  isDarkTheme,
-  allowedAccounts,
-}) => {
-  return fetching ? (
-    <Grid item xs={12}>
-      <Typography variant="h5">Fetching Data...</Typography>
-    </Grid>
-  ) : data.length === 0 && originalData.length === 0 ? (
-    <Grid item xs={12}>
-      <Typography variant="h5">
-        {" "}
-        {allowedAccounts.length !== 0
-          ? `No submissions on this form via account${
-              allowedAccounts.length > 1 ? `s` : ""
-            } ${allowedAccounts.join(", ")}`
-          : "No Data"}
-      </Typography>
-    </Grid>
-  ) : (
-    <>
-      <Grid item xs={12}>
-        <Typography variant="body1">{data.length} submissions</Typography>
-      </Grid>
-      {data.map((record = {}, index) => {
-        // const metaKeys = [
-        //   "_id",
-        //   "_bamboo_dataset_id",
-        //   "_xform_id_string",
-        //   "form_version",
-        //   "_tags",
-        //   "_submitted_by",
-        //   "_status",
-        //   "_submission_time",
-        //   "meta/instanceID",
-        //   "__version__",
-        //   "_validation_status",
-        //   "_uuid",
-        //   "formhub/uuid",
-        //   "start",
-        //   "end",
-        // ];
-        // let slimRecord = Object.keys(record)
-        //   .filter((key) => !metaKeys.includes(key))
-        //   .reduce((obj, key) => {
-        //     obj[key] = record[key];
-        //     return obj;
-        //   }, {});
-        let slimRecord = record;
-        const submittedDate = new Date(record._submission_time);
-
-        return (
-          <Grid item xs={12} key={`record${index}`}>
-            <Typography variant="h6">
-              {submittedDate.toLocaleString("en-US", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-                hour: "numeric",
-                minute: "numeric",
-                timeZone: "UTC",
-              })}
-            </Typography>
-            <SyntaxHighlighter
-              language="json"
-              style={isDarkTheme ? dark : docco}
-            >
-              {JSON.stringify(slimRecord, undefined, 2)}
-            </SyntaxHighlighter>
-          </Grid>
-        );
-      })}
-    </>
-  );
 };
 
 export default FormData;

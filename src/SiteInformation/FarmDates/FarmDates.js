@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { Button, Grid, TextField, Typography, Snackbar } from "@material-ui/core";
+import { Grid, Typography, Snackbar } from "@material-ui/core";
 import { Context } from "../../Store/Store";
 import MaterialTable from "material-table";
 import { bannedRoles } from "../../utils/constants";
@@ -208,60 +208,7 @@ const FarmDates = () => {
                 openIcon: "message",
                 render: (rowData) => {
                   return (
-                    <>
-                      {/* <Grid
-                        container
-                        spacing={3}
-                        style={{
-                          minHeight: "10vh",
-                          padding: "1em",
-                        }}
-                      >
-                          <RenderExistingComments />
-                      </Grid> */}
-                      {/* <form
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          console.log(JSON.stringify(rowData));
-                        }}
-                      >
-                        <Grid
-                          container
-                          spacing={3}
-                          style={{
-                            minHeight: "10vh",
-                            padding: "2em",
-                          }}
-                        >
-                          <Grid item xs={12}>
-                            <TextField type="hidden" value={rowData} />
-
-                            <TextField
-                              required
-                              disabled
-                              label="Add a new comment"
-                              variant="outlined"
-                              multiline
-                              fullWidth
-                              rows={4}
-                              type="text"
-                            />
-                          </Grid>
-                          <Grid item>
-                            <Button
-                              size="small"
-                              variant="contained"
-                              color="primary"
-                              type="submit"
-                              disabled
-                            >
-                              Coming Soon
-                            </Button>
-                          </Grid>
-                        </Grid>
-                      </form> */}
                       <IssueDialogue nickname={user.nickname} rowData={rowData} dataType="table" setSnackbarData={setSnackbarData} labels={["farm-dates"]}/>
-                    </>
                   );
                 },
               },
