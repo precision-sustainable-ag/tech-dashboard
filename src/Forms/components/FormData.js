@@ -5,9 +5,6 @@ import { apiPassword, apiURL, apiUsername } from "../../utils/api_secret";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import { useAuth0 } from "../../Auth/react-auth0-spa";
 import {
-  Edit,
-  DeleteForever,
-  Search,
   QuestionAnswer,
 } from "@material-ui/icons";
 import MuiAlert from "@material-ui/lab/Alert";
@@ -22,8 +19,8 @@ import { ArrowBackIosOutlined } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import { Context } from "../../Store/Store";
 import { fetchKoboPasswords } from "../../utils/constants";
-import NewFormIssue from "./NewFormIssue"
-import IssueDialogue from "../../Comments/IssueDialogue"
+import NewFormIssue from "./NewFormIssue";
+import IssueDialogue from "../../Comments/IssueDialogue";
 
 SyntaxHighlighter.registerLanguage("json", json);
 
@@ -51,16 +48,17 @@ const FormData = (props) => {
   const [affiliationLookup, setAffiliationLookup] = useState({});
   
 
-  useEffect(() => {
-    const fetchData = async (assetId, userType = "psa") => {
-      return await axios.get(`${apiURL}/api/kobo/${userType}/data/${assetId}`, {
-        auth: {
-          username: apiUsername,
-          password: apiPassword,
-        },
-      });
-    };
+  
+  const fetchData = async (assetId, userType = "psa") => {
+    return await axios.get(`${apiURL}/api/kobo/${userType}/data/${assetId}`, {
+      auth: {
+        username: apiUsername,
+        password: apiPassword,
+      },
+    });
+  };
 
+  useEffect(() => {
     setFetching(true);
     const records = fetchData(formId, "psa")
       .then((response) => {
@@ -91,14 +89,14 @@ const FormData = (props) => {
               (acc, curr) => [...acc, curr.kobo_account],
               []
             );
-            setAffiliationLookup({})
+            setAffiliationLookup({});
             data.forEach(function (item, index) {
               const kobo_account = item.kobo_account;
               const affiliation = item.state;
 
               let newLookup = affiliationLookup;
               newLookup[kobo_account] = affiliation;
-              setAffiliationLookup(newLookup)
+              setAffiliationLookup(newLookup);
             });
 
             
@@ -168,7 +166,7 @@ const FormData = (props) => {
     if (showNewIssueDialog) {
       // setShowNewIssueDialog(false)
 
-      console.log(JSON.stringify(newIssueData))
+      console.log(JSON.stringify(props))
       return(
         // <NewFormIssue
         //   open={showNewIssueDialog}
@@ -180,7 +178,7 @@ const FormData = (props) => {
         //   snackbarData={snackbarData}
         //   nickname={user.nickname}
         //   affiliationLookup={affiliationLookup}
-        //   formName = {props.assetId.history.location.state.name}
+        //   formName={props.assetId.history.location.state.name}
         // />
         <IssueDialogue 
           nickname={user.nickname} 
@@ -189,10 +187,12 @@ const FormData = (props) => {
           setSnackbarData={setSnackbarData} 
           formName = {props.assetId.history.location.state.name}
           affiliationLookup={affiliationLookup}
+          closeDialogue = {setShowNewIssueDialog}
+          labels={[newIssueData._id.toString(), affiliationLookup[newIssueData._submitted_by], props.assetId.history.location.state.name, "kobo-forms"]}
         />
       )
     }
-    else return("")
+    else return"";
   }
 
   const RenderFormsData = () => {
@@ -227,7 +227,7 @@ const FormData = (props) => {
           } = parseDate(submittedDate);
   
           return (
-            <div key={index}>
+            <Grid item container xs={12} spacing={2} key={`record${index}`}>
               <Grid item xs={12} key={`record${index}`}>
                 <Typography variant="h6">
                   {submittedDate.toDateString()} at{" "}
@@ -240,9 +240,8 @@ const FormData = (props) => {
                   {JSON.stringify(slimRecord, undefined, 2)}
                 </SyntaxHighlighter>
               </Grid>
-
               <CreateNewIssue issueData={record} /> 
-            </div>
+            </Grid>
           );
         })}
       </>

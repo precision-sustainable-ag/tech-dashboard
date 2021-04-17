@@ -3,10 +3,11 @@ import React, { useState, useEffect, useContext } from "react";
 import { Fragment } from "react";
 import { Context } from "../Store/Store";
 import { onfarmAPI } from "../utils/api_secret";
-import { CustomLoader } from "../utils/CustomComponents";
-import AffiliationsChips from "./AffiliationsChips";
-import RenderFarmValues from "./RenderFarmValues";
-import YearsChips from "./YearsChips";
+import { CustomLoader, YearsAndAffiliations } from "../utils/CustomComponents";
+import { uniqueYears } from "../utils/SharedFunctions";
+// import AffiliationsChips from "../utils/AffiliationsChips";
+import FarmValuesTable from "./FarmValuesTable";
+// import YearsChips from "../utils/YearsChips";
 
 const currentYear = new Date().getFullYear();
 const FarmValues = () => {
@@ -72,14 +73,8 @@ const FarmValues = () => {
         .then((response) => {
           setFarmValues(response);
           let allYears = response.map((record) => record.year);
-          //   get unique years, sort by highest to lowest and activate highest year
-          const uniqueYears = allYears
-            .filter((val, index, arr) => arr.indexOf(val) === index)
-            .sort((a, b) => b - a)
-            .map((year, index) => {
-              return { active: index === 0 ? true : false, year: year };
-            });
-          setFarmYears(uniqueYears);
+
+          setFarmYears(uniqueYears(allYears));
 
           const affiliations = response
             .reduce(
@@ -123,43 +118,17 @@ const FarmValues = () => {
         </Grid>
       ) : (
         <Fragment>
-          <Grid item xs={12}>
-            <Typography variant="h4">Farm Values</Typography>
-          </Grid>
-          {/* Years and Affiliations */}
-          <Grid item container spacing={3} xs={12}>
-            <Grid item sm={2} md={1} xs={12}>
-              <Typography variant="body1">Years</Typography>
-            </Grid>
-            <YearsChips years={farmYears} handleActiveYear={handleActiveYear} />
-          </Grid>
-
-          <Grid item container spacing={2} xs={12}>
-            <Grid item sm={2} md={1} xs={12}>
-              <Typography variant="body1">Affiliations</Typography>
-            </Grid>
-
-            <Grid item>
-              <Chip
-                label={"All"}
-                color={activeAffiliation() === "all" ? "primary" : "default"}
-                onClick={() => {
-                  handleActiveAffiliation("all");
-                }}
-              />
-            </Grid>
-
-            {affiliations.length > 1 && (
-              <AffiliationsChips
-                affiliations={affiliations}
-                handleActiveAffiliation={handleActiveAffiliation}
-              />
-            )}
-          </Grid>
-
+          {/* Years and Affiliation */}
+          <YearsAndAffiliations
+            title={"Farm Values"}
+            years={farmYears}
+            handleActiveYear={handleActiveYear}
+            affiliations={affiliations}
+            handleActiveAffiliation={handleActiveAffiliation}
+          />
           {/* Farm Values Table */}
           <Grid item container xs={12}>
-            <RenderFarmValues
+            <FarmValuesTable
               data={farmValues}
               year={activeFarmYear() || currentYear}
               affiliation={activeAffiliation() || "all"}

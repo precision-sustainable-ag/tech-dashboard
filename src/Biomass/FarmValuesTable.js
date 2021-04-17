@@ -8,12 +8,15 @@ import {
   TableRow,
   Typography,
   withStyles,
+  IconButton,
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 import { useMemo } from "react";
 import { parseISO, format } from "date-fns";
+import { Comment  } from "@material-ui/icons";
+import React, { useState, useEffect, useContext } from "react";
 
-const RenderFarmValues = ({ data = [], year, affiliation = "all" }) => {
+const FarmValuesTable = ({ data = [], year, affiliation = "all" }) => {
   const record = useMemo(() => {
     return data
       .filter((rec) => {
@@ -26,12 +29,14 @@ const RenderFarmValues = ({ data = [], year, affiliation = "all" }) => {
           new Date(b.cc_termination_date) - new Date(a.cc_termination_date)
       );
   }, [year, data, affiliation]);
+  const [open, setOpen] = React.useState(false);
 
   return record.length > 0 ? (
     <TableContainer aria-label="Biomass farm values" component={Paper}>
-      <Table stickyHeader size="medium" >
+      <Table size="medium" stickyHeader>
         <TableHead>
           <TableRow>
+            <TableCell></TableCell>
             <TableCell align="right">Code</TableCell>
             <TableCell align="right">Subplot</TableCell>
             <TableCell align="right">Termination Date</TableCell>
@@ -56,6 +61,11 @@ const RenderFarmValues = ({ data = [], year, affiliation = "all" }) => {
         <TableBody>
           {record.map((record, index) => (
             <CustomTableRow key={index}>
+              <TableCell>
+                 <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+                   {open ? <Comment /> : <Comment />}
+                 </IconButton>
+               </TableCell>
               {(index + 1) % 2 === 0 ? (
                 <>
                   <TableCell colSpan={2} align="right">
@@ -174,10 +184,10 @@ UnavailableText.propTypes = {
   text: PropTypes.string,
 };
 
-RenderFarmValues.propTypes = {
+FarmValuesTable.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
   year: PropTypes.number.isRequired,
   affiliation: PropTypes.string,
 };
 
-export default RenderFarmValues;
+export default FarmValuesTable;

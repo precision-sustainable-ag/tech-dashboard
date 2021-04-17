@@ -48,14 +48,14 @@ const IssueDialogue = (props) => {
           });
   
           // console.log(JSON.stringify(props))
-          let labels = ["farm-dates"]
+          // let labels = ["farm-dates"]
   
           const body = newComment;
           
           const issueSet = createGithubIssue(
             issueTitle,
             body,
-            labels,
+            props.labels,
             assignedPeople,
             props.nickname,
             token
@@ -87,7 +87,7 @@ const IssueDialogue = (props) => {
 
     return(
         <Grid container spacing={1}>
-            <Grid item xs={12}>
+            <Grid item xs={12} >
                 {checkValidation.title && (
                 <Typography variant="caption" color="error">
                     Issue title is required
@@ -103,7 +103,7 @@ const IssueDialogue = (props) => {
                 onChange={(e) => setIssueTitle(e.target.value)}
                 />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} lg={6}>
                 <Comments handleNewComment={fileNewIssue} nickname={props.nickname} rowData={props.rowData} dataType={props.dataType} buttonDisabled={buttonDisabled}/>
             </Grid>
         </Grid>

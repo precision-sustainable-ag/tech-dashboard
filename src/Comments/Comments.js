@@ -106,13 +106,14 @@ const Comments = (props) => {
         for(var key in props.rowData) {
             var value = props.rowData[key];
 
-            tableData = tableData + `<tr>
+            if(key !== "tableData"){
+                tableData = tableData + `<tr>
                                         <td>${key}</td>
                                         <td>${value}</td>
-                                    </tr>`
-
-            // console.log(tableData)
-            // return("")
+                                    </tr>`;
+            }
+            else
+                continue;
         }
 
         tableData = tableData + `</tbody>
@@ -128,7 +129,7 @@ const Comments = (props) => {
         <Grid container spacing={1}>
             <Grid item xs={12}>
                 <Grid container spacing={1}>
-                    <Grid item lg={6}>
+                    <Grid item lg={12}>
                         <Typography variant="caption">
                             Please enter your comments below
                         </Typography>
@@ -163,7 +164,7 @@ const Comments = (props) => {
                                 disabled={props.buttonDisabled}
                                 onClick={() => {props.handleNewComment(body); setNewCommentBody("")}}
                             >
-                                {props.buttonDisabled ? "Creating Issue" : "Add Comment"}
+                                {props.buttonDisabled ? "Creating Comment" : "Add Comment"}
                             </Button>
                         </Grid>
                     <Grid item>

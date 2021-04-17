@@ -28,7 +28,13 @@ const Forms = ({ isDarkTheme }) => {
     } else {
       getAllKoboAssets("psa")
         .then((response) => {
-          setPsaForms(response.data.data.results);
+          const allForms = response.data.data.results;
+          const forms = allForms.filter(
+            (form) =>
+              !form.name.match(/^.*DEPRECATED*.$/gi) &&
+              !form.name.match(/^.*TESTING*.$/gi)
+          );
+          setPsaForms(forms);
         })
         .then(() => {
           setShowForms(true);

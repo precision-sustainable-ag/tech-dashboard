@@ -370,6 +370,7 @@ export default function Header(props) {
               >
                 <ListItemText inset primary="Contact and Location/Enrollment" />
               </ListItem>
+
               <ListItem
                 button
                 to="/site-information/farm-dates"
@@ -383,6 +384,18 @@ export default function Header(props) {
               </ListItem>
             </List>
           </Collapse>
+          <ListItem
+            onClick={() => setOpen(false)}
+            button
+            key={"Site Enrollment"}
+            component={Link}
+            to="/site-enroll"
+          >
+            <ListItemIcon>
+              <Info />
+            </ListItemIcon>
+            <ListItemText primary={"Site Enrollment"} />
+          </ListItem>
 
           <ListItem
             onClick={() =>
