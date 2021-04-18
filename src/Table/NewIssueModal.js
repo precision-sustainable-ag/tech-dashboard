@@ -48,12 +48,15 @@ const NewIssueModal = (props) => {
     setMaxWidth(event.target.value);
   };
 
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+
   async function fileNewIssue() {
     if (issueTitle && newComment) {
-      props.setSnackbarData({
-        open: true,
-        text: `Creating new issue for ${props.data.code}`,
-      });
+      // props.setSnackbarData({
+      //   open: true,
+      //   text: `Creating new issue for ${props.data.code}`,
+      // });
+      setButtonDisabled(true);
 
 
       setCheckValidation({ title: false, comment: false });
@@ -122,6 +125,7 @@ const NewIssueModal = (props) => {
       issueSet.then((res) => {
         setNewComment("");
         setIssueTitle("");
+        setButtonDisabled(false);
         if (res.status === 201) {
           props.handleNewIssueDialogClose();
           props.setSnackbarData({
@@ -389,8 +393,8 @@ const NewIssueModal = (props) => {
         </Grid>
         <DialogActions>
           <Button onClick={props.handleNewIssueDialogClose}>Cancel</Button>
-          <Button color="primary" onClick={fileNewIssue} variant="contained">
-            Submit
+          <Button color="primary" onClick={fileNewIssue} variant="contained" disabled={buttonDisabled}>
+            {buttonDisabled ? "Creating Issue" : "Submit"}
           </Button>
         </DialogActions>
       </DialogContent>

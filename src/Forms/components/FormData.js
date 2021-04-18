@@ -141,6 +141,7 @@ const FormData = (props) => {
              startIcon={<QuestionAnswer />}
              size="small"
              variant="contained"
+             color="primary"
              // color={props.props.isDarkTheme ? "primary" : "default"}
              onClick={() => {
                setShowNewIssueDialog(true);
