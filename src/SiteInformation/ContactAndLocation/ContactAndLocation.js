@@ -10,7 +10,7 @@ import { uniqueYears, UserIsEditor } from "../../utils/SharedFunctions";
 import SiteInformationTable from "./SiteInformationTable";
 
 const siteInfoAPI_URL = `${onfarmAPI}/raw?output=json&table=site_information${
-  process.env.NODE_ENV === "development" && "&options=showtest"
+  process.env.NODE_ENV === "development" ? "&options=showtest" : ""
 }`;
 
 const currentYear = new Date().getFullYear();

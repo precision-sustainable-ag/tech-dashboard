@@ -27,7 +27,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 const siteInfoAPI_URL = `${onfarmAPI}/raw?output=json&table=site_information${
-  process.env.NODE_ENV === "development" && `&options=showtest`
+  process.env.NODE_ENV === "development" ? `&options=showtest` : ``
 }`;
 
 const InnerTable = styled.table`
