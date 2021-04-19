@@ -204,19 +204,19 @@ const FormData = (props) => {
         {data.map((record = {}, index) => {
           let slimRecord = record;
           const submittedDate = new Date(record._submission_time);
-          const {
-            submittedHours,
-            submittedMinutes,
-            submittedSeconds,
-            am_pm,
-          } = parseDate(submittedDate);
-  
+
           return (
             <Grid item container xs={12} spacing={2} key={`record${index}`}>
               <Grid item xs={12} key={`record${index}`}>
                 <Typography variant="h6">
-                  {submittedDate.toDateString()} at{" "}
-                  {`${submittedHours}:${submittedMinutes}:${submittedSeconds} ${am_pm}`}
+                {submittedDate.toLocaleString("en-US", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                    hour: "numeric",
+                    minute: "numeric",
+                    timeZone: "UTC",
+                  })}
                 </Typography>
                 <SyntaxHighlighter
                   language="json"

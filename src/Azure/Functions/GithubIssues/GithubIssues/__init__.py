@@ -118,13 +118,13 @@ class GithubIssues:
         payload = json.dumps(data)	
         # Add the issue to our repository	
         response = requests.request("POST", url, data=payload, headers=headers)	
-        logging.info(response.status_code)	
+        logging.info(str(response.status_code))	
         if response.status_code == 201:	
             logging.info ('Successfully created Comment "%s" on issue #%s' % (body, issue_number))	
             # logging.info (self.RESPONSE_STRING, response.content)	
         else:	
             logging.info ('Could not create Comment "%s"' % body)	
-            logging.info (self.RESPONSE_STRING, str(response.content))	
+            logging.info (self.RESPONSE_STRING + str(response.content))	
 
     def authenticate(self, token):	
         # setup management api request 	
