@@ -26,7 +26,9 @@ import { useAuth0 } from "../Auth/react-auth0-spa";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-const siteInfoAPI_URL = `${onfarmAPI}/raw?output=json&table=site_information&options=showtest`;
+const siteInfoAPI_URL = `${onfarmAPI}/raw?output=json&table=site_information${
+  process.env.NODE_ENV === "development" && `&options=showtest`
+}`;
 
 const InnerTable = styled.table`
   border: 0;
