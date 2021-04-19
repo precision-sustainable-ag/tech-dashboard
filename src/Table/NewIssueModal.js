@@ -19,9 +19,9 @@ import MDEditor from "@uiw/react-md-editor";
 
 // Local Imports
 import { githubToken } from "../utils/api_secret";
-import { Context } from "../Store/Store";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 import PropTypes from "prop-types";
+import { createGithubIssue } from "../utils/SharedFunctions"
 
 /**
  *  A component to allow users to create "New Issue" in a modal
@@ -29,7 +29,9 @@ import PropTypes from "prop-types";
 
 // Default function
 const NewIssueModal = (props) => {
-  // const [state, dispatch] = useContext(Context);
+  const {
+    getTokenSilently,
+  } = useAuth0();
 
   const octokit = new Octokit({ auth: githubToken });
   const [fullWidth, setFullWidth] = useState(true);
@@ -45,119 +47,85 @@ const NewIssueModal = (props) => {
   const handleMaxWidthChange = (event) => {
     setMaxWidth(event.target.value);
   };
-  //   const fileNewIssue = () => {
-  //     // const tableHtml = document.getElementById("mdTable").innerHTML;
-  //     // console.log(tableHtml);
-  //     const tableHtml = (
-  //       <table border="1">
-  //         <tbody>
-  //           <tr>
-  //             <td>Code</td>
-  //             <td>{props.data.code}</td>
-  //           </tr>
-  //           <tr>
-  //             <td>Grower</td>
-  //             <td>{props.data.last_name}</td>
-  //           </tr>
-  //           <tr>
-  //             <td>State</td>
-  //             <td>{props.data.state}</td>
-  //           </tr>
-  //           <tr>
-  //             <td>County</td>
-  //             <td>{props.data.county}</td>
-  //           </tr>
-  //           <tr>
-  //             <td>Email</td>
-  //             <td>{props.data.email}</td>
-  //           </tr>
-  //           <tr>
-  //             <td>Year</td>
-  //             <td>{props.data.year}</td>
-  //           </tr>
-  //           <tr>
-  //             <td>Address</td>
-  //             <td>{props.data.address}</td>
-  //           </tr>
-  //           <tr>
-  //             <td>Location</td>
-  //             <td>{props.data.latlng}</td>
-  //           </tr>
-  //           <tr>
-  //             <td>Notes</td>
-  //             <td>{props.data.notes}</td>
-  //           </tr>
-  //         </tbody>
-  //       </table>
-  //     );
-  //     const tableStr = markdownConvert.makeMarkdown("" + tableHtml + "");
-  //     console.log(JSON.stringify(tableStr));
 
-  //     // setNewComment(tableStr.toString());
-  //   };
+  const [buttonDisabled, setButtonDisabled] = useState(false);
 
-  const fileNewIssue = () => {
+  async function fileNewIssue() {
     if (issueTitle && newComment) {
-      console.log("yes");
+      // props.setSnackbarData({
+      //   open: true,
+      //   text: `Creating new issue for ${props.data.code}`,
+      // });
+      setButtonDisabled(true);
+
+
       setCheckValidation({ title: false, comment: false });
 
-      const labels = [`${props.data.code}`, `${props.data.affiliation}`];
+      const labels = [`${props.data.code}`, `${props.data.affiliation}`, "site-information"];
 
-      //   const labels = [`${props.data.code}`, `${props.data.state}`];
       const assignedPeople =
         personName.length > 0 ? personName : [`${props.nickname}`];
-      //   console.log(assignedPeople);
+
       const tableData = `<table>
-      <tbody>
-        <tr>
-          <td>Code</td>
-          <td>${props.data.code}</td>
-        </tr>
-        <tr>
-          <td>Grower</td>
-          <td>${props.data.last_name}</td>
-        </tr>
-        <tr>
-          <td>State</td>
-          <td>${props.data.affiliation}</td>
-        </tr>
-        <tr>
-          <td>County</td>
-          <td>${props.data.county}</td>
-        </tr>
-        <tr>
-          <td>Email</td>
-          <td>${props.data.email}</td>
-        </tr>
-        <tr>
-          <td>Year</td>
-          <td>${props.data.year}</td>
-        </tr>
-        <tr>
-          <td>Address</td>
-          <td>${props.data.address}</td>
-        </tr>
-        <tr>
-          <td>Location</td>
-          <td>${props.data.latlng}</td>
-        </tr>
-        <tr>
-          <td>Notes</td>
-          <td>${props.data.notes}</td>
-        </tr>
-      </tbody>
-    </table>`;
-      const issueSet = setIssue(
-        octokit,
+        <tbody>
+          <tr>
+            <td>Code</td>
+            <td>${props.data.code}</td>
+          </tr>
+          <tr>
+            <td>Grower</td>
+            <td>${props.data.last_name}</td>
+          </tr>
+          <tr>
+            <td>State</td>
+            <td>${props.data.affiliation}</td>
+          </tr>
+          <tr>
+            <td>County</td>
+            <td>${props.data.county}</td>
+          </tr>
+          <tr>
+            <td>Email</td>
+            <td>${props.data.email}</td>
+          </tr>
+          <tr>
+            <td>Year</td>
+            <td>${props.data.year}</td>
+          </tr>
+          <tr>
+            <td>Address</td>
+            <td>${props.data.address}</td>
+          </tr>
+          <tr>
+            <td>Location</td>
+            <td>${props.data.latlng}</td>
+          </tr>
+          <tr>
+            <td>Notes</td>
+            <td>${props.data.notes}</td>
+          </tr>
+        </tbody>
+      </table>`;
+
+      const body = tableData + " <br/> " + newComment;
+
+      let token = await getTokenSilently({
+        audience: `https://precision-sustaibale-ag/tech-dashboard`
+      });
+      
+      const issueSet = createGithubIssue(
         issueTitle,
-        newComment,
+        body,
         labels,
         assignedPeople,
-        tableData,
-        props.nickname
+        props.nickname,
+        token
       );
 
       issueSet.then((res) => {
+        setNewComment("");
+        setIssueTitle("");
+        setButtonDisabled(false);
         if (res.status === 201) {
           props.handleNewIssueDialogClose();
           props.setSnackbarData({
@@ -212,9 +180,6 @@ const NewIssueModal = (props) => {
   const [isNewCollab, setIsNewCollab] = useState(false);
   useEffect(() => {
     //   check if a user is a collaborator to repo, else add the user to repo
-
-    //   const collaboratorNames = res.data.map((data) => data.login);
-
     fetchCollabs()
       .then((res) => {
         const status = res.status;
@@ -393,42 +358,6 @@ const NewIssueModal = (props) => {
             </div>
           </Grid>
           <Grid item xs={12}>
-            <Grid container spacing={1}>
-              <Grid item xs={12}>
-                <Typography variant="body1">Select Assignees</Typography>
-              </Grid>
-              {collaborators.map((name, index) => (
-                <Grid item key={`collab${index}`}>
-                  <Chip
-                    disabled={
-                      alwaysTaggedPeople.includes(name.username) ? true : false
-                    }
-                    color={
-                      personName.includes(name.username) ? "primary" : "default"
-                    }
-                    avatar={
-                      <Avatar
-                        alt={name.username}
-                        src={`${name.picture}&s=50`}
-                      />
-                    }
-                    label={name.username}
-                    onClick={(e) => {
-                      if (personName.includes(name.username)) {
-                        let newPerson = personName.filter(
-                          (e) => e !== name.username
-                        );
-                        setPersonName(newPerson);
-                      } else {
-                        setPersonName([...personName, name.username]);
-                      }
-                    }}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-          </Grid>
-          <Grid item xs={12}>
             {checkValidation.title && (
               <Typography variant="caption" color="error">
                 Issue title is required
@@ -464,37 +393,13 @@ const NewIssueModal = (props) => {
         </Grid>
         <DialogActions>
           <Button onClick={props.handleNewIssueDialogClose}>Cancel</Button>
-          <Button color="primary" onClick={fileNewIssue} variant="contained">
-            Submit
+          <Button color="primary" onClick={fileNewIssue} variant="contained" disabled={buttonDisabled}>
+            {buttonDisabled ? "Creating Issue" : "Submit"}
           </Button>
         </DialogActions>
       </DialogContent>
     </Dialog>
   );
-};
-
-// Helper functions
-const setIssue = async (
-  octokit,
-  issueTitle,
-  newComment,
-  labels,
-  assignees,
-  table,
-  nickname
-) => {
-  return await octokit.issues.create({
-    owner: "precision-sustainable-ag",
-    repo: "data_corrections",
-    title: issueTitle,
-    body:
-      table +
-      " <br/> " +
-      newComment +
-      ` <br/> ** Issue Created By: @${nickname} ** `,
-    labels: labels,
-    assignees: assignees,
-  });
 };
 
 NewIssueModal.defaultProps = {

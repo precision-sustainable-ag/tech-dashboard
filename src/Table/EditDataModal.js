@@ -18,7 +18,6 @@ import {
   Checkbox,
   FormLabel,
 } from "@material-ui/core";
-import { GpsFixed } from "@material-ui/icons";
 import Axios from "axios";
 
 // Local Imports
@@ -123,14 +122,15 @@ const EditDataModal = (props) => {
   const validateData = () => {
     if (checkLatLng) {
       //   call update api
-      let resp = postModalUpdate(newData);
-      if (resp) {
-        props.handleEditModalClose();
-        props.setValuesEdited(!props.valuesEdited);
-        console.log(newData);
-      } else {
-        console.error("AJAX Error!");
-      }
+      postModalUpdate(newData)
+        .then((res) => {
+          props.handleEditModalClose();
+          props.setValuesEdited(!props.valuesEdited);
+          // console.log(res);
+        })
+        .then(() => {
+          setTimeout(window.location.reload(), 4000);
+        });
     } else {
       setLocationErr(true);
       setLocationMsg("Incorrect format");
@@ -146,6 +146,7 @@ const EditDataModal = (props) => {
 
   const [selectedToEditSite, setSelectedToEditSite] = useState({
     address: "",
+    state: "",
     county: "",
     latitude: "",
     longitude: "",
@@ -159,6 +160,7 @@ const EditDataModal = (props) => {
         ? selectedToEditSite.longitude
         : "",
       county: selectedToEditSite.county ? selectedToEditSite.county : "",
+      state: selectedToEditSite.state ? selectedToEditSite.state : "",
       latlng:
         selectedToEditSite.latitude && selectedToEditSite.longitude
           ? `${selectedToEditSite.latitude},${selectedToEditSite.longitude}`
@@ -314,6 +316,25 @@ const EditDataModal = (props) => {
               fullWidth
               onChange={(e) => {
                 setNewData({ ...newData, county: e.target.value });
+              }}
+            />
+          </Grid>
+          <Grid item sm={12} lg={12}>
+            <TextField
+              label="State"
+              margin="dense"
+              name="state"
+              value={
+                newData.state
+                  ? newData.state
+                  : props.data.state
+                  ? props.data.state
+                  : ""
+              }
+              type="text"
+              fullWidth
+              onChange={(e) => {
+                setNewData({ ...newData, state: e.target.value });
               }}
             />
           </Grid>

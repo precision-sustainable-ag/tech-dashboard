@@ -12,7 +12,7 @@ import { format_AM_PM } from "../../utils/constants";
 
 const IssueBubbleBody = ({ issueData, user, isDarkTheme }) => {
   let side = issueData.hasMention
-    ? issueData.mention.split("@")[1].split("[")[0] === user.nickname
+    ? issueData.user.login === user.nickname
       ? "flex-end"
       : "flex-start"
     : "flex-start";

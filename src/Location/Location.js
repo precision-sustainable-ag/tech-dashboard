@@ -106,12 +106,17 @@ const Location = ({
                     let county = res.results[0].address_components.filter(
                       (e) => e.types[0] === "administrative_area_level_2"
                     );
+                    let state = res.results[0].address_components.filter((e) =>
+                      e.types.includes("administrative_area_level_1")
+                    );
+
                     setSelectedToEditSite({
                       ...selectedToEditSite,
                       latitude: e.lat,
                       longitude: e.lng,
                       address: address,
-                      county: county[0].long_name,
+                      state: state[0].short_name || "",
+                      county: county[0].long_name || "",
                     });
                   }
                 } else {
@@ -134,12 +139,16 @@ const Location = ({
                     let county = res.results[0].address_components.filter(
                       (e) => e.types[0] === "administrative_area_level_2"
                     );
+                    let state = res.results[0].address_components.filter((e) =>
+                      e.types.includes("administrative_area_level_1")
+                    );
                     setSelectedToEditSite({
                       ...selectedToEditSite,
                       latitude: e.lat,
                       longitude: e.lng,
                       address: address,
-                      county: county[0].long_name,
+                      state: state[0].short_name || "",
+                      county: county[0].long_name || "",
                     });
                   }
                 } else {

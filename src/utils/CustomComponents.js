@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import {
   withStyles,
   Switch,
@@ -11,12 +11,17 @@ import {
   makeStyles,
   Grid,
   Button,
+  Chip,
 } from "@material-ui/core";
 import Loading from "react-loading";
 
 // Local Imports
 import { primaryContactPerson } from "./api_secret";
 import { Context } from "../Store/Store";
+import YearsChips from "./YearsChips";
+import AffiliationsChips from "./AffiliationsChips";
+
+import PropTypes from "prop-types";
 
 // Styles
 export const AntSwitch = withStyles((theme) => ({
@@ -265,4 +270,68 @@ export const ScrollTop = (props) => {
       </div>
     </Zoom>
   );
+};
+
+export const YearsAndAffiliations = (props) => {
+  const {
+    title,
+    years,
+    affiliations,
+    handleActiveAffiliation,
+    handleActiveYear,
+  } = props;
+
+  const activeAffiliation = () => {
+    return (
+      affiliations
+        .filter((rec) => rec.active)
+        .map((rec) => rec.affiliation)
+        .toString() || "all"
+    );
+  };
+  return (
+    <Fragment>
+      {title !== "none" && (
+        <Grid item xs={12}>
+          <Typography variant="h4">{title}</Typography>
+        </Grid>
+      )}
+
+      <Grid item container spacing={3} xs={12}>
+        <Grid item sm={2} md={1} xs={12}>
+          <Typography variant="body1">Years</Typography>
+        </Grid>
+        <YearsChips years={years} handleActiveYear={handleActiveYear} />
+      </Grid>
+
+      <Grid item container spacing={2} xs={12}>
+        <Grid item sm={2} md={1} xs={12}>
+          <Typography variant="body1">Affiliations</Typography>
+        </Grid>
+        {affiliations.length > 1 && (
+          <AffiliationsChips
+            activeAffiliation={activeAffiliation() || "all"}
+            affiliations={affiliations}
+            handleActiveAffiliation={handleActiveAffiliation}
+          />
+        )}
+      </Grid>
+    </Fragment>
+  );
+};
+
+YearsAndAffiliations.defaultProps = {
+  title: "Farm Values",
+  years: [],
+  affiliations: [],
+  handleActiveAffiliation: () => {},
+  handleActiveYear: () => {},
+};
+
+YearsAndAffiliations.propTypes = {
+  title: PropTypes.string,
+  years: PropTypes.array,
+  affiliations: PropTypes.array,
+  handleActiveAffiliation: PropTypes.func,
+  handleActiveYear: PropTypes.func,
 };

@@ -31,12 +31,23 @@ import { useAuth0 } from "../Auth/react-auth0-spa";
 import IssueBubbleBody from "./components/IssueBodyBubble";
 import { Fragment } from "react";
 import { SingleIssueBodyBubble } from "./components/SingleIssueBodyBubble";
+import { createGithubComment } from "../utils/SharedFunctions"
+import Comments from "../Comments/Comments"
+
+
+  
 
 // Global vars
 var replyParser = require("node-email-reply-parser");
 
 // Default function
 const Issue = (props) => {
+  const {
+    getTokenSilently,
+    loading,
+    config
+  } = useAuth0();
+
   const issueNumber = props.match.params.issueNumber
     ? parseInt(props.match.params.issueNumber)
     : null;
@@ -45,6 +56,7 @@ const Issue = (props) => {
   const [issueBody, setIssueBody] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [newCommentAdded, setNewCommentAdded] = useState(false);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
 
   const hasIssueContent =
     props.location.state &&
@@ -82,9 +94,12 @@ const Issue = (props) => {
 
   const fetchIssueComments = () => {
     getIssueDetails().then((resp) => {
+      // console.log("resp = " + resp)
       const data = resp.data.map((data) => {
         const viaEmail = data.body.includes("<notifications@github.com>");
         const hasMention = data.body.includes("<br/> ** From");
+
+        // console.log("body = " + data.body)
 
         return {
           ...data,
@@ -108,14 +123,26 @@ const Issue = (props) => {
     });
   };
 
-  const handleNewComment = () => {
-    addNewComment()
+  async function handleNewComment(body) {
+    let token = await getTokenSilently({
+      audience: `https://precision-sustaibale-ag/tech-dashboard`
+    });
+    setButtonDisabled(true);
+
+
+    console.log("body " + body)
+    // setNewCommentBody(body)
+
+    console.log("nick " + user.nickname + " comm " + body + " iss " + issueNumber + " token " + token)
+
+    createGithubComment(user.nickname, body, issueNumber, token)
       .then((resp) => {})
       .then(() => {
         setNewCommentAdded(!newCommentAdded);
         setNewComment("");
-      });
-  };
+        setButtonDisabled(false);
+      })
+  }
 
   useEffect(() => {
     fetchIssueComments();
@@ -135,6 +162,9 @@ const Issue = (props) => {
         owner: "precision-sustainable-ag",
         repo: "data_corrections",
         issue_number: issueNumber,
+        headers: {
+          'If-None-Match': ''
+        }
       }
     );
   };
@@ -234,6 +264,7 @@ const Issue = (props) => {
             </Grid>
             {issueBody.length > 0 ? (
               issueBody.map((issueData, index) => {
+                // console.log("this is the body" + JSON.stringify(issueData))
                 return (
                   <Grid item xs={12} key={index}>
                     {/* <RenderIssue issueData={issueData} /> */}
@@ -267,124 +298,7 @@ const Issue = (props) => {
             )}
           </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <Grid container spacing={2}>
-            <Grid item>
-              <Typography variant="caption">
-                Please enter your comments below
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <MDEditor
-                preview="edit"
-                value={newComment}
-                onChange={setNewCommentBody}
-                commands={[
-                  commands.bold,
-                  commands.italic,
-                  commands.hr,
-                  commands.code,
-                  commands.checkedListCommand,
-                  commands.unorderedListCommand,
-                  commands.quote,
-                  commands.title,
-                  commands.fullscreen,
-                  commands.codeLive,
-                  commands.codeEdit,
-                  githubUserMentionCommand,
-                ]}
-              />
-            </Grid>
-            <Grid item>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => handleNewComment()}
-              >
-                Add Comment
-              </Button>
-            </Grid>
-            <Grid item>
-              <FormControlLabel
-                control={
-                  <Switch
-                    color={showPreview ? "primary" : "default"}
-                    checked={showPreview}
-                    onChange={(e) => setShowPreview(e.target.checked)}
-                  />
-                }
-                label="Show Markdown Preview"
-              />
-            </Grid>
-          </Grid>
-        </Grid>
-        <Dialog
-          open={showUsersDialog}
-          onClose={() => setShowUsersDialog(false)}
-          aria-labelledby="form-dialog-title"
-          disableBackdropClick
-          fullWidth
-          maxWidth="lg"
-        >
-          <DialogTitle id="form-dialog-title">Github Users</DialogTitle>
-          <DialogContent>
-            <Grid container spacing={3}>
-              {githubUsers.length > 0 ? (
-                <>
-                  <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      placeholder="Search users here"
-                      value={searchUser}
-                      onChange={(e) => setSearchUser(e.target.value)}
-                    />
-                  </Grid>
-
-                  {filteredUsers.map((user) => (
-                    <Grid item key={user.id} xs={12} md={4}>
-                      <Grid
-                        container
-                        direction="row"
-                        justify="flex-start"
-                        spacing={3}
-                      >
-                        <Grid item xs="auto" md="auto">
-                          <Avatar
-                            variant="rounded"
-                            alt={user.login}
-                            src={user.avatar_url}
-                          />
-                        </Grid>
-                        <Grid item xs="auto" md="auto">
-                          <Button
-                            onClick={() => {
-                              setNewComment(newComment + ` @${user.login}`);
-                              setShowUsersDialog(false);
-                              setSearchUser("");
-                            }}
-                          >
-                            {user.login}
-                          </Button>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  ))}
-                </>
-              ) : (
-                <Typography variant="body1">No Users Available</Typography>
-              )}
-            </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => setShowUsersDialog(false)}
-            >
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
+        <Comments handleNewComment={handleNewComment} buttonDisabled={buttonDisabled}/>
       </Grid>
     </Slide>
   );
