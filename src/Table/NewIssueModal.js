@@ -48,11 +48,20 @@ const NewIssueModal = (props) => {
     setMaxWidth(event.target.value);
   };
 
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+
   async function fileNewIssue() {
     if (issueTitle && newComment) {
+      // props.setSnackbarData({
+      //   open: true,
+      //   text: `Creating new issue for ${props.data.code}`,
+      // });
+      setButtonDisabled(true);
+
+
       setCheckValidation({ title: false, comment: false });
 
-      const labels = [`${props.data.code}`, `${props.data.affiliation}`, "sites"];
+      const labels = [`${props.data.code}`, `${props.data.affiliation}`, "site-information"];
 
       const assignedPeople =
         personName.length > 0 ? personName : [`${props.nickname}`];
@@ -114,6 +123,9 @@ const NewIssueModal = (props) => {
       );
 
       issueSet.then((res) => {
+        setNewComment("");
+        setIssueTitle("");
+        setButtonDisabled(false);
         if (res.status === 201) {
           props.handleNewIssueDialogClose();
           props.setSnackbarData({
@@ -346,42 +358,6 @@ const NewIssueModal = (props) => {
             </div>
           </Grid>
           <Grid item xs={12}>
-            <Grid container spacing={1}>
-              <Grid item xs={12}>
-                <Typography variant="body1">Select Assignees</Typography>
-              </Grid>
-              {collaborators.map((name, index) => (
-                <Grid item key={`collab${index}`}>
-                  <Chip
-                    disabled={
-                      alwaysTaggedPeople.includes(name.username) ? true : false
-                    }
-                    color={
-                      personName.includes(name.username) ? "primary" : "default"
-                    }
-                    avatar={
-                      <Avatar
-                        alt={name.username}
-                        src={`${name.picture}&s=50`}
-                      />
-                    }
-                    label={name.username}
-                    onClick={(e) => {
-                      if (personName.includes(name.username)) {
-                        let newPerson = personName.filter(
-                          (e) => e !== name.username
-                        );
-                        setPersonName(newPerson);
-                      } else {
-                        setPersonName([...personName, name.username]);
-                      }
-                    }}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-          </Grid>
-          <Grid item xs={12}>
             {checkValidation.title && (
               <Typography variant="caption" color="error">
                 Issue title is required
@@ -417,37 +393,13 @@ const NewIssueModal = (props) => {
         </Grid>
         <DialogActions>
           <Button onClick={props.handleNewIssueDialogClose}>Cancel</Button>
-          <Button color="primary" onClick={fileNewIssue} variant="contained">
-            Submit
+          <Button color="primary" onClick={fileNewIssue} variant="contained" disabled={buttonDisabled}>
+            {buttonDisabled ? "Creating Issue" : "Submit"}
           </Button>
         </DialogActions>
       </DialogContent>
     </Dialog>
   );
-};
-
-// Helper functions
-const setIssue = async (
-  octokit,
-  issueTitle,
-  newComment,
-  labels,
-  assignees,
-  table,
-  nickname
-) => {
-  return await octokit.issues.create({
-    owner: "precision-sustainable-ag",
-    repo: "data_corrections",
-    title: issueTitle,
-    body:
-      table +
-      " <br/> " +
-      newComment +
-      ` <br/> ** Issue Created By: @${nickname} ** `,
-    labels: labels,
-    assignees: assignees,
-  });
 };
 
 NewIssueModal.defaultProps = {

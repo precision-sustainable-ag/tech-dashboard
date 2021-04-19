@@ -1,4 +1,4 @@
-import { Chip, Grid, Paper, Typography } from "@material-ui/core";
+import { Grid, Typography } from "@material-ui/core";
 import React, { useState, useEffect, useContext } from "react";
 import { Fragment } from "react";
 import { Context } from "../Store/Store";

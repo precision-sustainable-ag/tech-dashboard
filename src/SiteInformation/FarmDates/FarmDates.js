@@ -1,12 +1,21 @@
 import { useState, useEffect, useContext } from "react";
-import { Button, Grid, TextField, Typography } from "@material-ui/core";
+import { Grid, Typography, Snackbar } from "@material-ui/core";
 import { Context } from "../../Store/Store";
 import MaterialTable from "material-table";
 import { bannedRoles } from "../../utils/constants";
 import { BannedRoleMessage, CustomLoader } from "../../utils/CustomComponents";
 import { onfarmAPI } from "../../utils/api_secret";
+import IssueDialogue from "../../Comments/IssueDialogue"
 import { addDays } from "date-fns";
+import { useAuth0 } from "../../Auth/react-auth0-spa";
+import MuiAlert from "@material-ui/lab/Alert";
+
 const farmDatesURL = `${onfarmAPI}/dates`;
+
+// Helper function
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const tableHeaderOptions = [
   {
@@ -104,6 +113,8 @@ const FarmDates = () => {
   const [farmDatesData, setFarmDatesData] = useState([]);
   const [showBannedMessage, setShowBannedMessage] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { user } = useAuth0();
+  const [snackbarData, setSnackbarData] = useState({ open: false, text: "" });
 
   useEffect(() => {
     if (state.userInfo.role && bannedRoles.includes(state.userInfo.role)) {
@@ -126,13 +137,36 @@ const FarmDates = () => {
     }
   }, [state.userInfo]);
 
+  let height = window.innerHeight;
+
+  // scale height
+  if (height < 900 && height > 600) {
+    height -= 130;
+  } else if (height < 600) {
+    height -= 200;
+  }
+
   return !showBannedMessage ? (
     <Grid container spacing={2}>
       <Grid item xs={12}>
         {loading ? (
           <CustomLoader />
         ) : farmDatesData.length > 0 ? (
-          <MaterialTable
+          <div>
+            <Snackbar
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+              }}
+              open={snackbarData.open}
+              autoHideDuration={2000}
+              onClose={() =>
+                setSnackbarData({ ...snackbarData, open: !snackbarData.open })
+              }
+            >
+              <Alert severity="success">{snackbarData.text}</Alert>
+            </Snackbar>
+            <MaterialTable
             title={"Farm Dates"}
             columns={tableHeaderOptions}
             data={farmDatesData}
@@ -163,6 +197,8 @@ const FarmDates = () => {
               selection: false,
               searchAutoFocus: true,
               toolbarButtonAlignment: "left",
+              actionsColumnIndex: 1,
+              maxBodyHeight: height * 0.7,
             }}
             detailPanel={[
               {
@@ -172,64 +208,14 @@ const FarmDates = () => {
                 openIcon: "message",
                 render: (rowData) => {
                   return (
-                    <>
-                      {/* <Grid
-                        container
-                        spacing={3}
-                        style={{
-                          minHeight: "10vh",
-                          padding: "1em",
-                        }}
-                      >
-                          <RenderExistingComments />
-                      </Grid> */}
-                      <form
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          console.log(JSON.stringify(rowData));
-                        }}
-                      >
-                        <Grid
-                          container
-                          spacing={3}
-                          style={{
-                            minHeight: "10vh",
-                            padding: "2em",
-                          }}
-                        >
-                          <Grid item xs={12}>
-                            <TextField type="hidden" value={rowData} />
-
-                            <TextField
-                              required
-                              disabled
-                              label="Add a new comment"
-                              variant="outlined"
-                              multiline
-                              fullWidth
-                              rows={4}
-                              type="text"
-                            />
-                          </Grid>
-                          <Grid item>
-                            <Button
-                              size="small"
-                              variant="contained"
-                              color="primary"
-                              type="submit"
-                              disabled
-                            >
-                              Coming Soon
-                            </Button>
-                          </Grid>
-                        </Grid>
-                      </form>
-                    </>
+                      <IssueDialogue nickname={user.nickname} rowData={rowData} dataType="table" setSnackbarData={setSnackbarData} labels={["farm-dates"]}/>
                   );
                 },
               },
             ]}
           />
+          </div>
+          
         ) : (
           <Typography variant="body1">No Data</Typography>
         )}

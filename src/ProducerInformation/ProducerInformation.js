@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Grid } from "@material-ui/core";
+import { Grid, Snackbar } from "@material-ui/core";
 import { Context } from "../Store/Store";
 import MaterialTable from "material-table";
 import { bannedRoles } from "../utils/constants";
+import IssueDialogue from "../Comments/IssueDialogue"
 import { BannedRoleMessage, CustomLoader } from "../utils/CustomComponents";
 import {
   apiPassword,
@@ -10,6 +11,8 @@ import {
   apiUsername,
   onfarmAPI,
 } from "../utils/api_secret";
+import { useAuth0 } from "../Auth/react-auth0-spa";
+import MuiAlert from "@material-ui/lab/Alert";
 
 import axios from "axios";
 import QueryString from "qs";
@@ -18,34 +21,11 @@ const producersURL = `${onfarmAPI}/producers${
   process.env.NODE_ENV === "development" ? `?options=showtest` : ``
 }`;
 
-const tableOptions = (tableData) => ({
-  padding: "dense",
-  exportButton: true,
-  exportFileName: "Producer Information",
-  addRowPosition: "first",
-  exportAllData: false,
-  pageSizeOptions: [5, 10, 20, tableData.length],
-  pageSize: tableData.length,
-  groupRowSeparator: "  ",
-  grouping: true,
-  headerStyle: {
-    fontWeight: "bold",
-    fontFamily: "Bilo, sans-serif",
-    fontSize: "0.8em",
-    textAlign: "justify",
-    position: "sticky",
-    top: 0,
-  },
-  rowStyle: {
-    fontFamily: "Roboto, sans-serif",
-    fontSize: "0.8em",
-    textAlign: "justify",
-  },
-  selection: false,
-  searchAutoFocus: true,
-  toolbarButtonAlignment: "left",
-  actionsColumnIndex: 0,
-});
+// Helper function
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 const tableHeaderOptions = [
   {
     title: "Producer ID",
@@ -106,6 +86,8 @@ const ProducerInformation = (props) => {
   const [editModalData, setEditModalData] = useState([]);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [state] = useContext(Context);
+  const { user } = useAuth0();
+  const [snackbarData, setSnackbarData] = useState({ open: false, text: "" });
 
   const allowEditing = () => {
     let permissions = state.userInfo.permissions;
@@ -157,6 +139,45 @@ const ProducerInformation = (props) => {
     }
   }, [state.userInfo]);
 
+  let height = window.innerHeight;
+
+  // scale height
+  if (height < 900 && height > 600) {
+    height -= 130;
+  } else if (height < 600) {
+    height -= 200;
+  }
+
+  const tableOptions = (tableData) => ({
+    padding: "dense",
+    exportButton: true,
+    exportFileName: "Producer Information",
+    addRowPosition: "first",
+    exportAllData: false,
+    pageSizeOptions: [5, 10, 20, tableData.length],
+    pageSize: tableData.length,
+    groupRowSeparator: "  ",
+    grouping: true,
+    headerStyle: {
+      fontWeight: "bold",
+      fontFamily: "Bilo, sans-serif",
+      fontSize: "0.8em",
+      textAlign: "justify",
+      position: "sticky",
+      top: 0,
+    },
+    rowStyle: {
+      fontFamily: "Roboto, sans-serif",
+      fontSize: "0.8em",
+      textAlign: "justify",
+    },
+    selection: false,
+    searchAutoFocus: true,
+    toolbarButtonAlignment: "left",
+    actionsColumnIndex: 0,
+    maxBodyHeight: height * 0.7,
+  });
+
   return isAuthorized ? (
     <Grid container>
       {loading ? (
@@ -164,59 +185,87 @@ const ProducerInformation = (props) => {
           <CustomLoader />
         </Grid>
       ) : (
-        <Grid item xs={12}>
-          <MaterialTable
-            editable={
-              allowEditing() && {
-                onRowUpdate: (newData, oldData) => {
-                  return new Promise((resolve, reject) => {
-                    const { producer_id } = oldData;
-                    const { email, last_name, phone, first_name } = newData;
-                    // const filteredData = tableData.filter((records) => records.producer_id !== producer_id);
-                    if (!producer_id) {
-                      reject("Producer id missing");
-                    } else {
-                      const preparedData = {
-                        first_name: first_name || "",
-                        last_name: last_name || "",
-                        email: email || "",
-                        phone: phone || "",
-                      };
-
-                      axios({
-                        url: `${apiURL}/api/producers/${producer_id}`,
-                        method: "POST",
-                        data: QueryString.stringify(preparedData),
-                        auth: {
-                          username: apiUsername,
-                          password: apiPassword,
-                        },
-                      })
-                        .then((res) => {
-                          if (res.data.data) {
-                            const dataUpdate = [...tableData];
-                            const index = oldData.tableData.id;
-                            dataUpdate[index] = newData;
-                            setTableData([...dataUpdate]);
-                          }
-                        })
-                        .then(() => {
-                          resolve();
-                        })
-                        .catch((e) => {
-                          reject(e);
-                        });
-                    }
-                  });
-                },
+        <div>
+          <Snackbar
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+              }}
+              open={snackbarData.open}
+              autoHideDuration={2000}
+              onClose={() =>
+                setSnackbarData({ ...snackbarData, open: !snackbarData.open })
               }
-            }
-            columns={tableHeaderOptions}
-            data={tableData}
-            title="Producer Information"
-            options={tableOptions(tableData)}
-          />
-        </Grid>
+            >
+              <Alert severity="success">{snackbarData.text}</Alert>
+            </Snackbar>
+            <Grid item xs={12}>
+              <MaterialTable
+                editable={
+                  allowEditing() && {
+                    onRowUpdate: (newData, oldData) => {
+                      return new Promise((resolve, reject) => {
+                        const { producer_id } = oldData;
+                        const { email, last_name, phone, first_name } = newData;
+                        // const filteredData = tableData.filter((records) => records.producer_id !== producer_id);
+                        if (!producer_id) {
+                          reject("Producer id missing");
+                        } else {
+                          const preparedData = {
+                            first_name: first_name || "",
+                            last_name: last_name || "",
+                            email: email || "",
+                            phone: phone || "",
+                          };
+
+                          axios({
+                            url: `${apiURL}/api/producers/${producer_id}`,
+                            method: "POST",
+                            data: QueryString.stringify(preparedData),
+                            auth: {
+                              username: apiUsername,
+                              password: apiPassword,
+                            },
+                          })
+                            .then((res) => {
+                              if (res.data.data) {
+                                const dataUpdate = [...tableData];
+                                const index = oldData.tableData.id;
+                                dataUpdate[index] = newData;
+                                setTableData([...dataUpdate]);
+                              }
+                            })
+                            .then(() => {
+                              resolve();
+                            })
+                            .catch((e) => {
+                              reject(e);
+                            });
+                        }
+                      });
+                    },
+                  }
+                }
+                columns={tableHeaderOptions}
+                data={tableData}
+                title="Producer Information"
+                options={tableOptions(tableData)}
+                detailPanel={[
+                  {
+                    tooltip: "Add Comments",
+                    icon: "comment",
+
+                    openIcon: "message",
+                    render: (rowData) => {
+                      return (
+                          <IssueDialogue nickname={user.nickname} rowData={rowData} dataType="table" setSnackbarData={setSnackbarData} labels={["producer-information"]}/>
+                      );
+                    },
+                  },
+                ]}
+              />
+            </Grid>
+        </div>
       )}
     </Grid>
   ) : (

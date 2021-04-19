@@ -32,6 +32,7 @@ import IssueBubbleBody from "./components/IssueBodyBubble";
 import { Fragment } from "react";
 import { SingleIssueBodyBubble } from "./components/SingleIssueBodyBubble";
 import { createGithubComment } from "../utils/SharedFunctions"
+import Comments from "../Comments/Comments"
 
 
   
@@ -288,124 +289,7 @@ const Issue = (props) => {
             )}
           </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <Grid container spacing={2}>
-            <Grid item>
-              <Typography variant="caption">
-                Please enter your comments below
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <MDEditor
-                preview="edit"
-                value={newComment}
-                onChange={setNewCommentBody}
-                commands={[
-                  commands.bold,
-                  commands.italic,
-                  commands.hr,
-                  commands.code,
-                  commands.checkedListCommand,
-                  commands.unorderedListCommand,
-                  commands.quote,
-                  commands.title,
-                  commands.fullscreen,
-                  commands.codeLive,
-                  commands.codeEdit,
-                  githubUserMentionCommand,
-                ]}
-              />
-            </Grid>
-            <Grid item>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => handleNewComment()}
-              >
-                Add Comment
-              </Button>
-            </Grid>
-            <Grid item>
-              <FormControlLabel
-                control={
-                  <Switch
-                    color={showPreview ? "primary" : "default"}
-                    checked={showPreview}
-                    onChange={(e) => setShowPreview(e.target.checked)}
-                  />
-                }
-                label="Show Markdown Preview"
-              />
-            </Grid>
-          </Grid>
-        </Grid>
-        <Dialog
-          open={showUsersDialog}
-          onClose={() => setShowUsersDialog(false)}
-          aria-labelledby="form-dialog-title"
-          disableBackdropClick
-          fullWidth
-          maxWidth="lg"
-        >
-          <DialogTitle id="form-dialog-title">Github Users</DialogTitle>
-          <DialogContent>
-            <Grid container spacing={3}>
-              {githubUsers.length > 0 ? (
-                <>
-                  <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      placeholder="Search users here"
-                      value={searchUser}
-                      onChange={(e) => setSearchUser(e.target.value)}
-                    />
-                  </Grid>
-
-                  {filteredUsers.map((user) => (
-                    <Grid item key={user.id} xs={12} md={4}>
-                      <Grid
-                        container
-                        direction="row"
-                        justify="flex-start"
-                        spacing={3}
-                      >
-                        <Grid item xs="auto" md="auto">
-                          <Avatar
-                            variant="rounded"
-                            alt={user.login}
-                            src={user.avatar_url}
-                          />
-                        </Grid>
-                        <Grid item xs="auto" md="auto">
-                          <Button
-                            onClick={() => {
-                              setNewComment(newComment + ` @${user.login}`);
-                              setShowUsersDialog(false);
-                              setSearchUser("");
-                            }}
-                          >
-                            {user.login}
-                          </Button>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  ))}
-                </>
-              ) : (
-                <Typography variant="body1">No Users Available</Typography>
-              )}
-            </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => setShowUsersDialog(false)}
-            >
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
+        <Comments handleNewComment={handleNewComment}/>
       </Grid>
     </Slide>
   );

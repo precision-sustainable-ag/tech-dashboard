@@ -18,6 +18,8 @@ const Issues = (props) => {
   const [showLoader, setShowLoader] = useState(true);
   const [filter, setFilter] = useState("all");
 
+  // setFilter("all")
+
   const handleFilterChange = (event) => {
     setFilter(event.target.value)
   }
@@ -70,7 +72,7 @@ const Issues = (props) => {
               >
                 <MenuItem value="all">all</MenuItem>
                 <MenuItem value="kobo-forms">kobo-forms</MenuItem>
-                <MenuItem value="sites">sites</MenuItem>
+                <MenuItem value="site-information">site-information</MenuItem>
               </Select>
             </Grid>
           </Grid>

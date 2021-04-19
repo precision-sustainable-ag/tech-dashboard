@@ -8,10 +8,13 @@ import {
   TableRow,
   Typography,
   withStyles,
+  IconButton,
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 import { useMemo } from "react";
 import { parseISO, format } from "date-fns";
+import { Comment  } from "@material-ui/icons";
+import React from "react";
 
 const FarmValuesTable = ({ data = [], year, affiliation = "all" }) => {
   const record = useMemo(() => {
@@ -26,12 +29,14 @@ const FarmValuesTable = ({ data = [], year, affiliation = "all" }) => {
           new Date(b.cc_termination_date) - new Date(a.cc_termination_date)
       );
   }, [year, data, affiliation]);
+  const [open, setOpen] = React.useState(false);
 
   return record.length > 0 ? (
     <TableContainer aria-label="Biomass farm values" component={Paper}>
       <Table size="medium" stickyHeader>
         <TableHead>
           <TableRow>
+            <TableCell></TableCell>
             <TableCell align="right">Code</TableCell>
             <TableCell align="right">Subplot</TableCell>
             <TableCell align="right">Termination Date</TableCell>
@@ -56,6 +61,11 @@ const FarmValuesTable = ({ data = [], year, affiliation = "all" }) => {
         <TableBody>
           {record.map((record, index) => (
             <CustomTableRow key={index}>
+              <TableCell>
+                 <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+                   {open ? <Comment /> : <Comment />}
+                 </IconButton>
+               </TableCell>
               {(index + 1) % 2 === 0 ? (
                 <>
                   <TableCell colSpan={2} align="right">
