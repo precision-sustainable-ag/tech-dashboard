@@ -96,6 +96,10 @@ const ProducerInformation = (props) => {
     return permissions.split(",").some((i) => allowedPermissions.includes(i));
   };
 
+  const {
+    getTokenSilently,
+  } = useAuth0();
+
   useEffect(() => {
     const fetchProducers = async () => {
       let response = await fetch(producersURL, {
@@ -258,7 +262,7 @@ const ProducerInformation = (props) => {
                     openIcon: "message",
                     render: (rowData) => {
                       return (
-                          <IssueDialogue nickname={user.nickname} rowData={rowData} dataType="table" setSnackbarData={setSnackbarData} labels={["producer-information"]}/>
+                          <IssueDialogue nickname={user.nickname} rowData={rowData} dataType="table" setSnackbarData={setSnackbarData} labels={["producer-information"]} getTokenSilently={getTokenSilently}/>
                       );
                     },
                   },

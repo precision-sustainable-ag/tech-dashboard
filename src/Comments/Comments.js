@@ -97,11 +97,10 @@ const Comments = (props) => {
         tableData = tableData + `</tbody>
         </table>`;
         body = tableData + " <br/> " + newComment
-    }
-
-    if(props.dataType === "json"){
+    } else if(props.dataType === "json"){
         body = "```json\n" + props.rowData + "\n```\n" + " <br/> " + newComment;
-    }
+    } else
+        body = newComment;
 
     return(
         <Grid container spacing={1}>

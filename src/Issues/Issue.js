@@ -56,6 +56,7 @@ const Issue = (props) => {
   const [issueBody, setIssueBody] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [newCommentAdded, setNewCommentAdded] = useState(false);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
 
   const hasIssueContent =
     props.location.state &&
@@ -122,17 +123,25 @@ const Issue = (props) => {
     });
   };
 
-  async function handleNewComment() {
+  async function handleNewComment(body) {
     let token = await getTokenSilently({
       audience: `https://precision-sustaibale-ag/tech-dashboard`
     });
+    setButtonDisabled(true);
 
-    createGithubComment(user.nickname, newComment, issueNumber, token)
+
+    console.log("body " + body)
+    // setNewCommentBody(body)
+
+    console.log("nick " + user.nickname + " comm " + body + " iss " + issueNumber + " token " + token)
+
+    createGithubComment(user.nickname, body, issueNumber, token)
       .then((resp) => {})
       .then(() => {
         setNewCommentAdded(!newCommentAdded);
         setNewComment("");
-      });
+        setButtonDisabled(false);
+      })
   }
 
   useEffect(() => {
@@ -289,7 +298,7 @@ const Issue = (props) => {
             )}
           </Grid>
         </Grid>
-        <Comments handleNewComment={handleNewComment}/>
+        <Comments handleNewComment={handleNewComment} buttonDisabled={buttonDisabled}/>
       </Grid>
     </Slide>
   );
