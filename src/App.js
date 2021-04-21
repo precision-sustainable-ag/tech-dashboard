@@ -43,6 +43,7 @@ import ProducerInformation from "./ProducerInformation/ProducerInformation";
 import FormData from "./Forms/components/FormData";
 import FarmDates from "./SiteInformation/FarmDates/FarmDates";
 import FarmValues from "./Biomass/FarmValues";
+import SensorVisuals from "./SensorVisuals/SensorVisuals";
 
 // Helper function
 function useOnlineStatus() {
@@ -316,6 +317,15 @@ function App() {
 
               <PrivateRoute path="/profile" component={Profile} />
               <PrivateRoute path="/device-enroll" component={DeviceEnroll} />
+
+              {/* New Sensors Page URLS */}
+
+              <PrivateRoute
+                path={`/sensor-visuals`}
+                render={(props) => <SensorVisuals type="watersensors" />}
+                exact
+              />
+              {/* Old Water Sensors Page URLS */}
               <PrivateRoute
                 path="/water-sensors"
                 component={WaterSensorData}
@@ -325,6 +335,7 @@ function App() {
                 path={`/water-sensors/:gatewayId`}
                 render={(props) => <WaterSensorByGateway {...props} />}
               />
+              {/* Biomass URLS */}
               <PrivateRoute
                 path={`/biomass/farm-values`}
                 render={(props) => <FarmValues {...props} />}
