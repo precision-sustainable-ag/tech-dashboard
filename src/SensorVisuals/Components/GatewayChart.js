@@ -1,16 +1,8 @@
-import {
-  Button,
-  Grid,
-  IconButton,
-  makeStyles,
-  Paper,
-  Toolbar,
-} from "@material-ui/core";
+import { Button, Grid, makeStyles, Paper, Toolbar } from "@material-ui/core";
 import { GpsFixed } from "@material-ui/icons";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { useMemo } from "react";
-import { groupBy } from "../../utils/constants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 const GatewayChart = (props) => {
-  const { code, serials, data } = props;
+  const { data } = props;
 
   const gwBattVol = useMemo(() => {
     return data.map((record) => {
@@ -153,28 +145,30 @@ const GatewayChart = (props) => {
   return (
     <Grid container>
       <Grid item container xs={12} spacing={2} alignItems="center">
-        <Grid item xs={12}>
-          <Paper>
-            <Toolbar>
-              <Button
-                size="small"
-                target="_blank"
-                href={`https://maps.google.com/?q=${data[0].bare_lat},${data[0].bare_lon}`}
-              >
-                <GpsFixed />
-                &nbsp; Bare
-              </Button>
-              <Button
-                size="small"
-                target="_blank"
-                href={`https://maps.google.com/?q=${data[0].cover_lat},${data[0].cover_lon}`}
-              >
-                <GpsFixed />
-                &nbsp; Cover
-              </Button>
-            </Toolbar>
-          </Paper>
-        </Grid>
+        {data[0].bare_lat && (
+          <Grid item xs={12}>
+            <Paper>
+              <Toolbar>
+                <Button
+                  size="small"
+                  target="_blank"
+                  href={`https://maps.google.com/?t=h&z=21&q=${data[0].bare_lat},${data[0].bare_lon}`}
+                >
+                  <GpsFixed />
+                  &nbsp; Bare
+                </Button>
+                <Button
+                  size="small"
+                  target="_blank"
+                  href={`https://maps.google.com/?t=h&z=21&q=${data[0].cover_lat},${data[0].cover_lon}`}
+                >
+                  <GpsFixed />
+                  &nbsp; Cover
+                </Button>
+              </Toolbar>
+            </Paper>
+          </Grid>
+        )}
         <Grid item xs={12}>
           <HighchartsReact
             highcharts={Highcharts}

@@ -4,6 +4,7 @@ import {
   Grid,
   makeStyles,
   Paper,
+  Tooltip,
   Typography,
 } from "@material-ui/core";
 import { onfarmAPI } from "../../utils/api_secret";
@@ -190,13 +191,12 @@ const VisualsByCode = () => {
         ) : (
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <GatewayChart data={gatewayData} code={code} serials={serials} />
+              <GatewayChart data={gatewayData} />
             </Grid>
-            <Grid item xs={12}>
-              <Grid container>
-                <RenderNodeSerialChips serials={serials.node} />
-              </Grid>
+            <Grid item xs={12} container>
+              <RenderNodeSerialChips serials={serials} />
             </Grid>
+            <Grid item xs={12}></Grid>
           </Grid>
         )}
       </Grid>
@@ -208,11 +208,17 @@ const RenderNodeSerialChips = (props) => {
   const { serials } = props;
 
   return (
-    <>
-      {serials.map((serial, index) => (
-        <Chip label={serial} key={index} />
+    <Grid item container spacing={2} justify="center" alignItems="center">
+      {serials.node.map((serial, index) => (
+        <Grid item key={index}>
+          <Tooltip
+            title={serials.ambient.includes(serial) ? "Ambient Sensor" : ""}
+          >
+            <Chip label={serial} />
+          </Tooltip>
+        </Grid>
       ))}
-    </>
+    </Grid>
   );
 };
 
