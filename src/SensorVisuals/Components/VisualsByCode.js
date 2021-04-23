@@ -15,6 +15,7 @@ import { useContext, useEffect, useState } from "react";
 import { Context } from "../../Store/Store";
 import { CustomLoader } from "../../utils/CustomComponents";
 import GatewayChart from "./GatewayChart";
+import NodeCharts from "./NodeCharts";
 
 const VisualsByCode = () => {
   const [state] = useContext(Context);
@@ -32,6 +33,8 @@ const VisualsByCode = () => {
     node: [],
     ambient: [],
   });
+  const [activeSerial, setActiveSerial] = useState("");
+  const [activeSubplot, setActiveSubplot] = useState("");
 
   const waterSensorDataEndpoint =
     onfarmAPI +
@@ -194,9 +197,20 @@ const VisualsByCode = () => {
               <GatewayChart data={gatewayData} />
             </Grid>
             <Grid item xs={12} container>
-              <RenderNodeSerialChips serials={serials} />
+              <RenderNodeSerialChips
+                serials={serials}
+                activeSerial={activeSerial}
+                setActiveSerial={setActiveSerial}
+              />
             </Grid>
-            <Grid item xs={12}></Grid>
+            <Grid item xs={12}>
+              <NodeCharts
+                activeSerial={activeSerial}
+                sensorData={sensorData}
+                nodeData={nodeData}
+                ambientSensorData={ambientSensorData}
+              />
+            </Grid>
           </Grid>
         )}
       </Grid>
@@ -205,7 +219,7 @@ const VisualsByCode = () => {
 };
 
 const RenderNodeSerialChips = (props) => {
-  const { serials } = props;
+  const { serials, activeSerial, setActiveSerial } = props;
 
   return (
     <Grid item container spacing={2} justify="center" alignItems="center">
@@ -214,7 +228,11 @@ const RenderNodeSerialChips = (props) => {
           <Tooltip
             title={serials.ambient.includes(serial) ? "Ambient Sensor" : ""}
           >
-            <Chip label={serial} />
+            <Chip
+              color={activeSerial === serial ? "primary" : "default"}
+              label={serial}
+              onClick={() => setActiveSerial(serial)}
+            />
           </Tooltip>
         </Grid>
       ))}
