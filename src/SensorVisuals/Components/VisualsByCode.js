@@ -1,4 +1,11 @@
-import { Button, Chip, Grid, Typography } from "@material-ui/core";
+import {
+  Button,
+  Chip,
+  Grid,
+  makeStyles,
+  Paper,
+  Typography,
+} from "@material-ui/core";
 import { onfarmAPI } from "../../utils/api_secret";
 import PropTypes from "prop-types";
 import { ArrowBackIos } from "@material-ui/icons";
@@ -6,14 +13,14 @@ import { useHistory, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { Context } from "../../Store/Store";
 import { CustomLoader } from "../../utils/CustomComponents";
+import GatewayChart from "./GatewayChart";
 
 const VisualsByCode = () => {
   const [state] = useContext(Context);
   const history = useHistory();
   const { code, year } = useParams();
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
-  const [serialNumbers, setSerialNumbers] = useState([]);
+
   const [sensorData, setSensorData] = useState([]);
   const [gatewayData, setGatewayData] = useState([]);
   const [nodeData, setNodeData] = useState([]);
@@ -43,7 +50,7 @@ const VisualsByCode = () => {
 
   useEffect(() => {
     const fetchData = async (apiKey) => {
-      const setAllData = (response, type, serialData) => {
+      const setAllData = (response, type) => {
         const uniqueSerials = response
           .reduce((acc, curr) => {
             if (acc.includes(curr.serial)) {
@@ -58,22 +65,22 @@ const VisualsByCode = () => {
         switch (type) {
           case "sensor": {
             setSensorData(response);
-            setSerials({ ...serialData, sensor: uniqueSerials });
+            setSerials((serial) => ({ ...serial, sensor: uniqueSerials }));
             break;
           }
           case "node": {
             setNodeData(response);
-            setSerials({ ...serialData, node: uniqueSerials });
+            setSerials((serial) => ({ ...serial, node: uniqueSerials }));
             break;
           }
           case "gateway": {
             setGatewayData(response);
-            setSerials({ ...serialData, gateway: uniqueSerials });
+            setSerials((serial) => ({ ...serial, gateway: uniqueSerials }));
             break;
           }
           case "ambient": {
             setAmbientSensorData(response);
-            setSerials({ ...serialData, ambient: uniqueSerials });
+            setSerials((serial) => ({ ...serial, ambient: uniqueSerials }));
             break;
           }
           default:
@@ -91,41 +98,41 @@ const VisualsByCode = () => {
               "x-api-key": apiKey,
             },
           });
-          const nodeRecords = await fetch(waterNodeDataEndpoint, {
-            headers: {
-              "Content-Type": "application/json",
-              "x-api-key": apiKey,
-            },
-          });
-          const ambientRecords = await fetch(waterAmbientSensorDataEndpoint, {
-            headers: {
-              "Content-Type": "application/json",
-              "x-api-key": apiKey,
-            },
-          });
-          const waterSensorRecords = await fetch(waterSensorDataEndpoint, {
-            headers: {
-              "Content-Type": "application/json",
-              "x-api-key": apiKey,
-            },
-          });
 
           const gatewayResponse = await gatewayRecords.json();
-          const nodeResponse = await nodeRecords.json();
-          const ambientResponse = await ambientRecords.json();
-          const waterSensorResponse = await waterSensorRecords.json();
 
           setAllData(gatewayResponse, "gateway");
-          setAllData(nodeResponse, "node");
-          setAllData(ambientResponse, "ambient");
-          setAllData(waterSensorResponse, "sensor");
+          if (gatewayResponse.length !== 0) {
+            const nodeRecords = await fetch(waterNodeDataEndpoint, {
+              headers: {
+                "Content-Type": "application/json",
+                "x-api-key": apiKey,
+              },
+            });
+            const ambientRecords = await fetch(waterAmbientSensorDataEndpoint, {
+              headers: {
+                "Content-Type": "application/json",
+                "x-api-key": apiKey,
+              },
+            });
+            const waterSensorRecords = await fetch(waterSensorDataEndpoint, {
+              headers: {
+                "Content-Type": "application/json",
+                "x-api-key": apiKey,
+              },
+            });
+            const nodeResponse = await nodeRecords.json();
+            const ambientResponse = await ambientRecords.json();
+            const waterSensorResponse = await waterSensorRecords.json();
+            setAllData(nodeResponse, "node");
+            setAllData(ambientResponse, "ambient");
+            setAllData(waterSensorResponse, "sensor");
+          }
         } catch (e) {
           // console.error("Error:" + e);
 
           throw new Error(e);
         }
-      } else {
-        setData([]);
       }
       setLoading(false);
     };
@@ -133,7 +140,6 @@ const VisualsByCode = () => {
     fetchData(state.userInfo.apikey);
     return () => {
       setLoading(false);
-      setData([]);
     };
   }, [
     state.userInfo.apikey,
@@ -163,7 +169,7 @@ const VisualsByCode = () => {
       <Grid item xs={12}>
         {loading ? (
           <CustomLoader />
-        ) : data.length === 0 ? (
+        ) : gatewayData.length === 0 ? (
           <Grid container style={{ minHeight: "20vh" }}>
             <Grid item xs={12}>
               <Typography variant="h6">No data available for {year}</Typography>
@@ -182,9 +188,14 @@ const VisualsByCode = () => {
             </Grid>
           </Grid>
         ) : (
-          <Grid container>
+          <Grid container spacing={3}>
             <Grid item xs={12}>
-              <VisualContent code={code} serials={serialNumbers} />
+              <GatewayChart data={gatewayData} code={code} serials={serials} />
+            </Grid>
+            <Grid item xs={12}>
+              <Grid container>
+                <RenderNodeSerialChips serials={serials.node} />
+              </Grid>
             </Grid>
           </Grid>
         )}
@@ -193,28 +204,16 @@ const VisualsByCode = () => {
   );
 };
 
-const VisualContent = (props) => {
-  const { code, serials } = props;
+const RenderNodeSerialChips = (props) => {
+  const { serials } = props;
 
   return (
-    <Grid container>
-      <Grid item container xs={12} spacing={2} alignItems="center">
-        <Grid item>
-          <Typography>Serial Numbers</Typography>
-        </Grid>
-        {serials.map((serial, index) => (
-          <Grid item key={index}>
-            <Chip label={serial} />
-          </Grid>
-        ))}
-      </Grid>
-    </Grid>
+    <>
+      {serials.map((serial, index) => (
+        <Chip label={serial} key={index} />
+      ))}
+    </>
   );
-};
-
-VisualContent.defaultProps = {
-  code: "VMF",
-  serials: [],
 };
 
 export default VisualsByCode;
