@@ -75,6 +75,14 @@ const Comments = (props) => {
     };
   }, []);
 
+  
+  useEffect(() => {
+    if(props.removeCommentText){
+      setNewCommentBody("");
+      props.setRemoveCommentText(false);
+    }
+  }, [props.removeCommentText]);
+
   let body;
 
   if (props.dataType === "table") {
@@ -140,7 +148,7 @@ const Comments = (props) => {
               disabled={props.buttonDisabled}
               onClick={() => {
                 props.handleNewComment(body);
-                setNewCommentBody("");
+                // setNewCommentBody("");
               }}
             >
               {props.buttonDisabled ? "Creating Comment" : "Add Comment"}
