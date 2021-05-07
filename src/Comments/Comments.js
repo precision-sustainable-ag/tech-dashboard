@@ -148,7 +148,6 @@ const Comments = (props) => {
               disabled={props.buttonDisabled}
               onClick={() => {
                 props.handleNewComment(body);
-                // setNewCommentBody("");
               }}
             >
               {props.buttonDisabled ? "Creating Comment" : "Add Comment"}

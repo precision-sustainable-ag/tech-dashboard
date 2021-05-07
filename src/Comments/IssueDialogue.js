@@ -23,10 +23,6 @@ const IssueDialogue = (props) => {
     const [buttonDisabled, setButtonDisabled] = useState(false);
     const [removeCommentText, setRemoveCommentText] = useState(false);
 
-    // function toggleRemoveCommentText(val) {
-    //   setRemoveCommentText(val);
-    // }
-
     async function fileNewIssue(newComment) {
         if (issueTitle && newComment) {
           setCheckValidation({ title: false, comment: false });

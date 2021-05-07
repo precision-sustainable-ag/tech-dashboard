@@ -114,6 +114,8 @@ const DeviceComponent = (props) => {
   const [pagesLoaded, setPagesLoaded] = useState(0);
   const [loadMoreDataURI, setLoadMoreDataURI] = useState("");
   const [timeEnd, setTimeEnd] = useState(Math.floor(Date.now() / 1000));
+  const [farmCode, setFarmCode] = useState("");
+  const [rep, setRep] = useState("");
 
   useEffect(() => {
     setUserTimezone(moment.tz.guess);
@@ -379,7 +381,7 @@ const DeviceComponent = (props) => {
   const RenderGridListData = () => {
     return (
       <Grid container spacing={3}>
-        <Grid item>
+        <Grid item xs={12} md={4}>
           <List>
             <ListItem alignItems="center" key="last-date">
               <ListItemIcon>
@@ -421,6 +423,51 @@ const DeviceComponent = (props) => {
             </ListItem>
           </List>
         </Grid>
+        
+
+        <Grid item xs={12} md = {12}>
+          <Grid container spacing = {1}>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                placeholder="Enter the farm code"
+                variant="filled"
+                label="Farm Code"
+                value={farmCode}
+                onChange={(e) => setFarmCode(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                placeholder="Enter the rep number"
+                variant="filled"
+                label="Rep Number"
+                value={rep}
+                onChange={(e) => setRep(e.target.value)}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+
+        <Grid item xs={12} md = {6} display="flex" justify="center" align="center">
+          <Grid container spacing = {1} display="flex" justify="center" align="center">
+            <Grid item xs={12} md={3}>
+              <Button fullWidth variant="contained" color={props.isDarkTheme ? "primary" : "default"}>Start in Corn</Button>
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <Button fullWidth variant="contained" color={props.isDarkTheme ? "primary" : "default"}>Start in Soybean</Button>
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <Button fullWidth variant="contained" color={props.isDarkTheme ? "primary" : "default"}>Stop</Button>
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <Button fullWidth variant="contained" color={props.isDarkTheme ? "primary" : "default"}>Shutdown</Button>
+            </Grid>
+          </Grid>
+        </Grid>
+        
+        
 
         <Grid item xs={12}>
           <RenderDataTable />
