@@ -103,6 +103,7 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {
         producerId: "",
         phone: "",
         producerId: "",
+        firstName: "",
         lastName: "",
         email: "",
       },
@@ -170,6 +171,22 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {
           <Grid container spacing={4}>
             <Grid item xs={12}>
               <Typography variant="h5">New Grower</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="First Name"
+                value={enrollmentData.growerInfo.firstName}
+                onChange={(e) =>
+                  setEnrollmentData({
+                    ...enrollmentData,
+                    growerInfo: {
+                      ...enrollmentData.growerInfo,
+                      firstName: e.target.value,
+                    },
+                  })
+                }
+              />
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -489,6 +506,7 @@ const fetchSiteCodesForProducer = async (producerId) => {
 
 const saveNewGrowerAndFetchProducerId = async (enrollmentData = {}) => {
   let dataObject = {
+    firstName: enrollmentData.growerInfo.firstName,
     lastName: enrollmentData.growerInfo.lastName,
     email: enrollmentData.growerInfo.email,
     phone: enrollmentData.growerInfo.phone
