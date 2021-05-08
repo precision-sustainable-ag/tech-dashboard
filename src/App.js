@@ -45,6 +45,7 @@ import FarmDates from "./SiteInformation/FarmDates/FarmDates";
 import FarmValues from "./Biomass/FarmValues";
 import SensorVisuals from "./SensorVisuals/SensorVisuals";
 import VisualsByCode from "./SensorVisuals/Components/VisualsByCode";
+import FarmDatesCalendar from "./SiteInformation/FarmDates/FarmDatesCalendar";
 
 // Helper function
 function useOnlineStatus() {
@@ -252,11 +253,18 @@ function App() {
               />
               <PrivateRoute
                 path="/site-information/farm-dates"
+                exact
                 render={(props) => (
                   <FarmDates
                     isDarkTheme={theme.palette.type === "light" ? false : true}
                   />
                 )}
+              />
+
+              <PrivateRoute
+                path="/site-information/farm-dates/calendar"
+                component={FarmDatesCalendar}
+                exact
               />
 
               <PrivateRoute
