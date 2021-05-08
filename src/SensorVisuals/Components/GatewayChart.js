@@ -20,7 +20,7 @@ const GatewayChart = (props) => {
   const gwBattVol = useMemo(() => {
     return data.map((record) => {
       return [
-        new Date(record.ts_up.split(" ").join("T")).getTime(),
+        new Date(record.timestamp.split(" ").join("T")).getTime(),
         record.gw_batt_voltage,
       ];
     });
@@ -28,7 +28,7 @@ const GatewayChart = (props) => {
   const gwSolarCurr = useMemo(() => {
     return data.map((record) => {
       return [
-        new Date(record.ts_up.split(" ").join("T")).getTime(),
+        new Date(record.timestamp.split(" ").join("T")).getTime(),
         record.gw_solar_current,
       ];
     });
@@ -37,7 +37,7 @@ const GatewayChart = (props) => {
   const gwSolarVol = useMemo(() => {
     return data.map((record) => {
       return [
-        new Date(record.ts_up.split(" ").join("T")).getTime(),
+        new Date(record.timestamp.split(" ").join("T")).getTime(),
         record.gw_solar_voltage,
       ];
     });
@@ -46,7 +46,7 @@ const GatewayChart = (props) => {
   const gwEnclTemp = useMemo(() => {
     return data.map((record) => {
       return [
-        new Date(record.ts_up.split(" ").join("T")).getTime(),
+        new Date(record.timestamp.split(" ").join("T")).getTime(),
         record.gw_enclosure_temp,
       ];
     });
@@ -55,7 +55,7 @@ const GatewayChart = (props) => {
   const gwTowerSigStr = useMemo(() => {
     return data.map((record) => {
       return [
-        new Date(record.ts_up.split(" ").join("T")).getTime(),
+        new Date(record.timestamp.split(" ").join("T")).getTime(),
         record.tower_signal_strength,
       ];
     });
@@ -86,9 +86,9 @@ const GatewayChart = (props) => {
       showFirstLabel: false,
     },
     yAxis: {
-      title: {
-        text: "Current",
-      },
+      //   title: {
+      //     text: "Current",
+      //   },
       type: "logarithmic",
     },
     legend: {
