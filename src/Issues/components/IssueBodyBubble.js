@@ -6,7 +6,7 @@ import Avatar from "@material-ui/core/Avatar";
 
 import MDEditor from "@uiw/react-md-editor";
 
-import "./IssueBodyBubble.scss";
+// import "./IssueBodyBubble.scss";
 import { IconButton, Grid, Tooltip, makeStyles } from "@material-ui/core";
 import { format_AM_PM } from "../../utils/constants";
 import styled from "styled-components";
