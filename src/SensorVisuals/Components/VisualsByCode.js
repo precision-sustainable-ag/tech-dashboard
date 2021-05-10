@@ -38,19 +38,19 @@ const VisualsByCode = () => {
 
   const waterSensorDataEndpoint =
     onfarmAPI +
-    `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix`;
+    `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31`;
 
   const waterGatewayDataEndpoint =
     onfarmAPI +
-    `/soil_moisture?type=gateway&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix`;
+    `/soil_moisture?type=gateway&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31`;
 
   const waterNodeDataEndpoint =
     onfarmAPI +
-    `/soil_moisture?type=node&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix`;
+    `/soil_moisture?type=node&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31`;
 
   const waterAmbientSensorDataEndpoint =
     onfarmAPI +
-    `/soil_moisture?type=ambient&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix`;
+    `/soil_moisture?type=ambient&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31`;
 
   const waterSensorInstallEndpoint =
     onfarmAPI + `/raw?table=wsensor_install&code=${code.toLowerCase()}`;

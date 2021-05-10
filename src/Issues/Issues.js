@@ -73,6 +73,8 @@ const Issues = (props) => {
                 <MenuItem value="all">all</MenuItem>
                 <MenuItem value="kobo-forms">kobo-forms</MenuItem>
                 <MenuItem value="site-information">site-information</MenuItem>
+                <MenuItem value="producer-information">producer-information</MenuItem>
+                <MenuItem value="farm-dates">farm-dates</MenuItem>
               </Select>
             </Grid>
           </Grid>

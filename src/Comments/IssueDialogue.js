@@ -21,17 +21,20 @@ const IssueDialogue = (props) => {
     const alwaysTaggedPeople = ["brianwdavis", "saseehav", props.nickname];
     const [personName, setPersonName] = React.useState(alwaysTaggedPeople);
     const [buttonDisabled, setButtonDisabled] = useState(false);
+    const [removeCommentText, setRemoveCommentText] = useState(false);
+
+    // function toggleRemoveCommentText(val) {
+    //   setRemoveCommentText(val);
+    // }
 
     async function fileNewIssue(newComment) {
         if (issueTitle && newComment) {
           setCheckValidation({ title: false, comment: false });
 
-          setButtonDisabled(true)
+          setButtonDisabled(true);
   
           const assignedPeople = personName.length > 0 ? personName : [`${props.nickname}`];
-  
-          let jsonData = JSON.stringify(props.data, null, "\t");
-          
+            
           let token = await getTokenSilently({
             audience: `https://precision-sustaibale-ag/tech-dashboard`
           });
@@ -50,7 +53,8 @@ const IssueDialogue = (props) => {
           issueSet.then((res) => {
             if (res.status === 201) {
               setButtonDisabled(false);
-              setIssueTitle("")
+              setIssueTitle("");
+              setRemoveCommentText(true);
               props.setSnackbarData({
                 open: true,
                 text: `New Issue has been created`,
@@ -90,7 +94,15 @@ const IssueDialogue = (props) => {
                 />
             </Grid>
             <Grid item xs={12} lg={6}>
-                <Comments handleNewComment={fileNewIssue} nickname={props.nickname} rowData={props.rowData} dataType={props.dataType} buttonDisabled={buttonDisabled}/>
+                <Comments 
+                  handleNewComment={fileNewIssue} 
+                  nickname={props.nickname} 
+                  rowData={props.rowData} 
+                  dataType={props.dataType} 
+                  buttonDisabled={buttonDisabled}
+                  removeCommentText={removeCommentText}
+                  setRemoveCommentText={setRemoveCommentText}
+                />
             </Grid>
         </Grid>
     )
