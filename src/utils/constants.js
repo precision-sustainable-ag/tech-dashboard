@@ -166,3 +166,21 @@ export const compareStrings = (a, b) => {
   }
   return comparison;
 };
+
+/**
+ *
+ * @param {Array} objectArray
+ * @param {String} property
+ * @returns {Object} Object
+ */
+export const groupBy = (objectArray, property) => {
+  return objectArray.reduce((acc, obj) => {
+    const key = obj[property];
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    // Add object to list for given key's value
+    acc[key].push(obj);
+    return acc;
+  }, {});
+};

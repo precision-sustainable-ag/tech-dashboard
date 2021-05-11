@@ -129,12 +129,6 @@ const Issue = (props) => {
     });
     setButtonDisabled(true);
 
-
-    console.log("body " + body)
-    // setNewCommentBody(body)
-
-    console.log("nick " + user.nickname + " comm " + body + " iss " + issueNumber + " token " + token)
-
     createGithubComment(user.nickname, body, issueNumber, token)
       .then((resp) => {})
       .then(() => {

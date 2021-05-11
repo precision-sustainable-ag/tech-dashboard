@@ -112,7 +112,7 @@ export const RenderIssues = ({ stateLabel, userRole, filter }) => {
       setLoading(true);
       setShowIssues(false);
 
-      console.log(filter, stateLabel)
+      console.log(filter, stateLabel);
 
       getIssues(octokit, [stateLabel, filter])
         .then((resp) => {
@@ -129,20 +129,15 @@ export const RenderIssues = ({ stateLabel, userRole, filter }) => {
 
             let username;
 
-            console.log(JSON.stringify(res) + "\n")
-
-            if(res.body.includes("**") && res.body.includes("Created By:")){
-              console.log("includes");
+            if (res.body.includes("**") && res.body.includes("Created By:")) {
               username = res.body.split("By: @");
               username = username[1].split("**")[0].replace(/\s/g, "");
-            }
-            else{
+            } else {
               // console.log("not includes" + JSON.stringify(res));
               username = res.user.login;
             }
             // console.log(username);
             try {
-              
               setUserNames((old) =>
                 !old.includes(username) ? [...old, username] : [...old]
               );
@@ -162,7 +157,9 @@ export const RenderIssues = ({ stateLabel, userRole, filter }) => {
           });
 
           // sorting based on most recent updated first
-          const sortedIssues = data.sort((a, b) => Date(b.updated_at) - Date(a.updated_at));
+          const sortedIssues = data.sort(
+            (a, b) => Date(b.updated_at) - Date(a.updated_at)
+          );
           setIssues(sortedIssues);
         })
         .then(() => setDoneSettingUsernames(true))
@@ -204,7 +201,9 @@ export const RenderIssues = ({ stateLabel, userRole, filter }) => {
                 rel="noreferrer"
                 target="_blank"
               >
-                {userNameData[username].name ? userNameData[username].name : userNameData[username].login}
+                {userNameData[username].name
+                  ? userNameData[username].name
+                  : userNameData[username].login}
               </Button>
             </Typography>
           </Grid>
@@ -300,9 +299,10 @@ const getUser = async (octokit, username) => {
   });
 };
 
-const getIssues = async (octokit, labels) => { // labels = [stateLabel, filter]
+const getIssues = async (octokit, labels) => {
+  // labels = [stateLabel, filter]
   // console.log(labels)
-  if (labels[0] === "all"){
+  if (labels[0] === "all") {
     if (labels[1] === "all") {
       return await octokit.request("GET /repos/{owner}/{repo}/issues", {
         owner: "precision-sustainable-ag",
@@ -317,16 +317,14 @@ const getIssues = async (octokit, labels) => { // labels = [stateLabel, filter]
         labels: labels[1],
       });
     }
-  }
-  else if (labels[1] === "all"){
+  } else if (labels[1] === "all") {
     return await octokit.request("GET /repos/{owner}/{repo}/issues", {
       owner: "precision-sustainable-ag",
       repo: "data_corrections",
       state: "open",
       labels: labels[0],
     });
-  }
-  else {
+  } else {
     return await octokit.request("GET /repos/{owner}/{repo}/issues", {
       owner: "precision-sustainable-ag",
       repo: "data_corrections",
@@ -334,7 +332,6 @@ const getIssues = async (octokit, labels) => { // labels = [stateLabel, filter]
       labels: labels,
     });
   }
-  
 };
 
 // Property typings

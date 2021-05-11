@@ -43,6 +43,9 @@ import ProducerInformation from "./ProducerInformation/ProducerInformation";
 import FormData from "./Forms/components/FormData";
 import FarmDates from "./SiteInformation/FarmDates/FarmDates";
 import FarmValues from "./Biomass/FarmValues";
+import SensorVisuals from "./SensorVisuals/SensorVisuals";
+import VisualsByCode from "./SensorVisuals/Components/VisualsByCode";
+import FarmDatesCalendar from "./SiteInformation/FarmDates/FarmDatesCalendar";
 
 // Helper function
 function useOnlineStatus() {
@@ -87,9 +90,7 @@ function App() {
     loading,
     isAuthenticated,
     loginWithRedirect,
-    loginWithPopup,
-    logout,
-    user,
+
     getTokenSilently,
   } = useAuth0();
   const classes = useStyles();
@@ -252,11 +253,18 @@ function App() {
               />
               <PrivateRoute
                 path="/site-information/farm-dates"
+                exact
                 render={(props) => (
                   <FarmDates
                     isDarkTheme={theme.palette.type === "light" ? false : true}
                   />
                 )}
+              />
+
+              <PrivateRoute
+                path="/site-information/farm-dates/calendar"
+                component={FarmDatesCalendar}
+                exact
               />
 
               <PrivateRoute
@@ -316,6 +324,20 @@ function App() {
 
               <PrivateRoute path="/profile" component={Profile} />
               <PrivateRoute path="/device-enroll" component={DeviceEnroll} />
+
+              {/* New Sensors Page URLS */}
+
+              <PrivateRoute
+                path={`/sensor-visuals`}
+                render={(props) => <SensorVisuals type="watersensors" />}
+                exact
+              />
+              <PrivateRoute
+                path={`/sensor-visuals/:year/:code`}
+                component={VisualsByCode}
+                exact
+              />
+              {/* Old Water Sensors Page URLS */}
               <PrivateRoute
                 path="/water-sensors"
                 component={WaterSensorData}
@@ -325,6 +347,7 @@ function App() {
                 path={`/water-sensors/:gatewayId`}
                 render={(props) => <WaterSensorByGateway {...props} />}
               />
+              {/* Biomass URLS */}
               <PrivateRoute
                 path={`/biomass/farm-values`}
                 render={(props) => <FarmValues {...props} />}

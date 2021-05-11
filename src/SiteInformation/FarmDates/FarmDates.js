@@ -1,14 +1,15 @@
 import { useState, useEffect, useContext } from "react";
-import { Grid, Typography, Snackbar } from "@material-ui/core";
+import { Grid, Typography, Snackbar, Button } from "@material-ui/core";
 import { Context } from "../../Store/Store";
 import MaterialTable from "material-table";
 import { bannedRoles } from "../../utils/constants";
 import { BannedRoleMessage, CustomLoader } from "../../utils/CustomComponents";
 import { onfarmAPI } from "../../utils/api_secret";
-import IssueDialogue from "../../Comments/IssueDialogue"
+import IssueDialogue from "../../Comments/IssueDialogue";
 import { addDays } from "date-fns";
 import { useAuth0 } from "../../Auth/react-auth0-spa";
 import MuiAlert from "@material-ui/lab/Alert";
+import { Link } from "react-router-dom";
 
 const farmDatesURL = `${onfarmAPI}/dates`;
 
@@ -31,6 +32,9 @@ const tableHeaderOptions = [
     type: "string",
     align: "justify",
     searchable: true,
+    defaultGroupOrder: 0,
+    defaultSort: "desc",
+    defaultGroupSort: "desc",
   },
   {
     title: "Cover Crop Planting",
@@ -126,9 +130,6 @@ const FarmDates = () => {
         fetchFarmDatesFromApi(state.userInfo.apikey).then((response) => {
           makeDateObjects(response)
             .then((response) => {
-              // const data = response.sort(
-              //   (a, b) => parseInt(b.year) - parseInt(a.year)
-              // );
               setFarmDatesData(response);
             })
             .finally(() => setLoading(false));
@@ -148,6 +149,17 @@ const FarmDates = () => {
 
   return !showBannedMessage ? (
     <Grid container spacing={2}>
+      <Grid item>
+        <Button
+          size="small"
+          color="primary"
+          variant="contained"
+          component={Link}
+          to="/site-information/farm-dates/calendar"
+        >
+          Calendar View
+        </Button>
+      </Grid>
       <Grid item xs={12}>
         {loading ? (
           <CustomLoader />
@@ -167,55 +179,60 @@ const FarmDates = () => {
               <Alert severity="success">{snackbarData.text}</Alert>
             </Snackbar>
             <MaterialTable
-            title={"Farm Dates"}
-            columns={tableHeaderOptions}
-            data={farmDatesData}
-            options={{
-              padding: "default",
+              title={"Farm Dates"}
+              columns={tableHeaderOptions}
+              data={farmDatesData}
+              options={{
+                padding: "default",
 
-              exportButton: true,
-              exportFileName: "Farm Dates",
-              exportAllData: false,
-              pageSizeOptions: [50, 100, farmDatesData.length],
-              pageSize: farmDatesData.length,
-              groupRowSeparator: "  ",
-              grouping: true,
-              headerStyle: {
-                fontWeight: "bold",
-                fontFamily: "Bilo, sans-serif",
-                fontSize: "0.8em",
-                textAlign: "left",
-                position: "sticky",
-                top: 0,
-              },
-              rowStyle: {
-                fontFamily: "Roboto, sans-serif",
-                fontSize: "0.8em",
-                textAlign: "left",
-              },
-              //   maxBodyHeight: "100vh",
-              selection: false,
-              searchAutoFocus: true,
-              toolbarButtonAlignment: "left",
-              actionsColumnIndex: 1,
-              maxBodyHeight: height * 0.7,
-            }}
-            detailPanel={[
-              {
-                tooltip: "Add Comments",
-                icon: "comment",
-
-                openIcon: "message",
-                render: (rowData) => {
-                  return (
-                      <IssueDialogue nickname={user.nickname} rowData={rowData} dataType="table" setSnackbarData={setSnackbarData} labels={["farm-dates"]}/>
-                  );
+                exportButton: true,
+                exportFileName: "Farm Dates",
+                exportAllData: false,
+                pageSizeOptions: [50, 100, farmDatesData.length],
+                pageSize: farmDatesData.length,
+                groupRowSeparator: "  ",
+                grouping: true,
+                headerStyle: {
+                  fontWeight: "bold",
+                  fontFamily: "Bilo, sans-serif",
+                  fontSize: "0.8em",
+                  textAlign: "left",
+                  position: "sticky",
+                  top: 0,
                 },
-              },
-            ]}
-          />
+                rowStyle: {
+                  fontFamily: "Roboto, sans-serif",
+                  fontSize: "0.8em",
+                  textAlign: "left",
+                },
+                //   maxBodyHeight: "100vh",
+                selection: false,
+                searchAutoFocus: true,
+                toolbarButtonAlignment: "left",
+                actionsColumnIndex: 1,
+                maxBodyHeight: height * 0.7,
+              }}
+              detailPanel={[
+                {
+                  tooltip: "Add Comments",
+                  icon: "comment",
+
+                  openIcon: "message",
+                  render: (rowData) => {
+                    return (
+                      <IssueDialogue
+                        nickname={user.nickname}
+                        rowData={rowData}
+                        dataType="table"
+                        setSnackbarData={setSnackbarData}
+                        labels={["farm-dates"]}
+                      />
+                    );
+                  },
+                },
+              ]}
+            />
           </div>
-          
         ) : (
           <Typography variant="body1">No Data</Typography>
         )}

@@ -6,7 +6,7 @@ import { Card, Chip, Grid, Typography } from "@material-ui/core";
 // Local Imports
 import DataParser from "./DataParser";
 import { BannedRoleMessage } from "../utils/CustomComponents";
-import "./Devices.scss";
+// import "./Devices.scss";
 import PropTypes from "prop-types";
 
 const deviceCardStyle = {

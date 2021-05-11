@@ -19,72 +19,60 @@ import {
   TextField,
   InputAdornment,
   Backdrop,
-  useTheme,
-  useMediaQuery,
   Modal,
   Fade,
   Input,
   FormHelperText,
-  FormGroup
+  FormGroup,
 } from "@material-ui/core";
 import Axios from "axios";
-import {
-  Add,
-  CropFree,
-  Check,
-  Save
-} from "@material-ui/icons";
+import { Add, CropFree, Check, Save } from "@material-ui/icons";
 
 // Local Imports
 import { apiUsername, apiPassword } from "../../utils/api_secret";
 
 // Styles
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   paper: {
     backgroundColor: theme.palette.background.paper,
     border: "2px solid #000",
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3)
+    padding: theme.spacing(2, 4, 3),
   },
   root: {
     transform: "translateZ(0px)",
-    flexGrow: 1
+    flexGrow: 1,
   },
   modal: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120
+    minWidth: 120,
   },
   selectEmpty: {
-    marginTop: theme.spacing(2)
+    marginTop: theme.spacing(2),
   },
   table: {
-    minWidth: 650
+    minWidth: 650,
   },
   speedDial: {
     position: "absolute",
     bottom: theme.spacing(2),
-    right: theme.spacing(2)
-  }
+    right: theme.spacing(2),
+  },
 }));
 
-// Default function 
+// Default function
 const DeviceEnroll = () => {
-  const theme = useTheme();
   const classes = useStyles();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
   const [devices, setDevices] = useState([]);
 
   const [deviceWsensorRelations, setDeviceWsensorRelations] = useState([]);
 
-  const [backdropOpen, setBackdropOpen] = useState(false);
-
-  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-  const [confirmDialogDecision, setConfirmDialogDecision] = useState(false);
   const [open, setOpen] = useState(false);
 
   const [deviceIdInput, setDeviceIdInput] = useState("");
@@ -97,12 +85,12 @@ const DeviceEnroll = () => {
         withCredentials: true,
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         auth: {
           username: apiUsername,
-          password: apiPassword
-        }
+          password: apiPassword,
+        },
       }
     );
   };
@@ -117,18 +105,18 @@ const DeviceEnroll = () => {
       formData,
       {
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
         },
         auth: {
           username: apiUsername,
-          password: apiPassword
-        }
+          password: apiPassword,
+        },
       }
     )
-      .then(response => {
+      .then((response) => {
         console.log(response);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error.response);
       });
   };
@@ -139,29 +127,24 @@ const DeviceEnroll = () => {
         withCredentials: true,
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         auth: {
           username: apiUsername,
-          password: apiPassword
-        }
+          password: apiPassword,
+        },
       }
     );
   };
 
-  const doesDeviceIdExistsInRelationship = deviceId => {
-    const found = deviceWsensorRelations.some(el => el.device_id === deviceId);
+  const doesDeviceIdExistsInRelationship = (deviceId) => {
+    const found = deviceWsensorRelations.some(
+      (el) => el.device_id === deviceId
+    );
 
     return found;
   };
 
-  const setDeviceGatewaySensorValues = deviceId => {
-    if (doesDeviceIdExistsInRelationship(deviceId)) {
-      const value = deviceWsensorRelations.map(el => el.device_id === deviceId);
-
-      return value;
-    }
-  };
   const showGatewaySerialNumber = (sno, deviceId) => {
     let isTextFieldFilled;
     if (sno === null) {
@@ -171,24 +154,21 @@ const DeviceEnroll = () => {
         for (const item of deviceWsensorRelations) {
           let deviceId = item.device_id;
           let deviceGatewaySerialNo = item.gateway_serial_no;
-          //   get serial no of the specific deviceid
+
           var deviceIdEle = document.getElementById(deviceId);
           if (deviceIdEle != null) {
-            // set serial no for a specific device id
             deviceIdEle.value = deviceGatewaySerialNo;
 
             isTextFieldFilled = true;
           } else {
             isTextFieldFilled = false;
-            // console.log("no matching device-serial relation");
           }
         }
       } else {
         isTextFieldFilled = false;
         console.log("device sensor relationship empty");
       }
-      //   console.log(deviceId, isTextFieldFilled);
-      //   console.log("drawing serial no textfiels");
+
       return (
         <TextField
           id={deviceId}
@@ -215,14 +195,14 @@ const DeviceEnroll = () => {
               </InputAdornment>
             ) : (
               ""
-            )
+            ),
           }}
         />
       );
     } else return sno;
   };
 
-  const confirmAddSerialDeviceRelation = deviceId => {
+  const confirmAddSerialDeviceRelation = (deviceId) => {
     const ele = document.getElementById(deviceId);
 
     if (window.confirm("Are you sure?")) {
@@ -230,11 +210,11 @@ const DeviceEnroll = () => {
       if (ele.value.length > 0) {
         if (!isNaN(ele.value)) {
           pushGatewaySerialNo(deviceId, ele.value)
-            .then(response => {
+            .then((response) => {
               console.log(response);
               // window.location.reload();
             })
-            .catch(e => {
+            .catch((e) => {
               console.error("axios error: ", e);
             });
         }
@@ -258,8 +238,7 @@ const DeviceEnroll = () => {
     let wsensorRelations = getWsensorRelations();
 
     devices
-      .then(response => {
-        let data = response.data;
+      .then((response) => {
         const distinctDeviceIds = [];
         const map = new Map();
         for (const item of response.data.devices) {
@@ -269,19 +248,19 @@ const DeviceEnroll = () => {
               distinctDeviceIds.push({
                 device_id: item.device_id,
                 device_name: item.device_name,
-                gateway_serial_no: item.gateway_serial_no
+                gateway_serial_no: item.gateway_serial_no,
               });
             }
           }
         }
         return distinctDeviceIds;
       })
-      .then(devices => {
+      .then((devices) => {
         setDevices(devices);
       });
 
     wsensorRelations
-      .then(response => {
+      .then((response) => {
         let data = response.data;
         setDeviceWsensorRelations(data.devices);
       })
@@ -290,50 +269,15 @@ const DeviceEnroll = () => {
     // currently empty array, could be used to trigger new device update
   }, []);
 
-  const speedDialActions = [
-    { icon: <Add />, name: "Copy" },
-    { icon: <Save />, name: "Save" }
-  ];
-  const handleOpen = () => {
-    setBackdropOpen(true);
-  };
-
-  const handleClose = () => {
-    setBackdropOpen(false);
-  };
-
   const addNewDevicePopup = () => {
     setOpen(true);
   };
   const handleModalClose = () => {
     setOpen(false);
   };
-  const checkAddDeviceBtnDisabled = () => {
-    // console.log(doesDeviceIdExistsInRelationship(deviceIdInput));
 
-    if (doesDeviceIdExistsInRelationship(deviceIdInput)) return true;
-    else return false;
-  };
   return (
     <div className={classes.root}>
-      {/* <Backdrop open={backdropOpen} />
-      <SpeedDial
-        className={classes.speedDial}
-        icon={<SpeedDialIcon />}
-        onClose={handleClose}
-        onOpen={handleOpen}
-        open={backdropOpen}
-      >
-        {speedDialActions.map(action => (
-          <SpeedDialAction
-            key={action.name}
-            icon={action.icon}
-            tooltipTitle={action.name}
-            tooltipOpen
-            onClick={handleClose}
-          />
-        ))}
-      </SpeedDial> */}
       <Container maxWidth="xl">
         <Modal
           BackdropComponent={Backdrop}
@@ -357,7 +301,7 @@ const DeviceEnroll = () => {
                       id="deviceIdInput"
                       aria-describedby="device-id"
                       value={deviceIdInput || ""}
-                      onChange={e => {
+                      onChange={(e) => {
                         e.target.value !== ""
                           ? setDeviceIdInput(parseInt(e.target.value))
                           : setDeviceIdInput("");
@@ -387,7 +331,7 @@ const DeviceEnroll = () => {
                       id="gatewaySerialNumberInput"
                       aria-describedby="gateway-serial-number"
                       value={gatewaySerialNumberInput || ""}
-                      onChange={e => {
+                      onChange={(e) => {
                         e.target.value !== ""
                           ? setGatewaySerialNumberInput(
                               parseInt(e.target.value)
@@ -435,14 +379,6 @@ const DeviceEnroll = () => {
             <Button onClick={addNewDevicePopup}>Add New Device</Button>
           </Grid>
         </Grid>
-        {/* <FormControl className={classes.formControl}>
-        <InputLabel>Device ID</InputLabel>
-        <Select value={selectedDeviceId} onChange={handleDeviceDropdown}>
-          <MenuItem value={10}>asjdad</MenuItem>
-          <MenuItem value={20}>asda</MenuItem>
-          <MenuItem value={30}>dkfdsf</MenuItem>
-        </Select>
-      </FormControl> */}
 
         <div style={{ paddingTop: "2em" }}>
           <Grid container spacing={24}>

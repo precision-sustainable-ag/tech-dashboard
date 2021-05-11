@@ -3,7 +3,7 @@ import React, { useEffect, useContext, useState } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
-import { RiSensorFill, BiDevices, RiTimeLine } from "react-icons/all";
+import { RiSensorFill, RiTimeLine } from "react-icons/all";
 import {
   Drawer,
   AppBar,
@@ -128,6 +128,7 @@ export default function Header(props) {
     biomass: false,
     site_info: false,
     devices: false,
+    waterSensors: false,
   });
 
   const handleOpenAllDataNav = () => {
@@ -441,12 +442,13 @@ export default function Header(props) {
             </ListItemIcon>
             <ListItemText primary={"Issues"} />
           </ListItem>
+
           <ListItem
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              setOpenNav({ ...openNav, waterSensors: !openNav.waterSensors });
+            }}
             button
-            key={"Water Sensors"}
-            component={Link}
-            to="/water-sensors"
+            key={"WaterSensors"}
           >
             <ListItemIcon>
               <Icon>
@@ -454,7 +456,34 @@ export default function Header(props) {
               </Icon>
             </ListItemIcon>
             <ListItemText primary={"Water Sensors"} />
+            {openNav.waterSensors ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
+          <Collapse in={openNav.waterSensors} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem
+                button
+                to="/water-sensors"
+                component={Link}
+                onClick={() => {
+                  setOpen(false);
+                  handleOpenDevicesNav();
+                }}
+              >
+                <ListItemText inset primary="Legacy Water Sensors" />
+              </ListItem>
+              <ListItem
+                button
+                to="/sensor-visuals"
+                component={Link}
+                onClick={() => {
+                  setOpen(false);
+                  handleOpenDevicesNav();
+                }}
+              >
+                <ListItemText inset primary="New Water Sensors" />
+              </ListItem>
+            </List>
+          </Collapse>
 
           <ListItem
             onClick={() => handleOpenDevicesNav()}
