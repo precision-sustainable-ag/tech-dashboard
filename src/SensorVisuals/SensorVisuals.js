@@ -9,6 +9,7 @@ import { groupBy } from "../utils/constants";
 import FarmCodeCard from "./Components/FarmCodeCard";
 import { Search } from "@material-ui/icons";
 import AffiliationsChips from "../utils/AffiliationsChips";
+import { useHistory } from "react-router-dom";
 
 // const allYears
 
@@ -18,6 +19,8 @@ const stressCamAPIEndpoint = ``;
 
 const SensorVisuals = (props) => {
   const { type } = props;
+  const history = useHistory();
+
   const displayTitle =
     type === "watersensors" ? "Water Sensors" : "Stress Cams";
   const [loading, setLoading] = useState(false);
@@ -56,10 +59,17 @@ const SensorVisuals = (props) => {
           const uniqueYears = Object.keys(recs)
             .sort((a, b) => b - a)
             .map((y, i) => {
-              return {
-                year: y,
-                active: i === 0 ? true : false,
-              };
+              if (history.location.state.year) {
+                return {
+                  year: y,
+                  active: history.location.state.year === y,
+                };
+              } else {
+                return {
+                  year: y,
+                  active: i === 0 ? true : false,
+                };
+              }
             });
           setYears(uniqueYears);
 
@@ -70,7 +80,7 @@ const SensorVisuals = (props) => {
             .map((a, i) => {
               return {
                 affiliation: a,
-                active: i === 0 ? true : false,
+                active: i === 0,
               };
             });
 
@@ -88,7 +98,7 @@ const SensorVisuals = (props) => {
     };
 
     fetchData(state.userInfo.apikey);
-  }, [state.userInfo.apikey, type]);
+  }, [state.userInfo.apikey, type, history.location.state.year]);
 
   const activeData = useMemo(() => {
     const activeYear = years.reduce((acc, curr, ind, arr) => {

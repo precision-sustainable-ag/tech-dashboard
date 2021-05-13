@@ -170,7 +170,13 @@ const VisualsByCode = () => {
           variant="contained"
           size="medium"
           onClick={() => {
-            history.goBack();
+            // history.goBack();
+            history.push({
+              pathname: "/sensor-visuals",
+              state: {
+                year: year,
+              },
+            });
           }}
         >
           <ArrowBackIos />
