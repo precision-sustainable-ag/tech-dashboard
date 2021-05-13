@@ -30,21 +30,28 @@ import WaterSensorByGateway from "./Devices/WaterSensorData/WaterSensorByGateway
 import SiteEnrollment from "./SiteEnrollment/SiteEnrollment";
 import PageNotFound from "./PageNotFound";
 import AllDataTable from "./Table/AllDataTable";
-import Issues from "./Issues/Issues";
-import Issue from "./Issues/Issue";
+
 import DeviceComponent from "./Devices/Device/Device";
-import Forms from "./Forms/Forms";
+
 import Header from "./Header/Header";
 
-import StressCams from "./Devices/StressCams/StressCams";
-import WaterSensors from "./Devices/WaterSensors/WaterSensors";
-import DevicesWrapper from "./Devices/DevicesWrapper/DevicesWrapper";
+import Issues from "./Issues/Issues";
+import Issue from "./Issues/Issue";
 
-import FormData from "./Forms/components/FormData";
-import FarmDates from "./SiteInformation/FarmDates/FarmDates";
-import FarmValues from "./Biomass/FarmValues";
-import SensorVisuals from "./SensorVisuals/SensorVisuals";
-import VisualsByCode from "./SensorVisuals/Components/VisualsByCode";
+const Forms = lazy(() => "./Forms/Forms");
+const StressCams = lazy(() => import("./Devices/StressCams/StressCams"));
+const WaterSensors = lazy(() => import("./Devices/WaterSensors/WaterSensors"));
+const DevicesWrapper = lazy(() =>
+  import("./Devices/DevicesWrapper/DevicesWrapper")
+);
+
+const FormData = lazy(() => import("./Forms/components/FormData"));
+const FarmDates = lazy(() => import("./SiteInformation/FarmDates/FarmDates"));
+const FarmValues = lazy(() => import("./Biomass/FarmValues"));
+const SensorVisuals = lazy(() => import("./SensorVisuals/SensorVisuals"));
+const VisualsByCode = lazy(() =>
+  import("./SensorVisuals/Components/VisualsByCode")
+);
 // import FarmDatesCalendar from "./SiteInformation/FarmDates/FarmDatesCalendar";
 const Profile = lazy(() => import("./Profile/Profile"));
 
@@ -377,6 +384,7 @@ function App() {
                   component={VisualsByCode}
                   exact
                 />
+
                 {/* Old Water Sensors Page URLS */}
                 <PrivateRoute
                   path="/water-sensors"
