@@ -129,6 +129,7 @@ export default function Header(props) {
     site_info: false,
     devices: false,
     waterSensors: false,
+    stressCams: false,
   });
 
   const handleOpenAllDataNav = () => {
@@ -170,7 +171,6 @@ export default function Header(props) {
           "content-type": "application/x-www-form-urlencoded;charset=utf-8",
         },
       }).then((response) => {
-        console.log(response.data);
         if (response.data.return) {
           // user added
           dispatch({
@@ -315,7 +315,7 @@ export default function Header(props) {
           <ListItem
             onClick={() => setOpen(false)}
             button
-            key={"Home"}
+            key={"timeline"}
             component={Link}
             to="/"
           >
@@ -329,7 +329,7 @@ export default function Header(props) {
           <ListItem
             onClick={() => setOpen(false)}
             button
-            key={"Protocols"}
+            key={"protocols"}
             component={Link}
             to="/on-farm-protocols"
           >
@@ -338,6 +338,20 @@ export default function Header(props) {
             </ListItemIcon>
             <ListItemText primary={"Protocols"} />
           </ListItem>
+
+          <ListItem
+            onClick={() => setOpen(false)}
+            button
+            key={"Site Enrollment"}
+            component={Link}
+            to="/site-enroll"
+          >
+            <ListItemIcon>
+              <Info />
+            </ListItemIcon>
+            <ListItemText primary={"Site Enrollment"} />
+          </ListItem>
+
           <ListItem
             button
             to="/producers"
@@ -369,7 +383,7 @@ export default function Header(props) {
                   handleOpenAllDataNav();
                 }}
               >
-                <ListItemText inset primary="Contact and Location/Enrollment" />
+                <ListItemText inset primary="Contact and Location" />
               </ListItem>
 
               <ListItem
@@ -381,22 +395,10 @@ export default function Header(props) {
                   handleOpenAllDataNav();
                 }}
               >
-                <ListItemText inset primary="Farm Dates" />
+                <ListItemText inset primary="Dates" />
               </ListItem>
             </List>
           </Collapse>
-          <ListItem
-            onClick={() => setOpen(false)}
-            button
-            key={"Site Enrollment"}
-            component={Link}
-            to="/site-enroll"
-          >
-            <ListItemIcon>
-              <Info />
-            </ListItemIcon>
-            <ListItemText primary={"Site Enrollment"} />
-          </ListItem>
 
           <ListItem
             onClick={() =>
@@ -422,26 +424,10 @@ export default function Header(props) {
                 component={Link}
                 to="/biomass/farm-values"
               >
-                <ListItemIcon>
-                  <ViewList />
-                </ListItemIcon>
-                <ListItemText primary={"Farm Values"} />
+                <ListItemText inset primary={"Farm Values"} />
               </ListItem>
             </List>
           </Collapse>
-
-          <ListItem
-            onClick={() => setOpen(false)}
-            button
-            key={"Issues"}
-            component={Link}
-            to="/issues"
-          >
-            <ListItemIcon>
-              <BugReport />
-            </ListItemIcon>
-            <ListItemText primary={"Issues"} />
-          </ListItem>
 
           <ListItem
             onClick={() => {
@@ -460,16 +446,17 @@ export default function Header(props) {
           </ListItem>
           <Collapse in={openNav.waterSensors} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
+              {" "}
               <ListItem
                 button
-                to="/water-sensors"
+                to="/devices/water-sensors"
                 component={Link}
                 onClick={() => {
                   setOpen(false);
                   handleOpenDevicesNav();
                 }}
               >
-                <ListItemText inset primary="Legacy Water Sensors" />
+                <ListItemText inset primary="Device Status" />
               </ListItem>
               <ListItem
                 button
@@ -480,48 +467,63 @@ export default function Header(props) {
                   handleOpenDevicesNav();
                 }}
               >
-                <ListItemText inset primary="New Water Sensors" />
+                <ListItemText inset primary="Chart View" />
+              </ListItem>
+              <ListItem
+                button
+                to="/water-sensors"
+                component={Link}
+                onClick={() => {
+                  setOpen(false);
+                  handleOpenDevicesNav();
+                }}
+              >
+                <ListItemText inset primary="Legacy Chart View" />
               </ListItem>
             </List>
           </Collapse>
 
           <ListItem
-            onClick={() => handleOpenDevicesNav()}
+            onClick={() =>
+              setOpenNav({ ...openNav, stressCams: !openNav.stressCams })
+            }
             button
-            key={"Devices"}
+            key="stressCams"
           >
             <ListItemIcon>
-              <Info />
+              <Icon>
+                <Info />
+              </Icon>
             </ListItemIcon>
-            <ListItemText primary={"Devices"} />
-            {openDevicesNav ? <ExpandLess /> : <ExpandMore />}
+            <ListItemText primary={"Stress Cams"} />
+            {openNav.stressCams ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
-          <Collapse in={openDevicesNav} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItem
-                button
-                to="/devices/water-sensors"
-                component={Link}
-                onClick={() => {
-                  setOpen(false);
-                  handleOpenDevicesNav();
-                }}
-              >
-                <ListItemText inset primary="Water Sensors" />
-              </ListItem>
-              <ListItem
-                button
-                to="/devices/stress-cams"
-                component={Link}
-                onClick={() => {
-                  setOpen(false);
-                  handleOpenDevicesNav();
-                }}
-              >
-                <ListItemText inset primary="Stress Cams" />
-              </ListItem>
-            </List>
+          <Collapse in={openNav.stressCams} timeout="auto" unmountOnExit>
+            <ListItem
+              button
+              to="/devices/stress-cams"
+              component={Link}
+              onClick={() => {
+                setOpen(false);
+                handleOpenDevicesNav();
+              }}
+            >
+              <ListItemText inset primary="Device Status" />
+            </ListItem>
           </Collapse>
+
+          <ListItem
+            onClick={() => setOpen(false)}
+            button
+            key={"Issues"}
+            component={Link}
+            to="/issues"
+          >
+            <ListItemIcon>
+              <BugReport />
+            </ListItemIcon>
+            <ListItemText primary={"Issues"} />
+          </ListItem>
 
           <ListItem
             onClick={() => setOpen(false)}
