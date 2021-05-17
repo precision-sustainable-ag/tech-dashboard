@@ -74,6 +74,8 @@ const GatewayChart = (props) => {
     chart: {
       type: "scatter",
       zoomType: "xy",
+      borderColor: "black",
+      borderWidth: 1,
     },
     title: {
       text: "Gateway Data",

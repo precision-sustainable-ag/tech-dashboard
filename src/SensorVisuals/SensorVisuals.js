@@ -9,6 +9,7 @@ import { groupBy } from "../utils/constants";
 import FarmCodeCard from "./Components/FarmCodeCard";
 import { Search } from "@material-ui/icons";
 import AffiliationsChips from "../utils/AffiliationsChips";
+import { useHistory } from "react-router-dom";
 
 // const allYears
 
@@ -18,6 +19,8 @@ const stressCamAPIEndpoint = ``;
 
 const SensorVisuals = (props) => {
   const { type } = props;
+  const { location } = useHistory();
+
   const displayTitle =
     type === "watersensors" ? "Water Sensors" : "Stress Cams";
   const [loading, setLoading] = useState(false);
@@ -26,6 +29,14 @@ const SensorVisuals = (props) => {
   const [affiliations, setAffiliations] = useState([]);
   const [state] = useContext(Context);
   const [codeSearchText, setCodeSearchText] = useState("");
+  // const [historyYear, setHistoryYear] = useState(
+  //   // location.state.year ? location.state.year : null
+  //   location.state ? (location.state.year ? location.state.year : null) : null
+  // );
+
+  // useEffect(() => {
+  //   location.state.year && setHistoryYear(location.state.year);
+  // }, [location.state]);
 
   const handleActiveYear = (year = "") => {
     const newYears = years.map((yearInfo) => {
@@ -56,10 +67,23 @@ const SensorVisuals = (props) => {
           const uniqueYears = Object.keys(recs)
             .sort((a, b) => b - a)
             .map((y, i) => {
-              return {
-                year: y,
-                active: i === 0 ? true : false,
-              };
+              if (location.state) {
+                if (location.state.year)
+                  return {
+                    year: y,
+                    active: location.state.year === y,
+                  };
+                else
+                  return {
+                    year: y,
+                    active: i === 0,
+                  };
+              } else {
+                return {
+                  year: y,
+                  active: i === 0,
+                };
+              }
             });
           setYears(uniqueYears);
 
@@ -70,7 +94,7 @@ const SensorVisuals = (props) => {
             .map((a, i) => {
               return {
                 affiliation: a,
-                active: i === 0 ? true : false,
+                active: i === 0,
               };
             });
 
@@ -88,7 +112,7 @@ const SensorVisuals = (props) => {
     };
 
     fetchData(state.userInfo.apikey);
-  }, [state.userInfo.apikey, type]);
+  }, [state.userInfo.apikey, type, location.state]);
 
   const activeData = useMemo(() => {
     const activeYear = years.reduce((acc, curr, ind, arr) => {

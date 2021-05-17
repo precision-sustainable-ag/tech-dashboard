@@ -11,11 +11,21 @@ import { onfarmAPI } from "../../utils/api_secret";
 import PropTypes from "prop-types";
 import { ArrowBackIos } from "@material-ui/icons";
 import { Link, useHistory, useParams } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { lazy, useContext, useEffect, useState } from "react";
 import { Context } from "../../Store/Store";
 import { CustomLoader } from "../../utils/CustomComponents";
 import GatewayChart from "./GatewayChart";
-import NodeCharts from "./NodeCharts";
+// import NodeCharts from "./NodeCharts";
+
+// import NodeVoltage from "./NodeVoltage";
+// import VolumetricWater from "./VolumetricWater";
+// import SoilTemp from "./SoilTemp";
+// import TempByLbs from "./TempByLbs";
+
+const NodeVoltage = lazy(() => import("./NodeVoltage"));
+const SoilTemp = lazy(() => import("./SoilTemp"));
+const TempByLbs = lazy(() => import("./LitterbagTemp"));
+const VolumetricWater = lazy(() => import("./VolumetricWater"));
 
 const VisualsByCode = () => {
   const [state] = useContext(Context);
@@ -105,43 +115,43 @@ const VisualsByCode = () => {
               "x-api-key": apiKey,
             },
           });
-          const latlongData = await fetch(waterSensorInstallEndpoint, {
+          // const latlongData = await fetch(waterSensorInstallEndpoint, {
+          //   headers: {
+          //     "Content-Type": "application/json",
+          //     "x-api-key": apiKey,
+          //   },
+          // });
+          // const latlongResponse = await latlongData.json();
+
+          const gatewayResponse = await gatewayRecords.json();
+
+          setAllData(gatewayResponse, "gateway");
+          // if (gatewayResponse.length !== 0) {
+          const nodeRecords = await fetch(waterNodeDataEndpoint, {
             headers: {
               "Content-Type": "application/json",
               "x-api-key": apiKey,
             },
           });
-          const latlongResponse = await latlongData.json();
-
-          const gatewayResponse = await gatewayRecords.json();
-
-          setAllData(gatewayResponse, "gateway");
-          if (gatewayResponse.length !== 0) {
-            const nodeRecords = await fetch(waterNodeDataEndpoint, {
-              headers: {
-                "Content-Type": "application/json",
-                "x-api-key": apiKey,
-              },
-            });
-            const ambientRecords = await fetch(waterAmbientSensorDataEndpoint, {
-              headers: {
-                "Content-Type": "application/json",
-                "x-api-key": apiKey,
-              },
-            });
-            const waterSensorRecords = await fetch(waterSensorDataEndpoint, {
-              headers: {
-                "Content-Type": "application/json",
-                "x-api-key": apiKey,
-              },
-            });
-            const nodeResponse = await nodeRecords.json();
-            const ambientResponse = await ambientRecords.json();
-            const waterSensorResponse = await waterSensorRecords.json();
-            setAllData(nodeResponse, "node");
-            setAllData(ambientResponse, "ambient");
-            setAllData(waterSensorResponse, "sensor");
-          }
+          // const ambientRecords = await fetch(waterAmbientSensorDataEndpoint, {
+          //   headers: {
+          //     "Content-Type": "application/json",
+          //     "x-api-key": apiKey,
+          //   },
+          // });
+          // const waterSensorRecords = await fetch(waterSensorDataEndpoint, {
+          //   headers: {
+          //     "Content-Type": "application/json",
+          //     "x-api-key": apiKey,
+          //   },
+          // });
+          const nodeResponse = await nodeRecords.json();
+          // const ambientResponse = await ambientRecords.json();
+          // const waterSensorResponse = await waterSensorRecords.json();
+          setAllData(nodeResponse, "node");
+          // setAllData(ambientResponse, "ambient");
+          // setAllData(waterSensorResponse, "sensor");
+          // }
         } catch (e) {
           // console.error("Error:" + e);
 
@@ -155,13 +165,7 @@ const VisualsByCode = () => {
     return () => {
       setLoading(false);
     };
-  }, [
-    state.userInfo.apikey,
-    waterGatewayDataEndpoint,
-    waterAmbientSensorDataEndpoint,
-    waterNodeDataEndpoint,
-    waterSensorDataEndpoint,
-  ]);
+  }, [waterGatewayDataEndpoint, state.userInfo.apikey, waterNodeDataEndpoint]);
 
   return (
     <Grid container spacing={3} alignItems="center">
@@ -170,7 +174,13 @@ const VisualsByCode = () => {
           variant="contained"
           size="medium"
           onClick={() => {
-            history.goBack();
+            // history.goBack();
+            history.push({
+              pathname: "/sensor-visuals",
+              state: {
+                year: year,
+              },
+            });
           }}
         >
           <ArrowBackIos />
@@ -183,7 +193,7 @@ const VisualsByCode = () => {
       <Grid item xs={12}>
         {loading ? (
           <CustomLoader />
-        ) : gatewayData.length === 0 && nodeData.length === 0 ? (
+        ) : gatewayData.length === 0 ? (
           <Grid container style={{ minHeight: "20vh" }}>
             <Grid item xs={12}>
               <Typography variant="h6">
@@ -210,6 +220,45 @@ const VisualsByCode = () => {
                 <GatewayChart data={gatewayData} />
               </Grid>
             )}
+            {nodeData.length > 0 ? (
+              <Grid item container spacing={4}>
+                <Grid item container spacing={3}>
+                  <Grid item xs={12}>
+                    <Typography variant="h5" align="center">
+                      Node Voltage
+                    </Typography>
+                  </Grid>
+                  <NodeVoltage />
+                </Grid>
+                <Grid item container spacing={3}>
+                  <Grid item xs={12}>
+                    <Typography variant="h5" align="center">
+                      VWC
+                    </Typography>
+                  </Grid>
+                  <VolumetricWater />
+                </Grid>
+                <Grid item container spacing={3}>
+                  <Grid item xs={12}>
+                    <Typography variant="h5" align="center">
+                      Soil Temperature
+                    </Typography>
+                  </Grid>
+                  <SoilTemp />
+                </Grid>
+                <Grid item container spacing={3}>
+                  <Grid item xs={12}>
+                    <Typography variant="h5" align="center">
+                      Litterbag Temperature
+                    </Typography>
+                  </Grid>
+                  <TempByLbs />
+                </Grid>
+              </Grid>
+            ) : (
+              "Node data unavailable"
+            )}
+
             <Grid item xs={12} container>
               {/* <RenderNodeSerialChips
                 serials={serials}
@@ -217,41 +266,7 @@ const VisualsByCode = () => {
                 setActiveSerial={setActiveSerial}
               /> */}
             </Grid>
-            <Grid item xs={12}>
-              {/* Sensor data = 
-bare_lat: 32.2849311828613
-bare_lon: -81.8633804321289
-center_depth: -15
-code: "VMF"
-cover_lat: 32.2848968505859
-cover_lon: -81.8632507324219
-ec_bulk: 69
-ec_pore_water: 1840
-is_vwc_outlier: false
-node_serial_no: "18000355"
-permittivity: 7
-serial: "18000355"
-soil_temp: 25.9
-subplot: 2
-tdr_address: "A"
-tdr_sensor_id: "13Acclima TR310S2.114000362"
-time_begin: "2021-04-12 16:22:57"
-time_end: "2021-11-01 12:00:00"
-timestamp: "2021-04-12 19:19:32"
-travel_time: "1690"
-trt: "b"
-ts_up: "2021-04-12 19:24:28"
-uid: "2348417"
-vwc: 12.6
-vwc_outlier_comment: "-999"
-vwc_outlier_who_decided: "-999" */}
-              <NodeCharts
-                activeSerial={activeSerial}
-                sensorData={sensorData}
-                nodeData={nodeData}
-                ambientSensorData={ambientSensorData}
-              />
-            </Grid>
+            <Grid item xs={12}></Grid>
           </Grid>
         )}
       </Grid>
