@@ -332,14 +332,14 @@ const NodeCharts = (props) => {
           </Grid>
         </Grid>
 
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <HighchartsReact
             highcharts={Highcharts}
             options={voltageChartOptions}
             containerProps={{ style: { height: "100%", width: "100%" } }}
           />
-        </Grid>
-        <Grid item xs={12}>
+        </Grid> */}
+        {/* <Grid item xs={12}>
           <HighchartsReact
             highcharts={Highcharts}
             options={sensorChartOptions}
@@ -352,7 +352,7 @@ const NodeCharts = (props) => {
             options={litterBagChartOptions}
             containerProps={{ style: { height: "100%", width: "100%" } }}
           />
-        </Grid>
+        </Grid> */}
       </Fragment>
     </Grid>
   );

@@ -19,7 +19,7 @@ const stressCamAPIEndpoint = ``;
 
 const SensorVisuals = (props) => {
   const { type } = props;
-  const history = useHistory();
+  const { location } = useHistory();
 
   const displayTitle =
     type === "watersensors" ? "Water Sensors" : "Stress Cams";
@@ -29,6 +29,14 @@ const SensorVisuals = (props) => {
   const [affiliations, setAffiliations] = useState([]);
   const [state] = useContext(Context);
   const [codeSearchText, setCodeSearchText] = useState("");
+  // const [historyYear, setHistoryYear] = useState(
+  //   // location.state.year ? location.state.year : null
+  //   location.state ? (location.state.year ? location.state.year : null) : null
+  // );
+
+  // useEffect(() => {
+  //   location.state.year && setHistoryYear(location.state.year);
+  // }, [location.state]);
 
   const handleActiveYear = (year = "") => {
     const newYears = years.map((yearInfo) => {
@@ -59,15 +67,21 @@ const SensorVisuals = (props) => {
           const uniqueYears = Object.keys(recs)
             .sort((a, b) => b - a)
             .map((y, i) => {
-              if (history.location.state.year) {
-                return {
-                  year: y,
-                  active: history.location.state.year === y,
-                };
+              if (location.state) {
+                if (location.state.year)
+                  return {
+                    year: y,
+                    active: location.state.year === y,
+                  };
+                else
+                  return {
+                    year: y,
+                    active: i === 0,
+                  };
               } else {
                 return {
                   year: y,
-                  active: i === 0 ? true : false,
+                  active: i === 0,
                 };
               }
             });
@@ -98,7 +112,7 @@ const SensorVisuals = (props) => {
     };
 
     fetchData(state.userInfo.apikey);
-  }, [state.userInfo.apikey, type, history.location.state.year]);
+  }, [state.userInfo.apikey, type, location.state]);
 
   const activeData = useMemo(() => {
     const activeYear = years.reduce((acc, curr, ind, arr) => {
