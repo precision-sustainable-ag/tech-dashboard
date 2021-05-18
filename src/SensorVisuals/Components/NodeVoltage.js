@@ -87,7 +87,7 @@ const NodeVoltage = () => {
     return {
       ...chartOptions,
       title: {
-        text: "Node Voltage - Subplot 1 Bare",
+        text: "Node Voltage - Rep 1 Bare",
       },
       series: [
         {
@@ -124,7 +124,7 @@ const NodeVoltage = () => {
     return {
       ...chartOptions,
       title: {
-        text: "Node Voltage - Subplot 2 Bare",
+        text: "Node Voltage - Rep 2 Bare",
       },
       series: [
         {
@@ -162,7 +162,7 @@ const NodeVoltage = () => {
     return {
       ...chartOptions,
       title: {
-        text: "Node Voltage - Subplot 1 Cover",
+        text: "Node Voltage - Rep 1 Cover",
       },
       series: [
         {
@@ -201,7 +201,7 @@ const NodeVoltage = () => {
     return {
       ...chartOptions,
       title: {
-        text: "Node Voltage - Subplot 2 Cover",
+        text: "Node Voltage - Rep 2 Cover",
       },
       series: [
         {
