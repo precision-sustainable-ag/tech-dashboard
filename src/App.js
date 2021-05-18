@@ -37,8 +37,10 @@ import Header from "./Header/Header";
 
 import Issues from "./Issues/Issues";
 import Issue from "./Issues/Issue";
+import Forms from "./Forms/Forms";
 
-const Forms = lazy(() => "./Forms/Forms");
+// const Forms = lazy(() => "./Forms/Forms");
+
 const StressCams = lazy(() => import("./Devices/StressCams/StressCams"));
 const WaterSensors = lazy(() => import("./Devices/WaterSensors/WaterSensors"));
 const DevicesWrapper = lazy(() =>

@@ -109,7 +109,7 @@ const VolumetricWater = () => {
     return {
       ...chartOptions,
       title: {
-        text: "VWC - Subplot 1 Bare",
+        text: "VWC - Rep 1 Bare",
       },
       series: [
         {
@@ -168,7 +168,7 @@ const VolumetricWater = () => {
     return {
       ...chartOptions,
       title: {
-        text: "VWC - Subplot 2 Bare",
+        text: "VWC - Rep 2 Bare",
       },
       series: [
         {
@@ -227,7 +227,7 @@ const VolumetricWater = () => {
     return {
       ...chartOptions,
       title: {
-        text: "VWC - Subplot 1 Cover",
+        text: "VWC - Rep 1 Cover",
       },
       series: [
         {
@@ -286,7 +286,7 @@ const VolumetricWater = () => {
     return {
       ...chartOptions,
       title: {
-        text: "VWC - Subplot 2 Cover",
+        text: "VWC - Rep 2 Cover",
       },
       series: [
         {

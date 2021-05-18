@@ -87,7 +87,7 @@ const SoilTemp = () => {
     return {
       ...chartOptions,
       title: {
-        text: "Soil Temp - Subplot 1 Bare",
+        text: "Soil Temp - Rep 1 Bare",
       },
       series: [
         {
@@ -146,7 +146,7 @@ const SoilTemp = () => {
     return {
       ...chartOptions,
       title: {
-        text: "Soil Temp - Subplot 2 Bare",
+        text: "Soil Temp - Rep 2 Bare",
       },
       series: [
         {
@@ -205,7 +205,7 @@ const SoilTemp = () => {
     return {
       ...chartOptions,
       title: {
-        text: "Soil Temp - Subplot 1 Cover",
+        text: "Soil Temp - Rep 1 Cover",
       },
       series: [
         {
@@ -264,7 +264,7 @@ const SoilTemp = () => {
     return {
       ...chartOptions,
       title: {
-        text: "Soil Temp - Subplot 2 Cover",
+        text: "Soil Temp - Rep 2 Cover",
       },
       series: [
         {

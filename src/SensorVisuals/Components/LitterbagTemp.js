@@ -89,7 +89,7 @@ const TempByLbs = () => {
   //   return {
   //     ...chartOptions,
   //     title: {
-  //       text: "Litterbag Temp - Subplot 1 Bare",
+  //       text: "Litterbag Temp - Rep 1 Bare",
   //     },
   //     series: [
   //       {
@@ -112,7 +112,7 @@ const TempByLbs = () => {
   //   return {
   //     ...chartOptions,
   //     title: {
-  //       text: "Litterbag Temp - Subplot 2 Bare",
+  //       text: "Litterbag Temp - Rep 2 Bare",
   //     },
   //     series: [
   //       {
@@ -135,7 +135,7 @@ const TempByLbs = () => {
     return {
       ...chartOptions,
       title: {
-        text: "Litterbag Temp - Subplot 1 Cover",
+        text: "Litterbag Temp - Rep 1 Cover",
       },
       series: [
         {
@@ -159,7 +159,7 @@ const TempByLbs = () => {
     return {
       ...chartOptions,
       title: {
-        text: "Litterbag Temp - Subplot 2 Cover",
+        text: "Litterbag Temp - Rep 2 Cover",
       },
       series: [
         {
