@@ -87,7 +87,7 @@ const ProducerInformation = (props) => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [state] = useContext(Context);
   const { user } = useAuth0();
-  const [snackbarData, setSnackbarData] = useState({ open: false, text: "" });
+  const [snackbarData, setSnackbarData] = useState({ open: false, text: "", severity: "success" });
 
   const allowEditing = () => {
     let permissions = state.userInfo.permissions;
@@ -201,7 +201,7 @@ const ProducerInformation = (props) => {
                 setSnackbarData({ ...snackbarData, open: !snackbarData.open })
               }
             >
-              <Alert severity="success">{snackbarData.text}</Alert>
+              <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
             </Snackbar>
             <Grid item xs={12}>
               <MaterialTable

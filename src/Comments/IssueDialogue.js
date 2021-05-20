@@ -54,7 +54,17 @@ const IssueDialogue = (props) => {
               props.setSnackbarData({
                 open: true,
                 text: `New Issue has been created`,
-                // text: "created test issue"
+                severity: "success"
+              });
+            }
+            else{
+              setButtonDisabled(false);
+              setIssueTitle("");
+              setRemoveCommentText(true);
+              props.setSnackbarData({
+                open: true,
+                text: `Could not create new issue`,
+                severity: "error"
               });
             }
           });

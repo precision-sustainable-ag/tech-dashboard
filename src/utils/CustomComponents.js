@@ -225,9 +225,9 @@ export const useInfiniteScroll = (callback) => {
 
   const isScrolling = () => {
     if (
-      window.innerHeight + document.documentElement.scrollTop !==
-        document.documentElement.offsetHeight ||
-      isFetching
+      window.innerHeight + document.documentElement.scrollTop <=
+        0.9 * document.documentElement.offsetHeight ||
+        isFetching
     )
       return;
     setIsFetching(true);

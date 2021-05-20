@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import Axios from "axios";
 // import { Map, Marker, Popup, TileLayer } from "react-leaflet";
 import Skeleton from "@material-ui/lab/Skeleton";
@@ -29,11 +29,9 @@ import {
   Typography,
   Fab,
   Button,
-  TextField,
   Tooltip,
 } from "@material-ui/core";
 import {
-  Create,
   NetworkCell,
   Router,
   ArrowBackIosOutlined,
@@ -50,10 +48,10 @@ import { APIURL, APICreds, apiCorsUrl } from "../hologramConstants";
 import GoogleMap from "../../Location/GoogleMap";
 import {
   ScrollTop,
-  useAutoRefresh,
   useInfiniteScroll,
 } from "../../utils/CustomComponents";
 import Loading from "react-loading";
+import StressCamButtons from "./StressCamButtons"
 // import { theme } from "highcharts";
 
 SyntaxHighlighter.registerLanguage("json", json);
@@ -114,8 +112,14 @@ const DeviceComponent = (props) => {
   const [pagesLoaded, setPagesLoaded] = useState(0);
   const [loadMoreDataURI, setLoadMoreDataURI] = useState("");
   const [timeEnd, setTimeEnd] = useState(Math.floor(Date.now() / 1000));
-  const [farmCode, setFarmCode] = useState("");
-  const [rep, setRep] = useState("");
+
+  // const [farmCode, setFarmCode] = useState("");
+  // const [rep, setRep] = useState("");
+
+  let farmCode = "";
+  let rep = "";
+
+  // console.log(JSON.stringify(props));
 
   useEffect(() => {
     setUserTimezone(moment.tz.guess);
@@ -208,6 +212,11 @@ const DeviceComponent = (props) => {
           >
             All Devices
           </Button>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography variant="h4" color={props.isDarkTheme ? "primary" : "secondary"}>
+            Showing data for {props.history.location.state.name}
+          </Typography>
         </Grid>
         <Grid item xs={12}>
           <div style={{ height: "350px" }}>
@@ -379,6 +388,7 @@ const DeviceComponent = (props) => {
   };
 
   const RenderGridListData = () => {
+    console.log(farmCode, rep);
     return (
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
@@ -423,52 +433,9 @@ const DeviceComponent = (props) => {
             </ListItem>
           </List>
         </Grid>
-        
 
-        <Grid item xs={12} md = {12}>
-          <Grid container spacing = {1}>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                placeholder="Enter the farm code"
-                variant="filled"
-                label="Farm Code"
-                value={farmCode}
-                onChange={(e) => setFarmCode(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                placeholder="Enter the rep number"
-                variant="filled"
-                label="Rep Number"
-                value={rep}
-                onChange={(e) => setRep(e.target.value)}
-              />
-            </Grid>
-          </Grid>
-        </Grid>
-
-        <Grid item xs={12} md = {6} display="flex" justify="center" align="center">
-          <Grid container spacing = {1} display="flex" justify="center" align="center">
-            <Grid item xs={12} md={3}>
-              <Button fullWidth variant="contained" color={props.isDarkTheme ? "primary" : "default"}>Start in Corn</Button>
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <Button fullWidth variant="contained" color={props.isDarkTheme ? "primary" : "default"}>Start in Soybean</Button>
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <Button fullWidth variant="contained" color={props.isDarkTheme ? "primary" : "default"}>Stop</Button>
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <Button fullWidth variant="contained" color={props.isDarkTheme ? "primary" : "default"}>Shutdown</Button>
-            </Grid>
-          </Grid>
-        </Grid>
+        {!(props.location.state.for === "watersensors") && (<StressCamButtons deviceId = {props.history.location.state.id}/>)}
         
-        
-
         <Grid item xs={12}>
           <RenderDataTable />
         </Grid>
