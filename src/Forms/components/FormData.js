@@ -308,7 +308,6 @@ const FormData = (props) => {
             user={user}
           />
         )}
-        <ShowNewFormIssue />
       </Grid>
     </div>
   );
