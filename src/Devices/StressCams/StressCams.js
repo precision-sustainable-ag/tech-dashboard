@@ -11,7 +11,7 @@ import * as Constants from "../hologramConstants";
 import { bannedRoles, apiCall, compareStrings } from "../../utils/constants";
 import { apiUsername, apiPassword } from "../../utils/api_secret";
 import { BannedRoleMessage } from "../../utils/CustomComponents";
-import "../Devices.scss";
+// import "../Devices.scss";
 import { Context } from "../../Store/Store";
 import DevicesComponent from "../Devices";
 

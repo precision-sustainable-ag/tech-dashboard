@@ -10,12 +10,22 @@ import {
 import { onfarmAPI } from "../../utils/api_secret";
 import PropTypes from "prop-types";
 import { ArrowBackIos } from "@material-ui/icons";
-import { useHistory, useParams } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { Link, useHistory, useParams } from "react-router-dom";
+import { lazy, useContext, useEffect, useState } from "react";
 import { Context } from "../../Store/Store";
 import { CustomLoader } from "../../utils/CustomComponents";
 import GatewayChart from "./GatewayChart";
-import NodeCharts from "./NodeCharts";
+// import NodeCharts from "./NodeCharts";
+
+// import NodeVoltage from "./NodeVoltage";
+// import VolumetricWater from "./VolumetricWater";
+// import SoilTemp from "./SoilTemp";
+// import TempByLbs from "./TempByLbs";
+
+const NodeVoltage = lazy(() => import("./NodeVoltage"));
+const SoilTemp = lazy(() => import("./SoilTemp"));
+const TempByLbs = lazy(() => import("./LitterbagTemp"));
+const VolumetricWater = lazy(() => import("./VolumetricWater"));
 
 const VisualsByCode = () => {
   const [state] = useContext(Context);
@@ -38,19 +48,22 @@ const VisualsByCode = () => {
 
   const waterSensorDataEndpoint =
     onfarmAPI +
-    `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&location=true`;
+    `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31`;
 
   const waterGatewayDataEndpoint =
     onfarmAPI +
-    `/soil_moisture?type=gateway&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&location=true`;
+    `/soil_moisture?type=gateway&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31`;
 
   const waterNodeDataEndpoint =
     onfarmAPI +
-    `/soil_moisture?type=node&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&location=true`;
+    `/soil_moisture?type=node&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31`;
 
   const waterAmbientSensorDataEndpoint =
     onfarmAPI +
-    `/soil_moisture?type=ambient&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&location=true`;
+    `/soil_moisture?type=ambient&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31`;
+
+  const waterSensorInstallEndpoint =
+    onfarmAPI + `/raw?table=wsensor_install&code=${code.toLowerCase()}`;
 
   useEffect(() => {
     const fetchData = async (apiKey) => {
@@ -102,36 +115,43 @@ const VisualsByCode = () => {
               "x-api-key": apiKey,
             },
           });
+          // const latlongData = await fetch(waterSensorInstallEndpoint, {
+          //   headers: {
+          //     "Content-Type": "application/json",
+          //     "x-api-key": apiKey,
+          //   },
+          // });
+          // const latlongResponse = await latlongData.json();
 
           const gatewayResponse = await gatewayRecords.json();
 
           setAllData(gatewayResponse, "gateway");
-          if (gatewayResponse.length !== 0) {
-            const nodeRecords = await fetch(waterNodeDataEndpoint, {
-              headers: {
-                "Content-Type": "application/json",
-                "x-api-key": apiKey,
-              },
-            });
-            const ambientRecords = await fetch(waterAmbientSensorDataEndpoint, {
-              headers: {
-                "Content-Type": "application/json",
-                "x-api-key": apiKey,
-              },
-            });
-            const waterSensorRecords = await fetch(waterSensorDataEndpoint, {
-              headers: {
-                "Content-Type": "application/json",
-                "x-api-key": apiKey,
-              },
-            });
-            const nodeResponse = await nodeRecords.json();
-            const ambientResponse = await ambientRecords.json();
-            const waterSensorResponse = await waterSensorRecords.json();
-            setAllData(nodeResponse, "node");
-            setAllData(ambientResponse, "ambient");
-            setAllData(waterSensorResponse, "sensor");
-          }
+          // if (gatewayResponse.length !== 0) {
+          const nodeRecords = await fetch(waterNodeDataEndpoint, {
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": apiKey,
+            },
+          });
+          // const ambientRecords = await fetch(waterAmbientSensorDataEndpoint, {
+          //   headers: {
+          //     "Content-Type": "application/json",
+          //     "x-api-key": apiKey,
+          //   },
+          // });
+          // const waterSensorRecords = await fetch(waterSensorDataEndpoint, {
+          //   headers: {
+          //     "Content-Type": "application/json",
+          //     "x-api-key": apiKey,
+          //   },
+          // });
+          const nodeResponse = await nodeRecords.json();
+          // const ambientResponse = await ambientRecords.json();
+          // const waterSensorResponse = await waterSensorRecords.json();
+          setAllData(nodeResponse, "node");
+          // setAllData(ambientResponse, "ambient");
+          // setAllData(waterSensorResponse, "sensor");
+          // }
         } catch (e) {
           // console.error("Error:" + e);
 
@@ -145,13 +165,7 @@ const VisualsByCode = () => {
     return () => {
       setLoading(false);
     };
-  }, [
-    state.userInfo.apikey,
-    waterGatewayDataEndpoint,
-    waterAmbientSensorDataEndpoint,
-    waterNodeDataEndpoint,
-    waterSensorDataEndpoint,
-  ]);
+  }, [waterGatewayDataEndpoint, state.userInfo.apikey, waterNodeDataEndpoint]);
 
   return (
     <Grid container spacing={3} alignItems="center">
@@ -160,7 +174,13 @@ const VisualsByCode = () => {
           variant="contained"
           size="medium"
           onClick={() => {
-            history.goBack();
+            // history.goBack();
+            history.push({
+              pathname: "/sensor-visuals",
+              state: {
+                year: year,
+              },
+            });
           }}
         >
           <ArrowBackIos />
@@ -176,15 +196,17 @@ const VisualsByCode = () => {
         ) : gatewayData.length === 0 ? (
           <Grid container style={{ minHeight: "20vh" }}>
             <Grid item xs={12}>
-              <Typography variant="h6">No data available for {year}</Typography>
+              <Typography variant="h6">
+                No data available yet, have you installed sensors and filled out
+                a koboform?
+              </Typography>
             </Grid>
             <Grid item xs={12}>
               <Button
                 variant="contained"
                 color="primary"
-                href=""
-                target="_blank"
-                rel="noreferrer"
+                component={Link}
+                to="/kobo-forms"
                 size="small"
               >
                 psa water sensor install
@@ -193,24 +215,58 @@ const VisualsByCode = () => {
           </Grid>
         ) : (
           <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <GatewayChart data={gatewayData} />
-            </Grid>
+            {gatewayData.length > 0 && (
+              <Grid item xs={12}>
+                <GatewayChart data={gatewayData} />
+              </Grid>
+            )}
+            {nodeData.length > 0 ? (
+              <Grid item container spacing={4}>
+                <Grid item container spacing={3}>
+                  <Grid item xs={12}>
+                    <Typography variant="h5" align="center">
+                      Node Voltage
+                    </Typography>
+                  </Grid>
+                  <NodeVoltage />
+                </Grid>
+                <Grid item container spacing={3}>
+                  <Grid item xs={12}>
+                    <Typography variant="h5" align="center">
+                      VWC
+                    </Typography>
+                  </Grid>
+                  <VolumetricWater />
+                </Grid>
+                <Grid item container spacing={3}>
+                  <Grid item xs={12}>
+                    <Typography variant="h5" align="center">
+                      Soil Temperature
+                    </Typography>
+                  </Grid>
+                  <SoilTemp />
+                </Grid>
+                <Grid item container spacing={3}>
+                  <Grid item xs={12}>
+                    <Typography variant="h5" align="center">
+                      Litterbag Temperature
+                    </Typography>
+                  </Grid>
+                  <TempByLbs />
+                </Grid>
+              </Grid>
+            ) : (
+              "Node data unavailable"
+            )}
+
             <Grid item xs={12} container>
-              <RenderNodeSerialChips
+              {/* <RenderNodeSerialChips
                 serials={serials}
                 activeSerial={activeSerial}
                 setActiveSerial={setActiveSerial}
-              />
+              /> */}
             </Grid>
-            <Grid item xs={12}>
-              <NodeCharts
-                activeSerial={activeSerial}
-                sensorData={sensorData}
-                nodeData={nodeData}
-                ambientSensorData={ambientSensorData}
-              />
-            </Grid>
+            <Grid item xs={12}></Grid>
           </Grid>
         )}
       </Grid>

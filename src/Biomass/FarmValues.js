@@ -5,9 +5,8 @@ import { Context } from "../Store/Store";
 import { onfarmAPI } from "../utils/api_secret";
 import { CustomLoader, YearsAndAffiliations } from "../utils/CustomComponents";
 import { uniqueYears } from "../utils/SharedFunctions";
-// import AffiliationsChips from "../utils/AffiliationsChips";
+
 import FarmValuesTable from "./FarmValuesTable";
-// import YearsChips from "../utils/YearsChips";
 
 const currentYear = new Date().getFullYear();
 const FarmValues = () => {

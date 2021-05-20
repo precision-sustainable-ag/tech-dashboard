@@ -109,7 +109,7 @@ export const createGithubIssue = async (
   };
 
   let res = await fetch(
-    `http://localhost:7071/api/GithubIssues`,
+    `https://githubissues.azurewebsites.us/api/GithubIssues`,
     options
   )
     .then((response) => {
@@ -148,7 +148,7 @@ export const createGithubComment = async (
   };
 
   let res = await fetch(
-    `http://localhost:7071/api/GithubIssues`,
+    `https://githubissues.azurewebsites.us/api/GithubIssues`,
     options
   )
     .then((response) => {

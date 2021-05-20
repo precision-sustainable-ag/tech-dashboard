@@ -1,15 +1,18 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Button, Chip, Grid, Typography, Tooltip, Snackbar } from "@material-ui/core";
+import {
+  Button,
+  Chip,
+  Grid,
+  Typography,
+  Tooltip,
+  Snackbar,
+} from "@material-ui/core";
 import axios from "axios";
 import { apiPassword, apiURL, apiUsername } from "../../utils/api_secret";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import { useAuth0 } from "../../Auth/react-auth0-spa";
-import {
-  QuestionAnswer,
-} from "@material-ui/icons";
+import { QuestionAnswer } from "@material-ui/icons";
 import MuiAlert from "@material-ui/lab/Alert";
-
-
 
 import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
 import docco from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light";
@@ -42,9 +45,7 @@ const FormData = (props) => {
   const [showNewIssueDialog, setShowNewIssueDialog] = useState(false);
 
   const [affiliationLookup, setAffiliationLookup] = useState({});
-  
 
-  
   const fetchData = async (assetId, userType = "psa") => {
     return await axios.get(`${apiURL}/api/kobo/${userType}/data/${assetId}`, {
       auth: {
@@ -95,8 +96,6 @@ const FormData = (props) => {
               setAffiliationLookup(newLookup);
             });
 
-            
-
             setAllowedAccounts(allowedKoboAccounts);
             const filteredRecords = recs.filter((rec) =>
               allowedKoboAccounts.includes(rec._submitted_by)
@@ -129,55 +128,61 @@ const FormData = (props) => {
     });
   }, [activeAccount, originalData]);
 
-    const [snackbarData, setSnackbarData] = useState({ open: false, text: "", severity: "success" });
-    const [newIssueData, setNewIssueData] = useState({});
-  
-    const CreateNewIssue = ({ issueData }) => {
-      return (
-        <div>
-          {showNewIssueDialog ? 
-           "" : <Tooltip title="Submit a new issue">
-           <Button
-             startIcon={<QuestionAnswer />}
-             size="small"
-             variant="contained"
-             color="primary"
-             // color={props.props.isDarkTheme ? "primary" : "default"}
-             onClick={() => {
-               setShowNewIssueDialog(true);
-               setNewIssueData(issueData);
-               ShowNewFormIssue();
-             }}
-           >
-             Comment
-           </Button>
-         </Tooltip>}
-          
-          <ShowNewFormIssue/>
-        </div>
-        
-      );
-    };
+  const [snackbarData, setSnackbarData] = useState({ open: false, text: "", severity: "success" });
+  const [newIssueData, setNewIssueData] = useState({});
+
+  const CreateNewIssue = ({ issueData }) => {
+    return (
+      <div>
+        {showNewIssueDialog ? (
+          ""
+        ) : (
+          <Tooltip title="Submit a new issue">
+            <Button
+              startIcon={<QuestionAnswer />}
+              size="small"
+              variant="contained"
+              color="primary"
+              // color={props.props.isDarkTheme ? "primary" : "default"}
+              onClick={() => {
+                setShowNewIssueDialog(true);
+                setNewIssueData(issueData);
+                ShowNewFormIssue();
+              }}
+            >
+              Comment
+            </Button>
+          </Tooltip>
+        )}
+
+        <ShowNewFormIssue />
+      </div>
+    );
+  };
 
   const ShowNewFormIssue = () => {
     if (showNewIssueDialog) {
       // setShowNewIssueDialog(false)
 
       // console.log(JSON.stringify(props))
-      return(
-        <IssueDialogue 
-          nickname={user.nickname} 
-          rowData={JSON.stringify(newIssueData, null, "\t")} 
-          dataType="json" 
-          setSnackbarData={setSnackbarData} 
-          formName = {props.assetId.history.location.state.name}
+      return (
+        <IssueDialogue
+          nickname={user.nickname}
+          rowData={JSON.stringify(newIssueData, null, "\t")}
+          dataType="json"
+          setSnackbarData={setSnackbarData}
+          formName={props.assetId.history.location.state.name}
           affiliationLookup={affiliationLookup}
-          closeDialogue = {setShowNewIssueDialog}
-          labels={[newIssueData._id.toString(), affiliationLookup[newIssueData._submitted_by], props.assetId.history.location.state.name, "kobo-forms"]}
+          closeDialogue={setShowNewIssueDialog}
+          labels={[
+            newIssueData._id.toString(),
+            affiliationLookup[newIssueData._submitted_by],
+            props.assetId.history.location.state.name,
+            "kobo-forms",
+          ]}
         />
-      )
-    }
-    else return"";
+      );
+    } else return "";
   };
 
   const RenderFormsData = () => {
@@ -203,19 +208,20 @@ const FormData = (props) => {
         </Grid>
         {data.map((record = {}, index) => {
           let slimRecord = record;
-          const submittedDate = new Date(record._submission_time);
-
+          const submittedDate = new Date(record._submission_time + "z");
+          // console.log(submittedDate, record._submission_time);
           return (
             <Grid item container xs={12} spacing={2} key={`record${index}`}>
               <Grid item xs={12} key={`record${index}`}>
                 <Typography variant="h6">
-                {submittedDate.toLocaleString("en-US", {
+                  {submittedDate.toLocaleString("en-US", {
                     day: "numeric",
                     month: "long",
                     year: "numeric",
                     hour: "numeric",
                     minute: "numeric",
-                    timeZone: "UTC",
+                    // timeZone: "UTC",
+                    timeZone: "America/New_York",
                   })}
                 </Typography>
                 <SyntaxHighlighter
@@ -225,7 +231,7 @@ const FormData = (props) => {
                   {JSON.stringify(slimRecord, undefined, 2)}
                 </SyntaxHighlighter>
               </Grid>
-              <CreateNewIssue issueData={record} /> 
+              <CreateNewIssue issueData={record} />
             </Grid>
           );
         })}
@@ -236,17 +242,17 @@ const FormData = (props) => {
   return (
     <div>
       <Snackbar
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "center",
-          }}
-          open={snackbarData.open}
-          autoHideDuration={2000}
-          onClose={() =>
-            setSnackbarData({ ...snackbarData, open: !snackbarData.open })
-          }
-        >
-          <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+        open={snackbarData.open}
+        autoHideDuration={2000}
+        onClose={() =>
+          setSnackbarData({ ...snackbarData, open: !snackbarData.open })
+        }
+      >
+        <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
       </Snackbar>
       <Grid container spacing={2}>
         <Grid item>
@@ -302,12 +308,11 @@ const FormData = (props) => {
             user={user}
           />
         )}
-        <ShowNewFormIssue/>
+        <ShowNewFormIssue />
       </Grid>
     </div>
   );
 };
-
 
 /**
  *
