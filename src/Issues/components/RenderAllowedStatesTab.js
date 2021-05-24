@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { apiPassword, apiURL, apiUsername } from "../../utils/api_secret";
 import Axios from "axios";
 import { Context } from "../../Store/Store";
+import { YearsAndAffiliations } from "../../utils/CustomComponents";
 
 export const RenderAllowedStatesTab = ({
   assignedStates = [],
@@ -24,8 +25,11 @@ export const RenderAllowedStatesTab = ({
         let affiliations = res.data.data;
         let permittedAffiliations = [];
         if (state.userInfo.state === "all") {
-          affiliations.unshift({affiliation: "all"});
-          setAllAffiliations(affiliations);
+          let affiliationArray = [];
+          affiliations.map((affiliation) => {
+            affiliationArray.push({affiliation: affiliation.affiliation});
+          })
+          setAllAffiliations(affiliationArray);
         } else {
           const dbPermittedAffiliations = state.userInfo.state.split(",");
           dbPermittedAffiliations.forEach((element) => {
@@ -40,35 +44,30 @@ export const RenderAllowedStatesTab = ({
       });
   }, []);
 
-  console.log(assignedStates)
-  return assignedStates[0] !== "all" ? (
-    <Grid item container spacing={3}>
-        <Grid container item xs={12} spacing={3}>
-          {assignedStates.map((state, index) => (
-            <Grid item key={`koboAccount${index}`} >
-              <Chip
-                label={state}
-                color={activeState === state ? "primary" : "default"}
-                onClick={() => setActiveState(state)}
-              />
-            </Grid>
-          ))}
-        </Grid>
-    </Grid> 
-  ) : ( 
-    <Grid item container spacing={3}>
-          <Grid container item xs={12} spacing={3}>
-          {allAffiliations.map((state, index) => (
-            <Grid item key={`koboAccount${index}`} >
-              <Chip
-                label={state.affiliation === "all" ? "All" : state.affiliation}
-                color={activeState === state.affiliation ? "primary" : "default"}
-                onClick={() => setActiveState(state.affiliation)}
-              />
-            </Grid>
-          ))}
-        </Grid>
-    </Grid>    
+  const handleActiveAffiliation = (affiliation = "all") => {
+    const newAffiliations = allAffiliations.map((rec) => {
+      return {
+        active: affiliation === rec.affiliation,
+        affiliation: rec.affiliation,
+      };
+    });
+    const sortedNewAffiliations = newAffiliations.sort((a, b) =>
+      b.affiliation < a.affiliation ? 1 : b.affiliation > a.affiliation ? -1 : 0
+    );
+
+    setActiveState(affiliation);
+    setAllAffiliations(sortedNewAffiliations);
+  };
+
+  return (  
+    <YearsAndAffiliations
+      title={"Issues"}
+      years={null}
+      handleActiveYear={null}
+      affiliations={allAffiliations}
+      handleActiveAffiliation={handleActiveAffiliation}
+      showYears={false}
+    />
   );
 };
 
