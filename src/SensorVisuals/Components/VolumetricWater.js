@@ -95,16 +95,16 @@ const VolumetricWater = () => {
 
     const topDepth = filteredData
       .filter((rec) => rec.center_depth === -15)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const middleDepth = filteredData
       .filter((rec) => rec.center_depth === -45)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const deepDepth = filteredData
       .filter((rec) => rec.center_depth === -80)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const surfaceDepth = filteredData
       .filter((rec) => rec.center_depth === -5)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
 
     return {
       ...chartOptions,
@@ -112,6 +112,14 @@ const VolumetricWater = () => {
         text: "VWC - Rep 1 Bare",
       },
       series: [
+        {
+          name: "Surface",
+          data: surfaceDepth,
+          tooltip: {
+            pointFormat:
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
+          },
+        },
         {
           name: "Top",
           data: topDepth,
@@ -131,14 +139,6 @@ const VolumetricWater = () => {
         {
           name: "Deep",
           data: deepDepth,
-          tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
-          },
-        },
-        {
-          name: "Surface",
-          data: surfaceDepth,
           tooltip: {
             pointFormat:
               "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
@@ -154,16 +154,16 @@ const VolumetricWater = () => {
 
     const topDepth = filteredData
       .filter((rec) => rec.center_depth === -15)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const middleDepth = filteredData
       .filter((rec) => rec.center_depth === -45)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const deepDepth = filteredData
       .filter((rec) => rec.center_depth === -80)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const surfaceDepth = filteredData
       .filter((rec) => rec.center_depth === -5)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
 
     return {
       ...chartOptions,
@@ -171,6 +171,14 @@ const VolumetricWater = () => {
         text: "VWC - Rep 2 Bare",
       },
       series: [
+        {
+          name: "Surface",
+          data: surfaceDepth,
+          tooltip: {
+            pointFormat:
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
+          },
+        },
         {
           name: "Top",
           data: topDepth,
@@ -190,14 +198,6 @@ const VolumetricWater = () => {
         {
           name: "Deep",
           data: deepDepth,
-          tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
-          },
-        },
-        {
-          name: "Surface",
-          data: surfaceDepth,
           tooltip: {
             pointFormat:
               "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
@@ -213,16 +213,16 @@ const VolumetricWater = () => {
 
     const topDepth = filteredData
       .filter((rec) => rec.center_depth === -15)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const middleDepth = filteredData
       .filter((rec) => rec.center_depth === -45)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const deepDepth = filteredData
       .filter((rec) => rec.center_depth === -80)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const surfaceDepth = filteredData
       .filter((rec) => rec.center_depth === -5)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
 
     return {
       ...chartOptions,
@@ -230,6 +230,14 @@ const VolumetricWater = () => {
         text: "VWC - Rep 1 Cover",
       },
       series: [
+        {
+          name: "Surface",
+          data: surfaceDepth,
+          tooltip: {
+            pointFormat:
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
+          },
+        },
         {
           name: "Top",
           data: topDepth,
@@ -249,14 +257,6 @@ const VolumetricWater = () => {
         {
           name: "Deep",
           data: deepDepth,
-          tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
-          },
-        },
-        {
-          name: "Surface",
-          data: surfaceDepth,
           tooltip: {
             pointFormat:
               "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
@@ -272,16 +272,16 @@ const VolumetricWater = () => {
 
     const topDepth = filteredData
       .filter((rec) => rec.center_depth === -15)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const middleDepth = filteredData
       .filter((rec) => rec.center_depth === -45)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const deepDepth = filteredData
       .filter((rec) => rec.center_depth === -80)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const surfaceDepth = filteredData
       .filter((rec) => rec.center_depth === -5)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
 
     return {
       ...chartOptions,
@@ -289,6 +289,14 @@ const VolumetricWater = () => {
         text: "VWC - Rep 2 Cover",
       },
       series: [
+        {
+          name: "Surface",
+          data: surfaceDepth,
+          tooltip: {
+            pointFormat:
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
+          },
+        },
         {
           name: "Top",
           data: topDepth,
@@ -308,14 +316,6 @@ const VolumetricWater = () => {
         {
           name: "Deep",
           data: deepDepth,
-          tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
-          },
-        },
-        {
-          name: "Surface",
-          data: surfaceDepth,
           tooltip: {
             pointFormat:
               "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
