@@ -113,14 +113,6 @@ const DeviceComponent = (props) => {
   const [loadMoreDataURI, setLoadMoreDataURI] = useState("");
   const [timeEnd, setTimeEnd] = useState(Math.floor(Date.now() / 1000));
 
-  // const [farmCode, setFarmCode] = useState("");
-  // const [rep, setRep] = useState("");
-
-  let farmCode = "";
-  let rep = "";
-
-  // console.log(JSON.stringify(props));
-
   useEffect(() => {
     setUserTimezone(moment.tz.guess);
     if (props.location.state === undefined) {
@@ -388,7 +380,6 @@ const DeviceComponent = (props) => {
   };
 
   const RenderGridListData = () => {
-    console.log(farmCode, rep);
     return (
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>

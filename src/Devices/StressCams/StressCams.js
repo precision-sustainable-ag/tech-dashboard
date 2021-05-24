@@ -25,11 +25,6 @@ const StressCams = () => {
   let devicesData = [];
   let finalAPIURL = "";
   useEffect(() => {
-    // const date = new Date();
-    // const dateAsString = date.toString();
-    // const timezone = dateAsString.match(/\(([^\)]+)\)$/)[1];
-
-    console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
     if (Reflect.ownKeys(state.userInfo).length > 0) {
       if (bannedRoles.includes(state.userInfo.role)) {
         setShowDevices(false);
