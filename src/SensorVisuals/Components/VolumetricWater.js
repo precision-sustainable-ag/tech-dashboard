@@ -113,6 +113,14 @@ const VolumetricWater = () => {
       },
       series: [
         {
+          name: "Surface",
+          data: surfaceDepth,
+          tooltip: {
+            pointFormat:
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
+          },
+        },
+        {
           name: "Top",
           data: topDepth,
           tooltip: {
@@ -131,14 +139,6 @@ const VolumetricWater = () => {
         {
           name: "Deep",
           data: deepDepth,
-          tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
-          },
-        },
-        {
-          name: "Surface",
-          data: surfaceDepth,
           tooltip: {
             pointFormat:
               "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
@@ -172,6 +172,14 @@ const VolumetricWater = () => {
       },
       series: [
         {
+          name: "Surface",
+          data: surfaceDepth,
+          tooltip: {
+            pointFormat:
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
+          },
+        },
+        {
           name: "Top",
           data: topDepth,
           tooltip: {
@@ -190,14 +198,6 @@ const VolumetricWater = () => {
         {
           name: "Deep",
           data: deepDepth,
-          tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
-          },
-        },
-        {
-          name: "Surface",
-          data: surfaceDepth,
           tooltip: {
             pointFormat:
               "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
@@ -231,6 +231,14 @@ const VolumetricWater = () => {
       },
       series: [
         {
+          name: "Surface",
+          data: surfaceDepth,
+          tooltip: {
+            pointFormat:
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
+          },
+        },
+        {
           name: "Top",
           data: topDepth,
           tooltip: {
@@ -249,14 +257,6 @@ const VolumetricWater = () => {
         {
           name: "Deep",
           data: deepDepth,
-          tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
-          },
-        },
-        {
-          name: "Surface",
-          data: surfaceDepth,
           tooltip: {
             pointFormat:
               "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
@@ -290,6 +290,14 @@ const VolumetricWater = () => {
       },
       series: [
         {
+          name: "Surface",
+          data: surfaceDepth,
+          tooltip: {
+            pointFormat:
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
+          },
+        },
+        {
           name: "Top",
           data: topDepth,
           tooltip: {
@@ -308,14 +316,6 @@ const VolumetricWater = () => {
         {
           name: "Deep",
           data: deepDepth,
-          tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
-          },
-        },
-        {
-          name: "Surface",
-          data: surfaceDepth,
           tooltip: {
             pointFormat:
               "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>",
