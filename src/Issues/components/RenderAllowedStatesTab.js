@@ -24,6 +24,7 @@ export const RenderAllowedStatesTab = ({
         let affiliations = res.data.data;
         let permittedAffiliations = [];
         if (state.userInfo.state === "all") {
+          affiliations.unshift({affiliation: "all"});
           setAllAffiliations(affiliations);
         } else {
           const dbPermittedAffiliations = state.userInfo.state.split(",");
@@ -56,11 +57,11 @@ export const RenderAllowedStatesTab = ({
     </Grid> 
   ) : ( 
     <Grid item container spacing={3}>
-        <Grid container item xs={12} spacing={3}>
+          <Grid container item xs={12} spacing={3}>
           {allAffiliations.map((state, index) => (
             <Grid item key={`koboAccount${index}`} >
               <Chip
-                label={state.affiliation}
+                label={state.affiliation === "all" ? "All" : state.affiliation}
                 color={activeState === state.affiliation ? "primary" : "default"}
                 onClick={() => setActiveState(state.affiliation)}
               />
