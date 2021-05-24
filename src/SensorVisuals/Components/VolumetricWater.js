@@ -95,16 +95,16 @@ const VolumetricWater = () => {
 
     const topDepth = filteredData
       .filter((rec) => rec.center_depth === -15)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const middleDepth = filteredData
       .filter((rec) => rec.center_depth === -45)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const deepDepth = filteredData
       .filter((rec) => rec.center_depth === -80)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const surfaceDepth = filteredData
       .filter((rec) => rec.center_depth === -5)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
 
     return {
       ...chartOptions,
@@ -154,16 +154,16 @@ const VolumetricWater = () => {
 
     const topDepth = filteredData
       .filter((rec) => rec.center_depth === -15)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const middleDepth = filteredData
       .filter((rec) => rec.center_depth === -45)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const deepDepth = filteredData
       .filter((rec) => rec.center_depth === -80)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const surfaceDepth = filteredData
       .filter((rec) => rec.center_depth === -5)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
 
     return {
       ...chartOptions,
@@ -213,16 +213,16 @@ const VolumetricWater = () => {
 
     const topDepth = filteredData
       .filter((rec) => rec.center_depth === -15)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const middleDepth = filteredData
       .filter((rec) => rec.center_depth === -45)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const deepDepth = filteredData
       .filter((rec) => rec.center_depth === -80)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const surfaceDepth = filteredData
       .filter((rec) => rec.center_depth === -5)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
 
     return {
       ...chartOptions,
@@ -272,16 +272,16 @@ const VolumetricWater = () => {
 
     const topDepth = filteredData
       .filter((rec) => rec.center_depth === -15)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const middleDepth = filteredData
       .filter((rec) => rec.center_depth === -45)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const deepDepth = filteredData
       .filter((rec) => rec.center_depth === -80)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
     const surfaceDepth = filteredData
       .filter((rec) => rec.center_depth === -5)
-      .map((rec) => [rec.timestamp, rec.soil_temp]);
+      .map((rec) => [rec.timestamp, rec.vwc]);
 
     return {
       ...chartOptions,
