@@ -1,3 +1,4 @@
+// DEPRECATED: Please see src/Table
 import { Grid, Typography } from "@material-ui/core";
 import { Fragment, useContext, useEffect, useState } from "react";
 import { Context } from "../../Store/Store";
