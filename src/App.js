@@ -60,6 +60,7 @@ import ProducerInformation from "./ProducerInformation/ProducerInformation";
 import TaskTimeline from "./Landing/TaskTimeline/TaskTimeline";
 
 import Protocols from "./Protocols/Protocols";
+import DecompBag from "./DecompBag/DecompBag";
 
 // Helper function
 function useOnlineStatus() {
@@ -365,6 +366,13 @@ function App() {
 
                 <PrivateRoute path="/profile" component={Profile} />
                 <PrivateRoute path="/device-enroll" component={DeviceEnroll} />
+
+                {/* Decomp Bag View */}
+                <PrivateRoute
+                  path={`/decomp-bags`}
+                  component={DecompBag}
+                  exact
+                />
 
                 {/* New Sensors Page URLS */}
 
