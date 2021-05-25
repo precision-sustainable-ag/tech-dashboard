@@ -1,5 +1,8 @@
 import { useContext, useState, useEffect } from "react";
 import { Context } from "../Store/Store";
+import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
+import Axios from "axios";
+import qs from "qs";
 
 export const UserIsEditor = (permissions) => {
   const [state] = useContext(Context);
@@ -106,7 +109,7 @@ export const createGithubIssue = async (
   };
 
   let res = await fetch(
-    `https://githubissues.azurewebsites.us/api/githubissues`,
+    `https://githubissues.azurewebsites.us/api/GithubIssues`,
     options
   )
     .then((response) => {
@@ -145,7 +148,7 @@ export const createGithubComment = async (
   };
 
   let res = await fetch(
-    `https://githubissues.azurewebsites.us/api/githubissues`,
+    `https://githubissues.azurewebsites.us/api/GithubIssues`,
     options
   )
     .then((response) => {
@@ -157,6 +160,92 @@ export const createGithubComment = async (
     });
 
   return res;
+};
+
+export const sendCommandToHologram = async (
+  deviceId,
+  farmCode,
+  rep,
+  action,
+  crop
+) => {
+  let data;
+  if(action === "start"){
+    data = {
+      device_id: deviceId,
+      farm_code: farmCode,
+      rep: rep,
+      action: action,
+      crop: crop,
+    };
+  } else {
+    data = {
+      device_id: deviceId,
+      action: action,
+    };
+  }
+
+  console.log(data)
+
+  const dataString = qs.stringify(data);
+
+  let req = await Axios({
+    method: "POST",
+    url: `${apiURL}/api/stress-cameras-test/commands`,
+    data: dataString,
+    auth: {
+      username: apiUsername,
+      password: apiPassword,
+    },
+    headers: {
+      "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+    },
+  }).catch((e) => {
+    console.error(e);
+  });
+  if (req.status) {
+    if (req.status === 200) {
+      return true;
+    } else {
+      console.error("AJAX Error");
+      return false;
+    }
+  } else {
+    return false;
+  }
+};
+
+export const getDeviceMessages = async (
+  deviceId,
+) => {
+  console.log(deviceId);
+
+  const data = {
+    device_id: deviceId
+  }
+  const dataString = qs.stringify(data);
+
+  let req = await Axios({
+    method: "POST",
+    url: `${apiURL}/api/get-hologram-device-message`,
+    data: dataString,
+    auth: {
+      username: apiUsername,
+      password: apiPassword,
+    },
+  }).catch((e) => {
+    console.error(e);
+  });
+  if (req.status) {
+    if (req.status === 200) {
+      return req;
+    } else {
+      console.error("AJAX Error");
+      return false;
+    }
+  } else {
+    return false;
+  }
 };
 export const tableOptions = (tableDataLength) => ({
   padding: "dense",

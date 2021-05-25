@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import Axios from "axios";
 // import { Map, Marker, Popup, TileLayer } from "react-leaflet";
 import Skeleton from "@material-ui/lab/Skeleton";
@@ -29,11 +29,9 @@ import {
   Typography,
   Fab,
   Button,
-  TextField,
   Tooltip,
 } from "@material-ui/core";
 import {
-  Create,
   NetworkCell,
   Router,
   ArrowBackIosOutlined,
@@ -50,10 +48,10 @@ import { APIURL, APICreds, apiCorsUrl } from "../hologramConstants";
 import GoogleMap from "../../Location/GoogleMap";
 import {
   ScrollTop,
-  useAutoRefresh,
   useInfiniteScroll,
 } from "../../utils/CustomComponents";
 import Loading from "react-loading";
+import StressCamButtons from "./StressCamButtons"
 // import { theme } from "highcharts";
 
 SyntaxHighlighter.registerLanguage("json", json);
@@ -206,6 +204,11 @@ const DeviceComponent = (props) => {
           >
             All Devices
           </Button>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography variant="h4" color={props.isDarkTheme ? "primary" : "secondary"}>
+            Showing data for {props.history.location.state.name}
+          </Typography>
         </Grid>
         <Grid item xs={12}>
           <div style={{ height: "350px" }}>
@@ -379,7 +382,7 @@ const DeviceComponent = (props) => {
   const RenderGridListData = () => {
     return (
       <Grid container spacing={3}>
-        <Grid item>
+        <Grid item xs={12} md={4}>
           <List>
             <ListItem alignItems="center" key="last-date">
               <ListItemIcon>
@@ -422,6 +425,8 @@ const DeviceComponent = (props) => {
           </List>
         </Grid>
 
+        {!(props.location.state.for === "watersensors") && (<StressCamButtons deviceId = {props.history.location.state.id}/>)}
+        
         <Grid item xs={12}>
           <RenderDataTable />
         </Grid>

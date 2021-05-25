@@ -39,21 +39,11 @@ const Issues = (props) => {
   ) : (
     <>
       <Grid container spacing={3} direction="column">
-        <Grid item>
-          <Slide
-            in={!showLoader || !state.loadingUser}
-            direction="down"
-            timeout={200}
-          >
-            <Grid item xs={12}>
-              <RenderAllowedStatesTab
-                activeState={activeState}
-                setActiveState={setActiveState}
-                assignedStates={assignedStates}
-              />
-            </Grid>
-          </Slide>
-        </Grid>
+        <RenderAllowedStatesTab
+          activeState={activeState}
+          setActiveState={setActiveState}
+          assignedStates={assignedStates}
+        />
         <Grid item>
           <Grid container spacing = {1}>
             <Grid item><Typography variant="body1">Filter Issues</Typography></Grid>

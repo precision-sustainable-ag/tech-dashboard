@@ -118,7 +118,7 @@ const FarmDates = () => {
   const [showBannedMessage, setShowBannedMessage] = useState(false);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth0();
-  const [snackbarData, setSnackbarData] = useState({ open: false, text: "" });
+  const [snackbarData, setSnackbarData] = useState({ open: false, text: "", severity: "success" });
 
   useEffect(() => {
     if (state.userInfo.role && bannedRoles.includes(state.userInfo.role)) {
@@ -176,7 +176,7 @@ const FarmDates = () => {
                 setSnackbarData({ ...snackbarData, open: !snackbarData.open })
               }
             >
-              <Alert severity="success">{snackbarData.text}</Alert>
+              <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
             </Snackbar>
             <MaterialTable
               title={"Farm Dates"}

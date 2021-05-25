@@ -124,6 +124,7 @@ const FarmValues = () => {
             handleActiveYear={handleActiveYear}
             affiliations={affiliations}
             handleActiveAffiliation={handleActiveAffiliation}
+            showYears={true}
           />
           {/* Farm Values Table */}
           <Grid item container xs={12}>

@@ -161,7 +161,7 @@ const AllDataTable = (props) => {
           if (bannedRoles.includes(state.userInfo.role)) {
             setShowTable(false);
             setBannedRolesCheckMessage(
-              <BannedRoleMessage title="All Site Information" />
+              <BannedRoleMessage title="All Contact and Location" />
             );
           } else {
             setShowTable(true);
@@ -243,7 +243,7 @@ const AllDataTable = (props) => {
   //       if (bannedRoles.includes(state.userRole)) {
   //         setShowTable(false);
   //         setBannedRolesCheckMessage(
-  //           <BannedRoleMessage title="All Site Information" />
+  //           <BannedRoleMessage title="All Contact and Location" />
   //         );
   //       } else {
   //         setShowTable(true);
@@ -399,7 +399,7 @@ const AllDataTable = (props) => {
             variant="contained"
             color={props.isDarkTheme ? "primary" : "default"}
             onClick={() => {
-              if (latLongNotPresent) {
+              if (!latLongNotPresent) {
                 setMapModalData([
                   parseFloat(rowData.latitude),
                   parseFloat(rowData.longitude),
@@ -539,11 +539,11 @@ const AllDataTable = (props) => {
               ]}
               columns={tableHeaderOptions}
               data={tableData}
-              title="Site Information"
+              title="Contact and Location"
               options={{
                 padding: "default",
                 exportButton: false,
-                exportFileName: "Site Information",
+                exportFileName: "Contact and Location",
                 addRowPosition: "last",
                 exportAllData: false,
                 // pageSizeOptions: [5, 10, 20, 50, tableData.length],
