@@ -11,9 +11,10 @@ import { Link } from "react-router-dom";
 const FarmCodeCard = (props) => {
   const { code, year } = props;
   const theme = useTheme();
+  console.log(props.installed)
 
   return (
-    <Card elevation={theme.palette.type === "dark" ? 4 : 1}>
+    <Card style={props.installed ? {backgroundColor: theme.palette.primary.main} : {backgroundColor: theme.palette.primary.secondary}} elevation={theme.palette.type === "dark" ? 4 : 1}>
       <CardActionArea component={Link} to={`/sensor-visuals/${year}/${code}`}>
         <CardContent>
           <Typography align="center" variant="body1">

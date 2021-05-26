@@ -17,6 +17,8 @@ const datesURL = onfarmAPI + `/raw?table=site_information`;
 
 const stressCamAPIEndpoint = ``;
 
+
+
 const SensorVisuals = (props) => {
   const { type } = props;
   const { location } = useHistory();
@@ -29,6 +31,7 @@ const SensorVisuals = (props) => {
   const [affiliations, setAffiliations] = useState([]);
   const [state] = useContext(Context);
   const [codeSearchText, setCodeSearchText] = useState("");
+  const [coloredSensors, setColoredSensors] = useState([]);
   // const [historyYear, setHistoryYear] = useState(
   //   // location.state.year ? location.state.year : null
   //   location.state ? (location.state.year ? location.state.year : null) : null
@@ -47,8 +50,39 @@ const SensorVisuals = (props) => {
     setYears(sortedNewYears);
   };
 
+  async function getCameraStatus(data, apiKey) {
+    await data.forEach((entry, index) => {
+      const waterSensorInstallEndpoint =
+        onfarmAPI + `/raw?table=wsensor_install&code=${entry.code.toLowerCase()}`;
+      fetch(waterSensorInstallEndpoint, {
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+        },
+      }).then((res) => {
+        res.json().then((res) => {
+            // console.log(res)
+            if (res.length > 1){
+              if('subplot' in res[0] && 'subplot' in res[1]){
+                if((res[0].subplot == 1 || res[0].subplot == 2) && (res[1].subplot == 1 || res[0].subplot == 2)){
+                  let newData = data.slice();
+                  newData[index].installed = true;
+                  setData(newData);
+                }
+              }
+            }
+          }
+        )
+      })
+    })
+  }
+
   useEffect(() => {
     const fetchData = async (apiKey) => {
+      
+      // const coloredData = useMemo(() => {
+      //   return 
+      // }, [])
       setLoading(true);
       const endpoint =
         type === "watersensors" ? datesURL : stressCamAPIEndpoint;
@@ -61,7 +95,15 @@ const SensorVisuals = (props) => {
             },
           });
           const response = await records.json();
-          setData(response);
+
+          let newData = response.map((entry) => {
+            return {...entry, installed: false};
+          })
+          
+          setData(newData);
+          console.log(data)
+          getCameraStatus(data, state.userInfo.apikey)
+
           const recs = groupBy(response, "year");
 
           const uniqueYears = Object.keys(recs)
@@ -114,7 +156,14 @@ const SensorVisuals = (props) => {
     fetchData(state.userInfo.apikey);
   }, [state.userInfo.apikey, type, location.state]);
 
+  // useEffect(() => {
+  //   getCameraStatus(data, state.userInfo.apikey).then((res) => {
+  //     console.log(res);
+  //   });
+  // }, [data])
+
   const activeData = useMemo(() => {
+    // console.log(JSON.stringify(data))
     const activeYear = years.reduce((acc, curr, ind, arr) => {
       if (curr.active) {
         return curr.year;
@@ -132,6 +181,8 @@ const SensorVisuals = (props) => {
         (data) => data.year === activeYear && data.code.includes(codeSearchText)
       );
     }
+
+    
   }, [years, data, codeSearchText, affiliations]);
 
   const activeYear = useMemo(() => {
@@ -148,6 +199,8 @@ const SensorVisuals = (props) => {
       else return acc;
     }, "");
   }, [affiliations]);
+
+  
 
   // const handleActiveAffiliation = (affiliation = "all") => {
   //   console.log(affiliations);
@@ -199,7 +252,8 @@ const SensorVisuals = (props) => {
       <Grid item container spacing={4} xs={12}>
         {activeData.map((data, index) => (
           <Grid item key={index} xl={2} lg={3} md={4} sm={6} xs={12}>
-            <FarmCodeCard code={data.code} year={activeYear} />
+            <FarmCodeCard code={data.code} year={activeYear} installed={data.installed}/>
+            {/* <div>{data.code}</div> */}
           </Grid>
         ))}
       </Grid>
