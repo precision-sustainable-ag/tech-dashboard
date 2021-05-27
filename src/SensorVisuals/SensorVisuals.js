@@ -53,17 +53,16 @@ const SensorVisuals = (props) => {
   };
 
   async function getCameraStatus(data, apiKey) {
-    let allCodes = ""
+    let allCodes = "";
     let allResponses = {};
     let responseArray = [];
-    data.forEach((entry, index) => {
-      allCodes = allCodes.concat(entry.code.toLowerCase() + ",")
+    data.forEach((entry) => {
+      allCodes = allCodes.concat(entry.code.toLowerCase() + ",");
       allResponses[entry.code.toLowerCase()] = [];
       responseArray.push(entry);
     })
 
-    const waterSensorInstallEndpoint =
-      onfarmAPI + `/raw?table=wsensor_install&code=${allCodes}`;
+    const waterSensorInstallEndpoint = onfarmAPI + `/raw?table=wsensor_install&code=${allCodes}`;
     
     await fetch(waterSensorInstallEndpoint, {
       headers: {
@@ -80,7 +79,7 @@ const SensorVisuals = (props) => {
 
         Object.keys(allResponses).forEach((key, index) => {
           if(allResponses[key].length === 0){
-            responseArray[index] = {...responseArray[index], code: key, color: deviceColors.default, lastUpdated: ""}
+            responseArray[index] = {...responseArray[index], code: key, color: deviceColors.default, lastUpdated: ""};
           }else {
             let tz = moment.tz.guess();
 
@@ -94,9 +93,9 @@ const SensorVisuals = (props) => {
                 .tz(tz);
     
                 let deviceDateFormatted = deviceDateLocal.fromNow();
-                lastUpdatedString = "Last updated " + deviceDateFormatted
+                lastUpdatedString = "Last updated " + deviceDateFormatted;
             }else{
-              lastUpdatedString = "No timestamp"
+              lastUpdatedString = "No timestamp";
             }
             
   
@@ -140,8 +139,7 @@ const SensorVisuals = (props) => {
       
     const fetchData = async (apiKey) => {
       setLoading(true);
-      const endpoint =
-        type === "watersensors" ? datesURL : stressCamAPIEndpoint;
+      const endpoint = (type === "watersensors" ? datesURL : stressCamAPIEndpoint);
       if (apiKey) {
         try {
           const records = await fetch(endpoint, {
