@@ -32,8 +32,7 @@ const SensorVisuals = (props) => {
   const { type } = props;
   const { location } = useHistory();
 
-  const displayTitle =
-    type === "watersensors" ? "Water Sensors" : "Stress Cams";
+  const displayTitle = (type === "watersensors" ? "Water Sensors" : "Stress Cams");
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [years, setYears] = useState([]);
@@ -43,14 +42,6 @@ const SensorVisuals = (props) => {
   const [coloredSensors, setColoredSensors] = useState([]);
   const [index, setIndex] = useState(0);
   const theme = useTheme();
-  // const [historyYear, setHistoryYear] = useState(
-  //   // location.state.year ? location.state.year : null
-  //   location.state ? (location.state.year ? location.state.year : null) : null
-  // );
-
-  // useEffect(() => {
-  //   location.state.year && setHistoryYear(location.state.year);
-  // }, [location.state]);
 
   const handleActiveYear = (year = "") => {
     const newYears = years.map((yearInfo) => {
@@ -62,8 +53,6 @@ const SensorVisuals = (props) => {
   };
 
   async function getCameraStatus(data, apiKey) {
-    
-    console.log(data)
     let allCodes = ""
     let allResponses = {};
     let responseArray = [];
@@ -72,52 +61,53 @@ const SensorVisuals = (props) => {
       allResponses[entry.code.toLowerCase()] = [];
       responseArray.push(entry);
     })
-    console.log(allCodes, allResponses);
 
     const waterSensorInstallEndpoint =
       onfarmAPI + `/raw?table=wsensor_install&code=${allCodes}`;
     
-    const formResponses = await fetch(waterSensorInstallEndpoint, {
+    await fetch(waterSensorInstallEndpoint, {
       headers: {
         "Content-Type": "application/json",
         "x-api-key": apiKey,
       },
     }).then((res) => {
       res.json().then((resJson) => {
-        console.log(resJson);
         resJson.forEach((response) => {
-          // console.log("hi")
           if(response.code){
             allResponses[response.code.toLowerCase()].push(response);
           }
-          
         })
-
-        
 
         Object.keys(allResponses).forEach((key, index) => {
           if(allResponses[key].length === 0){
             responseArray[index] = {...responseArray[index], code: key, color: deviceColors.default, lastUpdated: ""}
           }else {
             let tz = moment.tz.guess();
-  
-            let deviceSessionBegin = allResponses[key][allResponses[key].length - 1].time_begin;
-            // get device session begin as user local time
-            let deviceDateLocal = moment
-              .tz(deviceSessionBegin, "Africa/Abidjan")
-              .tz(tz);
-  
-            let deviceDateFormatted = deviceDateLocal.fromNow();
+
+
+            let lastUpdatedString;
+            if(allResponses[key][allResponses[key].length - 1].time_begin){
+              let deviceSessionBegin = allResponses[key][allResponses[key].length - 1].time_begin;
+              // get device session begin as user local time
+              let deviceDateLocal = moment
+                .tz(deviceSessionBegin, "Africa/Abidjan")
+                .tz(tz);
+    
+                let deviceDateFormatted = deviceDateLocal.fromNow();
+                lastUpdatedString = "Last updated " + deviceDateFormatted
+            }else{
+              lastUpdatedString = "No timestamp"
+            }
+            
   
             if(allResponses[key].length === 1){
-              responseArray[index] = {...responseArray[index], code: key, color: deviceColors.oneSubplot, lastUpdated: "Last updated " + deviceDateFormatted};
+              responseArray[index] = {...responseArray[index], code: key, color: deviceColors.oneSubplot, lastUpdated: lastUpdatedString};
             }else{
               let foundSubplotOne = false;
               let foundSubplotTwo = false;
 
               allResponses[key].forEach((entry) => {
                 if("subplot" in entry){
-                  console.log(entry)
                   if(entry.subplot == 1){
                     foundSubplotOne = true;
                   }else if(entry.subplot == 2)
@@ -125,130 +115,35 @@ const SensorVisuals = (props) => {
                 }
   
                 if(foundSubplotOne && foundSubplotTwo){
-                  responseArray[index] = {...responseArray[index], code: key, color: deviceColors.bothSubplots, lastUpdated: "Last updated " + deviceDateFormatted};
+                  responseArray[index] = {...responseArray[index], code: key, color: deviceColors.bothSubplots, lastUpdated: lastUpdatedString};
                 }
                 else if(foundSubplotOne || foundSubplotTwo){
-                  responseArray[index] = {...responseArray[index], code: key, color: deviceColors.oneSubplot, lastUpdated: "Last updated " + deviceDateFormatted};
+                  responseArray[index] = {...responseArray[index], code: key, color: deviceColors.oneSubplot, lastUpdated: lastUpdatedString};
                 }else{
                   responseArray[index] = {...responseArray[index], code: key, color: deviceColors.default, lastUpdated: " "};
                 }
               })
             } 
           }
-          // console.log(allResponses)
         })
-        console.log(responseArray)
         setData(responseArray);
         setLoading(false);
       })
     })
-
-    // const formResponsesJson = await formResponses.json()
-
-    // console.log(formResponsesJson)
-
-    
-
-  //   await data.forEach((entry, index) => {
-  //     allCodes.push(entry.code.toLowerCase())
-  //     // console.log(entry.code)
-  //     const waterSensorInstallEndpoint =
-  //       onfarmAPI + `/raw?table=wsensor_install&code=${entry.code.toLowerCase()}`;
-  //     fetch(waterSensorInstallEndpoint, {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         "x-api-key": apiKey,
-  //       },
-  //     }).then((res) => {
-  //       res.json().then((res) => {
-  //           // console.log(res)
-  //           console.log(entry.code)
-
-            // if(res.length === 0){
-            //   let newData = data.slice();
-            //   newData[index].color = deviceColors.default;
-            //   newData[index].lastUpdated = "";
-            //   setData(newData);
-            // }else {
-            //   let tz = moment.tz.guess();
-
-            //   let deviceSessionBegin = res[res.length - 1].time_begin;
-            //   // get device session begin as user local time
-            //   let deviceDateLocal = moment
-            //     .tz(deviceSessionBegin, "Africa/Abidjan")
-            //     .tz(tz);
-
-            //   let deviceDateFormatted = deviceDateLocal.fromNow();
-
-            //   if(res.length === 1){
-            //     let newData = data.slice();
-            //     newData[index].color = deviceColors.oneSubplot;
-            //     newData[index].lastUpdated = "Last updated " + deviceDateFormatted;
-            //     setData(newData);
-            //   }else{
-                
-            //     let foundSubplotOne = false;
-            //     let foundSubplotTwo = false;
-            //     res.forEach((entry) => {
-                  
-                  
-            //       if("subplot" in entry){
-            //         console.log(entry)
-            //         if(entry.subplot == 1){
-            //           foundSubplotOne = true;
-            //         }else if(entry.subplot == 2)
-            //           foundSubplotTwo = true;
-            //       }
-  
-            //       if(foundSubplotOne && foundSubplotTwo){
-            //         let newData = data.slice();
-            //         newData[index].color = deviceColors.bothSubplots;
-            //         newData[index].lastUpdated = "Last updated " + deviceDateFormatted;
-            //         setData(newData);
-            //       }
-            //       else if(foundSubplotOne || foundSubplotTwo){
-            //         let newData = data.slice();
-            //         newData[index].color = deviceColors.oneSubplot;
-            //         newData[index].lastUpdated = "Last updated " + deviceDateFormatted;
-            //         setData(newData);
-            //       }else{
-            //         let newData = data.slice();
-            //         newData[index].color = deviceColors.default;
-            //         newData[index].lastUpdated = "";
-            //         setData(newData);
-            //       }
-            //     })
-            // } 
-            // }
-  //         }
-  //       )
-  //     })
-  //   })
-  //   console.log(JSON.stringify(allCodes));
   }
 
-  // let index = 0;
   useEffect(() => {
-    // setData(location.data)
-    // console.log(location.state.data)
-
     if(location.state){
       console.log(location.state.data);
       setData(location.state.data);
     }
       
-
     const fetchData = async (apiKey) => {
-      // const coloredData = useMemo(() => {
-      //   return 
-      // }, [])
       setLoading(true);
       const endpoint =
         type === "watersensors" ? datesURL : stressCamAPIEndpoint;
       if (apiKey) {
         try {
-
-          
           const records = await fetch(endpoint, {
             headers: {
               "Content-Type": "application/json",
@@ -257,25 +152,13 @@ const SensorVisuals = (props) => {
           });
           const response = await records.json();
 
-          console.log(index);
-          console.log(response);
-
           if(!location.state){
-            console.log("heyo");
             let newData = response.map((entry) => {
               return {...entry, color: deviceColors.loading, lastUpdated: "Fetching last update time"};
             })
-            console.log(newData);
             
-            // setData(newData);
-            console.log(data);
             getCameraStatus(newData, state.userInfo.apikey);
           }
-
-          
-          
-          let newIndex = index + 1;
-          setIndex(newIndex);
 
           const recs = groupBy(response, "year");
 
@@ -323,14 +206,13 @@ const SensorVisuals = (props) => {
         setYears([]);
         setAffiliations([]);
       }
-      // setLoading(false);
     };
     
     fetchData(state.userInfo.apikey);
   }, [state.userInfo.apikey, type, location.state]);
 
   const activeData = useMemo(() => {
-    console.log(JSON.stringify(data))
+    // console.log(JSON.stringify(data))
     const activeYear = years.reduce((acc, curr, ind, arr) => {
       if (curr.active) {
         return curr.year;
@@ -367,24 +249,6 @@ const SensorVisuals = (props) => {
     }, "");
   }, [affiliations]);
 
-  
-
-  // const handleActiveAffiliation = (affiliation = "all") => {
-  //   console.log(affiliations);
-
-  //       const newAffs =  affiliations.reduce((acc, curr, index, array) => {
-  //     if (curr.affiliation === affiliation) {
-  //       let obj = {affiliation : affiliation, active: true}
-  //     }
-  //     else return acc;
-  //   }, "");
-
-  // };
-
-  //   console.log(Object.entries(data).filter((data) => data[0] === activeYear));
-
-  console.log(activeData)
-
   return loading && data.length === 0 ? (
     <CustomLoader />
   ) : (
@@ -411,13 +275,6 @@ const SensorVisuals = (props) => {
           </Grid>
         </Grid>
       </Grid>
-      {/* <Grid item container xs={12} spacing={2}>
-        <AffiliationsChips
-          affiliations={affiliations}
-          activeAffiliation={activeAffiliation || "all"}
-          handleActiveAffiliation={handleActiveAffiliation}
-        />
-      </Grid> */}
       <Grid item container spacing={4} xs={12} >
         {activeData.map((entry, index) => (
           <Grid item key={index} xl={2} lg={3} md={4} sm={6} xs={12}>
