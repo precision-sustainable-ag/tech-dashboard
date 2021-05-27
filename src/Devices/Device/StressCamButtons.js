@@ -9,6 +9,7 @@ import {
     DialogContent,
     DialogContentText,
     DialogActions,
+    Typography,
   } from "@material-ui/core";
 import {sendCommandToHologram} from "../../utils/SharedFunctions"
 import {getDeviceMessages} from "../../utils/SharedFunctions"
@@ -28,24 +29,16 @@ const StressCamButtons = (props) => {
 
     const handleClose = () => {
         setOpen(false);
+        setButtonsDisabled(false);
     };
 
     const sendShutdownMessage = () => {
         setOpen(false);
-        sendCommandToHologram(props.deviceId, null, null, "open", null);
+        sendCommandToHologram(props.deviceId, null, null, "shutdown", null);
+        queryHologram();
     }
-    
-    const sendMessage = (command) => {
-        setButtonsDisabled(true)
-        if(command === "startCorn")
-            sendCommandToHologram(props.deviceId, farmCode.toUpperCase(), rep, "start", "corn");
-        else if(command === "startSoy")
-            sendCommandToHologram(props.deviceId, farmCode.toUpperCase(), rep, "start", "soybean");
-        else if(command === "stop")
-            sendCommandToHologram(props.deviceId, null, null, "stop", null);
-        else if(command === "shutdown")
-            setOpen(true);
 
+    const queryHologram = () => {
         let count = 0;
         let interval = setInterval(() => {
             getDeviceMessages(1030442).then((res) => {    
@@ -63,12 +56,28 @@ const StressCamButtons = (props) => {
                     console.log("does not contain");
                     setButtonsDisabled(false);
                     clearInterval(interval);
-                    setSnackbarData({open: true, text: "Could not send message", severity: "error"});
+                    setSnackbarData({open: true, text: "Could not send message. Your device is not connected to 3G/4G", severity: "error"});
                 }
                 count++;
                 return messages;
             });
         }, 1000);
+    }
+    
+    const sendMessage = (command) => {
+        setButtonsDisabled(true)
+        if(command === "startCorn")
+            sendCommandToHologram(props.deviceId, farmCode.toUpperCase(), rep, "start", "corn");
+        else if(command === "startSoy")
+            sendCommandToHologram(props.deviceId, farmCode.toUpperCase(), rep, "start", "soybean");
+        else if(command === "stop")
+            sendCommandToHologram(props.deviceId, null, null, "stop", null);
+        else if(command === "shutdown"){
+            setOpen(true);
+            return;
+        }
+            
+        queryHologram();
     }
 
     return(
@@ -79,23 +88,27 @@ const StressCamButtons = (props) => {
                 horizontal: "center",
             }}
             open={snackbarData.open}
-            autoHideDuration={2500}
+            autoHideDuration={3000}
             onClose={() =>
                 setSnackbarData({ ...snackbarData, open: !snackbarData.open })
             }
-            >
+        >
             <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
         </Snackbar>
+        <Grid item >
+            <Typography variant="h5">Make sure your camera is connected to 2G/3G before sending commands</Typography>
+        </Grid>
+
         <Grid item xs={12} md = {12}>
             <Grid container spacing = {1}>
                 <Grid item xs={12} md={6}>
                 <TextField
                     fullWidth
-                    placeholder="Enter the 3 uppercase letter farm code"
+                    placeholder="Enter the 3 letter farm code"
                     variant="filled"
                     label="Farm Code"
                     value={farmCode}
-                    onChange={(e) => setFarmCode(e.target.value)}
+                    onChange={(e) => setFarmCode(e.target.value.toUpperCase())}
                 />
                 </Grid>
                 <Grid item xs={12} md={6}>
@@ -138,7 +151,7 @@ const StressCamButtons = (props) => {
         <DialogTitle id="alert-dialog-title">{"Shutdown your device?"}</DialogTitle>
         <DialogContent>
             <DialogContentText id="alert-dialog-description">
-                Shutting down will prevent you from sending future messages to your device
+                Shutting down will require a manual restart of your device 
             </DialogContentText>
         </DialogContent>
         <DialogActions>
