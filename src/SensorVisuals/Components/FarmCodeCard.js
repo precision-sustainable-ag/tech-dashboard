@@ -14,7 +14,7 @@ const FarmCodeCard = (props) => {
 
   return (
     <Card style={{backgroundColor: color, height: "75px"}} elevation={theme.palette.type === "dark" ? 4 : 1} >
-      {!(color === "white") && (
+      {color !== "white" && (
       <CardActionArea 
         component={Link} 
         enabled="false"
