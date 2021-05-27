@@ -190,12 +190,15 @@ export default function Header(props) {
 
   async function addUser(username) {
     const octokit = new Octokit({ auth: githubToken });
-    return await octokit.request("PUT /repos/{owner}/{repo}/collaborators/{username}", {
-      owner: "precision-sustainable-ag",
-      repo: "data_corrections",
-      username: username,
-      permission: "push"
-    });
+    return await octokit.request(
+      "PUT /repos/{owner}/{repo}/collaborators/{username}",
+      {
+        owner: "precision-sustainable-ag",
+        repo: "data_corrections",
+        username: username,
+        permission: "push",
+      }
+    );
   }
 
   const fetchRole = async (user) => {
@@ -216,8 +219,8 @@ export default function Header(props) {
         };
 
         addUserToDatabase(qs.stringify(obj));
-        //add to data corrections 
-        addUser(user.nickname).then(res => (console.log(res)));
+        //add to data corrections
+        addUser(user.nickname).then((res) => console.log(res));
       } else {
         dispatch({
           type: "UPDATE_ROLE",
@@ -495,17 +498,6 @@ export default function Header(props) {
                 }}
               >
                 <ListItemText inset primary="Chart View" />
-              </ListItem>
-              <ListItem
-                button
-                to="/water-sensors"
-                component={Link}
-                onClick={() => {
-                  setOpen(false);
-                  handleOpenDevicesNav();
-                }}
-              >
-                <ListItemText inset primary="Legacy Chart View" />
               </ListItem>
             </List>
           </Collapse>
