@@ -95,9 +95,9 @@ const SensorVisuals = (props) => {
 
         
 
-        Object.keys(allResponses).forEach((key) => {
+        Object.keys(allResponses).forEach((key, index) => {
           if(allResponses[key].length === 0){
-            responseArray.push({code: key, color: deviceColors.default, lastUpdated: ""})
+            responseArray[index] = {...responseArray[index], code: key, color: deviceColors.default, lastUpdated: ""}
           }else {
             let tz = moment.tz.guess();
   
@@ -110,7 +110,7 @@ const SensorVisuals = (props) => {
             let deviceDateFormatted = deviceDateLocal.fromNow();
   
             if(allResponses[key].length === 1){
-              responseArray.push({code: key, color: deviceColors.oneSubplot, lastUpdated: "Last updated " + deviceDateFormatted})
+              responseArray[index] = {...responseArray[index], code: key, color: deviceColors.oneSubplot, lastUpdated: "Last updated " + deviceDateFormatted};
             }else{
               let foundSubplotOne = false;
               let foundSubplotTwo = false;
@@ -125,12 +125,12 @@ const SensorVisuals = (props) => {
                 }
   
                 if(foundSubplotOne && foundSubplotTwo){
-                  responseArray.push({code: key, color: deviceColors.bothSubplots, lastUpdated: "Last updated " + deviceDateFormatted})
+                  responseArray[index] = {...responseArray[index], code: key, color: deviceColors.bothSubplots, lastUpdated: "Last updated " + deviceDateFormatted};
                 }
                 else if(foundSubplotOne || foundSubplotTwo){
-                  responseArray.push({code: key, color: deviceColors.oneSubplot, lastUpdated: "Last updated " + deviceDateFormatted})
+                  responseArray[index] = {...responseArray[index], code: key, color: deviceColors.oneSubplot, lastUpdated: "Last updated " + deviceDateFormatted};
                 }else{
-                  responseArray.push({code: key, color: deviceColors.default, lastUpdated: ""})
+                  responseArray[index] = {...responseArray[index], code: key, color: deviceColors.default, lastUpdated: " "};
                 }
               })
             } 
@@ -418,7 +418,7 @@ const SensorVisuals = (props) => {
           handleActiveAffiliation={handleActiveAffiliation}
         />
       </Grid> */}
-      <Grid item container spacing={4} xs={12}>
+      <Grid item container spacing={4} xs={12} >
         {activeData.map((entry, index) => (
           <Grid item key={index} xl={2} lg={3} md={4} sm={6} xs={12}>
             <FarmCodeCard code={entry.code} year={activeYear} color={entry.color} lastUpdated={entry.lastUpdated} data={data}/>

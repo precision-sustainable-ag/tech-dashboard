@@ -13,22 +13,25 @@ const FarmCodeCard = (props) => {
   const theme = useTheme();
 
   return (
-    <Card style={{backgroundColor: props.color}} elevation={theme.palette.type === "dark" ? 4 : 1}>
+    <Card style={{backgroundColor: props.color, height: "75px"}} elevation={theme.palette.type === "dark" ? 4 : 1} >
       <CardActionArea 
         component={Link} 
+        style={{height: "75px"}}
         to={
           {
-            pathname: `/sensor-visuals/${year}/${code}`, 
+            pathname: `/sensor-visuals/${year}/${code.toUpperCase()}`, 
             state: {data: data}
           }
         }>
-        <CardContent>
+        <CardContent style={{height: "75px"}}>
           <Typography align="center" variant="body1">
-            {code}
+            {code.toUpperCase()}
           </Typography>
-          <Typography align="center" variant="body1">
-            {lastUpdated}
-          </Typography>
+          {lastUpdated && 
+            <Typography align="center" variant="body1">
+              {lastUpdated}
+            </Typography>
+          }
         </CardContent>
       </CardActionArea>
     </Card>
