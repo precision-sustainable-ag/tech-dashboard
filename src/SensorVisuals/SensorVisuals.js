@@ -56,6 +56,7 @@ const SensorVisuals = (props) => {
     let allCodes = "";
     let allResponses = {};
     let responseArray = [];
+    
     data.forEach((entry) => {
       allCodes = allCodes.concat(entry.code.toLowerCase() + ",");
       allResponses[entry.code.toLowerCase()] = [];
@@ -107,9 +108,9 @@ const SensorVisuals = (props) => {
 
               allResponses[key].forEach((entry) => {
                 if("subplot" in entry){
-                  if(entry.subplot == 1){
+                  if(entry.subplot === 1){
                     foundSubplotOne = true;
-                  }else if(entry.subplot == 2)
+                  }else if(entry.subplot === 2)
                     foundSubplotTwo = true;
                 }
   
