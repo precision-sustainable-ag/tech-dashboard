@@ -12,6 +12,7 @@ import AffiliationsChips from "../utils/AffiliationsChips";
 import { useHistory, useLocation } from "react-router-dom";
 import { red, green, yellow, grey } from "@material-ui/core/colors";
 import { setDate } from "date-fns/esm";
+import moment from "moment-timezone";
 
 // const allYears
 
@@ -21,11 +22,9 @@ const stressCamAPIEndpoint = ``;
 
 // Styles
 const deviceColors = {
-  withinLastHour: green[800],
-  lastFourHours: green[400],
-  lastThirtySixHours: yellow[400],
-  lastMonth: grey[400],
-  never: red[300],
+  bothSubplots: green[800],
+  oneSubplot: green[400],
+  loading: grey[400],
   default: "white",
 };
 
@@ -81,48 +80,70 @@ const SensorVisuals = (props) => {
               if('subplot' in res[0] && 'subplot' in res[1]){
                 if((res[0].subplot == 1 || res[0].subplot == 2) && (res[1].subplot == 1 || res[1].subplot == 2)){
                   let newData = data.slice();
-                  // newData[index].color = deviceColors.withinLastHour;
+                  // newData[index].color = deviceColors.bothSubplots;
                   // console.log(res[0])
-                  let lastUpdated = new Date(res[0].time_begin);
+                  // let lastUpdated = new Date(res[0].time_begin);
                   // const currentTime = new Date();
-                  let timeDiff = Math.abs(new Date() - new Date(res[0].time_begin)) / 3600000;
+                  // let timeDiff = Math.abs(new Date() - new Date(res[0].time_begin)) / 3600000;
                   // console.log(timeDiff);
 
-                  let timeString;
+                  // let timeString;
 
-                  if (Math.round(timeDiff) <= 1) {
-                    timeString = "Active within last hour";
-                    newData[index].color = deviceColors.withinLastHour;
-                  } else if (timeDiff > 1 && timeDiff <= 4) {
-                    timeString = "Active within last 4 hours";
-                    newData[index].color = deviceColors.lastFourHours;
-                  } else if (timeDiff > 4 && timeDiff <= 36) {
-                    timeString = "Active within last 36 hours";
-                    newData[index].color = deviceColors.lastThirtySixHours;
-                  } else if (timeDiff > 36 && timeDiff <= 730) {
-                    timeString = "Active last month";
-                    newData[index].color = deviceColors.lastMonth;
-                  } else {
-                    timeString = "Last active " + lastUpdated.toLocaleDateString("en-US");
-                    newData[index].color = deviceColors.default;
-                  }
+                  // if (Math.round(timeDiff) <= 1) {
+                  //   timeString = "Active within last hour";
+                  //   newData[index].color = deviceColors.bothSubplots;
+                  // } else if (timeDiff > 1 && timeDiff <= 4) {
+                  //   timeString = "Active within last 4 hours";
+                  //   newData[index].color = deviceColors.oneSubplot;
+                  // } else if (timeDiff > 4 && timeDiff <= 36) {
+                  //   timeString = "Active within last 36 hours";
+                  //   newData[index].color = deviceColors.lastThirtySixHours;
+                  // } else if (timeDiff > 36 && timeDiff <= 730) {
+                  //   timeString = "Active last month";
+                  //   newData[index].color = deviceColors.loading;
+                  // } else {
+                  //   timeString = "Last active " + lastUpdated.toLocaleDateString("en-US");
+                  //   newData[index].color = deviceColors.default;
+                  // }
 
-                  newData[index].lastUpdated = timeString;
+                  let tz = moment.tz.guess();
+
+                  let deviceSessionBegin = res[0].time_begin;
+                  // get device session begin as user local time
+                  let deviceDateLocal = moment
+                    .tz(deviceSessionBegin, "Africa/Abidjan")
+                    .tz(tz);
+
+                  // setDateStringFormatted(deviceDateLocal.format("MM/DD/YYYY hh:mm A"));
+
+                  let deviceDateFormatted = deviceDateLocal.fromNow();
+
+                  console.log(deviceDateFormatted)
+
+                  newData[index].color = deviceColors.bothSubplots;
+                  newData[index].lastUpdated = "Last active " + deviceDateFormatted;
                   setData(newData);
                 }
                 else{
                   let newData = data.slice();
-                  newData[index].color = deviceColors.never;
+                  newData[index].color = deviceColors.oneSubplot;
                   newData[index].lastUpdated = "Only one subplot";
                   setData(newData);
                 }
               }
             }
             else{
-              let newData = data.slice();
-              newData[index].color = deviceColors.never;
-              newData[index].lastUpdated = "Never active";
-              setData(newData);
+              if (res.length == 1){
+                let newData = data.slice();
+                newData[index].color = deviceColors.oneSubplot;
+                newData[index].lastUpdated = "Only one subplot";
+                setData(newData);
+              } else {
+                let newData = data.slice();
+                newData[index].color = deviceColors.default;
+                newData[index].lastUpdated = "";
+                setData(newData);
+              }
             }
           }
         )
@@ -166,7 +187,7 @@ const SensorVisuals = (props) => {
           if(!location.state){
             console.log("heyo");
             let newData = response.map((entry) => {
-              return {...entry, color: deviceColors.lastMonth, lastUpdated: "Fetching last update time"};
+              return {...entry, color: deviceColors.loading, lastUpdated: "Fetching last update time"};
             })
             console.log(newData);
             
