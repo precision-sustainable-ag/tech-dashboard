@@ -10,7 +10,7 @@ import {
 import { onfarmAPI } from "../../utils/api_secret";
 import PropTypes from "prop-types";
 import { ArrowBackIos } from "@material-ui/icons";
-import { Link, useHistory, useParams } from "react-router-dom";
+import { Link, useHistory, useParams, useLocation  } from "react-router-dom";
 import { lazy, useContext, useEffect, useState } from "react";
 import { Context } from "../../Store/Store";
 import { CustomLoader } from "../../utils/CustomComponents";
@@ -27,7 +27,7 @@ const SoilTemp = lazy(() => import("./SoilTemp"));
 const TempByLbs = lazy(() => import("./LitterbagTemp"));
 const VolumetricWater = lazy(() => import("./VolumetricWater"));
 
-const VisualsByCode = () => {
+const VisualsByCode = (props) => {
   const [state] = useContext(Context);
   const history = useHistory();
   const { code, year } = useParams();
@@ -45,6 +45,7 @@ const VisualsByCode = () => {
   });
   const [activeSerial, setActiveSerial] = useState("");
   const [activeSubplot, setActiveSubplot] = useState("");
+  const location = useLocation();
 
   const waterSensorDataEndpoint =
     onfarmAPI +
@@ -166,6 +167,7 @@ const VisualsByCode = () => {
       setLoading(false);
     };
   }, [waterGatewayDataEndpoint, state.userInfo.apikey, waterNodeDataEndpoint]);
+  console.log(location.state.data)
 
   return (
     <Grid container spacing={3} alignItems="center">
@@ -179,6 +181,7 @@ const VisualsByCode = () => {
               pathname: "/sensor-visuals",
               state: {
                 year: year,
+                data: location.state.data
               },
             });
           }}

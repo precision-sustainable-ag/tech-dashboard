@@ -9,16 +9,25 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 const FarmCodeCard = (props) => {
-  const { code, year } = props;
+  const { code, year, lastUpdated, data } = props;
   const theme = useTheme();
-  console.log(props.installed)
 
   return (
-    <Card style={props.installed ? {backgroundColor: theme.palette.primary.main} : {backgroundColor: theme.palette.primary.secondary}} elevation={theme.palette.type === "dark" ? 4 : 1}>
-      <CardActionArea component={Link} to={`/sensor-visuals/${year}/${code}`}>
+    <Card style={{backgroundColor: props.color}} elevation={theme.palette.type === "dark" ? 4 : 1}>
+      <CardActionArea 
+        component={Link} 
+        to={
+          {
+            pathname: `/sensor-visuals/${year}/${code}`, 
+            state: {data: data}
+          }
+        }>
         <CardContent>
           <Typography align="center" variant="body1">
             {code}
+          </Typography>
+          <Typography align="center" variant="body1">
+            {lastUpdated}
           </Typography>
         </CardContent>
       </CardActionArea>
