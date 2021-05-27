@@ -76,75 +76,107 @@ const SensorVisuals = (props) => {
         res.json().then((res) => {
             // console.log(res)
             console.log(entry.code)
-            if (res.length > 1){
-              if('subplot' in res[0] && 'subplot' in res[1]){
-                if((res[0].subplot == 1 || res[0].subplot == 2) && (res[1].subplot == 1 || res[1].subplot == 2)){
-                  let newData = data.slice();
-                  // newData[index].color = deviceColors.bothSubplots;
-                  // console.log(res[0])
-                  // let lastUpdated = new Date(res[0].time_begin);
-                  // const currentTime = new Date();
-                  // let timeDiff = Math.abs(new Date() - new Date(res[0].time_begin)) / 3600000;
-                  // console.log(timeDiff);
 
-                  // let timeString;
+            if(res.length === 0){
+              let newData = data.slice();
+              newData[index].color = deviceColors.default;
+              newData[index].lastUpdated = "";
+              setData(newData);
+            }else {
+              let tz = moment.tz.guess();
 
-                  // if (Math.round(timeDiff) <= 1) {
-                  //   timeString = "Active within last hour";
-                  //   newData[index].color = deviceColors.bothSubplots;
-                  // } else if (timeDiff > 1 && timeDiff <= 4) {
-                  //   timeString = "Active within last 4 hours";
-                  //   newData[index].color = deviceColors.oneSubplot;
-                  // } else if (timeDiff > 4 && timeDiff <= 36) {
-                  //   timeString = "Active within last 36 hours";
-                  //   newData[index].color = deviceColors.lastThirtySixHours;
-                  // } else if (timeDiff > 36 && timeDiff <= 730) {
-                  //   timeString = "Active last month";
-                  //   newData[index].color = deviceColors.loading;
-                  // } else {
-                  //   timeString = "Last active " + lastUpdated.toLocaleDateString("en-US");
-                  //   newData[index].color = deviceColors.default;
-                  // }
+              let deviceSessionBegin = res[res.length - 1].time_begin;
+              // get device session begin as user local time
+              let deviceDateLocal = moment
+                .tz(deviceSessionBegin, "Africa/Abidjan")
+                .tz(tz);
 
-                  let tz = moment.tz.guess();
+              let deviceDateFormatted = deviceDateLocal.fromNow();
 
-                  let deviceSessionBegin = res[0].time_begin;
-                  // get device session begin as user local time
-                  let deviceDateLocal = moment
-                    .tz(deviceSessionBegin, "Africa/Abidjan")
-                    .tz(tz);
-
-                  // setDateStringFormatted(deviceDateLocal.format("MM/DD/YYYY hh:mm A"));
-
-                  let deviceDateFormatted = deviceDateLocal.fromNow();
-
-                  console.log(deviceDateFormatted)
-
-                  newData[index].color = deviceColors.bothSubplots;
-                  newData[index].lastUpdated = "Last active " + deviceDateFormatted;
-                  setData(newData);
-                }
-                else{
-                  let newData = data.slice();
-                  newData[index].color = deviceColors.oneSubplot;
-                  newData[index].lastUpdated = "Only one subplot";
-                  setData(newData);
-                }
-              }
-            }
-            else{
-              if (res.length == 1){
+              if(res.length === 1){
                 let newData = data.slice();
                 newData[index].color = deviceColors.oneSubplot;
-                newData[index].lastUpdated = "Only one subplot";
+                newData[index].lastUpdated = "Last updated " + deviceDateFormatted;
                 setData(newData);
-              } else {
-                let newData = data.slice();
-                newData[index].color = deviceColors.default;
-                newData[index].lastUpdated = "";
-                setData(newData);
-              }
+              }else{
+                
+                let foundSubplotOne = false;
+                let foundSubplotTwo = false;
+                res.forEach((entry) => {
+                  
+                  
+                  if("subplot" in entry){
+                    console.log(entry)
+                    if(entry.subplot == 1){
+                      foundSubplotOne = true;
+                    }else if(entry.subplot == 2)
+                      foundSubplotTwo = true;
+                  }
+  
+                  if(foundSubplotOne && foundSubplotTwo){
+                    let newData = data.slice();
+                    newData[index].color = deviceColors.bothSubplots;
+                    newData[index].lastUpdated = "Last updated " + deviceDateFormatted;
+                    setData(newData);
+                  }
+                  else if(foundSubplotOne || foundSubplotTwo){
+                    let newData = data.slice();
+                    newData[index].color = deviceColors.oneSubplot;
+                    newData[index].lastUpdated = "Last updated " + deviceDateFormatted;
+                    setData(newData);
+                  }else{
+                    let newData = data.slice();
+                    newData[index].color = deviceColors.default;
+                    newData[index].lastUpdated = "";
+                    setData(newData);
+                  }
+                })
+            } 
             }
+
+
+            // if (res.length > 1){
+            //   if('subplot' in res[0] && 'subplot' in res[1]){
+            //     if((res[0].subplot == 1 || res[0].subplot == 2) && (res[1].subplot == 1 || res[1].subplot == 2)){
+            //       let newData = data.slice();
+
+            //       let tz = moment.tz.guess();
+
+            //       let deviceSessionBegin = res[0].time_begin;
+            //       // get device session begin as user local time
+            //       let deviceDateLocal = moment
+            //         .tz(deviceSessionBegin, "Africa/Abidjan")
+            //         .tz(tz);
+
+            //       let deviceDateFormatted = deviceDateLocal.fromNow();
+
+            //       console.log(deviceDateFormatted)
+
+            //       newData[index].color = deviceColors.bothSubplots;
+            //       newData[index].lastUpdated = "Last active " + deviceDateFormatted;
+            //       setData(newData);
+            //     }
+            //     else{
+            //       let newData = data.slice();
+            //       newData[index].color = deviceColors.oneSubplot;
+            //       newData[index].lastUpdated = "Only one subplot";
+            //       setData(newData);
+            //     }
+            //   }
+            // }
+            // else{
+            //   if (res.length == 1){
+            //     let newData = data.slice();
+            //     newData[index].color = deviceColors.oneSubplot;
+            //     newData[index].lastUpdated = "Only one subplot";
+            //     setData(newData);
+            //   } else {
+            //     let newData = data.slice();
+            //     newData[index].color = deviceColors.default;
+            //     newData[index].lastUpdated = "";
+            //     setData(newData);
+            //   }
+            // }
           }
         )
       })
