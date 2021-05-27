@@ -443,6 +443,18 @@ export default function Header(props) {
               </ListItem>
             </List>
           </Collapse>
+          <ListItem
+            onClick={() => setOpen(false)}
+            button
+            key="DecompBags"
+            component={Link}
+            to="/decomp-bags"
+          >
+            <ListItemIcon>
+              <Storage />
+            </ListItemIcon>
+            <ListItemText primary="Decomp Bags" />
+          </ListItem>
 
           <ListItem
             onClick={() => {

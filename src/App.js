@@ -41,33 +41,26 @@ import Forms from "./Forms/Forms";
 
 // const Forms = lazy(() => "./Forms/Forms");
 
-const StressCams = lazy(() => import("./Devices/StressCams/StressCams"));
-const WaterSensors = lazy(() => import("./Devices/WaterSensors/WaterSensors"));
-const DevicesWrapper = lazy(() =>
-  import("./Devices/DevicesWrapper/DevicesWrapper")
-);
+import StressCams from "./Devices/StressCams/StressCams";
+import WaterSensors from "./Devices/WaterSensors/WaterSensors";
+import DevicesWrapper from "./Devices/DevicesWrapper/DevicesWrapper";
 
-const FormData = lazy(() => import("./Forms/components/FormData"));
-const FarmDates = lazy(() => import("./SiteInformation/FarmDates/FarmDates"));
-const FarmValues = lazy(() => import("./Biomass/FarmValues"));
-const SensorVisuals = lazy(() => import("./SensorVisuals/SensorVisuals"));
-const VisualsByCode = lazy(() =>
-  import("./SensorVisuals/Components/VisualsByCode")
-);
+import FormData from "./Forms/components/FormData";
+import FarmDates from "./SiteInformation/FarmDates/FarmDates";
+import FarmValues from "./Biomass/FarmValues";
+import SensorVisuals from "./SensorVisuals/SensorVisuals";
+import VisualsByCode from "./SensorVisuals/Components/VisualsByCode";
 // import FarmDatesCalendar from "./SiteInformation/FarmDates/FarmDatesCalendar";
-const Profile = lazy(() => import("./Profile/Profile"));
+import Profile from "./Profile/Profile";
 
-const FarmDatesCalendar = lazy(() =>
-  import("./SiteInformation/FarmDates/FarmDatesCalendar")
-);
+import FarmDatesCalendar from "./SiteInformation/FarmDates/FarmDatesCalendar";
 
-const ProducerInformation = lazy(() =>
-  import("./ProducerInformation/ProducerInformation")
-);
+import ProducerInformation from "./ProducerInformation/ProducerInformation";
 
-const TaskTimeline = lazy(() => import("./Landing/TaskTimeline/TaskTimeline"));
+import TaskTimeline from "./Landing/TaskTimeline/TaskTimeline";
 
-const Protocols = lazy(() => import("./Protocols/Protocols"));
+import Protocols from "./Protocols/Protocols";
+import DecompBag from "./DecompBag/DecompBag";
 
 // Helper function
 function useOnlineStatus() {
@@ -373,6 +366,13 @@ function App() {
 
                 <PrivateRoute path="/profile" component={Profile} />
                 <PrivateRoute path="/device-enroll" component={DeviceEnroll} />
+
+                {/* Decomp Bag View */}
+                <PrivateRoute
+                  path={`/decomp-bags`}
+                  component={DecompBag}
+                  exact
+                />
 
                 {/* New Sensors Page URLS */}
 
