@@ -39,9 +39,6 @@ const SensorVisuals = (props) => {
   const [affiliations, setAffiliations] = useState([]);
   const [state] = useContext(Context);
   const [codeSearchText, setCodeSearchText] = useState("");
-  const [coloredSensors, setColoredSensors] = useState([]);
-  const [index, setIndex] = useState(0);
-  const theme = useTheme();
 
   const handleActiveYear = (year = "") => {
     const newYears = years.map((yearInfo) => {
@@ -226,7 +223,7 @@ const SensorVisuals = (props) => {
       return data.filter((data) => data.year === activeYear);
     } else {
       return data.filter(
-        (data) => data.year === activeYear && data.code.includes(codeSearchText)
+        (data) => data.year === activeYear && data.code.includes(codeSearchText.toLowerCase())
       );
     }
 
