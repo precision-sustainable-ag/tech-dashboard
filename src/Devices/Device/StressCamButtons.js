@@ -95,10 +95,11 @@ const StressCamButtons = (props) => {
         >
             <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
         </Snackbar>
-        <Grid item >
+        <Grid item>
             <Typography variant="h5">Make sure your camera is connected to 2G/3G before sending commands</Typography>
+            <Typography variant="h5">Enter farm code and rep before sending start commands</Typography>
         </Grid>
-
+        
         <Grid item xs={12} md = {12}>
             <Grid container spacing = {1}>
                 <Grid item xs={12} md={6}>
@@ -127,10 +128,10 @@ const StressCamButtons = (props) => {
         <Grid item xs={12} md = {6} display="flex" align="center">
             <Grid container spacing = {1} display="flex" justify="center" align="center">
                 <Grid item xs={12} md={3}>
-                    <Button disabled={buttonsDisabled} fullWidth variant="contained" color={props.isDarkTheme ? "primary" : "default"} onClick={() => sendMessage("startCorn")}>Start in Corn</Button>
+                    <Button disabled={buttonsDisabled || (farmCode === "") || (rep === "")} fullWidth variant="contained" color={props.isDarkTheme ? "primary" : "default"} onClick={() => sendMessage("startCorn")}>Start in Corn</Button>
                 </Grid>
                 <Grid item xs={12} md={3}>
-                    <Button disabled={buttonsDisabled} fullWidth variant="contained" color={props.isDarkTheme ? "primary" : "default"} onClick={() => sendMessage("startSoy")}>Start in Soybean</Button>
+                    <Button disabled={buttonsDisabled || (farmCode === "") || (rep === "")} fullWidth variant="contained" color={props.isDarkTheme ? "primary" : "default"} onClick={() => sendMessage("startSoy")}>Start in Soybean</Button>
                 </Grid>
                 <Grid item xs={12} md={3}>
                     <Button disabled={buttonsDisabled} fullWidth variant="contained" color={props.isDarkTheme ? "primary" : "default"} onClick={() => sendMessage("stop")}>Stop</Button>
