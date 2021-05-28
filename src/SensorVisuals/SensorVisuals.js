@@ -1,17 +1,15 @@
-import { Grid, TextField, Typography, useTheme } from "@material-ui/core";
+import { Grid, TextField, Typography } from "@material-ui/core";
 import React, { useState, useEffect, useContext, useMemo } from "react";
 import PropTypes from "prop-types";
-import { apiPassword, apiUsername, onfarmAPI } from "../utils/api_secret";
+import { onfarmAPI } from "../utils/api_secret";
 import { Context } from "../Store/Store";
 import { CustomLoader } from "../utils/CustomComponents";
 import YearsChips from "../utils/YearsChips";
 import { groupBy } from "../utils/constants";
 import FarmCodeCard from "./Components/FarmCodeCard";
 import { Search } from "@material-ui/icons";
-import AffiliationsChips from "../utils/AffiliationsChips";
-import { useHistory, useLocation } from "react-router-dom";
-import { red, green, yellow, grey } from "@material-ui/core/colors";
-import { setDate } from "date-fns/esm";
+import { useHistory } from "react-router-dom";
+import { green, grey } from "@material-ui/core/colors";
 import moment from "moment-timezone";
 
 // const allYears
@@ -91,7 +89,7 @@ const SensorVisuals = (props) => {
                 .tz(tz);
     
                 let deviceDateFormatted = deviceDateLocal.fromNow();
-                lastUpdatedString = "Last updated " + deviceDateFormatted;
+                lastUpdatedString = "Form registered " + deviceDateFormatted;
             }else{
               lastUpdatedString = "No timestamp";
             }
