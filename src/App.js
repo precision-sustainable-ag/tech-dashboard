@@ -25,7 +25,6 @@ import { Switch, Route } from "react-router-dom";
 import { WifiOff } from "@material-ui/icons";
 
 import DeviceEnroll from "./Devices/Device-Enroll/DeviceEnroll";
-import WaterSensorData from "./Devices/WaterSensorData/WaterSensorData";
 import WaterSensorByGateway from "./Devices/WaterSensorData/WaterSensorByGateway";
 import SiteEnrollment from "./SiteEnrollment/SiteEnrollment";
 import PageNotFound from "./PageNotFound";
@@ -387,12 +386,6 @@ function App() {
                   exact
                 />
 
-                {/* Old Water Sensors Page URLS */}
-                <PrivateRoute
-                  path="/water-sensors"
-                  component={WaterSensorData}
-                  exact
-                />
                 <PrivateRoute
                   path={`/water-sensors/:gatewayId`}
                   render={(props) => <WaterSensorByGateway {...props} />}

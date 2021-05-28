@@ -124,6 +124,7 @@ const ContactAndLocation = (props) => {
         affiliations={affiliations}
         handleActiveAffiliation={handleActiveAffiliation}
         handleActiveYear={handleActiveYear}
+        showYears={true}
       />
       <Grid item xs={12}>
         <SiteInformationTable

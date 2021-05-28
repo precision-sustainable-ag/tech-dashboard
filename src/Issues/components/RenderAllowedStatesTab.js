@@ -1,35 +1,86 @@
-import { Paper, Tab, Tabs, Typography, Grid } from "@material-ui/core";
+import React, { useState, useEffect, useContext } from "react";
+import { Grid, Chip, } from "@material-ui/core";
 import PropTypes from "prop-types";
+import { apiPassword, apiURL, apiUsername } from "../../utils/api_secret";
+import Axios from "axios";
+import { Context } from "../../Store/Store";
+import { YearsAndAffiliations } from "../../utils/CustomComponents";
 
 export const RenderAllowedStatesTab = ({
   assignedStates = [],
   setActiveState,
   activeState,
 }) => {
-  return assignedStates[0] !== "all" ? (
-    <Grid container justify="flex-start" alignItems="center" >
-      <Grid item>
-        <Paper square>
-          <Tabs value={activeState} indicatorColor="primary">
-            {assignedStates.length > 0 &&
-              assignedStates.map((state, index) => (
-                <Tab
-                  key={index}
-                  label={state}
-                  value={state}
-                  onClick={() => setActiveState(state)}
-                />
-              ))}
-          </Tabs>
-        </Paper>
-      </Grid>
-    </Grid>
-  ) : (
-    <Grid container justify="flex-start" alignItems="center" >
-      <Typography variant="body1">Showing Issues for All States</Typography>
-    </Grid>
+  const [loading, setLoading] = useState();
+  const [allAffiliations, setAllAffiliations] = useState([]);
+  const [state, dispatch] = useContext(Context);
+
+  useEffect(() => {
+    setLoading(true);
+    // get remote data
+    let siteAffResponse = fetchSiteAffiliations();
+
+    siteAffResponse
+      .then((res) => {
+        let affiliations = res.data.data;
+        let permittedAffiliations = [];
+        if (state.userInfo.state === "all") {
+          let affiliationArray = [];
+          affiliations.map((affiliation) => {
+            affiliationArray.push({affiliation: affiliation.affiliation});
+          })
+          setAllAffiliations(affiliationArray);
+        } else {
+          const dbPermittedAffiliations = state.userInfo.state.split(",");
+          dbPermittedAffiliations.forEach((element) => {
+            let a = affiliations.filter((data) => data.affiliation === element);
+            permittedAffiliations.push(a);
+          });
+          setAllAffiliations(permittedAffiliations.flat());
+        }
+      })
+      .then(() => {
+        setLoading(false);
+      });
+  }, []);
+
+  const handleActiveAffiliation = (affiliation = "all") => {
+    const newAffiliations = allAffiliations.map((rec) => {
+      return {
+        active: affiliation === rec.affiliation,
+        affiliation: rec.affiliation,
+      };
+    });
+    const sortedNewAffiliations = newAffiliations.sort((a, b) =>
+      b.affiliation < a.affiliation ? 1 : b.affiliation > a.affiliation ? -1 : 0
+    );
+
+    setActiveState(affiliation);
+    setAllAffiliations(sortedNewAffiliations);
+  };
+
+  return (  
+    <YearsAndAffiliations
+      title={"Issues"}
+      years={null}
+      handleActiveYear={null}
+      affiliations={allAffiliations}
+      handleActiveAffiliation={handleActiveAffiliation}
+      showYears={false}
+    />
   );
 };
+
+const fetchSiteAffiliations = async () => {
+  return await Axios.get(`${apiURL}/api/retrieve/grower/affiliation/all`, {
+    auth: {
+      username: apiUsername,
+      password: apiPassword,
+    },
+  });
+};
+
+
 
 RenderAllowedStatesTab.propTypes = {
   assignedStates: PropTypes.array.isRequired,

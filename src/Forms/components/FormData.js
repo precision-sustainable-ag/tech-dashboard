@@ -128,7 +128,7 @@ const FormData = (props) => {
     });
   }, [activeAccount, originalData]);
 
-  const [snackbarData, setSnackbarData] = useState({ open: false, text: "" });
+  const [snackbarData, setSnackbarData] = useState({ open: false, text: "", severity: "success" });
   const [newIssueData, setNewIssueData] = useState({});
 
   const CreateNewIssue = ({ issueData }) => {
@@ -252,7 +252,7 @@ const FormData = (props) => {
           setSnackbarData({ ...snackbarData, open: !snackbarData.open })
         }
       >
-        <Alert severity="success">{snackbarData.text}</Alert>
+        <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
       </Snackbar>
       <Grid container spacing={2}>
         <Grid item>
@@ -308,7 +308,6 @@ const FormData = (props) => {
             user={user}
           />
         )}
-        <ShowNewFormIssue />
       </Grid>
     </div>
   );

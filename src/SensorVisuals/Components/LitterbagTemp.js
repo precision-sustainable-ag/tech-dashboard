@@ -57,7 +57,7 @@ const TempByLbs = () => {
 
   const waterAmbientSensorDataEndpoint =
     onfarmAPI +
-    `/soil_moisture?type=ambient&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,subplot,trt,t_lb`;
+    `/soil_moisture?type=ambient&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,subplot,trt,t_lb&location=true`;
 
   useEffect(() => {
     const setNodeData = async (apiKey) => {

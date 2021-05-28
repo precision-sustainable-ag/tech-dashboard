@@ -40,6 +40,7 @@ const DataParser = (props) => {
   const [dateStringFormatted, setDateStringFormatted] = useState("");
   let device = props.deviceData;
   device.for = props.for;
+  const { lastSession } = props;
   // console.log("deviceData", props.deviceData);
   const setDeviceState = (deviceId) => {
     setDeviceId(deviceId);
@@ -304,11 +305,15 @@ const DataParser = (props) => {
               }
         }
         onClick={() => {
-          setDeviceState(device.id);
+          if (lastSession) setDeviceState(device.id);
         }}
       >
         <Tooltip
-          title={`Last Update: ${dateStringFormatted}`}
+          title={
+            lastSession
+              ? `Last Update: ${dateStringFormatted}`
+              : "Last session unavailable"
+          }
           arrow
           placeholder="top-right"
         >
@@ -322,7 +327,7 @@ const DataParser = (props) => {
             // style={{ height: "100%" }}
             disabled={!device.lastsession ? true : false}
             onClick={() => {
-              setDeviceState(device.id);
+              if (lastSession) setDeviceState(device.id);
             }}
           >
             {device.lastsession ? (
@@ -344,9 +349,9 @@ const DataParser = (props) => {
                 <Typography variant="body2" style={{ fontWeight: "bold" }}>
                   Last Session: Not Available
                 </Typography>
-                <Typography variant="body2" style={{ fontWeight: "bold" }}>
+                {/* <Typography variant="body2" style={{ fontWeight: "bold" }}>
                   Device Dead
-                </Typography>
+                </Typography> */}
               </Grid>
             )}
           </Grid>

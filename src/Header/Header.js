@@ -40,11 +40,13 @@ import {
   Person,
 } from "@material-ui/icons";
 import Axios from "axios";
+import { Octokit } from "@octokit/rest";
 
 // Local Imports
 import { apiPassword, apiUsername, apiURL } from "../utils/api_secret";
 import { Context } from "../Store/Store";
 import { useAuth0 } from "../Auth/react-auth0-spa";
+import { githubToken } from "../utils/api_secret";
 
 //Global Vars
 const drawerWidth = 240;
@@ -185,6 +187,20 @@ export default function Header(props) {
       console.error(e);
     }
   };
+
+  async function addUser(username) {
+    const octokit = new Octokit({ auth: githubToken });
+    return await octokit.request(
+      "PUT /repos/{owner}/{repo}/collaborators/{username}",
+      {
+        owner: "precision-sustainable-ag",
+        repo: "data_corrections",
+        username: username,
+        permission: "push",
+      }
+    );
+  }
+
   const fetchRole = async (user) => {
     dispatch({
       type: "UPDATING_USER_INFO",
@@ -203,6 +219,8 @@ export default function Header(props) {
         };
 
         addUserToDatabase(qs.stringify(obj));
+        //add to data corrections
+        addUser(user.nickname).then((res) => console.log(res));
       } else {
         dispatch({
           type: "UPDATE_ROLE",
@@ -480,17 +498,6 @@ export default function Header(props) {
                 }}
               >
                 <ListItemText inset primary="Chart View" />
-              </ListItem>
-              <ListItem
-                button
-                to="/water-sensors"
-                component={Link}
-                onClick={() => {
-                  setOpen(false);
-                  handleOpenDevicesNav();
-                }}
-              >
-                <ListItemText inset primary="Legacy Chart View" />
               </ListItem>
             </List>
           </Collapse>

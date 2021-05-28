@@ -225,9 +225,9 @@ export const useInfiniteScroll = (callback) => {
 
   const isScrolling = () => {
     if (
-      window.innerHeight + document.documentElement.scrollTop !==
-        document.documentElement.offsetHeight ||
-      isFetching
+      window.innerHeight + document.documentElement.scrollTop <=
+        0.9 * document.documentElement.offsetHeight ||
+        isFetching
     )
       return;
     setIsFetching(true);
@@ -279,6 +279,7 @@ export const YearsAndAffiliations = (props) => {
     affiliations,
     handleActiveAffiliation,
     handleActiveYear,
+    showYears,
   } = props;
 
   const activeAffiliation = () => {
@@ -289,6 +290,7 @@ export const YearsAndAffiliations = (props) => {
         .toString() || "all"
     );
   };
+
   return (
     <Fragment>
       {title !== "none" && (
@@ -297,12 +299,15 @@ export const YearsAndAffiliations = (props) => {
         </Grid>
       )}
 
-      <Grid item container spacing={3} xs={12}>
-        <Grid item sm={2} md={1} xs={12}>
-          <Typography variant="body1">Years</Typography>
+      {showYears && (
+        <Grid item container spacing={3} xs={12}>
+          <Grid item sm={2} md={1} xs={12}>
+            <Typography variant="body1">Years</Typography>
+          </Grid>
+          <YearsChips years={years} handleActiveYear={handleActiveYear} />
         </Grid>
-        <YearsChips years={years} handleActiveYear={handleActiveYear} />
-      </Grid>
+      )}
+      
 
       <Grid item container spacing={2} xs={12}>
         <Grid item sm={2} md={1} xs={12}>
@@ -326,6 +331,7 @@ YearsAndAffiliations.defaultProps = {
   affiliations: [],
   handleActiveAffiliation: () => {},
   handleActiveYear: () => {},
+  showYears: true,
 };
 
 YearsAndAffiliations.propTypes = {
@@ -334,4 +340,5 @@ YearsAndAffiliations.propTypes = {
   affiliations: PropTypes.array,
   handleActiveAffiliation: PropTypes.func,
   handleActiveYear: PropTypes.func,
+  showYears: PropTypes.bool,
 };

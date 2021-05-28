@@ -112,8 +112,6 @@ export const RenderIssues = ({ stateLabel, userRole, filter }) => {
       setLoading(true);
       setShowIssues(false);
 
-      console.log(filter, stateLabel);
-
       getIssues(octokit, [stateLabel, filter])
         .then((resp) => {
           // console.log(resp);
@@ -250,7 +248,7 @@ export const RenderIssues = ({ stateLabel, userRole, filter }) => {
               <AccordionDetails>
                 <Grid container spacing={2}>
                   <Grid item xs={12} className="issueMarkdown">
-                    <MDEditor.Markdown source={issue.body} />
+                    <MDEditor.Markdown source={issue.body}/>
                   </Grid>
                   <Grid item xs={12}>
                     <RenderUserCredits

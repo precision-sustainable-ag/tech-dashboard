@@ -29,9 +29,9 @@ class GithubIssues:
         # request token	
         self.auth0_connection.request("POST", "/oauth/token", auth0_payload, auth0_headers)	
         auth0_token_res = self.auth0_connection.getresponse()	
-        auth0_token_data = auth0_token_res.read()	
+        auth0_token_data = auth0_token_res.read()
         # convert to json	
-        json_auth0_token_data = auth0_token_data.decode('utf8').replace("'", '"')	
+        json_auth0_token_data = auth0_token_data.decode('utf8')	
         auth0_token_json_data = json.loads(json_auth0_token_data)	
         # logging.info and store access token	
         if DEBUG:
@@ -50,7 +50,7 @@ class GithubIssues:
         auth0_users_res = self.auth0_connection.getresponse()	
         auth0_users_data = auth0_users_res.read()	
         # convert to json	
-        json_auth0_users_data = auth0_users_data.decode('utf8').replace("'", '"')	
+        json_auth0_users_data = auth0_users_data.decode('utf8')
         auth0_users_json_data = json.loads(json_auth0_users_data)	
         # iterate through users and logging.info out for debugging	
         if DEBUG:
@@ -97,9 +97,11 @@ class GithubIssues:
         if response.status_code == 201:	
             logging.info ('Successfully created issue "%s"' % title)	
             # logging.info (self.RESPONSE_STRING, response.content)	
+            return True, response
         else:	
             logging.info ('Could not create Issue "%s"' % title)	
             logging.info (self.RESPONSE_STRING + str(response.content))	
+            return False, response
     def create_github_comment(self, issue_number, body):	
         # Create an issue on github.com using the given parameters	
         # Url to create issues via POST	
@@ -122,16 +124,17 @@ class GithubIssues:
         if response.status_code == 201:	
             logging.info ('Successfully created Comment "%s" on issue #%s' % (body, issue_number))	
             # logging.info (self.RESPONSE_STRING, response.content)	
+            return True, response
         else:	
             logging.info ('Could not create Comment "%s"' % body)	
             logging.info (self.RESPONSE_STRING + str(response.content))	
+            return False, response
 
     def authenticate(self, token):	
         # setup management api request 	
         auth0_users_authorization =  "Bearer " + token
         
         auth0_connection =  http.client.HTTPSConnection("dev.onfarmtech.org")	
-        logging.info("hi")
         auth0_users_headers = { 'authorization': auth0_users_authorization }	
         # request users	
         logging.info(auth0_users_headers)
@@ -218,25 +221,44 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             ghi.set_class_variables()
             if action == "create":	
                 # create issue
-                ghi.create_github_issue(title, body, assignees, labels)	
-                # send back response
-                return func.HttpResponse(	
-                    # body may be unneeded
-                    body = json.dumps({"Message": "Successfully created issue"}),	
-                    status_code=201,	
-                    headers=HEADER	
-                )	
+                status, response = ghi.create_github_issue(title, body, assignees, labels)
+                if status:	
+                    # send back succsess response
+                    return func.HttpResponse(	
+                        # body may be unneeded
+                        body = json.dumps({"Message": "Successfully created issue"}),	
+                        status_code=201,	
+                        headers=HEADER	
+                    )	
+                else:
+                    # send back failure response
+                    return func.HttpResponse(	
+                        # body may be unneeded
+                        body = json.dumps({"Message": "Could not create issue. Error: " + response.content.decode()}),	
+                        status_code=400,	
+                        headers=HEADER	
+                    )
             # if action is comment
             elif action == "comment":	
                 # create comment
-                ghi.create_github_comment(number, comment)	
                 # send back response
-                return func.HttpResponse(	
-                    # body may be unneeded
-                    body = json.dumps({"Message": "Successfully created comment"}),	
-                    status_code=201,	
-                    headers=HEADER	
-                )	
+                status, response = ghi.create_github_comment(number, comment)
+                if status:	
+                    # send back succsess response
+                    return func.HttpResponse(	
+                        # body may be unneeded
+                        body = json.dumps({"Message": "Successfully created comment"}),	
+                        status_code=201,	
+                        headers=HEADER	
+                    )	
+                else:
+                    # send back failure response
+                    return func.HttpResponse(	
+                        # body may be unneeded
+                        body = json.dumps({"Message": "Could not create comment. Error: " + response.content.decode()}),	
+                        status_code=400,	
+                        headers=HEADER	
+                    )	
     # handle exceptions 
     except Exception as error:
         logging.info("Program encountered exception: " + str(error))

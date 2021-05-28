@@ -68,9 +68,10 @@ const GatewayChart = (props) => {
   //   }, []);
 
   const chartOptions = {
-    global: {
+    time: {
       useUTC: false,
     },
+
     chart: {
       type: "scatter",
       zoomType: "xy",

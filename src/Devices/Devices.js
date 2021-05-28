@@ -108,11 +108,26 @@ const DevicesComponent = (props) => {
                       for={props.for}
                       key={device.id}
                       deviceData={device}
+                      lastSession={true}
                     />
                   </Card>
                 </Grid>
               ) : (
-                ""
+                <Grid item xs={12} md={2} key={device.id}>
+                  <Card
+                    style={deviceCardStyle}
+                    variant="elevation"
+                    elevation={3}
+                    className="deviceDataWrapper"
+                  >
+                    <DataParser
+                      for={props.for}
+                      key={device.id}
+                      deviceData={device}
+                      lastSession={false}
+                    />
+                  </Card>
+                </Grid>
               )
             )
           ) : (
