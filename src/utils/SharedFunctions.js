@@ -87,21 +87,8 @@ export const createGithubIssue = async (
   labels,
   assignees,
   nickname,
-  getTokenSilently,
-  getTokenWithPopup,
+  token
 ) => {
-  let token;
-
-  try{
-    token = await getTokenSilently({
-      audience: `https://precision-sustaibale-ag/tech-dashboard`
-    });
-  }catch(e){
-    console.log("Could not fetch token silently " + e)
-    token = await getTokenWithPopup({
-      audience: `https://precision-sustaibale-ag/tech-dashboard`
-    });
-  }
   const data = {
     action: "create",
     user: nickname,
