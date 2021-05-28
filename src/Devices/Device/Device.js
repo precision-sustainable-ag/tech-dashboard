@@ -39,19 +39,16 @@ import {
   CalendarToday,
 } from "@material-ui/icons";
 import moment from "moment-timezone";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
 
 // Local Imports
 import { apiUsername, apiPassword } from "../../utils/api_secret";
 import { APIURL, APICreds, apiCorsUrl } from "../hologramConstants";
 import GoogleMap from "../../Location/GoogleMap";
-import {
-  ScrollTop,
-  useInfiniteScroll,
-} from "../../utils/CustomComponents";
+import { ScrollTop, useInfiniteScroll } from "../../utils/CustomComponents";
 import Loading from "react-loading";
-import StressCamButtons from "./StressCamButtons"
+import StressCamButtons from "./StressCamButtons";
 // import { theme } from "highcharts";
 
 SyntaxHighlighter.registerLanguage("json", json);
@@ -112,6 +109,7 @@ const DeviceComponent = (props) => {
   const [pagesLoaded, setPagesLoaded] = useState(0);
   const [loadMoreDataURI, setLoadMoreDataURI] = useState("");
   const [timeEnd, setTimeEnd] = useState(Math.floor(Date.now() / 1000));
+  const { state } = useLocation();
 
   useEffect(() => {
     setUserTimezone(moment.tz.guess);
@@ -174,8 +172,10 @@ const DeviceComponent = (props) => {
           setLatLng({
             flag: true,
             data: [
-              props.location.state.lastsession.latitude,
-              props.location.state.lastsession.longitude,
+              state.lastsession ? props.location.state.lastsession.latitude : 0,
+              state.lastsession
+                ? props.location.state.lastsession.longitude
+                : 0,
             ],
           });
         })
@@ -206,17 +206,24 @@ const DeviceComponent = (props) => {
           </Button>
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="h4" color={props.isDarkTheme ? "primary" : "secondary"}>
+          <Typography
+            variant="h4"
+            color={props.isDarkTheme ? "primary" : "secondary"}
+          >
             Showing data for {props.history.location.state.name}
           </Typography>
         </Grid>
         <Grid item xs={12}>
           <div style={{ height: "350px" }}>
-            <GoogleMap
-              lat={latLng.data[0]}
-              lng={latLng.data[1]}
-              from={"device"}
-            />
+            {state.lastsession ? (
+              <GoogleMap
+                lat={latLng.data[0]}
+                lng={latLng.data[1]}
+                from={"device"}
+              />
+            ) : (
+              <GoogleMap from={"device"} />
+            )}
           </div>
         </Grid>
       </Grid>
@@ -425,8 +432,10 @@ const DeviceComponent = (props) => {
           </List>
         </Grid>
 
-        {!(props.location.state.for === "watersensors") && (<StressCamButtons deviceId = {props.history.location.state.id}/>)}
-        
+        {!(props.location.state.for === "watersensors") && (
+          <StressCamButtons deviceId={props.history.location.state.id} />
+        )}
+
         <Grid item xs={12}>
           <RenderDataTable />
         </Grid>
