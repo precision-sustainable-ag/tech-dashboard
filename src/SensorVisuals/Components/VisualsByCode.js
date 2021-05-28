@@ -167,7 +167,6 @@ const VisualsByCode = (props) => {
       setLoading(false);
     };
   }, [waterGatewayDataEndpoint, state.userInfo.apikey, waterNodeDataEndpoint]);
-  console.log(location.state.data)
 
   return (
     <Grid container spacing={3} alignItems="center">
