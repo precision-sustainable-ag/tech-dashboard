@@ -128,17 +128,48 @@ const StressCamButtons = (props) => {
         <Grid item xs={12} md = {6} display="flex" align="center">
             <Grid container spacing = {1} display="flex" justify="center" align="center">
                 <Grid item xs={12} md={3}>
-                    <Button disabled={buttonsDisabled || (farmCode === "") || (rep === "")} fullWidth variant="contained" color={props.isDarkTheme ? "primary" : "default"} onClick={() => sendMessage("startCorn")}>Start in Corn</Button>
+                    <Button 
+                        disabled={buttonsDisabled || (farmCode.length !== 3) || (rep !== "1" && rep !== "2")} 
+                        fullWidth 
+                        variant="contained" 
+                        color={props.isDarkTheme ? "primary" : "default"} 
+                        onClick={() => sendMessage("startCorn")}
+                    >
+                            Start in Corn
+                    </Button>
                 </Grid>
                 <Grid item xs={12} md={3}>
-                    <Button disabled={buttonsDisabled || (farmCode === "") || (rep === "")} fullWidth variant="contained" color={props.isDarkTheme ? "primary" : "default"} onClick={() => sendMessage("startSoy")}>Start in Soybean</Button>
+                    <Button 
+                        disabled={buttonsDisabled || (farmCode.length !== 3) || (rep !== "1" && rep !== "2")} 
+                        fullWidth 
+                        variant="contained" 
+                        color={props.isDarkTheme ? "primary" : "default"} 
+                        onClick={() => sendMessage("startSoy")}
+                    >
+                        Start in Soybean
+                    </Button>
                 </Grid>
                 <Grid item xs={12} md={3}>
-                    <Button disabled={buttonsDisabled} fullWidth variant="contained" color={props.isDarkTheme ? "primary" : "default"} onClick={() => sendMessage("stop")}>Stop</Button>
+                    <Button 
+                        disabled={buttonsDisabled} 
+                        fullWidth 
+                        variant="contained" 
+                        color={props.isDarkTheme ? "primary" : "default"} 
+                        onClick={() => sendMessage("stop")}
+                    >
+                        Stop
+                    </Button>
                 </Grid>
                 <Grid item xs={12} md={3}>
-                {/* <Button fullWidth variant="contained" color={props.isDarkTheme ? "primary" : "default"} onClick={() => sendCommandToHologram(props.deviceId, null, null, "open", null)}>Shutdown</Button> */}
-                    <Button disabled={buttonsDisabled} fullWidth variant="contained" color={props.isDarkTheme ? "primary" : "default"} onClick={() => sendMessage("shutdown")}>Shutdown</Button>
+                    <Button 
+                        disabled={buttonsDisabled} 
+                        fullWidth 
+                        variant="contained" 
+                        color={props.isDarkTheme ? "primary" : "default"} 
+                        onClick={() => sendMessage("shutdown")}
+                    >
+                        Shutdown
+                    </Button>
                 </Grid>
             </Grid>
         </Grid>
