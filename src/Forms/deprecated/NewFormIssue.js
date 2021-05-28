@@ -34,7 +34,6 @@ import {
   const NewFormIssue = (props) => {
     const {
       getTokenSilently,
-      getTokenWithPopup,
     } = useAuth0();
   
     const octokit = new Octokit({ auth: githubToken });
@@ -59,6 +58,10 @@ import {
         const assignedPeople = personName.length > 0 ? personName : [`${props.nickname}`];
 
         let jsonData = JSON.stringify(props.data, null, "\t");
+        
+        let token = await getTokenSilently({
+          audience: `https://precision-sustaibale-ag/tech-dashboard`
+        });
 
         // console.log(JSON.stringify(props))
         let labels = [props.data._id.toString(), props.affiliationLookup[props.data._submitted_by], props.formName, "kobo-forms"]
@@ -71,8 +74,7 @@ import {
           labels,
           assignedPeople,
           props.nickname,
-          getTokenSilently,
-          getTokenWithPopup,
+          token
         );
   
         issueSet.then((res) => {

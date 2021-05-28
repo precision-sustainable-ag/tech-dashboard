@@ -16,7 +16,6 @@ const IssueDialogue = (props) => {
     const [issueTitle, setIssueTitle] = useState("");
     const {
         getTokenSilently,
-        getTokenWithPopup,
     } = useAuth0();
         
     const alwaysTaggedPeople = ["brianwdavis", "saseehav", props.nickname];
@@ -31,6 +30,10 @@ const IssueDialogue = (props) => {
           setButtonDisabled(true);
   
           const assignedPeople = personName.length > 0 ? personName : [`${props.nickname}`];
+            
+          let token = await getTokenSilently({
+            audience: `https://precision-sustaibale-ag/tech-dashboard`
+          });
   
           const body = newComment;
           
@@ -40,8 +43,7 @@ const IssueDialogue = (props) => {
             props.labels,
             assignedPeople,
             props.nickname,
-            getTokenSilently,
-            getTokenWithPopup,
+            token
           );
     
           issueSet.then((res) => {
