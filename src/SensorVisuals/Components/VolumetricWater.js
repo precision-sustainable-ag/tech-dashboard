@@ -58,7 +58,7 @@ const VolumetricWater = () => {
 
   const waterSensorDataEndpoint =
     onfarmAPI +
-    `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,trt`;
+    `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,trt&location=true`;
   // const chartOptions = useMemo(
   //   () => (),
   //   [vwcData, type]
