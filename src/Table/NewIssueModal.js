@@ -31,6 +31,7 @@ import { createGithubIssue } from "../utils/SharedFunctions"
 const NewIssueModal = (props) => {
   const {
     getTokenSilently,
+    getTokenWithPopup,
   } = useAuth0();
 
   const octokit = new Octokit({ auth: githubToken });
@@ -108,10 +109,6 @@ const NewIssueModal = (props) => {
       </table>`;
 
       const body = tableData + " <br/> " + newComment;
-
-      let token = await getTokenSilently({
-        audience: `https://precision-sustaibale-ag/tech-dashboard`
-      });
       
       const issueSet = createGithubIssue(
         issueTitle,
@@ -119,7 +116,8 @@ const NewIssueModal = (props) => {
         labels,
         assignedPeople,
         props.nickname,
-        token
+        getTokenSilently,
+        getTokenWithPopup,
       );
 
       issueSet.then((res) => {
