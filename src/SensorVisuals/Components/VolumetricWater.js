@@ -12,7 +12,9 @@ const chartOptions = {
   //   global: {
   //     useUTC: false,
   //   },
-
+  time: {
+    useUTC: false,
+  },
   chart: {
     type: "scatter",
     zoomType: "xy",

@@ -9,6 +9,9 @@ import Highcharts from "highcharts";
 import { CustomLoader } from "../../utils/CustomComponents";
 
 const chartOptions = {
+  time: {
+    useUTC: false,
+  },
   chart: {
     type: "scatter",
     zoomType: "xy",
