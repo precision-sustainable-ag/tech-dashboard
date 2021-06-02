@@ -84,7 +84,15 @@ const FormData = (props) => {
         })
           .then(({ data }) => {
             const allowedKoboAccounts = data.reduce(
-              (acc, curr) => [...acc, curr.kobo_account],
+              (acc, curr) => {
+                console.log(acc, curr)
+                if(!acc.includes(curr.kobo_account)){
+                  return [...acc, curr.kobo_account];
+                }
+                else{
+                  return acc;
+                }
+              },
               []
             );
             setAffiliationLookup({});
