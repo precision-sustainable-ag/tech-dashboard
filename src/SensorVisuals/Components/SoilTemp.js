@@ -92,8 +92,7 @@ const SoilTemp = () => {
       title: {
         text: "Soil Temp - Rep 1 Bare",
       },
-      series: [
-        {
+      series: [{
           name: "Surface",
           data: surfaceDepth,
           tooltip: {
