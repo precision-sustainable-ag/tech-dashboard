@@ -43,7 +43,7 @@ const SensorVisuals = (props) => {
     const newYears = years.map((yearInfo) => {
       return { active: year === yearInfo.year, year: yearInfo.year };
     });
-    const sortedNewYears = newYears.sort((a, b) => b - a);
+    const sortedNewYears = newYears.sort((a, b) => b.year - a.year);
 
     setYears(sortedNewYears);
   };
