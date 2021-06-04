@@ -152,16 +152,10 @@ const SensorVisuals = (props) => {
   }
 
   useEffect(() => {
-<<<<<<< HEAD
     if(location.state){
       if(location.state.data){
         setData(location.state.data);
       }
-=======
-    if (location.state) {
-      // console.log(location.state.data);
-      setData(location.state.data);
->>>>>>> dev
     }
 
     const fetchData = async (apiKey) => {
@@ -178,11 +172,7 @@ const SensorVisuals = (props) => {
           });
           const response = await records.json();
 
-<<<<<<< HEAD
           if(data.length !== 0){
-=======
-          if (!location.state) {
->>>>>>> dev
             let newData = response.map((entry) => {
               return {
                 ...entry,
