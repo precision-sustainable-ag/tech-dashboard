@@ -124,7 +124,6 @@ const SoilTemp = () => {
               "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Temp: <b>{point.y}</b><br/>",
           },
         },
-<<<<<<< HEAD
         {
           name: "Deep",
           data: deepDepth,
@@ -133,8 +132,6 @@ const SoilTemp = () => {
               "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Temp: <b>{point.y}</b><br/>",
           },
         },
-=======
->>>>>>> dev
       ],
     };
   }, [data]);
@@ -312,7 +309,6 @@ const SoilTemp = () => {
               "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Temp: <b>{point.y}</b><br/>",
           },
         },
-<<<<<<< HEAD
         {
           name: "Deep",
           data: deepDepth,
@@ -321,8 +317,6 @@ const SoilTemp = () => {
               "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Temp: <b>{point.y}</b><br/>",
           },
         },
-=======
->>>>>>> dev
       ],
     };
   }, [data]);
