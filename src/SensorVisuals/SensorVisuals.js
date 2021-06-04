@@ -172,7 +172,7 @@ const SensorVisuals = (props) => {
           });
           const response = await records.json();
 
-          if(data.length !== 0){
+          if(data.length == 0){
             let newData = response.map((entry) => {
               return {
                 ...entry,
