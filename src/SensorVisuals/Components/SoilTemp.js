@@ -89,7 +89,14 @@ const SoilTemp = () => {
       title: {
         text: "Soil Temp - Rep 1 Bare",
       },
-      series: [
+      series: [{
+          name: "Surface",
+          data: surfaceDepth,
+          tooltip: {
+            pointFormat:
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Temp: <b>{point.y}</b><br/>",
+          },
+        },
         {
           name: "Top",
           data: topDepth,
@@ -109,14 +116,6 @@ const SoilTemp = () => {
         {
           name: "Deep",
           data: deepDepth,
-          tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Temp: <b>{point.y}</b><br/>",
-          },
-        },
-        {
-          name: "Surface",
-          data: surfaceDepth,
           tooltip: {
             pointFormat:
               "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Temp: <b>{point.y}</b><br/>",
@@ -150,6 +149,14 @@ const SoilTemp = () => {
       },
       series: [
         {
+          name: "Surface",
+          data: surfaceDepth,
+          tooltip: {
+            pointFormat:
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Temp: <b>{point.y}</b><br/>",
+          },
+        },
+        {
           name: "Top",
           data: topDepth,
           tooltip: {
@@ -168,14 +175,6 @@ const SoilTemp = () => {
         {
           name: "Deep",
           data: deepDepth,
-          tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Temp: <b>{point.y}</b><br/>",
-          },
-        },
-        {
-          name: "Surface",
-          data: surfaceDepth,
           tooltip: {
             pointFormat:
               "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Temp: <b>{point.y}</b><br/>",
@@ -209,6 +208,14 @@ const SoilTemp = () => {
       },
       series: [
         {
+          name: "Surface",
+          data: surfaceDepth,
+          tooltip: {
+            pointFormat:
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Temp: <b>{point.y}</b><br/>",
+          },
+        },
+        {
           name: "Top",
           data: topDepth,
           tooltip: {
@@ -227,14 +234,6 @@ const SoilTemp = () => {
         {
           name: "Deep",
           data: deepDepth,
-          tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Temp: <b>{point.y}</b><br/>",
-          },
-        },
-        {
-          name: "Surface",
-          data: surfaceDepth,
           tooltip: {
             pointFormat:
               "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Temp: <b>{point.y}</b><br/>",
@@ -267,6 +266,14 @@ const SoilTemp = () => {
         text: "Soil Temp - Rep 2 Cover",
       },
       series: [
+                {
+          name: "Surface",
+          data: surfaceDepth,
+          tooltip: {
+            pointFormat:
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Temp: <b>{point.y}</b><br/>",
+          },
+        },
         {
           name: "Top",
           data: topDepth,
@@ -286,14 +293,6 @@ const SoilTemp = () => {
         {
           name: "Deep",
           data: deepDepth,
-          tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Temp: <b>{point.y}</b><br/>",
-          },
-        },
-        {
-          name: "Surface",
-          data: surfaceDepth,
           tooltip: {
             pointFormat:
               "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Temp: <b>{point.y}</b><br/>",
