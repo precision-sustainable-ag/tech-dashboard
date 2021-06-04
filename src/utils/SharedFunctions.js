@@ -87,7 +87,7 @@ export const createGithubIssue = async (
   labels,
   assignees,
   nickname,
-  token
+  getTokenSilently,
 ) => {
   const data = {
     action: "create",
@@ -96,47 +96,49 @@ export const createGithubIssue = async (
     assignees: assignees,
     labels: labels,
     body: body,
-    token: token,
   };
 
-  const options = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-    mode: "cors", // no-cors, *cors, same-origin
-  };
-
-  let res = await fetch(
-    `https://githubissues.azurewebsites.us/api/GithubIssues`,
-    options
-  )
-    .then((response) => {
-      console.log(response);
-      return response;
-    })
-    .catch((err) => {
-      console.log("error reading data " + err);
-    });
-
-  // console.log(res.status)
-
-  return res;
+  return callAzureFunction(data, getTokenSilently)
+    // .then(res => {
+    //   console.log(res);
+    //   return res;
+    // })
+    // .catch(error => console.log(error));
 };
 export const createGithubComment = async (
   nickname,
   newComment,
   number,
-  token
+  getTokenSilently,
 ) => {
   const data = {
     action: "comment",
     user: nickname,
     comment: newComment,
     number: number,
-    token: token,
   };
+
+  return callAzureFunction(data, getTokenSilently)
+};
+
+export const acceptInvite = async (
+  nickname,
+  getTokenSilently,
+) => {
+    const data = {
+      action: "accept_invite",
+      user: nickname
+    }
+
+    return callAzureFunction(data, getTokenSilently)
+};
+
+const callAzureFunction = async (data, getTokenSilently) => {
+  let token = await getTokenSilently({
+    audience: `https://precision-sustaibale-ag/tech-dashboard`
+  });
+
+  data = {...data, token: token}
 
   const options = {
     method: "POST",
@@ -147,20 +149,11 @@ export const createGithubComment = async (
     mode: "cors", // no-cors, *cors, same-origin
   };
 
-  let res = await fetch(
-    `https://githubissues.azurewebsites.us/api/GithubIssues`,
+  return fetch(
+    `http://localhost:7071/api/GithubIssues`,
     options
   )
-    .then((response) => {
-      console.log(response);
-      return response;
-    })
-    .catch((err) => {
-      console.log("error reading data " + err);
-    });
-
-  return res;
-};
+}
 
 export const sendCommandToHologram = async (
   deviceId,
