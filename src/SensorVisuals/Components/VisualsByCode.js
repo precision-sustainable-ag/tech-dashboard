@@ -180,7 +180,7 @@ const VisualsByCode = (props) => {
               pathname: "/sensor-visuals",
               state: {
                 year: year,
-                data: location.state.data
+                data: location.state ? location.state.data : null
               },
             });
           }}

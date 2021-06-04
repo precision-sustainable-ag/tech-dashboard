@@ -68,10 +68,9 @@ const GatewayChart = (props) => {
   //   }, []);
 
   const chartOptions = {
-    time: {
-      useUTC: false,
+    time:{
+      timezoneOffset: new Date().getTimezoneOffset() * 2,
     },
-
     chart: {
       type: "scatter",
       zoomType: "xy",
