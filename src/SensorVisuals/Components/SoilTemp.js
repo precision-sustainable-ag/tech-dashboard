@@ -92,14 +92,7 @@ const SoilTemp = () => {
       title: {
         text: "Soil Temp - Rep 1 Bare",
       },
-      series: [{
-          name: "Surface",
-          data: surfaceDepth,
-          tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Temp: <b>{point.y}</b><br/>",
-          },
-        },
+      series: [
         {
           name: "Surface",
           data: surfaceDepth,
@@ -278,14 +271,6 @@ const SoilTemp = () => {
       },
       series: [
                 {
-          name: "Surface",
-          data: surfaceDepth,
-          tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Temp: <b>{point.y}</b><br/>",
-          },
-        },
-        {
           name: "Surface",
           data: surfaceDepth,
           tooltip: {
