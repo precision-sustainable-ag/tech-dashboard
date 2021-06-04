@@ -7,20 +7,56 @@ import {
   Tooltip,
   Typography,
 } from "@material-ui/core";
-import { onfarmAPI } from "../../utils/api_secret";
+import { googleApiKey, onfarmAPI } from "../../utils/api_secret";
 import PropTypes from "prop-types";
 import { ArrowBackIos } from "@material-ui/icons";
-import { Link, useHistory, useParams, useLocation  } from "react-router-dom";
+import { Link, useHistory, useParams, useLocation } from "react-router-dom";
 import { lazy, useContext, useEffect, useState } from "react";
 import { Context } from "../../Store/Store";
 import { CustomLoader } from "../../utils/CustomComponents";
 import GatewayChart from "./GatewayChart";
+import GoogleMapsReact from "google-map-react";
+import styled from "styled-components";
+
 // import NodeCharts from "./NodeCharts";
 
 // import NodeVoltage from "./NodeVoltage";
 // import VolumetricWater from "./VolumetricWater";
 // import SoilTemp from "./SoilTemp";
 // import TempByLbs from "./TempByLbs";
+
+const StyledMarker = styled.div.attrs((/* props */) => ({ tabIndex: 0 }))`
+  & {
+    width: 100px;
+    height: auto;
+    padding: 2px;
+    background-color: rgba(248, 208, 93, 0.5);
+    margin: 0 auto;
+    position: relative;
+    transition: all 0.3s linear;
+    box-shadow: 0 0 2px transparent;
+    border-radius: 5px;
+  }
+  &:hover {
+    background-color: rgba(248, 208, 93, 1);
+    box-shadow: 0 0 2px black;
+
+    z-index: 999;
+  }
+  &:after {
+    border-right: solid 20px transparent;
+    border-left: solid 20px transparent;
+    border-top: solid 20px #f8d05d;
+    transform: translateX(-50%);
+    position: absolute;
+    z-index: -1;
+    content: "";
+    top: 100%;
+    left: 50%;
+    height: 0;
+    width: 0;
+  }
+`;
 
 const NodeVoltage = lazy(() => import("./NodeVoltage"));
 const SoilTemp = lazy(() => import("./SoilTemp"));
@@ -32,6 +68,11 @@ const VisualsByCode = (props) => {
   const history = useHistory();
   const { code, year } = useParams();
   const [loading, setLoading] = useState(false);
+  const [mapData, setMapData] = useState({
+    open: false,
+    locationData: [],
+    zoom: 20,
+  });
 
   const [sensorData, setSensorData] = useState([]);
   const [gatewayData, setGatewayData] = useState([]);
@@ -43,13 +84,10 @@ const VisualsByCode = (props) => {
     node: [],
     ambient: [],
   });
-  const [activeSerial, setActiveSerial] = useState("");
-  const [activeSubplot, setActiveSubplot] = useState("");
+
   const location = useLocation();
 
-  const waterSensorDataEndpoint =
-    onfarmAPI +
-    `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31`;
+  const latLongEndpoint = onfarmAPI + `/locations?code=${code}&year=${year}`;
 
   const waterGatewayDataEndpoint =
     onfarmAPI +
@@ -59,12 +97,37 @@ const VisualsByCode = (props) => {
     onfarmAPI +
     `/soil_moisture?type=node&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31`;
 
-  const waterAmbientSensorDataEndpoint =
-    onfarmAPI +
-    `/soil_moisture?type=ambient&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31`;
+  const getMapOptions = (maps) => ({
+    streetViewControl: true,
 
-  const waterSensorInstallEndpoint =
-    onfarmAPI + `/raw?table=wsensor_install&code=${code.toLowerCase()}`;
+    panControl: false,
+    mapTypeControl: false,
+    scrollwheel: false,
+    fullscreenControl: false,
+    styles: [
+      {
+        featureType: "poi.business",
+        elementType: "labels",
+        stylers: [
+          {
+            visibility: "off",
+          },
+        ],
+      },
+    ],
+    // mapTypeControl: true,
+    mapTypeId: maps.MapTypeId.SATELLITE,
+    mapTypeControlOptions: {
+      style: maps.MapTypeControlStyle.HORIZONTAL_BAR,
+      position: maps.ControlPosition.TOP_RIGHT,
+      mapTypeIds: [
+        maps.MapTypeId.ROADMAP,
+        maps.MapTypeId.SATELLITE,
+        maps.MapTypeId.HYBRID,
+        maps.MapTypeId.TERRAIN,
+      ],
+    },
+  });
 
   useEffect(() => {
     const fetchData = async (apiKey) => {
@@ -96,6 +159,7 @@ const VisualsByCode = (props) => {
             setSerials((serial) => ({ ...serial, gateway: uniqueSerials }));
             break;
           }
+
           case "ambient": {
             setAmbientSensorData(response);
             setSerials((serial) => ({ ...serial, ambient: uniqueSerials }));
@@ -116,13 +180,15 @@ const VisualsByCode = (props) => {
               "x-api-key": apiKey,
             },
           });
-          // const latlongData = await fetch(waterSensorInstallEndpoint, {
-          //   headers: {
-          //     "Content-Type": "application/json",
-          //     "x-api-key": apiKey,
-          //   },
-          // });
-          // const latlongResponse = await latlongData.json();
+          const latLongData = await fetch(latLongEndpoint, {
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": apiKey,
+            },
+          });
+          const latLongResponse = await latLongData.json();
+          console.log(latLongResponse);
+          setMapData((d) => ({ ...d, locationData: latLongResponse }));
 
           const gatewayResponse = await gatewayRecords.json();
 
@@ -166,7 +232,12 @@ const VisualsByCode = (props) => {
     return () => {
       setLoading(false);
     };
-  }, [waterGatewayDataEndpoint, state.userInfo.apikey, waterNodeDataEndpoint]);
+  }, [
+    waterGatewayDataEndpoint,
+    state.userInfo.apikey,
+    waterNodeDataEndpoint,
+    latLongEndpoint,
+  ]);
 
   return (
     <Grid container spacing={3} alignItems="center">
@@ -180,7 +251,7 @@ const VisualsByCode = (props) => {
               pathname: "/sensor-visuals",
               state: {
                 year: year,
-                data: location.state.data
+                data: location.state.data,
               },
             });
           }}
@@ -192,6 +263,34 @@ const VisualsByCode = (props) => {
       <Grid item>
         <Typography variant="h5">Farm Code {code}</Typography>
       </Grid>
+      <Grid item xs={12}>
+        <Button
+          variant="outlined"
+          size="small"
+          onClick={() => setMapData({ ...mapData, open: !mapData.open })}
+        >
+          {mapData.open ? `Hide` : `Show`} Map
+        </Button>
+      </Grid>
+      {mapData.locationData.length > 0 && mapData.open && (
+        <Grid item xs={12} style={{ height: "400px" }}>
+          <GoogleMapsReact
+            bootstrapURLKeys={{
+              key: googleApiKey,
+              language: "EN",
+              region: "US",
+            }}
+            // defaultCenter={center}
+            center={[mapData.locationData[0].lat, mapData.locationData[0].lon]}
+            zoom={mapData.zoom}
+            options={getMapOptions}
+          >
+            {mapData.locationData.map((val) => (
+              <Marker data={val} lat={val.lat} lng={val.lon} />
+            ))}
+          </GoogleMapsReact>
+        </Grid>
+      )}
       <Grid item xs={12}>
         {loading ? (
           <CustomLoader />
@@ -295,6 +394,28 @@ const RenderNodeSerialChips = (props) => {
         </Grid>
       ))}
     </Grid>
+  );
+};
+
+const Marker = (props) => {
+  const latLngStr = props.data.lat + "," + props.data.lon;
+  return (
+    <StyledMarker>
+      <Typography align="center" variant="body1">
+        Rep: {props.data.rep},{" "}
+        {props.data.treatment.toLowerCase() === "b" ? `Bare` : `Cover`}
+      </Typography>
+      {/* <p>ProducerID: {props.data.producer_id}</p> */}
+      <Typography align="center" variant="body1">
+        <a
+          href={`https://www.google.com/maps?saddr=My+Location&daddr=${latLngStr}&z=19&om=0`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Directions
+        </a>
+      </Typography>
+    </StyledMarker>
   );
 };
 
