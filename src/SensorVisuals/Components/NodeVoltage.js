@@ -9,6 +9,9 @@ import Highcharts from "highcharts";
 import { CustomLoader } from "../../utils/CustomComponents";
 
 const chartOptions = {
+  time:{
+    timezoneOffset: new Date().getTimezoneOffset() * 2,
+  },
   chart: {
     type: "scatter",
     zoomType: "xy",

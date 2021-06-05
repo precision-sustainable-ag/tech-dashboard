@@ -309,18 +309,18 @@ export const YearsAndAffiliations = (props) => {
       )}
       
 
-      <Grid item container spacing={2} xs={12}>
-        <Grid item sm={2} md={1} xs={12}>
-          <Typography variant="body1">Affiliations</Typography>
-        </Grid>
-        {affiliations.length > 1 && (
+      {affiliations.length > 1 && (
+        <Grid item container spacing={2} xs={12}>
+          <Grid item sm={2} md={1} xs={12}>
+            <Typography variant="body1">Affiliations</Typography>
+          </Grid>
           <AffiliationsChips
             activeAffiliation={activeAffiliation() || "all"}
             affiliations={affiliations}
             handleActiveAffiliation={handleActiveAffiliation}
           />
-        )}
-      </Grid>
+        </Grid>
+      )}
     </Fragment>
   );
 };
