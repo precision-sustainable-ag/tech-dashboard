@@ -227,7 +227,7 @@ export default function Header(props) {
         //add to data corrections
         addUser(user.nickname).then((res) => console.log(res));
         // accept invite
-        acceptInvite(user.nickname, getTokenSilently)
+        acceptInvite(user.nickname, getTokenSilently);
       } else {
         dispatch({
           type: "UPDATE_ROLE",

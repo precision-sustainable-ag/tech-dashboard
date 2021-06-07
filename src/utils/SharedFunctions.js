@@ -98,7 +98,7 @@ export const createGithubIssue = async (
     body: body,
   };
 
-  return callAzureFunction(data, getTokenSilently)
+  return callAzureFunction(data, getTokenSilently);
 };
 export const createGithubComment = async (
   nickname,
@@ -113,7 +113,7 @@ export const createGithubComment = async (
     number: number,
   };
 
-  return callAzureFunction(data, getTokenSilently)
+  return callAzureFunction(data, getTokenSilently);
 };
 
 export const acceptInvite = async (
@@ -123,9 +123,9 @@ export const acceptInvite = async (
     const data = {
       action: "accept_invite",
       user: nickname
-    }
+    };
 
-    return callAzureFunction(data, getTokenSilently)
+    return callAzureFunction(data, getTokenSilently);
 };
 
 const callAzureFunction = async (data, getTokenSilently) => {
@@ -133,7 +133,7 @@ const callAzureFunction = async (data, getTokenSilently) => {
     audience: `https://precision-sustaibale-ag/tech-dashboard`
   });
 
-  data = {...data, token: token}
+  data = {...data, token: token};
 
   const options = {
     method: "POST",
@@ -147,7 +147,7 @@ const callAzureFunction = async (data, getTokenSilently) => {
   return fetch(
     `https://githubissues.azurewebsites.us/api/GithubIssues`,
     options
-  )
+  );
 }
 
 export const sendCommandToHologram = async (
@@ -172,8 +172,6 @@ export const sendCommandToHologram = async (
       action: action,
     };
   }
-
-  console.log(data)
 
   const dataString = qs.stringify(data);
 
