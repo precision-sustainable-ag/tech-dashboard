@@ -30,7 +30,8 @@ const SensorVisuals = (props) => {
   const { type } = props;
   const { location } = useHistory();
 
-  const displayTitle = (type === "watersensors" ? "Water Sensors" : "Stress Cams");
+  const displayTitle =
+    type === "watersensors" ? "Water Sensors" : "Stress Cams";
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [years, setYears] = useState([]);
@@ -42,7 +43,7 @@ const SensorVisuals = (props) => {
     const newYears = years.map((yearInfo) => {
       return { active: year === yearInfo.year, year: yearInfo.year };
     });
-    const sortedNewYears = newYears.sort((a, b) => b - a);
+    const sortedNewYears = newYears.sort((a, b) => b.year - a.year);
 
     setYears(sortedNewYears);
   };
@@ -51,15 +52,16 @@ const SensorVisuals = (props) => {
     let allCodes = "";
     let allResponses = {};
     let responseArray = [];
-    
+
     data.forEach((entry) => {
       allCodes = allCodes.concat(entry.code.toLowerCase() + ",");
       allResponses[entry.code.toLowerCase()] = [];
       responseArray.push(entry);
-    })
+    });
 
-    const waterSensorInstallEndpoint = onfarmAPI + `/raw?table=wsensor_install&code=${allCodes}`;
-    
+    const waterSensorInstallEndpoint =
+      onfarmAPI + `/raw?table=wsensor_install&code=${allCodes}`;
+
     await fetch(waterSensorInstallEndpoint, {
       headers: {
         "Content-Type": "application/json",
@@ -68,74 +70,98 @@ const SensorVisuals = (props) => {
     }).then((res) => {
       res.json().then((resJson) => {
         resJson.forEach((response) => {
-          if(response.code){
+          if (response.code) {
             allResponses[response.code.toLowerCase()].push(response);
           }
-        })
+        });
 
         Object.keys(allResponses).forEach((key, index) => {
-          if(allResponses[key].length === 0){
-            responseArray[index] = {...responseArray[index], code: key, color: deviceColors.default, lastUpdated: ""};
-          }else {
+          if (allResponses[key].length === 0) {
+            responseArray[index] = {
+              ...responseArray[index],
+              code: key,
+              color: deviceColors.default,
+              lastUpdated: "",
+            };
+          } else {
             let tz = moment.tz.guess();
 
-
             let lastUpdatedString;
-            if(allResponses[key][allResponses[key].length - 1].time_begin){
-              let deviceSessionBegin = allResponses[key][allResponses[key].length - 1].time_begin;
+            if (allResponses[key][allResponses[key].length - 1].time_begin) {
+              let deviceSessionBegin =
+                allResponses[key][allResponses[key].length - 1].time_begin;
               // get device session begin as user local time
               let deviceDateLocal = moment
                 .tz(deviceSessionBegin, "Africa/Abidjan")
                 .tz(tz);
-    
-                let deviceDateFormatted = deviceDateLocal.fromNow();
-                lastUpdatedString = "Form registered " + deviceDateFormatted;
-            }else{
+
+              let deviceDateFormatted = deviceDateLocal.fromNow();
+              lastUpdatedString = "Form registered " + deviceDateFormatted;
+            } else {
               lastUpdatedString = "No timestamp";
             }
-            
-  
-            if(allResponses[key].length === 1){
-              responseArray[index] = {...responseArray[index], code: key, color: deviceColors.oneSubplot, lastUpdated: lastUpdatedString};
-            }else{
+
+            if (allResponses[key].length === 1) {
+              responseArray[index] = {
+                ...responseArray[index],
+                code: key,
+                color: deviceColors.oneSubplot,
+                lastUpdated: lastUpdatedString,
+              };
+            } else {
               let foundSubplotOne = false;
               let foundSubplotTwo = false;
 
               allResponses[key].forEach((entry) => {
-                if("subplot" in entry){
-                  if(entry.subplot === 1){
+                if ("subplot" in entry) {
+                  if (entry.subplot === 1) {
                     foundSubplotOne = true;
-                  }else if(entry.subplot === 2)
-                    foundSubplotTwo = true;
+                  } else if (entry.subplot === 2) foundSubplotTwo = true;
                 }
-  
-                if(foundSubplotOne && foundSubplotTwo){
-                  responseArray[index] = {...responseArray[index], code: key, color: deviceColors.bothSubplots, lastUpdated: lastUpdatedString};
+
+                if (foundSubplotOne && foundSubplotTwo) {
+                  responseArray[index] = {
+                    ...responseArray[index],
+                    code: key,
+                    color: deviceColors.bothSubplots,
+                    lastUpdated: lastUpdatedString,
+                  };
+                } else if (foundSubplotOne || foundSubplotTwo) {
+                  responseArray[index] = {
+                    ...responseArray[index],
+                    code: key,
+                    color: deviceColors.oneSubplot,
+                    lastUpdated: lastUpdatedString,
+                  };
+                } else {
+                  responseArray[index] = {
+                    ...responseArray[index],
+                    code: key,
+                    color: deviceColors.default,
+                    lastUpdated: " ",
+                  };
                 }
-                else if(foundSubplotOne || foundSubplotTwo){
-                  responseArray[index] = {...responseArray[index], code: key, color: deviceColors.oneSubplot, lastUpdated: lastUpdatedString};
-                }else{
-                  responseArray[index] = {...responseArray[index], code: key, color: deviceColors.default, lastUpdated: " "};
-                }
-              })
-            } 
+              });
+            }
           }
-        })
+        });
         setData(responseArray);
         setLoading(false);
-      })
-    })
+      });
+    });
   }
 
   useEffect(() => {
     if(location.state){
-      console.log(location.state.data);
-      setData(location.state.data);
+      if(location.state.data){
+        setData(location.state.data);
+      }
     }
-      
+
     const fetchData = async (apiKey) => {
       setLoading(true);
-      const endpoint = (type === "watersensors" ? datesURL : stressCamAPIEndpoint);
+      const endpoint =
+        type === "watersensors" ? datesURL : stressCamAPIEndpoint;
       if (apiKey) {
         try {
           const records = await fetch(endpoint, {
@@ -146,11 +172,15 @@ const SensorVisuals = (props) => {
           });
           const response = await records.json();
 
-          if(!location.state){
+          if(data.length == 0){
             let newData = response.map((entry) => {
-              return {...entry, color: deviceColors.loading, lastUpdated: "Fetching last update time"};
-            })
-            
+              return {
+                ...entry,
+                color: deviceColors.loading,
+                lastUpdated: "Fetching last update time",
+              };
+            });
+
             getCameraStatus(newData, state.userInfo.apikey);
           }
 
@@ -201,7 +231,7 @@ const SensorVisuals = (props) => {
         setAffiliations([]);
       }
     };
-    
+
     fetchData(state.userInfo.apikey);
   }, [state.userInfo.apikey, type, location.state]);
 
@@ -221,11 +251,11 @@ const SensorVisuals = (props) => {
       return data.filter((data) => data.year === activeYear);
     } else {
       return data.filter(
-        (data) => data.year === activeYear && data.code.includes(codeSearchText.toLowerCase())
+        (data) =>
+          data.year === activeYear &&
+          data.code.includes(codeSearchText.toLowerCase())
       );
     }
-
-    
   }, [years, data, codeSearchText, affiliations]);
 
   const activeYear = useMemo(() => {
@@ -269,10 +299,16 @@ const SensorVisuals = (props) => {
           </Grid>
         </Grid>
       </Grid>
-      <Grid item container spacing={4} xs={12} >
+      <Grid item container spacing={4} xs={12}>
         {activeData.map((entry, index) => (
           <Grid item key={index} xl={2} lg={3} md={4} sm={6} xs={12}>
-            <FarmCodeCard code={entry.code} year={activeYear} color={entry.color} lastUpdated={entry.lastUpdated} data={data}/>
+            <FarmCodeCard
+              code={entry.code}
+              year={activeYear}
+              color={entry.color}
+              lastUpdated={entry.lastUpdated}
+              data={data}
+            />
             {/* <div>{data.code}</div> */}
           </Grid>
         ))}

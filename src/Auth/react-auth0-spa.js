@@ -21,7 +21,7 @@ export const Auth0Provider = ({
 
   useEffect(() => {
     const initAuth0 = async () => {
-      const auth0FromHook = await createAuth0Client(initOptions);
+      const auth0FromHook = await createAuth0Client({...initOptions, audience: `https://precision-sustaibale-ag/tech-dashboard`});
       setAuth0(auth0FromHook);
 
       if (

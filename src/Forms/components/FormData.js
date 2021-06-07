@@ -45,6 +45,7 @@ const FormData = (props) => {
   const [showNewIssueDialog, setShowNewIssueDialog] = useState(false);
 
   const [affiliationLookup, setAffiliationLookup] = useState({});
+  const [timezoneOffset, setTimezoneOffset] = useState(new Date().getTimezoneOffset() * 60 * 1000);
 
   const fetchData = async (assetId, userType = "psa") => {
     return await axios.get(`${apiURL}/api/kobo/${userType}/data/${assetId}`, {
@@ -83,8 +84,8 @@ const FormData = (props) => {
         })
           .then(({ data }) => {
             const allowedKoboAccounts = data.reduce(
-              (acc, curr) => [...acc, curr.kobo_account],
-              []
+              (acc, curr) => !acc.includes(curr.kobo_account) ? [...acc, curr.kobo_account] : acc
+              , []
             );
             setAffiliationLookup({});
             data.forEach(function (item, index) {
@@ -208,7 +209,9 @@ const FormData = (props) => {
         </Grid>
         {data.map((record = {}, index) => {
           let slimRecord = record;
-          const submittedDate = new Date(record._submission_time + "z");
+          // let utcTime = new Date(Date.parse(record._submission_time))
+          let localTime = new Date(Date.parse(record._submission_time) - timezoneOffset);
+          const submittedDate = localTime;
           // console.log(submittedDate, record._submission_time);
           return (
             <Grid item container xs={12} spacing={2} key={`record${index}`}>

@@ -213,7 +213,7 @@ const DeviceComponent = (props) => {
             Showing data for {props.history.location.state.name}
           </Typography>
         </Grid>
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <div style={{ height: "350px" }}>
             {state.lastsession ? (
               <GoogleMap
@@ -225,7 +225,7 @@ const DeviceComponent = (props) => {
               <GoogleMap from={"device"} />
             )}
           </div>
-        </Grid>
+        </Grid> */}
       </Grid>
     );
   };

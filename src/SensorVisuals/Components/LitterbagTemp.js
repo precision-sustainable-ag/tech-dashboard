@@ -9,10 +9,6 @@ import Highcharts from "highcharts";
 import "highcharts/modules/no-data-to-display";
 import { CustomLoader } from "../../utils/CustomComponents";
 const chartOptions = {
-  //   global: {
-  //     useUTC: false,
-  //   },
-
   chart: {
     type: "scatter",
     zoomType: "xy",
@@ -70,9 +66,10 @@ const TempByLbs = () => {
       });
 
       const records = await response.json();
+      const timeZoneOffset = new Date().getTimezoneOffset() * 60 * 1000 * 2;
       const sortedByTimestamp = records
         .sort((a, b) => a - b)
-        .map((rec) => ({ ...rec, timestamp: rec.timestamp * 1000 }));
+        .map((rec) => ({ ...rec, timestamp: rec.timestamp * 1000 - timeZoneOffset}));
 
       setData(sortedByTimestamp);
     };
