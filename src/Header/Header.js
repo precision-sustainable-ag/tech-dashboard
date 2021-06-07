@@ -47,7 +47,7 @@ import { apiPassword, apiUsername, apiURL } from "../utils/api_secret";
 import { Context } from "../Store/Store";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 import { githubToken } from "../utils/api_secret";
-import { acceptInvite } from "../utils/SharedFunctions"
+import { acceptInvite } from "../utils/SharedFunctions";
 
 //Global Vars
 const drawerWidth = 240;
