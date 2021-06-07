@@ -99,11 +99,6 @@ export const createGithubIssue = async (
   };
 
   return callAzureFunction(data, getTokenSilently)
-    // .then(res => {
-    //   console.log(res);
-    //   return res;
-    // })
-    // .catch(error => console.log(error));
 };
 export const createGithubComment = async (
   nickname,
@@ -150,7 +145,7 @@ const callAzureFunction = async (data, getTokenSilently) => {
   };
 
   return fetch(
-    `http://localhost:7071/api/GithubIssues`,
+    `https://githubissues.azurewebsites.us/api/GithubIssues`,
     options
   )
 }

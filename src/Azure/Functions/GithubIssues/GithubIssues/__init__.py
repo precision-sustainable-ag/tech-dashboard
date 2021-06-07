@@ -4,6 +4,7 @@ import http.client
 import requests	
 import json	
 import sys	
+import os
 
 # DEBUG = True
 DEBUG = False
@@ -24,7 +25,7 @@ class GithubIssues:
     # method to fetch the Auth0 management API token	
     def get_token(self):	
         # payload and header	
-        auth0_payload = "{\"client_id\":\"RKkiHSDtTGQWijgy7q7Pi7sheonzWZke\",\"client_secret\":\"pzoI_Zwp4i-PSlb0lHVOZTyl8zZ8iQmuzJ8GNfR4pY1Ttr1PgXPK3Bbk-LdRXyf9\",\"audience\":\"https://psa-tech-dashboard.auth0.com/api/v2/\",\"grant_type\":\"client_credentials\"}"	
+        auth0_payload = "{\"client_id\":\"RKkiHSDtTGQWijgy7q7Pi7sheonzWZke\",\"client_secret\":\"pzoI_Zwp4i-PSlb0lHVOZTyl8zZ8iQmuzJ8GNfR4pY1Ttr1PgXPK3Bbk-LdRXyf9\",\"audience\":\"https://psa-tech-dashboard.auth0.com/api/v2/\",\"grant_type\":\"client_credentials\"}"
         auth0_headers = self.HEADER	
         # request token	
         self.auth0_connection.request("POST", "/oauth/token", auth0_payload, auth0_headers)	
@@ -157,6 +158,44 @@ class GithubIssues:
         self.get_users()	
         self.get_users_github_token()
 
+    def accept_invite(self, user):
+        url = 'https://api.github.com/user/repository_invitations' 	
+        	
+        # Headers	
+        headers = {	
+            "Authorization": "token %s" % self.github_user_token,	
+            "Accept": "application/vnd.github.v3+json"	
+        }	
+        
+        invites = []
+
+        # get invites
+        try:
+            response = requests.get(url, headers=headers)
+            invites = json.loads(response.content.decode())
+        except Exception:
+            logging.exception(Exception)
+            return False, "Could not fetch invites"
+
+        repo_invite_id = None
+
+        # search for tech dashboard invite
+        for invite in invites:
+            if invite.get("repository").get("name") == "data_corrections":
+                repo_invite_id = invite.get("id")
+
+        if repo_invite_id == None:
+            return False, "No invite from tech dashboard"
+
+        # accept invite
+        try:
+            accept_invite_url = url + "/" + str(repo_invite_id)
+            response = requests.patch(accept_invite_url, headers=headers)
+            return True, "Successfully accepted invite"
+        except Exception:
+            logging.exception(Exception)
+            return False, "Could not update invite"
+
 def main(req: func.HttpRequest) -> func.HttpResponse:	
     # variable to avoid reuse
     HEADER = { 'content-type': 'application/json' }
@@ -256,6 +295,22 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                     return func.HttpResponse(	
                         # body may be unneeded
                         body = json.dumps({"Message": "Could not create comment. Error: " + response.content.decode()}),	
+                        status_code=400,	
+                        headers=HEADER	
+                    )	
+            elif action == "accept_invite":
+                status, response = ghi.accept_invite(user)
+                if status:
+                    return func.HttpResponse(	
+                        # body may be unneeded
+                        body = json.dumps({"Message": response}),	
+                        status_code=201,	
+                        headers=HEADER	
+                    )	
+                else:
+                    return func.HttpResponse(	
+                        # body may be unneeded
+                        body = json.dumps({"Message": response}),	
                         status_code=400,	
                         headers=HEADER	
                     )	

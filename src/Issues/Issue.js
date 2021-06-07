@@ -101,12 +101,9 @@ const Issue = (props) => {
   };
 
   async function handleNewComment(body) {
-    let token = await getTokenSilently({
-      audience: `https://precision-sustaibale-ag/tech-dashboard`
-    });
     setButtonDisabled(true);
 
-    createGithubComment(user.nickname, body, issueNumber, token)
+    createGithubComment(user.nickname, body, issueNumber, getTokenSilently)
       .then((res) => {
         if(res.status === 201){
           setNewCommentAdded(!newCommentAdded);
