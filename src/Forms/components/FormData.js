@@ -210,7 +210,7 @@ const FormData = (props) => {
               timezoneOffset={timezoneOffset} 
             />
           )
-        })};
+        })}
       </>
     );
   };
