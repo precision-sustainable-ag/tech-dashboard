@@ -68,78 +68,77 @@ const FarmValuesTable = ({ data = [], year, affiliation = "all", setSnackbarData
         </TableHead>
         <TableBody>
           {record.map((record, index) => (
-            // index !== currentIndex ? (
               <React.Fragment key={index}>
-              <CustomTableRow key={index}>
-                <TableCell>
-                  <IconButton aria-label="expand row" size="small" onClick={() => {!(index !== currentIndex && open) && setOpen(!open); setCurrentIndex(index)}}>
-                    {open ? <Comment /> : <Comment />}
-                  </IconButton>
-                </TableCell>
-                {(index + 1) % 2 === 0 ? (
-                  <>
-                    <TableCell colSpan={2} align="right">
-                      {record.subplot}
+                <CustomTableRow key={index}>
+                  <TableCell>
+                    <IconButton aria-label="expand row" size="small" onClick={() => {!(index !== currentIndex && open) && setOpen(!open); setCurrentIndex(index)}}>
+                      {open ? <Comment /> : <Comment />}
+                    </IconButton>
+                  </TableCell>
+                  {(index + 1) % 2 === 0 ? (
+                    <>
+                      <TableCell colSpan={2} align="right">
+                        {record.subplot}
+                      </TableCell>
+                    </>
+                  ) : (
+                    <>
+                      <TableCell align="right">{record.code}</TableCell>
+                      <TableCell align="right">{record.subplot}</TableCell>
+                    </>
+                  )}
+
+                  <TableCell align="right">
+                    {format(
+                      parseISO(record.cc_termination_date) || new Date(),
+                      "PP"
+                    )}
+                  </TableCell>
+                  <TableCell align="right">
+                    {record.cc_species || <UnavailableText />}
+                  </TableCell>
+                  <TableCell align="right">
+                    {record.uncorrected_cc_dry_biomass_kg_ha || (
+                      <UnavailableText text="N/A" />
+                    )}
+                  </TableCell>
+                  <TableCell align="right">
+                    {record.ash_corrected_cc_dry_biomass_kg_ha || (
+                      <UnavailableText text="N/A" />
+                    )}
+                  </TableCell>
+                  <TableCell align="right">
+                    {record.percent_n_nir || <UnavailableText text="N/A" />}
+                  </TableCell>
+                  <TableCell align="right">
+                    {record.percent_carbohydrates || <UnavailableText text="N/A" />}
+                  </TableCell>
+                  <TableCell align="right">
+                    {record.percent_cellulose || <UnavailableText text="N/A" />}
+                  </TableCell>
+                  <TableCell align="right">
+                    {record.percent_lignin || <UnavailableText text="N/A" />}
+                  </TableCell>
+                  <TableCell align="right">
+                    {record.moisture_content || <UnavailableText text="N/A" />}
+                  </TableCell>
+                </CustomTableRow>  
+
+                {(index == currentIndex && open) && (
+                  <CustomTableRow key={`issue${index}`}>
+                    <TableCell colSpan="12" style={{ "textAlign": "center" }}>
+                      <IssueDialogue 
+                        nickname={user.nickname} 
+                        rowData={record} 
+                        dataType="table" 
+                        setSnackbarData={setSnackbarData} 
+                        labels={["farm-values", record.code, "Subplot " + record.subplot.toString(), record.affiliation]} 
+                        getTokenSilently={getTokenSilently}
+                      />
                     </TableCell>
-                  </>
-                ) : (
-                  <>
-                    <TableCell align="right">{record.code}</TableCell>
-                    <TableCell align="right">{record.subplot}</TableCell>
-                  </>
+                  </CustomTableRow>   
                 )}
-
-                <TableCell align="right">
-                  {format(
-                    parseISO(record.cc_termination_date) || new Date(),
-                    "PP"
-                  )}
-                </TableCell>
-                <TableCell align="right">
-                  {record.cc_species || <UnavailableText />}
-                </TableCell>
-                <TableCell align="right">
-                  {record.uncorrected_cc_dry_biomass_kg_ha || (
-                    <UnavailableText text="N/A" />
-                  )}
-                </TableCell>
-                <TableCell align="right">
-                  {record.ash_corrected_cc_dry_biomass_kg_ha || (
-                    <UnavailableText text="N/A" />
-                  )}
-                </TableCell>
-                <TableCell align="right">
-                  {record.percent_n_nir || <UnavailableText text="N/A" />}
-                </TableCell>
-                <TableCell align="right">
-                  {record.percent_carbohydrates || <UnavailableText text="N/A" />}
-                </TableCell>
-                <TableCell align="right">
-                  {record.percent_cellulose || <UnavailableText text="N/A" />}
-                </TableCell>
-                <TableCell align="right">
-                  {record.percent_lignin || <UnavailableText text="N/A" />}
-                </TableCell>
-                <TableCell align="right">
-                  {record.moisture_content || <UnavailableText text="N/A" />}
-                </TableCell>
-              </CustomTableRow>  
-
-              {(index == currentIndex && open) && (
-              <CustomTableRow key={`issue${index}`}>
-                <TableCell colSpan="12" style={{ "textAlign": "center" }}>
-                  <IssueDialogue 
-                    nickname={user.nickname} 
-                    rowData={record} 
-                    dataType="table" 
-                    setSnackbarData={setSnackbarData} 
-                    labels={["farm-values", record.code, "Subplot " + record.subplot.toString(), record.affiliation]} 
-                    getTokenSilently={getTokenSilently}
-                  />
-                </TableCell>
-              </CustomTableRow>   
-              )}
-            </React.Fragment>  
+              </React.Fragment>  
             ))
           }
         </TableBody>
