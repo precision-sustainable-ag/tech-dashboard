@@ -1,8 +1,6 @@
 // Dependency Imports
 import {
-  Avatar,
   Button,
-  Chip,
   Dialog,
   DialogActions,
   DialogContent,
@@ -13,7 +11,7 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Octokit } from "@octokit/rest";
 import MDEditor from "@uiw/react-md-editor";
 
@@ -52,10 +50,6 @@ const NewIssueModal = (props) => {
 
   async function fileNewIssue() {
     if (issueTitle && newComment) {
-      // props.setSnackbarData({
-      //   open: true,
-      //   text: `Creating new issue for ${props.data.code}`,
-      // });
       setButtonDisabled(true);
 
 
@@ -126,11 +120,28 @@ const NewIssueModal = (props) => {
         setNewComment("");
         setIssueTitle("");
         setButtonDisabled(false);
-        if (res.status === 201) {
-          props.handleNewIssueDialogClose();
+        props.handleNewIssueDialogClose();
+        if(res) {
+          if (res.status === 201) {
+            props.setSnackbarData({
+              open: true,
+              text: `New Issue has been created for ${props.data.code}`,
+              severity: "success"
+            });
+          } else {
+            console.log("Function could not create issue");
+            props.setSnackbarData({
+              open: true,
+              text: `Could not create issue (error code 0)`,
+              severity: 'error'
+            });
+          }
+        } else {
+          console.log("No response from function, likely cors");
           props.setSnackbarData({
             open: true,
-            text: `New Issue has been created for ${props.data.code}`,
+            text: `Could not create issue (error code 1)`,
+            severity: 'error'
           });
         }
       });

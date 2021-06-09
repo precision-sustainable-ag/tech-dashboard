@@ -125,7 +125,7 @@ const AllDataTable = (props) => {
   );
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [snackbarData, setSnackbarData] = useState({ open: false, text: "" });
+  const [snackbarData, setSnackbarData] = useState({ open: false, text: "", severity: "success" });
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editModalData, setEditModalData] = useState({});
 
@@ -523,7 +523,7 @@ const AllDataTable = (props) => {
             setSnackbarData({ ...snackbarData, open: !snackbarData.open })
           }
         >
-          <Alert severity="success">{snackbarData.text}</Alert>
+          <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
         </Snackbar>
         <Grid container>
           <Grid item lg={12}>
