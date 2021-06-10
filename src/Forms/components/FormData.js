@@ -88,7 +88,7 @@ const FormData = (props) => {
             const allowedKoboAccounts = data.reduce(
               (acc, curr) => !acc.includes(curr.kobo_account) ? [...acc, curr.kobo_account] : acc
               , []
-            );
+            ).sort();
             setAffiliationLookup({});
             data.forEach(function (item, index) {
               const kobo_account = item.kobo_account;

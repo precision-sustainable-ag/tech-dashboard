@@ -49,7 +49,7 @@ const DevicesComponent = (props) => {
 
   useEffect(() => {
     if (props.devices.length > 0) {
-      const tags = getAllTags(props.devices);
+      const tags = getAllTags(props.devices).sort();
       setDeviceTags(tags);
     }
   }, [props]);

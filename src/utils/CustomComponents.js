@@ -210,7 +210,7 @@ export const useAutoRefresh = (callback = () => {}, delay = 1000) => {
   return intervalId.current;
 };
 
-export const useInfiniteScroll = (callback) => {
+export const useInfiniteScroll = (callback, hologramApiFunctional) => {
   const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
@@ -219,7 +219,7 @@ export const useInfiniteScroll = (callback) => {
   }, []);
 
   useEffect(() => {
-    if (!isFetching) return;
+    if (!isFetching || !hologramApiFunctional) return;
     callback();
   }, [isFetching]);
 
@@ -230,7 +230,7 @@ export const useInfiniteScroll = (callback) => {
         isFetching
     )
       return;
-    setIsFetching(true);
+      setIsFetching(true);
   };
 
   return [isFetching, setIsFetching];
