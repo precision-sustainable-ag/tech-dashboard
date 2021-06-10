@@ -115,9 +115,13 @@ function App() {
     palette: {
       primary: { main: "#2e7d32" },
       secondary: { main: "#4d4d4d" },
-      type: window.localStorage.getItem("theme")
-        ? window.localStorage.getItem("theme")
-        : "light",
+      type:
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : window.localStorage.getItem("theme")
+          ? window.localStorage.getItem("theme")
+          : "light",
     },
 
     typography: {

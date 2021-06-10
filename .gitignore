@@ -2,8 +2,8 @@
 
 # mocks and tests
 /src/__mocks__/*
-/src/__tests__/*
-*.test.js
+#/src/__tests__/*
+#*.test.js
 
 # dependencies
 /node_modules

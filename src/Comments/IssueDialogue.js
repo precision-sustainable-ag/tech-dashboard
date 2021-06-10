@@ -19,7 +19,7 @@ const IssueDialogue = (props) => {
     } = useAuth0();
         
     const alwaysTaggedPeople = ["brianwdavis", "saseehav", props.nickname];
-    const [personName, setPersonName] = React.useState(alwaysTaggedPeople);
+    const [personName, setPersonName] = useState(alwaysTaggedPeople);
     const [buttonDisabled, setButtonDisabled] = useState(false);
     const [removeCommentText, setRemoveCommentText] = useState(false);
 
@@ -47,26 +47,35 @@ const IssueDialogue = (props) => {
           );
     
           issueSet.then((res) => {
-            if (res.status === 201) {
-              setButtonDisabled(false);
-              setIssueTitle("");
-              setRemoveCommentText(true);
+            setButtonDisabled(false);
+            setIssueTitle("");
+            setRemoveCommentText(true);
+            if(res){
+              if (res.status === 201) {
+                props.setSnackbarData({
+                  open: true,
+                  text: `New Issue has been created`,
+                  severity: "success"
+                });
+              }
+              else{
+                console.log("Function could not create issue");
+                props.setSnackbarData({
+                  open: true,
+                  text: `Could not create issue (error code 0)`,
+                  severity: "error"
+                });
+              }
+            } else {
+              console.log("No response from function, likely cors");
               props.setSnackbarData({
                 open: true,
-                text: `New Issue has been created`,
-                severity: "success"
-              });
-            }
-            else{
-              setButtonDisabled(false);
-              setIssueTitle("");
-              setRemoveCommentText(true);
-              props.setSnackbarData({
-                open: true,
-                text: `Could not create new issue`,
+                text: `Could not create issue (error code 1)`,
                 severity: "error"
               });
             }
+
+            if(props.setShowNewIssueDialog) props.setShowNewIssueDialog(false);
           });
         } else {
           if (!issueTitle || !newComment) {
@@ -108,6 +117,7 @@ const IssueDialogue = (props) => {
                   buttonDisabled={buttonDisabled}
                   removeCommentText={removeCommentText}
                   setRemoveCommentText={setRemoveCommentText}
+                  setShowNewIssueDialog={props.setShowNewIssueDialog}
                 />
             </Grid>
         </Grid>

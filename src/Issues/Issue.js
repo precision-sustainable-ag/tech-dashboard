@@ -108,30 +108,38 @@ const Issue = (props) => {
 
     createGithubComment(user.nickname, body, issueNumber, token)
       .then((res) => {
-        if(res.status === 201){
-          setNewCommentAdded(!newCommentAdded);
-          setNewComment("");
-          setButtonDisabled(false);
+        setNewCommentAdded(!newCommentAdded);
+        setNewComment("");
+        setButtonDisabled(false);
+        if(res){
+          if(res.status === 201){
+            setSnackbarData({
+              open: true,
+              text: `New comment has been created`,
+              severity: "success"
+              // text: "created test issue"
+            });
+          }
+          else{
+            console.log("Function could not create issue");
+            setSnackbarData({
+              open: true,
+              text: `Could not create comment (error code 0)`,
+              severity: "error"
+              // text: "created test issue"
+            });
+          }
+        } else {
+          console.log("No response from function, likely cors");
           setSnackbarData({
             open: true,
-            text: `New comment has been created`,
-            severity: "success"
-            // text: "created test issue"
-          });
-        }
-        else{
-          setNewCommentAdded(!newCommentAdded);
-          setNewComment("");
-          setButtonDisabled(false);
-          setSnackbarData({
-            open: true,
-            text: `Could not create comment`,
+            text: `Could not create comment (error code 1)`,
             severity: "error"
             // text: "created test issue"
           });
         }
-        
-      })
+      }
+    )
   }
 
   useEffect(() => {

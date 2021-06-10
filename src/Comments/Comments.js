@@ -15,6 +15,38 @@ import {
   Typography,
 } from "@material-ui/core";
 
+const bodyFormatter = (dataType, rowData, newComment) => {
+  let body;
+
+  if (dataType === "table") {
+    let tableData = `<table>
+            <tbody>`;
+
+    for (var key in rowData) {
+      var value = rowData[key];
+
+      if (key !== "tableData") {
+        tableData =
+          tableData +
+          `<tr>
+              <td>${key}</td>
+              <td>${value}</td>
+          </tr>`;
+      } else continue;
+    }
+
+    tableData =
+      tableData +
+      `</tbody>
+        </table>`;
+    body = tableData + " <br/> " + newComment;
+  } else if (dataType === "json") {
+    body = "```json\n" + rowData + "\n```\n <br/> " + newComment;
+  } else body = newComment;
+
+  return body;
+}
+
 const Comments = (props) => {
   const [newComment, setNewComment] = useState("");
   const [searchUser, setSearchUser] = useState("");
@@ -83,33 +115,7 @@ const Comments = (props) => {
     }
   }, [props.removeCommentText]);
 
-  let body;
-
-  if (props.dataType === "table") {
-    let tableData = `<table>
-            <tbody>`;
-
-    for (var key in props.rowData) {
-      var value = props.rowData[key];
-
-      if (key !== "tableData") {
-        tableData =
-          tableData +
-          `<tr>
-                                        <td>${key}</td>
-                                        <td>${value}</td>
-                                    </tr>`;
-      } else continue;
-    }
-
-    tableData =
-      tableData +
-      `</tbody>
-        </table>`;
-    body = tableData + " <br/> " + newComment;
-  } else if (props.dataType === "json") {
-    body = "```json\n" + props.rowData + "\n```\n <br/> " + newComment;
-  } else body = newComment;
+  const body = bodyFormatter(props.dataType, props.rowData, newComment);
 
   return (
     <Grid container spacing={1}>
@@ -142,16 +148,34 @@ const Comments = (props) => {
           </Grid>
           <Grid item xs={12}></Grid>
           <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              disabled={props.buttonDisabled}
-              onClick={() => {
-                props.handleNewComment(body);
-              }}
-            >
-              {props.buttonDisabled ? "Creating Comment" : "Add Comment"}
-            </Button>
+            <Grid item container spacing={1}>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled={props.buttonDisabled}
+                  onClick={() => {
+                    props.handleNewComment(body);
+                  }}
+                >
+                  {props.buttonDisabled ? "Creating Comment" : "Add Comment"}
+                </Button>
+              </Grid>
+              {props.setShowNewIssueDialog && (
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={props.buttonDisabled}
+                    onClick={() => {
+                      props.setShowNewIssueDialog(false);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </Grid>
+              )}
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
