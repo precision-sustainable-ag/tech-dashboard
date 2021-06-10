@@ -474,7 +474,7 @@ const DeviceComponent = (props) => {
       setFetchMessage("Fetching message " + (pagesLoaded + 1));
       await Axios({
         method: "post",
-        url: apiCorsUrl + `/${props.location.state.for}`,
+        url: apiCorsUrl + `/${props.location.state.for}/hi`,
         data: qs.stringify({
           url: `${APIURL()}${loadMoreDataURI}`,
         }),
@@ -502,9 +502,9 @@ const DeviceComponent = (props) => {
         setIsFetching(false);
       }).catch(() => {
         console.log(fetchedCount);
-        if(fetchedCount <= 5){
+        if(fetchedCount < 5){
           fetchedCount++;
-          setFetchMessage("Fetch failed, retrying " + fetchedCount + "of 5 times");
+          setFetchMessage("Fetch failed, retrying " + fetchedCount + " of 5 times");
           fetchMoreData();
         }
         else {
