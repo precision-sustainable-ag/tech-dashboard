@@ -11,7 +11,6 @@ import {
   makeStyles,
   Grid,
   Button,
-  Chip,
 } from "@material-ui/core";
 import Loading from "react-loading";
 
@@ -230,14 +229,15 @@ export const useInfiniteScroll = (callback, hologramApiFunctional) => {
         isFetching
     )
       return;
-      setIsFetching(true);
+      
+    setIsFetching(true);
   };
 
   return [isFetching, setIsFetching];
 };
 
 export const ScrollTop = (props) => {
-  const { children, window } = props;
+  const { children } = props;
   const useStyles = makeStyles((theme) => ({
     root: {
       position: "fixed",
@@ -307,7 +307,6 @@ export const YearsAndAffiliations = (props) => {
           <YearsChips years={years} handleActiveYear={handleActiveYear} />
         </Grid>
       )}
-      
 
       {affiliations.length > 1 && (
         <Grid item container spacing={2} xs={12}>
