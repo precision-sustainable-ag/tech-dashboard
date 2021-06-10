@@ -11,7 +11,6 @@ import {
   makeStyles,
   Grid,
   Button,
-  Chip,
 } from "@material-ui/core";
 import Loading from "react-loading";
 
@@ -214,30 +213,29 @@ export const useInfiniteScroll = (callback) => {
   const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
+    const isScrolling = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop <=
+          0.9 * document.documentElement.offsetHeight ||
+        isFetching
+      )
+        return;
+      setIsFetching(true);
+    };
     window.addEventListener("scroll", isScrolling);
     return () => window.removeEventListener("scroll", isScrolling);
-  }, []);
+  }, [isFetching]);
 
   useEffect(() => {
     if (!isFetching) return;
     callback();
-  }, [isFetching]);
-
-  const isScrolling = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop <=
-        0.9 * document.documentElement.offsetHeight ||
-        isFetching
-    )
-      return;
-    setIsFetching(true);
-  };
+  }, [isFetching, callback]);
 
   return [isFetching, setIsFetching];
 };
 
 export const ScrollTop = (props) => {
-  const { children, window } = props;
+  const { children } = props;
   const useStyles = makeStyles((theme) => ({
     root: {
       position: "fixed",
@@ -307,7 +305,6 @@ export const YearsAndAffiliations = (props) => {
           <YearsChips years={years} handleActiveYear={handleActiveYear} />
         </Grid>
       )}
-      
 
       {affiliations.length > 1 && (
         <Grid item container spacing={2} xs={12}>
