@@ -474,7 +474,7 @@ const DeviceComponent = (props) => {
       setFetchMessage("Fetching message " + (pagesLoaded + 1));
       await Axios({
         method: "post",
-        url: apiCorsUrl + `/${props.location.state.for}/hi`,
+        url: apiCorsUrl + `/${props.location.state.for}`,
         data: qs.stringify({
           url: `${APIURL()}${loadMoreDataURI}`,
         }),
