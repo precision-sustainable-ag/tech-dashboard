@@ -10,6 +10,7 @@ import { addDays } from "date-fns";
 import { useAuth0 } from "../../Auth/react-auth0-spa";
 import MuiAlert from "@material-ui/lab/Alert";
 import { Link } from "react-router-dom";
+import ActualFarmDates from "./ActualFarmDates";
 
 const farmDatesURL = `${onfarmAPI}/dates`;
 
@@ -119,7 +120,7 @@ const FarmDates = () => {
   const [loading, setLoading] = useState(false);
   const { user } = useAuth0();
   const [snackbarData, setSnackbarData] = useState({ open: false, text: "", severity: "success" });
-
+  
   useEffect(() => {
     if (state.userInfo.role && bannedRoles.includes(state.userInfo.role)) {
       setShowBannedMessage(true);
@@ -210,7 +211,7 @@ const FarmDates = () => {
                 searchAutoFocus: true,
                 toolbarButtonAlignment: "left",
                 actionsColumnIndex: 1,
-                maxBodyHeight: height * 0.7,
+                maxBodyHeight: height * 0.65,
               }}
               detailPanel={[
                 {
@@ -227,6 +228,14 @@ const FarmDates = () => {
                         setSnackbarData={setSnackbarData}
                         labels={["farm-dates"]}
                       />
+                    );
+                  },
+                },
+                {
+                  tooltip: "View actual dates",
+                  render: (rowData) => {
+                    return (
+                      <ActualFarmDates rowData={rowData} fetchFromApi={fetchFromApi}/>
                     );
                   },
                 },
@@ -287,14 +296,14 @@ const makeDateObjects = async (response) => {
 const fetchFarmDatesFromApi = async (apiKey = "") => {
   let data = [];
   try {
-    data = await fetchFarmDates(farmDatesURL, apiKey);
+    data = await fetchFromApi(farmDatesURL, apiKey);
   } catch (e) {
     console.error(e);
   }
   return data;
 };
 
-const fetchFarmDates = async (url, apiKey) => {
+const fetchFromApi = async (url, apiKey) => {
   let records = await fetch(url, {
     headers: {
       "x-api-key": apiKey,
