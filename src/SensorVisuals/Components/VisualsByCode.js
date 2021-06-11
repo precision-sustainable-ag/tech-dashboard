@@ -50,15 +50,12 @@ const VisualsByCode = (props) => {
   useEffect(() => {
     return () => {
       if (history.action === "POP") {
-        history.push((e) => {
-          console.log(e);
-          return {
-            pathname: "/sensor-visuals",
-            state: {
-              year: year,
-              data: location.state ? location.state.data : null,
-            },
-          };
+        history.push({
+          pathname: "/sensor-visuals",
+          state: {
+            year: year,
+            data: location.state ? location.state.data : null,
+          },
         });
       }
     };
