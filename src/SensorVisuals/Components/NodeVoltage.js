@@ -97,7 +97,7 @@ const NodeVoltage = () => {
     ]);
     const sigStr = filteredData.map((rec) => [
       rec.timestamp,
-      rec.signal_strength,
+      rec.signal_strength / 20,
     ]);
     return {
       ...chartOptions,
@@ -146,7 +146,7 @@ const NodeVoltage = () => {
     ]);
     const sigStr = filteredData.map((rec) => [
       rec.timestamp,
-      rec.signal_strength,
+      rec.signal_strength / 20,
     ]);
     return {
       ...chartOptions,
@@ -196,7 +196,7 @@ const NodeVoltage = () => {
     ]);
     const sigStr = filteredData.map((rec) => [
       rec.timestamp,
-      rec.signal_strength,
+      rec.signal_strength / 20,
     ]);
     return {
       ...chartOptions,
@@ -247,7 +247,7 @@ const NodeVoltage = () => {
     ]);
     const sigStr = filteredData.map((rec) => [
       rec.timestamp,
-      rec.signal_strength,
+      rec.signal_strength / 20,
     ]);
     return {
       ...chartOptions,
