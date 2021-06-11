@@ -110,7 +110,7 @@ const NodeVoltage = () => {
           data: solVol,
           tooltip: {
             pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
           },
         },
         {
@@ -118,7 +118,7 @@ const NodeVoltage = () => {
           data: battVol,
           tooltip: {
             pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
           },
         },
         {
@@ -126,7 +126,7 @@ const NodeVoltage = () => {
           data: sigStr,
           tooltip: {
             pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Strength: <b>{point.y}</b><br/>",
           },
         },
       ],
@@ -159,7 +159,7 @@ const NodeVoltage = () => {
           data: solVol,
           tooltip: {
             pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
           },
         },
         {
@@ -167,7 +167,7 @@ const NodeVoltage = () => {
           data: battVol,
           tooltip: {
             pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
           },
         },
         {
@@ -175,7 +175,7 @@ const NodeVoltage = () => {
           data: sigStr,
           tooltip: {
             pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Strength: <b>{point.y}</b><br/>",
           },
         },
       ],
@@ -209,7 +209,7 @@ const NodeVoltage = () => {
           data: solVol,
           tooltip: {
             pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
           },
         },
         {
@@ -217,7 +217,7 @@ const NodeVoltage = () => {
           data: battVol,
           tooltip: {
             pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
           },
         },
         {
@@ -225,7 +225,7 @@ const NodeVoltage = () => {
           data: sigStr,
           tooltip: {
             pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Strength: <b>{point.y}</b><br/>",
           },
         },
       ],
@@ -260,7 +260,7 @@ const NodeVoltage = () => {
           data: solVol,
           tooltip: {
             pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
           },
         },
         {
@@ -268,7 +268,7 @@ const NodeVoltage = () => {
           data: battVol,
           tooltip: {
             pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
           },
         },
         {
@@ -276,7 +276,7 @@ const NodeVoltage = () => {
           data: sigStr,
           tooltip: {
             pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Strength: <b>{point.y}</b><br/>",
           },
         },
       ],
