@@ -1,6 +1,5 @@
 import { Button, Grid, Typography } from "@material-ui/core";
 import { onfarmAPI } from "../../utils/api_secret";
-
 import { ArrowBackIos } from "@material-ui/icons";
 import { Link, useHistory, useParams, useLocation } from "react-router-dom";
 import { lazy, useContext, useEffect, useState } from "react";
@@ -47,6 +46,20 @@ const VisualsByCode = (props) => {
   const waterNodeDataEndpoint =
     onfarmAPI +
     `/soil_moisture?type=node&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31`;
+
+  useEffect(() => {
+    return () => {
+      if (history.action === "POP") {
+        history.push({
+          pathname: "/sensor-visuals",
+          state: {
+            year: year,
+            data: location.state ? location.state.data : null
+          },
+        });
+      }
+    };
+  }, [history])
 
   useEffect(() => {
     const fetchData = async (apiKey) => {

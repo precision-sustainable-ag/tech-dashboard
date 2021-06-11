@@ -110,6 +110,8 @@ const DeviceComponent = (props) => {
   const [loadMoreDataURI, setLoadMoreDataURI] = useState("");
   const [timeEnd, setTimeEnd] = useState(Math.floor(Date.now() / 1000));
   const { state } = useLocation();
+  const [hologramApiFunctional, setHologramApiFunctional] = useState(true);
+  const [fetchMessage, setFetchMessage] = useState("");
 
   useEffect(() => {
     setUserTimezone(moment.tz.guess);
@@ -442,18 +444,20 @@ const DeviceComponent = (props) => {
         {isFetching && (
           <Grid item xs={12}>
             <Grid container justify="center" alignItems="center" spacing={3}>
-              <Grid item>
-                <Loading
-                  className="scrollLoadingSpinner"
-                  width={50}
-                  height={50}
-                  type="spinningBubbles"
-                  color="#2d2d2d"
-                />
-              </Grid>
+              {hologramApiFunctional && (
+                <Grid item>
+                  <Loading
+                    className="scrollLoadingSpinner"
+                    width={50}
+                    height={50}
+                    type="spinningBubbles"
+                    color="#2d2d2d"
+                  />
+                </Grid>
+              )}
               <Grid item>
                 <Typography variant="h5">
-                  Fetching Page {pagesLoaded + 1}
+                  {fetchMessage}
                 </Typography>
               </Grid>
             </Grid>
@@ -463,9 +467,11 @@ const DeviceComponent = (props) => {
     );
   };
 
+  let fetchedCount = 0;
   const fetchMoreData = async () => {
     if (loadMoreDataURI) {
       console.log("Fetching..");
+      setFetchMessage("Fetching message " + (pagesLoaded + 1));
       await Axios({
         method: "post",
         url: apiCorsUrl + `/${props.location.state.for}`,
@@ -494,12 +500,25 @@ const DeviceComponent = (props) => {
           setLoadMoreDataURI("");
         }
         setIsFetching(false);
+      }).catch(() => {
+        console.log(fetchedCount);
+        if(fetchedCount < 5){
+          fetchedCount++;
+          setFetchMessage("Fetch failed, retrying " + fetchedCount + " of 5 times");
+          fetchMoreData();
+        }
+        else {
+          fetchedCount = 0;
+          setIsFetching(false);
+          setHologramApiFunctional(false);
+          setFetchMessage("Could not fetch more data");
+        }
       });
     } else {
       return false;
     }
   };
-  const [isFetching, setIsFetching] = useInfiniteScroll(fetchMoreData);
+  const [isFetching, setIsFetching] = useInfiniteScroll(fetchMoreData, hologramApiFunctional);
 
   return latLng.flag ? (
     <div>
