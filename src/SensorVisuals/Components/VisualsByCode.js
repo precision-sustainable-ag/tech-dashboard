@@ -50,21 +50,24 @@ const VisualsByCode = (props) => {
   useEffect(() => {
     return () => {
       if (history.action === "POP") {
-        history.push({
-          pathname: "/sensor-visuals",
-          state: {
-            year: year,
-            data: location.state ? location.state.data : null
-          },
+        history.push((e) => {
+          console.log(e);
+          return {
+            pathname: "/sensor-visuals",
+            state: {
+              year: year,
+              data: location.state ? location.state.data : null,
+            },
+          };
         });
       }
     };
-  }, [history])
+  }, [history, location.state, year]);
 
   useEffect(() => {
     const fetchData = async (apiKey) => {
       const setAllData = (response, type) => {
-        const uniqueSerials = response;
+        // const uniqueSerials = response;
         // .reduce((acc, curr) => {
         //   if (acc.includes(curr.serial)) {
         //     return acc;
@@ -183,7 +186,7 @@ const VisualsByCode = (props) => {
               pathname: "/sensor-visuals",
               state: {
                 year: year,
-                data: location.state ? location.state.data : null
+                data: location.state ? location.state.data : null,
               },
             });
           }}
@@ -242,7 +245,7 @@ const VisualsByCode = (props) => {
                 <Grid item container spacing={3}>
                   <Grid item xs={12}>
                     <Typography variant="h5" align="center">
-                      Node Voltage
+                      Node Health
                     </Typography>
                   </Grid>
                   <NodeVoltage />
