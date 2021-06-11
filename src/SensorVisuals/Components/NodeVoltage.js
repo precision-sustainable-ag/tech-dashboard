@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
 
-import { Grid, Typography } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { onfarmAPI } from "../../utils/api_secret";
 import { useParams } from "react-router-dom";
 import { Context } from "../../Store/Store";
@@ -9,7 +9,7 @@ import Highcharts from "highcharts";
 import { CustomLoader } from "../../utils/CustomComponents";
 
 const chartOptions = {
-  time:{
+  time: {
     timezoneOffset: new Date().getTimezoneOffset() * 2,
   },
   chart: {
@@ -19,7 +19,7 @@ const chartOptions = {
     borderWidth: 1,
   },
   title: {
-    text: `Node Voltage - Bare`,
+    text: `Node Health - `,
   },
   xAxis: {
     type: "datetime",
@@ -32,7 +32,7 @@ const chartOptions = {
     title: {
       text: "Voltage",
     },
-    type: "logarithmic",
+    type: "linear",
   },
   series: [],
 };
@@ -51,20 +51,27 @@ const NodeVoltage = () => {
   useEffect(() => {
     const setNodeData = async (apiKey) => {
       setLoading(true);
-      const response = await fetch(waterNodeDataEndpoint, {
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": apiKey,
-        },
-      });
+      try {
+        const response = await fetch(waterNodeDataEndpoint, {
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": apiKey,
+          },
+        });
 
-      const records = await response.json();
+        const records = await response.json();
 
-      const sortedByTimestamp = records
-        .sort((a, b) => a - b)
-        .map((rec) => ({ ...rec, timestamp: rec.timestamp * 1000 }));
+        const sortedByTimestamp = records
+          .sort((a, b) => a - b)
+          .map((rec) => ({ ...rec, timestamp: rec.timestamp * 1000 }));
 
-      setData(sortedByTimestamp);
+        setData(sortedByTimestamp);
+      } catch (e) {
+        console.error(e);
+        // setLoading(false);
+
+        // throw new Error(e);
+      }
     };
 
     if (!state.userInfo.apikey) return;
@@ -72,6 +79,7 @@ const NodeVoltage = () => {
     setNodeData(state.userInfo.apikey).then(() => {
       setLoading(false);
     });
+    return () => {};
   }, [state.userInfo.apikey, waterNodeDataEndpoint]);
 
   const bareSub1Data = useMemo(() => {
@@ -87,10 +95,14 @@ const NodeVoltage = () => {
       rec.timestamp,
       rec.nd_solar_voltage,
     ]);
+    const sigStr = filteredData.map((rec) => [
+      rec.timestamp,
+      rec.signal_strength,
+    ]);
     return {
       ...chartOptions,
       title: {
-        text: "Node Voltage - Rep 1 Bare",
+        text: chartOptions.title.text + "Rep 1 Bare",
       },
       series: [
         {
@@ -104,6 +116,14 @@ const NodeVoltage = () => {
         {
           name: "Battery Voltage",
           data: battVol,
+          tooltip: {
+            pointFormat:
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
+          },
+        },
+        {
+          name: "Signal Strength",
+          data: sigStr,
           tooltip: {
             pointFormat:
               "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
@@ -124,10 +144,14 @@ const NodeVoltage = () => {
       rec.timestamp,
       rec.nd_solar_voltage,
     ]);
+    const sigStr = filteredData.map((rec) => [
+      rec.timestamp,
+      rec.signal_strength,
+    ]);
     return {
       ...chartOptions,
       title: {
-        text: "Node Voltage - Rep 2 Bare",
+        text: chartOptions.title.text + "Rep 2 Bare",
       },
       series: [
         {
@@ -141,6 +165,14 @@ const NodeVoltage = () => {
         {
           name: "Battery Voltage",
           data: battVol,
+          tooltip: {
+            pointFormat:
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
+          },
+        },
+        {
+          name: "Signal Strength",
+          data: sigStr,
           tooltip: {
             pointFormat:
               "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
@@ -162,10 +194,14 @@ const NodeVoltage = () => {
       rec.timestamp,
       rec.nd_solar_voltage,
     ]);
+    const sigStr = filteredData.map((rec) => [
+      rec.timestamp,
+      rec.signal_strength,
+    ]);
     return {
       ...chartOptions,
       title: {
-        text: "Node Voltage - Rep 1 Cover",
+        text: chartOptions.title.text + "Rep 1 Cover",
       },
       series: [
         {
@@ -184,9 +220,18 @@ const NodeVoltage = () => {
               "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
           },
         },
+        {
+          name: "Signal Strength",
+          data: sigStr,
+          tooltip: {
+            pointFormat:
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
+          },
+        },
       ],
     };
   }, [data]);
+
   const coverSub2Data = useMemo(() => {
     const filteredData = data.filter(
       (rec) => rec.trt === "c" && rec.subplot === 2
@@ -200,11 +245,14 @@ const NodeVoltage = () => {
       rec.timestamp,
       rec.nd_solar_voltage,
     ]);
-
+    const sigStr = filteredData.map((rec) => [
+      rec.timestamp,
+      rec.signal_strength,
+    ]);
     return {
       ...chartOptions,
       title: {
-        text: "Node Voltage - Rep 2 Cover",
+        text: chartOptions.title.text + "Rep 2 Cover",
       },
       series: [
         {
@@ -223,22 +271,20 @@ const NodeVoltage = () => {
               "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
           },
         },
+        {
+          name: "Signal Strength",
+          data: sigStr,
+          tooltip: {
+            pointFormat:
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
+          },
+        },
       ],
     };
   }, [data]);
 
   useEffect(() => {}, []);
 
-  //   const batteryVoltageDataBareSub1 = filteredData.map((rec) => [
-  //   rec.timestamp,
-  //   rec.nd_batt_voltage,
-  // ]);
-  // const solarVoltageDataBareSub2 = filteredData.map((rec) => [
-  //   rec.timestamp,
-  //   rec.nd_solar_voltage,
-  // ]);
-  // setBatteryVoltageData(batteryVoltageData);
-  // setSolarVoltageData(solarVoltageData);
   return (
     <Grid container>
       {loading ? (
@@ -262,20 +308,6 @@ const NodeVoltage = () => {
             <HighchartsReact highcharts={Highcharts} options={coverSub2Data} />
           </Grid>
         </Grid>
-        // <Grid item xs={12}>
-        //   {batteryVoltageData.length > 0 || solarVoltageData.length > 0 ? (
-        //     <HighchartsReact highcharts={Highcharts} options={chartOptions} />
-        //   ) : (
-        //     <Grid
-        //       container
-        //       justify="center"
-        //       alignItems="center"
-        //       style={{ height: "100%" }}
-        //     >
-        //       <Typography>No Voltage Data for {type}</Typography>
-        //     </Grid>
-        //   )}
-        // </Grid>
       )}
     </Grid>
   );
