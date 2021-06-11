@@ -44,4 +44,6 @@ if (process.env.NODE_ENV !== "development") console.log = () => {};
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+process.env.NODE_ENV === "development"
+  ? serviceWorker.register()
+  : serviceWorker.unregister();
