@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   Dialog,
   DialogContent,
@@ -17,8 +17,8 @@ const MapModal = ({
   lat = 35.763197,
   lng = -78.700187,
 }) => {
-  const [fullWidth, setFullWidth] = useState(true);
-  const [maxWidth, setMaxWidth] = useState("md");
+  const fullWidth = true;
+  const maxWidth = "md";
 
   return (
     <Dialog

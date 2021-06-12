@@ -1,19 +1,19 @@
-import { Button, Grid, makeStyles, Paper, Toolbar } from "@material-ui/core";
+import { Button, Grid, Paper, Toolbar } from "@material-ui/core";
 import { GpsFixed } from "@material-ui/icons";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { useMemo } from "react";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    justifyContent: "center",
-    flexWrap: "wrap",
-    listStyle: "none",
-    padding: theme.spacing(0.5),
-    margin: 0,
-  },
-}));
+// const useStyles = makeStyles((theme) => ({
+//   root: {
+//     display: "flex",
+//     justifyContent: "center",
+//     flexWrap: "wrap",
+//     listStyle: "none",
+//     padding: theme.spacing(0.5),
+//     margin: 0,
+//   },
+// }));
 const GatewayChart = (props) => {
   const { data } = props;
 
@@ -68,7 +68,7 @@ const GatewayChart = (props) => {
   //   }, []);
 
   const chartOptions = {
-    time:{
+    time: {
       timezoneOffset: new Date().getTimezoneOffset() * 2,
     },
     chart: {
@@ -143,7 +143,7 @@ const GatewayChart = (props) => {
     ],
   };
 
-  const classes = useStyles();
+  // const classes = useStyles();
   return (
     <Grid container>
       <Grid item container xs={12} spacing={2} alignItems="center">

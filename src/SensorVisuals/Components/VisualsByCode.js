@@ -1,6 +1,5 @@
 import { Button, Grid, Typography } from "@material-ui/core";
 import { onfarmAPI } from "../../utils/api_secret";
-
 import { ArrowBackIos } from "@material-ui/icons";
 import { Link, useHistory, useParams, useLocation } from "react-router-dom";
 import { lazy, useContext, useEffect, useState } from "react";
@@ -49,9 +48,23 @@ const VisualsByCode = (props) => {
     `/soil_moisture?type=node&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31`;
 
   useEffect(() => {
+    return () => {
+      if (history.action === "POP") {
+        history.push({
+          pathname: "/sensor-visuals",
+          state: {
+            year: year,
+            data: location.state ? location.state.data : null,
+          },
+        });
+      }
+    };
+  }, [history, location.state, year]);
+
+  useEffect(() => {
     const fetchData = async (apiKey) => {
       const setAllData = (response, type) => {
-        const uniqueSerials = response;
+        // const uniqueSerials = response;
         // .reduce((acc, curr) => {
         //   if (acc.includes(curr.serial)) {
         //     return acc;
@@ -170,7 +183,7 @@ const VisualsByCode = (props) => {
               pathname: "/sensor-visuals",
               state: {
                 year: year,
-                data: location.state ? location.state.data : null
+                data: location.state ? location.state.data : null,
               },
             });
           }}
@@ -229,7 +242,7 @@ const VisualsByCode = (props) => {
                 <Grid item container spacing={3}>
                   <Grid item xs={12}>
                     <Typography variant="h5" align="center">
-                      Node Voltage
+                      Node Health
                     </Typography>
                   </Grid>
                   <NodeVoltage />

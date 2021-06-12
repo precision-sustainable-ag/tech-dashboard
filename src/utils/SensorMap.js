@@ -1,5 +1,5 @@
 import { Grid, Typography } from "@material-ui/core";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import GoogleMapsReact from "google-map-react";
 import { googleApiKey } from "./api_secret";
 import PropTypes from "prop-types";
