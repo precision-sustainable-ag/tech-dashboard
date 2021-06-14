@@ -1,8 +1,6 @@
 // Dependency Imports
 import {
-  Avatar,
   Button,
-  Chip,
   Dialog,
   DialogActions,
   DialogContent,
@@ -13,7 +11,7 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Octokit } from "@octokit/rest";
 import MDEditor from "@uiw/react-md-editor";
 
@@ -21,7 +19,7 @@ import MDEditor from "@uiw/react-md-editor";
 import { githubToken } from "../utils/api_secret";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 import PropTypes from "prop-types";
-import { createGithubIssue } from "../utils/SharedFunctions"
+import { createGithubIssue } from "../utils/SharedFunctions";
 
 /**
  *  A component to allow users to create "New Issue" in a modal
@@ -29,12 +27,8 @@ import { createGithubIssue } from "../utils/SharedFunctions"
 
 // Default function
 const NewIssueModal = (props) => {
-  const {
-    getTokenSilently,
-  } = useAuth0();
+  const { getTokenSilently } = useAuth0();
 
-  const octokit = new Octokit({ auth: githubToken });
-  const [fullWidth, setFullWidth] = useState(true);
   const [maxWidth, setMaxWidth] = useState("lg");
   const alwaysTaggedPeople = ["brianwdavis", "saseehav", props.nickname];
   const [newComment, setNewComment] = useState("");
@@ -43,7 +37,7 @@ const NewIssueModal = (props) => {
     title: false,
     comment: false,
   });
-  const [collaborators, setCollaborators] = useState([]);
+  // const [collaborators, setCollaborators] = useState([]);
   const handleMaxWidthChange = (event) => {
     setMaxWidth(event.target.value);
   };
@@ -52,16 +46,15 @@ const NewIssueModal = (props) => {
 
   async function fileNewIssue() {
     if (issueTitle && newComment) {
-      // props.setSnackbarData({
-      //   open: true,
-      //   text: `Creating new issue for ${props.data.code}`,
-      // });
       setButtonDisabled(true);
-
 
       setCheckValidation({ title: false, comment: false });
 
-      const labels = [`${props.data.code}`, `${props.data.affiliation}`, "site-information"];
+      const labels = [
+        `${props.data.code}`,
+        `${props.data.affiliation}`,
+        "site-information",
+      ];
 
       const assignedPeople =
         personName.length > 0 ? personName : [`${props.nickname}`];
@@ -110,9 +103,9 @@ const NewIssueModal = (props) => {
       const body = tableData + " <br/> " + newComment;
 
       let token = await getTokenSilently({
-        audience: `https://precision-sustaibale-ag/tech-dashboard`
+        audience: `https://precision-sustaibale-ag/tech-dashboard`,
       });
-      
+
       const issueSet = createGithubIssue(
         issueTitle,
         body,
@@ -126,11 +119,28 @@ const NewIssueModal = (props) => {
         setNewComment("");
         setIssueTitle("");
         setButtonDisabled(false);
-        if (res.status === 201) {
-          props.handleNewIssueDialogClose();
+        props.handleNewIssueDialogClose();
+        if (res) {
+          if (res.status === 201) {
+            props.setSnackbarData({
+              open: true,
+              text: `New Issue has been created for ${props.data.code}`,
+              severity: "success",
+            });
+          } else {
+            console.log("Function could not create issue");
+            props.setSnackbarData({
+              open: true,
+              text: `Could not create issue (error code 0)`,
+              severity: "error",
+            });
+          }
+        } else {
+          console.log("No response from function, likely cors");
           props.setSnackbarData({
             open: true,
-            text: `New Issue has been created for ${props.data.code}`,
+            text: `Could not create issue (error code 1)`,
+            severity: "error",
           });
         }
       });
@@ -145,51 +155,53 @@ const NewIssueModal = (props) => {
         }
       }
     }
-  };
+  }
 
-  const fetchCollabs = async () => {
-    return await octokit.request("GET /repos/{owner}/{repo}/collaborators", {
-      owner: "precision-sustainable-ag",
-      repo: "data_corrections",
-    });
-  };
-  const checkIfUserIsCollaborator = async (username) => {
-    return await octokit.request(
-      "GET /repos/{owner}/{repo}/collaborators/{username}",
-      {
-        owner: "precision-sustainable-ag",
-        repo: "data_corrections",
-        username: username,
-      }
-    );
-  };
-  const getGithubResourceLimit = async () => {
-    return await octokit.request("GET /rate_limit");
-  };
-  const addNewCollaboratorToRepo = async (username) => {
-    return await octokit.request(
-      "PUT /repos/{owner}/{repo}/collaborators/{username}",
-      {
-        owner: "precision-sustainable-ag",
-        repo: "data_corrections",
-        username: username,
-        permission: "push",
-      }
-    );
-  };
-  const [isNewCollab, setIsNewCollab] = useState(false);
+  // const [isNewCollab, setIsNewCollab] = useState(false);
   useEffect(() => {
+    const octokit = new Octokit({ auth: githubToken });
+    const getGithubResourceLimit = async () => {
+      return await octokit.request("GET /rate_limit");
+    };
+    const fetchCollabs = async () => {
+      return await octokit.request("GET /repos/{owner}/{repo}/collaborators", {
+        owner: "precision-sustainable-ag",
+        repo: "data_corrections",
+      });
+    };
+    const checkIfUserIsCollaborator = async (username) => {
+      return await octokit.request(
+        "GET /repos/{owner}/{repo}/collaborators/{username}",
+        {
+          owner: "precision-sustainable-ag",
+          repo: "data_corrections",
+          username: username,
+        }
+      );
+    };
     //   check if a user is a collaborator to repo, else add the user to repo
+    const addNewCollaboratorToRepo = async (username) => {
+      return await octokit.request(
+        "PUT /repos/{owner}/{repo}/collaborators/{username}",
+        {
+          owner: "precision-sustainable-ag",
+          repo: "data_corrections",
+          username: username,
+          permission: "push",
+        }
+      );
+    };
+
     fetchCollabs()
       .then((res) => {
-        const status = res.status;
+        // const status = res.status;
         let collaborators = res.data.map((data) => {
           return { username: data.login, picture: data.avatar_url };
         });
 
         checkIfUserIsCollaborator(props.nickname)
           .then((res) => {
-            setCollaborators(collaborators);
+            // setCollaborators(collaborators);
             if (res.status === 204) {
               // user already exists
               return false;
@@ -213,7 +225,7 @@ const NewIssueModal = (props) => {
               username: props.nickname,
               picture: `https://via.placeholder.com/50x50?text=${props.nickname}`,
             });
-            setCollaborators(collaborators);
+            // setCollaborators(collaborators);
           });
       })
       .catch((e) => {
@@ -230,15 +242,15 @@ const NewIssueModal = (props) => {
         });
       });
     return () => {};
-  }, [isNewCollab]);
+  }, [props.nickname]);
 
-  const [personName, setPersonName] = React.useState(alwaysTaggedPeople);
+  const [personName] = React.useState(alwaysTaggedPeople);
   return (
     <Dialog
       open={props.open}
       onClose={props.handleNewIssueDialogClose}
       aria-labelledby="form-dialog-title"
-      fullWidth={fullWidth}
+      fullWidth={true}
       maxWidth={maxWidth}
       disableBackdropClick
     >
@@ -393,7 +405,12 @@ const NewIssueModal = (props) => {
         </Grid>
         <DialogActions>
           <Button onClick={props.handleNewIssueDialogClose}>Cancel</Button>
-          <Button color="primary" onClick={fileNewIssue} variant="contained" disabled={buttonDisabled}>
+          <Button
+            color="primary"
+            onClick={fileNewIssue}
+            variant="contained"
+            disabled={buttonDisabled}
+          >
             {buttonDisabled ? "Creating Issue" : "Submit"}
           </Button>
         </DialogActions>

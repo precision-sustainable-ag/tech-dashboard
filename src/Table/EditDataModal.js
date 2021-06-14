@@ -3,17 +3,14 @@ import React, { useState, useEffect } from "react";
 import {
   Grid,
   Button,
-  IconButton,
   Dialog,
   TextField,
   DialogContent,
   DialogTitle,
   DialogActions,
-  makeStyles,
   Select,
   MenuItem,
   FormControl,
-  InputAdornment,
   FormControlLabel,
   Checkbox,
   FormLabel,
@@ -29,32 +26,38 @@ const qs = require("qs");
 
 // Styles
 // County is not being passed on to the server as that would need API modification, and Rick is developing a new API
-const useStyles = makeStyles((theme) => ({
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    margin: "auto",
-    width: "fit-content",
-  },
-  formControl: {
-    marginTop: theme.spacing(2),
-    minWidth: 120,
-  },
-  formControlLabel: {
-    marginTop: theme.spacing(1),
-  },
-}));
+// const useStyles = makeStyles((theme) => ({
+//   form: {
+//     display: "flex",
+//     flexDirection: "column",
+//     margin: "auto",
+//     width: "fit-content",
+//   },
+//   formControl: {
+//     marginTop: theme.spacing(2),
+//     minWidth: 120,
+//   },
+//   formControlLabel: {
+//     marginTop: theme.spacing(1),
+//   },
+// }));
 
+const fullWidth = true;
 // Default function
 const EditDataModal = (props) => {
   const open = props.open;
-  const classes = useStyles();
-  const [fullWidth, setFullWidth] = useState(true);
+  // const classes = useStyles();
+
   const [maxWidth, setMaxWidth] = useState("md");
   const [locationMsg, setLocationMsg] = useState("");
   const [locationErr, setLocationErr] = useState(false);
   const [showMap, setShowMap] = useState(false);
   //   const [currentLatLng, setCurrentLatLng] = useState(null);
+
+  useEffect(() => {
+    console.log(locationMsg, locationErr);
+  }, [locationMsg, locationErr]);
+
   const [newData, setNewData] = useState({
     cid: props.data.cid,
     code: props.data.code,
@@ -77,45 +80,45 @@ const EditDataModal = (props) => {
     },
   });
 
-  const positionError = (e) => {
-    console.log(e);
-    setLocationMsg(e.message);
-    setLocationErr(true);
-  };
+  // const positionError = (e) => {
+  //   console.log(e);
+  //   setLocationMsg(e.message);
+  //   setLocationErr(true);
+  // };
 
-  const getCurrentLatLng = () => {
-    setLocationMsg("Locating...");
-    setLocationErr(false);
-    if (navigator.geolocation) {
-      try {
-        navigator.geolocation.getCurrentPosition(setPosition, positionError);
-      } catch (e) {
-        console.log("Location catch", e);
-        setLocationErr(true);
-      }
-    } else {
-      console.error("Location unavailable");
-      setLocationMsg("Location unavailable");
-      setLocationErr(true);
-    }
-  };
+  // const getCurrentLatLng = () => {
+  //   setLocationMsg("Locating...");
+  //   setLocationErr(false);
+  //   if (navigator.geolocation) {
+  //     try {
+  //       navigator.geolocation.getCurrentPosition(setPosition, positionError);
+  //     } catch (e) {
+  //       console.log("Location catch", e);
+  //       setLocationErr(true);
+  //     }
+  //   } else {
+  //     console.error("Location unavailable");
+  //     setLocationMsg("Location unavailable");
+  //     setLocationErr(true);
+  //   }
+  // };
 
-  const setPosition = (position) => {
-    console.log("Server received: " + position);
+  // const setPosition = (position) => {
+  //   console.log("Server received: " + position);
 
-    setNewData({
-      ...newData,
-      latlng: `${position.coords.latitude},${position.coords.longitude}`,
-      latitude: position.coords.latitude,
-      longitude: position.coords.longitude,
-    });
-    let time = new Date(position.timestamp).toLocaleTimeString("en-US");
-    setLocationMsg(`Location updated on ${time}`);
-    setLocationErr(false);
-  };
+  //   setNewData({
+  //     ...newData,
+  //     latlng: `${position.coords.latitude},${position.coords.longitude}`,
+  //     latitude: position.coords.latitude,
+  //     longitude: position.coords.longitude,
+  //   });
+  //   let time = new Date(position.timestamp).toLocaleTimeString("en-US");
+  //   setLocationMsg(`Location updated on ${time}`);
+  //   setLocationErr(false);
+  // };
 
   const checkLatLng = () => {
-    let testcase = new RegExp("^-?([1-8]?[1-9]|[1-9]0).{1}d{1,6}");
+    // let testcase = new RegExp("^-?([1-8]?[1-9]|[1-9]0).{1}d{1,6}");
     // TODO:Check LatLng pattern?
     return true;
   };
@@ -140,9 +143,9 @@ const EditDataModal = (props) => {
     setMaxWidth(event.target.value);
   };
 
-  const handleFullWidthChange = (event) => {
-    setFullWidth(event.target.checked);
-  };
+  // const handleFullWidthChange = (event) => {
+  //   setFullWidth(event.target.checked);
+  // };
 
   const [selectedToEditSite, setSelectedToEditSite] = useState({
     address: "",
@@ -152,7 +155,7 @@ const EditDataModal = (props) => {
     longitude: "",
   });
   useEffect(() => {
-    setNewData({
+    setNewData((newData) => ({
       ...newData,
       address: selectedToEditSite.address ? selectedToEditSite.address : "",
       latitude: selectedToEditSite.latitude ? selectedToEditSite.latitude : "",
@@ -165,7 +168,7 @@ const EditDataModal = (props) => {
         selectedToEditSite.latitude && selectedToEditSite.longitude
           ? `${selectedToEditSite.latitude},${selectedToEditSite.longitude}`
           : "",
-    });
+    }));
   }, [selectedToEditSite]);
   useEffect(() => {
     setNewData({
@@ -212,7 +215,7 @@ const EditDataModal = (props) => {
         },
       });
     };
-  }, [open]);
+  }, [open, props.data]);
   return (
     <Dialog
       open={open}

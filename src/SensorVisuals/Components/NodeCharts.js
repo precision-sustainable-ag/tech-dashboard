@@ -28,10 +28,9 @@ const NodeCharts = (props) => {
 
   const litterBagChartOptions = useMemo(
     () => ({
-      global: {
-        useUTC: false,
+      time:{
+        timezoneOffset: new Date().getTimezoneOffset() * 2,
       },
-
       chart: {
         type: "scatter",
         zoomType: "xy",
@@ -100,10 +99,9 @@ const NodeCharts = (props) => {
 
   const sensorChartOptions = useMemo(
     () => ({
-      global: {
-        useUTC: false,
+      time:{
+        timezoneOffset: new Date().getTimezoneOffset() * 2,
       },
-
       chart: {
         type: "scatter",
         zoomType: "xy",
@@ -189,10 +187,9 @@ const NodeCharts = (props) => {
 
   const voltageChartOptions = useMemo(
     () => ({
-      global: {
-        useUTC: false,
+      time:{
+        timezoneOffset: new Date().getTimezoneOffset() * 2,
       },
-
       chart: {
         type: "scatter",
         zoomType: "xy",

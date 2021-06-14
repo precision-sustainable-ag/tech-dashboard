@@ -133,9 +133,9 @@ export const fetchGrowerByLastName = async (query) => {
 //     }, "");
 //   }
 // };
-export const ucFirst = (str) => {
-  if (str === null) {
-    return "Not Provided";
+export const ucFirst = (str = "") => {
+  if (str.length === 0) {
+    return "";
   } else {
     if (str.length > 0) return str.charAt(0).toUpperCase() + str.slice(1);
     else return str;

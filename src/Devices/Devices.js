@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Loading from "react-loading";
 import { Card, Chip, Grid, Typography } from "@material-ui/core";
 
@@ -49,7 +49,7 @@ const DevicesComponent = (props) => {
 
   useEffect(() => {
     if (props.devices.length > 0) {
-      const tags = getAllTags(props.devices);
+      const tags = getAllTags(props.devices).sort();
       setDeviceTags(tags);
     }
   }, [props]);

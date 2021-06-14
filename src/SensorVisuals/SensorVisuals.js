@@ -43,7 +43,7 @@ const SensorVisuals = (props) => {
     const newYears = years.map((yearInfo) => {
       return { active: year === yearInfo.year, year: yearInfo.year };
     });
-    const sortedNewYears = newYears.sort((a, b) => b - a);
+    const sortedNewYears = newYears.sort((a, b) => b.year - a.year);
 
     setYears(sortedNewYears);
   };
@@ -152,9 +152,10 @@ const SensorVisuals = (props) => {
   }
 
   useEffect(() => {
-    if (location.state) {
-      // console.log(location.state.data);
-      setData(location.state.data);
+    if(location.state){
+      if(location.state.data){
+        setData(location.state.data);
+      }
     }
 
     const fetchData = async (apiKey) => {
@@ -171,7 +172,7 @@ const SensorVisuals = (props) => {
           });
           const response = await records.json();
 
-          if (!location.state) {
+          if(data.length == 0){
             let newData = response.map((entry) => {
               return {
                 ...entry,

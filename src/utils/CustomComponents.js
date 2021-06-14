@@ -11,7 +11,6 @@ import {
   makeStyles,
   Grid,
   Button,
-  Chip,
 } from "@material-ui/core";
 import Loading from "react-loading";
 
@@ -210,7 +209,7 @@ export const useAutoRefresh = (callback = () => {}, delay = 1000) => {
   return intervalId.current;
 };
 
-export const useInfiniteScroll = (callback) => {
+export const useInfiniteScroll = (callback, hologramApiFunctional) => {
   const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
@@ -219,7 +218,7 @@ export const useInfiniteScroll = (callback) => {
   }, []);
 
   useEffect(() => {
-    if (!isFetching) return;
+    if (!isFetching || !hologramApiFunctional) return;
     callback();
   }, [isFetching]);
 
@@ -230,6 +229,7 @@ export const useInfiniteScroll = (callback) => {
         isFetching
     )
       return;
+      
     setIsFetching(true);
   };
 
@@ -237,7 +237,7 @@ export const useInfiniteScroll = (callback) => {
 };
 
 export const ScrollTop = (props) => {
-  const { children, window } = props;
+  const { children } = props;
   const useStyles = makeStyles((theme) => ({
     root: {
       position: "fixed",
@@ -307,20 +307,19 @@ export const YearsAndAffiliations = (props) => {
           <YearsChips years={years} handleActiveYear={handleActiveYear} />
         </Grid>
       )}
-      
 
-      <Grid item container spacing={2} xs={12}>
-        <Grid item sm={2} md={1} xs={12}>
-          <Typography variant="body1">Affiliations</Typography>
-        </Grid>
-        {affiliations.length > 1 && (
+      {affiliations.length > 1 && (
+        <Grid item container spacing={2} xs={12}>
+          <Grid item sm={2} md={1} xs={12}>
+            <Typography variant="body1">Affiliations</Typography>
+          </Grid>
           <AffiliationsChips
             activeAffiliation={activeAffiliation() || "all"}
             affiliations={affiliations}
             handleActiveAffiliation={handleActiveAffiliation}
           />
-        )}
-      </Grid>
+        </Grid>
+      )}
     </Fragment>
   );
 };

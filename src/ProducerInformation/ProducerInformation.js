@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, Fragment } from "react";
 import { Grid, Snackbar } from "@material-ui/core";
 import { Context } from "../Store/Store";
 import MaterialTable from "material-table";
@@ -189,7 +189,7 @@ const ProducerInformation = (props) => {
           <CustomLoader />
         </Grid>
       ) : (
-        <div>
+        <Fragment>
           <Snackbar
               anchorOrigin={{
                 vertical: "bottom",
@@ -262,14 +262,21 @@ const ProducerInformation = (props) => {
                     openIcon: "message",
                     render: (rowData) => {
                       return (
-                          <IssueDialogue nickname={user.nickname} rowData={rowData} dataType="table" setSnackbarData={setSnackbarData} labels={["producer-information"]} getTokenSilently={getTokenSilently}/>
+                          <IssueDialogue 
+                            nickname={user.nickname} 
+                            rowData={rowData} 
+                            dataType="table" 
+                            setSnackbarData={setSnackbarData} 
+                            labels={["producer-information"]} 
+                            getTokenSilently={getTokenSilently}
+                          />
                       );
                     },
                   },
                 ]}
               />
             </Grid>
-        </div>
+        </Fragment>
       )}
     </Grid>
   ) : (
