@@ -1,12 +1,17 @@
-import { Grid, Typography } from "@material-ui/core";
-import React, { useState, useEffect, useContext } from "react";
-import { Fragment } from "react";
+import { Grid, Typography, Snackbar } from "@material-ui/core";
+import React, { useState, useEffect, useContext, Fragment } from "react";
 import { Context } from "../Store/Store";
 import { onfarmAPI } from "../utils/api_secret";
 import { CustomLoader, YearsAndAffiliations } from "../utils/CustomComponents";
 import { uniqueYears } from "../utils/SharedFunctions";
+import MuiAlert from "@material-ui/lab/Alert";
 
 import FarmValuesTable from "./FarmValuesTable";
+
+// Helper function
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const currentYear = new Date().getFullYear();
 const FarmValues = () => {
@@ -15,6 +20,7 @@ const FarmValues = () => {
   const [farmValues, setFarmValues] = useState([]);
   const [farmYears, setFarmYears] = useState([]);
   const [affiliations, setAffiliations] = useState([]);
+  const [snackbarData, setSnackbarData] = useState({ open: false, text: "", severity: "success" });
 
   const activeFarmYear = () => {
     const activeYear = farmYears
@@ -117,6 +123,19 @@ const FarmValues = () => {
         </Grid>
       ) : (
         <Fragment>
+          <Snackbar
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "center",
+            }}
+            open={snackbarData.open}
+            autoHideDuration={2000}
+            onClose={() =>
+              setSnackbarData({ ...snackbarData, open: !snackbarData.open })
+            }
+          >
+            <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
+          </Snackbar>
           {/* Years and Affiliation */}
           <YearsAndAffiliations
             title={"Farm Values"}
@@ -132,6 +151,7 @@ const FarmValues = () => {
               data={farmValues}
               year={activeFarmYear() || currentYear}
               affiliation={activeAffiliation() || "all"}
+              setSnackbarData={setSnackbarData}
             />
           </Grid>
         </Fragment>

@@ -1,22 +1,19 @@
 // Dependency Imports
-import React, { Fragment, useState, useEffect } from "react";
-import { red, green, yellow, grey } from "@material-ui/core/colors";
+import React, { useState, useEffect } from "react";
+import { green, yellow, grey } from "@material-ui/core/colors";
 import { Redirect } from "react-router-dom";
 import {
   Button,
-  CardActionArea,
-  CardActions,
   CardContent,
   Divider,
   Grid,
   IconButton,
-  Input,
   TextField,
   Tooltip,
   Typography,
 } from "@material-ui/core";
 import moment from "moment-timezone";
-import { Cancel, Edit, Info, Save } from "@material-ui/icons";
+import { Cancel, Edit, Save } from "@material-ui/icons";
 import Axios from "axios";
 import qs from "qs";
 import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
@@ -48,11 +45,11 @@ const DataParser = (props) => {
   };
 
   useEffect(() => {
-    let now = moment();
-    let todayDay = now.date();
-    let todayMonth = now.month() + 1;
-    let todayYear = now.year();
-    let today = false;
+    // let now = moment();
+    // let todayDay = now.date();
+    // let todayMonth = now.month() + 1;
+    // let todayYear = now.year();
+    // let today = false;
 
     if (device.lastsession) {
       // guess user's timezone
@@ -118,7 +115,7 @@ const DataParser = (props) => {
         setDeviceBGColor(deviceColors.default);
       }
     }
-  }, []);
+  }, [device.lastsession, device.links]);
   const [showEditBtn, setShowEditBtn] = useState(false);
   const [isDeviceNameBeingEdited, setIsDeviceNameBeingEdited] = useState(false);
   const [deviceActualName, setDeviceActualName] = useState("");

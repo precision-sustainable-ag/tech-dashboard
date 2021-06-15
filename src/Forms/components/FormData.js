@@ -11,18 +11,16 @@ import axios from "axios";
 import { apiPassword, apiURL, apiUsername } from "../../utils/api_secret";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import { useAuth0 } from "../../Auth/react-auth0-spa";
-import { QuestionAnswer } from "@material-ui/icons";
+import { QuestionAnswer, ArrowBackIosOutlined } from "@material-ui/icons";
 import MuiAlert from "@material-ui/lab/Alert";
 
 import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
-import docco from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light";
-import dark from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-dark";
 import { useParams } from "react-router";
-import { ArrowBackIosOutlined } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import { Context } from "../../Store/Store";
 import { fetchKoboPasswords } from "../../utils/constants";
 import IssueDialogue from "../../Comments/IssueDialogue";
+import FormEntry from "./FormEntry";
 
 SyntaxHighlighter.registerLanguage("json", json);
 
@@ -46,6 +44,10 @@ const FormData = (props) => {
 
   const [affiliationLookup, setAffiliationLookup] = useState({});
   const [timezoneOffset, setTimezoneOffset] = useState(new Date().getTimezoneOffset() * 60 * 1000);
+  
+  const [snackbarData, setSnackbarData] = useState({ open: false, text: "", severity: "success" });
+  const [newIssueData, setNewIssueData] = useState({});
+  const [activeIssueIndex, setActiveIssueIndex] = useState(null);
 
   const fetchData = async (assetId, userType = "psa") => {
     return await axios.get(`${apiURL}/api/kobo/${userType}/data/${assetId}`, {
@@ -86,7 +88,7 @@ const FormData = (props) => {
             const allowedKoboAccounts = data.reduce(
               (acc, curr) => !acc.includes(curr.kobo_account) ? [...acc, curr.kobo_account] : acc
               , []
-            );
+            ).sort();
             setAffiliationLookup({});
             data.forEach(function (item, index) {
               const kobo_account = item.kobo_account;
@@ -129,10 +131,7 @@ const FormData = (props) => {
     });
   }, [activeAccount, originalData]);
 
-  const [snackbarData, setSnackbarData] = useState({ open: false, text: "", severity: "success" });
-  const [newIssueData, setNewIssueData] = useState({});
-
-  const CreateNewIssue = ({ issueData }) => {
+  const CreateNewIssue = ({ issueData, index }) => {
     return (
       <div>
         {showNewIssueDialog ? (
@@ -148,7 +147,7 @@ const FormData = (props) => {
               onClick={() => {
                 setShowNewIssueDialog(true);
                 setNewIssueData(issueData);
-                ShowNewFormIssue();
+                setActiveIssueIndex(index);
               }}
             >
               Comment
@@ -156,34 +155,27 @@ const FormData = (props) => {
           </Tooltip>
         )}
 
-        <ShowNewFormIssue />
+        {(showNewIssueDialog && index === activeIssueIndex) ? (
+          <IssueDialogue
+            nickname={user.nickname}
+            rowData={JSON.stringify(newIssueData, null, "\t")}
+            dataType="json"
+            setSnackbarData={setSnackbarData}
+            formName={props.assetId.history.location.state.name}
+            affiliationLookup={affiliationLookup}
+            closeDialogue={setShowNewIssueDialog}
+            labels={[
+              newIssueData._id.toString(),
+              affiliationLookup[newIssueData._submitted_by],
+              props.assetId.history.location.state.name,
+              "kobo-forms",
+            ]}
+            setShowNewIssueDialog={setShowNewIssueDialog}
+          />
+        ) : ""
+        }
       </div>
     );
-  };
-
-  const ShowNewFormIssue = () => {
-    if (showNewIssueDialog) {
-      // setShowNewIssueDialog(false)
-
-      // console.log(JSON.stringify(props))
-      return (
-        <IssueDialogue
-          nickname={user.nickname}
-          rowData={JSON.stringify(newIssueData, null, "\t")}
-          dataType="json"
-          setSnackbarData={setSnackbarData}
-          formName={props.assetId.history.location.state.name}
-          affiliationLookup={affiliationLookup}
-          closeDialogue={setShowNewIssueDialog}
-          labels={[
-            newIssueData._id.toString(),
-            affiliationLookup[newIssueData._submitted_by],
-            props.assetId.history.location.state.name,
-            "kobo-forms",
-          ]}
-        />
-      );
-    } else return "";
   };
 
   const RenderFormsData = () => {
@@ -191,7 +183,7 @@ const FormData = (props) => {
       <Grid item xs={12}>
         <Typography variant="h5">Fetching Data...</Typography>
       </Grid>
-    ) : data.length === 0 && originalData.length === 0 ? (
+    ) : (data.length === 0 && originalData.length === 0) ? (
       <Grid item xs={12}>
         <Typography variant="h5">
           {" "}
@@ -208,35 +200,16 @@ const FormData = (props) => {
           <Typography variant="body1">{data.length} submissions</Typography>
         </Grid>
         {data.map((record = {}, index) => {
-          let slimRecord = record;
-          // let utcTime = new Date(Date.parse(record._submission_time))
-          let localTime = new Date(Date.parse(record._submission_time) - timezoneOffset);
-          const submittedDate = localTime;
-          // console.log(submittedDate, record._submission_time);
           return (
-            <Grid item container xs={12} spacing={2} key={`record${index}`}>
-              <Grid item xs={12} key={`record${index}`}>
-                <Typography variant="h6">
-                  {submittedDate.toLocaleString("en-US", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                    hour: "numeric",
-                    minute: "numeric",
-                    // timeZone: "UTC",
-                    timeZone: "America/New_York",
-                  })}
-                </Typography>
-                <SyntaxHighlighter
-                  language="json"
-                  style={props.isDarkTheme ? dark : docco}
-                >
-                  {JSON.stringify(slimRecord, undefined, 2)}
-                </SyntaxHighlighter>
-              </Grid>
-              <CreateNewIssue issueData={record} />
-            </Grid>
-          );
+            <FormEntry 
+              record={record} 
+              index={index}
+              key={`record${index}`} 
+              isDarkTheme={props.isDarkTheme} 
+              CreateNewIssue={CreateNewIssue} 
+              timezoneOffset={timezoneOffset} 
+            />
+          )
         })}
       </>
     );

@@ -65,6 +65,7 @@ const Issues = (props) => {
                 <MenuItem value="site-information">site-information</MenuItem>
                 <MenuItem value="producer-information">producer-information</MenuItem>
                 <MenuItem value="farm-dates">farm-dates</MenuItem>
+                <MenuItem value="farm-values">farm-values</MenuItem>
               </Select>
             </Grid>
           </Grid>

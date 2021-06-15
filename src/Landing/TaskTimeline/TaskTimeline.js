@@ -15,7 +15,6 @@ const TaskTimeline = () => {
           Authorization: "Basic " + btoa(`${apiUsername}:${apiPassword}`),
         },
       });
-
       return await data.text();
     };
 
@@ -23,6 +22,7 @@ const TaskTimeline = () => {
   }, []);
 
   data.then((resp) => {
+    resp = resp.replace('style="color: #000000;','');
     setHtmlData(resp);
   });
 
