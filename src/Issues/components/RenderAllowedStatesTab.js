@@ -27,10 +27,11 @@ export const RenderAllowedStatesTab = ({
         if (state.userInfo.state === "all") {
           let affiliationArray = [];
           affiliations.map((affiliation) => {
-            affiliationArray.push({affiliation: affiliation.affiliation});
+            affiliationArray.push({affiliation: affiliation.affiliation, active: affiliation.affiliation === activeState});
           })
           setAllAffiliations(affiliationArray);
         } else {
+          // broken for not all affiliations
           const dbPermittedAffiliations = state.userInfo.state.split(",");
           dbPermittedAffiliations.forEach((element) => {
             let a = affiliations.filter((data) => data.affiliation === element);
@@ -60,14 +61,16 @@ export const RenderAllowedStatesTab = ({
   };
 
   return (  
-    <YearsAndAffiliations
-      title={"Issues"}
-      years={null}
-      handleActiveYear={null}
-      affiliations={allAffiliations}
-      handleActiveAffiliation={handleActiveAffiliation}
-      showYears={false}
-    />
+    allAffiliations.length > 0 ? 
+      <YearsAndAffiliations
+        title={"Issues"}
+        years={null}
+        handleActiveYear={null}
+        affiliations={allAffiliations}
+        handleActiveAffiliation={handleActiveAffiliation}
+        showYears={false}
+      />
+    : ""
   );
 };
 

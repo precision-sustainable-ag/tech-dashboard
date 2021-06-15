@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { Box, Grid, Slide, Select, MenuItem, Typography } from "@material-ui/core";
 import { Context } from "../Store/Store";
 import Loading from "react-loading";
+import { useHistory } from "react-router-dom";
 
 import { RenderAllowedStatesTab } from "./components/RenderAllowedStatesTab";
 import { RenderIssues } from "./components/RenderIssues";
@@ -17,6 +18,11 @@ const Issues = (props) => {
   const [assignedStates, setAssignedStates] = useState([]);
   const [showLoader, setShowLoader] = useState(true);
   const [filter, setFilter] = useState("all");
+  const { location } = useHistory();
+
+  useEffect(() => {
+    setActiveState(location.state ? location.state.activeTag : "");
+  }, [location])
 
   // setFilter("all")
 
@@ -26,7 +32,7 @@ const Issues = (props) => {
 
   useEffect(() => {
     if (Object.keys(state.userInfo).length > 0 && state.userInfo.state) {
-      setActiveState(state.userInfo.state.split(",")[0]);
+      setActiveState(activeState === "" ? state.userInfo.state.split(",")[0] : activeState);
       setAssignedStates(state.userInfo.state.split(","));
       setShowLoader(false);
     } else {

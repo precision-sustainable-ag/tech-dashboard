@@ -13,6 +13,7 @@ import { Octokit } from "@octokit/rest";
 import React, { useState, useEffect, useContext } from "react";
 import MDEditor from "@uiw/react-md-editor";
 import MuiAlert from "@material-ui/lab/Alert";
+import { useHistory } from "react-router-dom";
 
 
 // Local Imports
@@ -53,6 +54,21 @@ const Issue = (props) => {
   const [newCommentAdded, setNewCommentAdded] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [snackbarData, setSnackbarData] = useState({ open: false, text: "", severity: "success" });
+  const { location } = useHistory();
+  const history = useHistory();
+
+  useEffect(() => {
+    return () => {
+      if (history.action === "POP") {
+        history.push({
+          pathname: "/issues",
+          state: {
+            activeTag: location ? location.stateLabel : null,
+          },
+        });
+      }
+    };
+  }, [history, location]);
 
   const hasIssueContent =
     props.location.state &&

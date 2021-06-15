@@ -1,9 +1,8 @@
 // Dependency Imports
 import React, { useContext, useState, useEffect } from "react";
 import Axios from "axios";
-import Loading from "react-loading";
 import qs from "qs";
-import { Card, Typography } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
 
 // Local Imports
 import DataParser from "../DataParser";
@@ -21,6 +20,7 @@ const WaterSensors = () => {
   const [devices, setDevices] = useState([]);
   const [showDevices, setShowDevices] = useState(false);
   const [devicesLoadingState, setDevicesLoadingState] = useState(true);
+  const { location } = useHistory();
 
   let devicesData = [];
   let finalAPIURL = "";
@@ -163,6 +163,7 @@ const WaterSensors = () => {
       loading={devicesLoadingState}
       for={"watersensors"}
       userInfo={state.userInfo}
+      activeTag={location.state ? location.state.activeTag : null}
     />
   );
 };

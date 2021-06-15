@@ -19,6 +19,12 @@ const DevicesComponent = (props) => {
   const [deviceTags, setDeviceTags] = useState([]);
   const [activeTag, setActiveTag] = useState("All");
 
+  const tag = props.activeTag;
+  useEffect(() => {
+    if(tag)
+      setActiveTag(tag);
+  }, [tag])
+
   useEffect(() => {
     if (activeTag === "All" && props.devices.length > 0) {
       if (props.from === "watersensors") {
@@ -109,6 +115,7 @@ const DevicesComponent = (props) => {
                       key={device.id}
                       deviceData={device}
                       lastSession={true}
+                      activeTag={activeTag}
                     />
                   </Card>
                 </Grid>

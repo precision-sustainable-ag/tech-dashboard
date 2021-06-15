@@ -5,12 +5,11 @@ import MaterialTable from "material-table";
 import { bannedRoles } from "../../utils/constants";
 import { BannedRoleMessage, CustomLoader } from "../../utils/CustomComponents";
 import { onfarmAPI } from "../../utils/api_secret";
-import IssueDialogue from "../../Comments/IssueDialogue";
 import { addDays } from "date-fns";
 import { useAuth0 } from "../../Auth/react-auth0-spa";
 import MuiAlert from "@material-ui/lab/Alert";
 import { Link } from "react-router-dom";
-import ActualFarmDates from "./ActualFarmDates";
+import FarmDatesDropdown from "./FarmDatesDropdown";
 
 const farmDatesURL = `${onfarmAPI}/dates`;
 
@@ -215,28 +214,16 @@ const FarmDates = () => {
               }}
               detailPanel={[
                 {
-                  tooltip: "Add Comments",
-                  icon: "comment",
-
-                  openIcon: "message",
-                  render: (rowData) => {
-                    return (
-                      <IssueDialogue
-                        nickname={user.nickname}
-                        rowData={rowData}
-                        dataType="table"
-                        setSnackbarData={setSnackbarData}
-                        labels={["farm-dates"]}
-                      />
-                    );
-                  },
-                },
-                {
                   tooltip: "View actual dates",
                   render: (rowData) => {
-                    return (
-                      <ActualFarmDates rowData={rowData} fetchFromApi={fetchFromApi}/>
-                    );
+                   return(
+                     <FarmDatesDropdown
+                        rowData={rowData} 
+                        fetchFromApi={fetchFromApi} 
+                        nickname={user.nickname} 
+                        setSnackbarData={setSnackbarData}
+                     />
+                   )
                   },
                 },
               ]}
