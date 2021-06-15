@@ -25,7 +25,7 @@ class GithubIssues:
     # method to fetch the Auth0 management API token	
     def get_token(self):	
         # payload and header	
-        auth0_payload = "{\"client_id\":\"RKkiHSDtTGQWijgy7q7Pi7sheonzWZke\",\"client_secret\":\"pzoI_Zwp4i-PSlb0lHVOZTyl8zZ8iQmuzJ8GNfR4pY1Ttr1PgXPK3Bbk-LdRXyf9\",\"audience\":\"https://psa-tech-dashboard.auth0.com/api/v2/\",\"grant_type\":\"client_credentials\"}"
+        auth0_payload = os.environ["AUTH0_PAYLOAD"]
         auth0_headers = self.HEADER	
         # request token	
         self.auth0_connection.request("POST", "/oauth/token", auth0_payload, auth0_headers)	
@@ -250,7 +250,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         if authenticated == "Not Authenticated":
             return func.HttpResponse(	
                 # body may be unneeded
-                body = token + " You are not authorized",	
+                body = json.dumps({"Message": token + " You are not authorized"}),	
                 status_code=401,	
                 headers=HEADER	
             )

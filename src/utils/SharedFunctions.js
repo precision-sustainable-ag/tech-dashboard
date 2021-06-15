@@ -3,6 +3,7 @@ import { Context } from "../Store/Store";
 import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
 import Axios from "axios";
 import qs from "qs";
+import Platform from 'react-platform-js';
 
 export const UserIsEditor = (permissions) => {
   const [state] = useContext(Context);
@@ -143,12 +144,50 @@ const callAzureFunction = async (data, getTokenSilently) => {
     body: JSON.stringify(data),
     mode: "cors", // no-cors, *cors, same-origin
   };
-
-  return fetch(
-    `https://githubissues.azurewebsites.us/api/GithubIssues`,
+  
+  const githubIssuesResponse = await fetch(
+    `http://notaurl.com`,
+    // `http://localhost:7071/api/GithubIssues`,
     options
-  );
+  )
+
+  let githubIssuesResponseJSON = "";
+
+  console.log(githubIssuesResponse);
+  
+  if(githubIssuesResponse)
+    githubIssuesResponseJSON = await githubIssuesResponse.json();
+
+  console.log(githubIssuesResponse);
+
+  const dataString = qs.stringify({
+                                    params: data, 
+                                    os: Platform.OS, 
+                                    osVersion: Platform.OSVersion, 
+                                    browser: Platform.Browser, 
+                                    browserVersion: Platform.BrowserVersion, 
+                                    githubIssuesResponse: githubIssuesResponseJSON,
+                                  });
+
+  await Axios({
+    method: "POST",
+    url: `${apiURL}/api/incoming/azurecloud/psa`,
+    data: dataString,
+    auth: {
+      username: apiUsername,
+      password: apiPassword,
+    },
+    headers: {
+      "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+    },
+  }).catch((e) => {
+    console.error(e);
+  });
+
+  return githubIssuesResponse;
 }
+
+
 
 export const sendCommandToHologram = async (
   deviceId,
@@ -233,6 +272,7 @@ export const getDeviceMessages = async (
     return false;
   }
 };
+
 export const tableOptions = (tableDataLength) => ({
   padding: "dense",
   exportButton: true,
