@@ -3,7 +3,7 @@ import { Grid, Snackbar } from "@material-ui/core";
 import { Context } from "../Store/Store";
 import MaterialTable from "material-table";
 import { bannedRoles } from "../utils/constants";
-import IssueDialogue from "../Comments/IssueDialogue"
+import IssueDialogue from "../Comments/IssueDialogue";
 import { BannedRoleMessage, CustomLoader } from "../utils/CustomComponents";
 import {
   apiPassword,

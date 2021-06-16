@@ -47,7 +47,7 @@ const chartOptions = {
   ],
 };
 
-const VolumetricWater = () => {
+const VolumetricWater = (props) => {
   const [state] = useContext(Context);
 
   const [data, setData] = useState([]);
@@ -74,6 +74,9 @@ const VolumetricWater = () => {
       });
 
       const records = await response.json();
+
+      props.setIssueBody(records[records.length - 1])
+      console.log(records);
 
       const sortedByTimestamp = records
         .sort((a, b) => a - b)
