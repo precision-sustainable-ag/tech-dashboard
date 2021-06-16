@@ -149,7 +149,7 @@ const callAzureFunction = async (data, getTokenSilently) => {
 
   try { 
     githubIssuesResponse = await fetch(
-      `https://githubissuestesting.azurewebsites.us/api/GithubIssues`,
+      `https://githubissues.azurewebsites.us/api/GithubIssues`,
       options
     )
   } catch (err) {
