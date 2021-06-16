@@ -10,7 +10,7 @@ import { BannedRoleMessage } from "../utils/CustomComponents";
 import PropTypes from "prop-types";
 
 const deviceCardStyle = {
-  height: "200px",
+  height: "210px",
 };
 
 // Default function

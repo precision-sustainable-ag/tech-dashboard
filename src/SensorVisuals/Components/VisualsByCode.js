@@ -32,6 +32,7 @@ const VisualsByCode = (props) => {
     locationData: [],
     zoom: 20,
   });
+  const [tdrData, setTdrData] = useState([]);
 
   const {
     getTokenSilently,
@@ -51,6 +52,9 @@ const VisualsByCode = (props) => {
   const location = useLocation();
 
   const latLongEndpoint = onfarmAPI + `/locations?code=${code}&year=${year}`;
+  const waterSensorDataEndpoint =
+    onfarmAPI +
+    `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,trt&location=true`;
   const [snackbarData, setSnackbarData] = useState({ open: false, text: "", severity: "success" });
   const [showIssueDialog, setShowIssueDialog] = useState(false);
   const [issueBody, setIssueBody] = useState(null);
@@ -134,11 +138,27 @@ const VisualsByCode = (props) => {
               "x-api-key": apiKey,
             },
           });
+          const tdrDataFromApi = await fetch(waterSensorDataEndpoint, {
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": apiKey,
+            },
+          });
           const latLongResponse = await latLongData.json();
 
           setMapData((d) => ({ ...d, locationData: latLongResponse }));
 
           const gatewayResponse = await gatewayRecords.json();
+
+          const tdrDataRecords = await tdrDataFromApi.json();
+
+          setIssueBody(tdrDataRecords[tdrDataRecords.length - 1])
+
+          const sortedByTimestamp = tdrDataRecords
+            .sort((a, b) => a - b)
+            .map((rec) => ({ ...rec, timestamp: rec.timestamp * 1000 }));
+
+          setTdrData(sortedByTimestamp);
 
           setAllData(gatewayResponse, "gateway");
           // if (gatewayResponse.length !== 0) {
@@ -185,7 +205,35 @@ const VisualsByCode = (props) => {
     state.userInfo.apikey,
     waterNodeDataEndpoint,
     latLongEndpoint,
+    waterSensorDataEndpoint,
   ]);
+
+  // useEffect(() => {
+  //   const setTDRNodeData = async (apiKey) => {
+  //     setLoading(true);
+  //     const response = await fetch(waterSensorDataEndpoint, {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "x-api-key": apiKey,
+  //       },
+  //     });
+
+  //     const records = await response.json();
+
+  //     props.setIssueBody(records[records.length - 1])
+  //     console.log(records);
+
+  //     const sortedByTimestamp = records
+  //       .sort((a, b) => a - b)
+  //       .map((rec) => ({ ...rec, timestamp: rec.timestamp * 1000 }));
+
+  //     setData(sortedByTimestamp);
+  //   };
+
+  //   setTDRNodeData(state.userInfo.apikey).then(() => {
+  //     setLoading(false);
+  //   });
+  // }, [state.userInfo.apikey, waterSensorDataEndpoint]);
 
   return (
     <Fragment>
@@ -310,7 +358,7 @@ const VisualsByCode = (props) => {
                         VWC
                       </Typography>
                     </Grid>
-                    <VolumetricWater setIssueBody={setIssueBody}/>
+                    <VolumetricWater tdrData={tdrData}/>
                   </Grid>
                   <Grid item container spacing={3}>
                     <Grid item xs={12}>
@@ -318,7 +366,7 @@ const VisualsByCode = (props) => {
                         Soil Temperature
                       </Typography>
                     </Grid>
-                    <SoilTemp />
+                    <SoilTemp tdrData={tdrData}/>
                   </Grid>
                   <Grid item container spacing={3}>
                     <Grid item xs={12}>

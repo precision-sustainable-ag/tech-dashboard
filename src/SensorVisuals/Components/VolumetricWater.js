@@ -47,7 +47,7 @@ const chartOptions = {
   ],
 };
 
-const VolumetricWater = (props) => {
+const VolumetricWater = ({ tdrData }) => {
   const [state] = useContext(Context);
 
   const [data, setData] = useState([]);
@@ -64,31 +64,13 @@ const VolumetricWater = (props) => {
   // );
 
   useEffect(() => {
-    const setNodeData = async (apiKey) => {
-      setLoading(true);
-      const response = await fetch(waterSensorDataEndpoint, {
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": apiKey,
-        },
-      });
-
-      const records = await response.json();
-
-      props.setIssueBody(records[records.length - 1])
-      console.log(records);
-
-      const sortedByTimestamp = records
-        .sort((a, b) => a - b)
-        .map((rec) => ({ ...rec, timestamp: rec.timestamp * 1000 }));
-
-      setData(sortedByTimestamp);
-    };
-
-    setNodeData(state.userInfo.apikey).then(() => {
+    if(tdrData){
+      setData(tdrData);
       setLoading(false);
-    });
-  }, [state.userInfo.apikey, waterSensorDataEndpoint]);
+    }
+    else
+      setLoading(true);
+  }, [tdrData]);
 
   const bareSub1Data = useMemo(() => {
     const filteredData = data.filter(
