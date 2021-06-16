@@ -59,7 +59,7 @@ const ActualFarmDates = ({rowData, fetchFromApi}) => {
                 {getEmptyTableCells(5)}
                 {data.map((date, index) => {
                     return (
-                        <TableCell key={index}><Typography variant="body4">{date.recovery_date ? new Date(date.recovery_date).toLocaleDateString('en-US', {timeZone: 'UTC'}) : ""}</Typography></TableCell>
+                        <TableCell key={index}><Typography variant="subtitle2">{date.recovery_date ? new Date(date.recovery_date).toLocaleDateString('en-US', {timeZone: 'UTC'}) : ""}</Typography></TableCell>
                     )
                 })}
             </TableRow>

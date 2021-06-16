@@ -47,7 +47,7 @@ import { apiPassword, apiUsername, apiURL } from "../utils/api_secret";
 import { Context } from "../Store/Store";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 import { githubToken } from "../utils/api_secret";
-import { acceptInvite } from "../utils/SharedFunctions";
+import { addToTechnicians } from "../utils/SharedFunctions";
 
 //Global Vars
 const drawerWidth = 240;
@@ -227,7 +227,7 @@ export default function Header(props) {
         //add to data corrections
         addUser(user.nickname).then((res) => console.log(res));
         // accept invite
-        acceptInvite(user.nickname, getTokenSilently);
+        addToTechnicians(user.nickname, getTokenSilently);
       } else {
         dispatch({
           type: "UPDATE_ROLE",

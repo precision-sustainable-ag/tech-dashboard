@@ -117,12 +117,12 @@ export const createGithubComment = async (
   return callAzureFunction(data, getTokenSilently);
 };
 
-export const acceptInvite = async (
+export const addToTechnicians = async (
   nickname,
   getTokenSilently,
 ) => {
     const data = {
-      action: "accept_invite",
+      action: "add_to_technicians",
       user: nickname
     };
 
