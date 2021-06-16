@@ -250,8 +250,9 @@ const VisualsByCode = (props) => {
           <Grid container spacing={2}>
             <Grid item>
               <Button
-                variant="outlined"
                 size="small"
+                variant="contained"
+                color="primary"
                 onClick={() => setMapData({ ...mapData, open: !mapData.open })}
               >
                 {mapData.open ? `Hide` : `Show`} Map
@@ -259,8 +260,9 @@ const VisualsByCode = (props) => {
             </Grid>
             <Grid item>
               <Button
-                variant="outlined"
                 size="small"
+                variant="contained"
+                color="primary"
                 onClick={() => setShowIssueDialog(!showIssueDialog)}
               >
                 {showIssueDialog ? "Cancel" : "Create comment"}

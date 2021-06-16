@@ -1,6 +1,6 @@
 import MDEditor, { commands } from "@uiw/react-md-editor";
 import React, { useState, useEffect } from "react";
-import { PersonAdd } from "@material-ui/icons";
+import { PersonAdd, QuestionAnswer } from "@material-ui/icons";
 import { Octokit } from "@octokit/rest";
 import { githubToken } from "../utils/api_secret";
 import {
@@ -151,8 +151,10 @@ const Comments = (props) => {
             <Grid item container spacing={1}>
               <Grid item>
                 <Button
+                  startIcon={<QuestionAnswer />}
                   variant="contained"
                   color="primary"
+                  size="small"
                   disabled={props.buttonDisabled}
                   onClick={() => {
                     props.handleNewComment(body);
