@@ -208,33 +208,6 @@ const VisualsByCode = (props) => {
     waterSensorDataEndpoint,
   ]);
 
-  // useEffect(() => {
-  //   const setTDRNodeData = async (apiKey) => {
-  //     setLoading(true);
-  //     const response = await fetch(waterSensorDataEndpoint, {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         "x-api-key": apiKey,
-  //       },
-  //     });
-
-  //     const records = await response.json();
-
-  //     props.setIssueBody(records[records.length - 1])
-  //     console.log(records);
-
-  //     const sortedByTimestamp = records
-  //       .sort((a, b) => a - b)
-  //       .map((rec) => ({ ...rec, timestamp: rec.timestamp * 1000 }));
-
-  //     setData(sortedByTimestamp);
-  //   };
-
-  //   setTDRNodeData(state.userInfo.apikey).then(() => {
-  //     setLoading(false);
-  //   });
-  // }, [state.userInfo.apikey, waterSensorDataEndpoint]);
-
   return (
     <Fragment>
       <Snackbar
