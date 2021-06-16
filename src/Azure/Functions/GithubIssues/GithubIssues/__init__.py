@@ -319,7 +319,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         logging.info("Program encountered exception: " + str(error))
         logging.exception(error)
         return func.HttpResponse(
-            body = str(error),
+            body = json.dumps({"Message": str(error)}),
             status_code=400,
             headers=HEADER
         )

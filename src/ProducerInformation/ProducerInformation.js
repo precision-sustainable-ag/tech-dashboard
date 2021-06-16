@@ -196,7 +196,7 @@ const ProducerInformation = (props) => {
                 horizontal: "center",
               }}
               open={snackbarData.open}
-              autoHideDuration={2000}
+              autoHideDuration={10000}
               onClose={() =>
                 setSnackbarData({ ...snackbarData, open: !snackbarData.open })
               }

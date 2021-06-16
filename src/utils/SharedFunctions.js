@@ -131,7 +131,7 @@ export const acceptInvite = async (
 
 const callAzureFunction = async (data, getTokenSilently) => {
   let token = await getTokenSilently({
-    audience: `https://precision-sustaibale-ag/tech-dashboard`
+    audience: `https://precision-sustaibale-ag/tech-dashboard`,
   });
 
   data = {...data, token: token};
@@ -145,18 +145,26 @@ const callAzureFunction = async (data, getTokenSilently) => {
     mode: "cors", // no-cors, *cors, same-origin
   };
   
-  const githubIssuesResponse = await fetch(
-    `http://notaurl.com`,
-    // `http://localhost:7071/api/GithubIssues`,
-    options
-  )
+  let githubIssuesResponse;
 
-  let githubIssuesResponseJSON = "";
+  try { 
+    githubIssuesResponse = await fetch(
+      `https://githubissuestesting.azurewebsites.us/api/GithubIssues`,
+      options
+    )
+  } catch (err) {
+    console.log(err);
+    githubIssuesResponse = null;
+  }
 
-  console.log(githubIssuesResponse);
+  let githubIssuesResponseJSON = null;
   
   if(githubIssuesResponse)
-    githubIssuesResponseJSON = await githubIssuesResponse.json();
+    githubIssuesResponseJSON = await githubIssuesResponse.json()
+    .catch((err) => {
+      console.log(err);
+      githubIssuesResponseJSON = githubIssuesResponse;
+    });
 
   console.log(githubIssuesResponse);
 
@@ -166,7 +174,7 @@ const callAzureFunction = async (data, getTokenSilently) => {
                                     osVersion: Platform.OSVersion, 
                                     browser: Platform.Browser, 
                                     browserVersion: Platform.BrowserVersion, 
-                                    githubIssuesResponse: githubIssuesResponseJSON,
+                                    githubIssuesResponse: githubIssuesResponseJSON ? githubIssuesResponseJSON : "No response from function likely cors",
                                   });
 
   await Axios({
