@@ -304,19 +304,19 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                         headers=HEADER	
                     )	
             elif action == "add_to_technicians":
-                status, response = ghi.add_to_technicians(user)
-                status, response = ghi.accept_technicians_invite(user)
-                if status:
+                add_status, add_response = ghi.add_to_technicians(user)
+                accept_status, accept_response = ghi.accept_technicians_invite(user)
+                if add_status and accept_status:
                     return func.HttpResponse(	
                         # body may be unneeded
-                        body = json.dumps({"Message": response}),	
+                        body = json.dumps({"Add message": add_response, "Accept message": accept_response}),	
                         status_code=201,	
                         headers=HEADER	
                     )	
                 else:
                     return func.HttpResponse(	
                         # body may be unneeded
-                        body = json.dumps({"Message": response}),	
+                        body = json.dumps({"Add message": add_response, "Accept message": accept_response}),	
                         status_code=400,	
                         headers=HEADER	
                     )	
