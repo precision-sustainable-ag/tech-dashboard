@@ -21,7 +21,7 @@ const Issues = (props) => {
   const { location } = useHistory();
 
   useEffect(() => {
-    setActiveState(location.state ? location.state.activeTag : "");
+    setActiveState(location.state ? location.state.activeAffiliation : "");
   }, [location])
 
   // setFilter("all")
@@ -32,7 +32,7 @@ const Issues = (props) => {
 
   useEffect(() => {
     if (Object.keys(state.userInfo).length > 0 && state.userInfo.state) {
-      setActiveState(activeState === "" ? state.userInfo.state.split(",")[0] : activeState);
+      setActiveState(activeState ? activeState : state.userInfo.state.split(",")[0]);
       setAssignedStates(state.userInfo.state.split(","));
       setShowLoader(false);
     } else {

@@ -63,7 +63,7 @@ const Issue = (props) => {
         history.push({
           pathname: "/issues",
           state: {
-            activeTag: location ? location.stateLabel : null,
+            activeAffiliation: location ? location.stateLabel : null,
           },
         });
       }

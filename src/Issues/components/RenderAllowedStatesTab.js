@@ -27,7 +27,7 @@ export const RenderAllowedStatesTab = ({
         if (state.userInfo.state === "all") {
           let affiliationArray = [];
           affiliations.map((affiliation) => {
-            affiliationArray.push({affiliation: affiliation.affiliation, active: affiliation.affiliation === activeState});
+            affiliationArray.push({affiliation: affiliation.affiliation, active: affiliation.affiliation.valueOf() === activeState.valueOf()});
           })
           setAllAffiliations(affiliationArray);
         } else {
@@ -43,7 +43,7 @@ export const RenderAllowedStatesTab = ({
       .then(() => {
         setLoading(false);
       });
-  }, []);
+  }, [activeState]);
 
   const handleActiveAffiliation = (affiliation = "all") => {
     const newAffiliations = allAffiliations.map((rec) => {
