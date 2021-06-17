@@ -267,7 +267,7 @@ const ProducerInformation = (props) => {
                             rowData={rowData} 
                             dataType="table" 
                             setSnackbarData={setSnackbarData} 
-                            labels={["producer-information"]} 
+                            labels={["producer-information"].concat(rowData.codes.replace(/\s/g, '').split(","))} 
                             getTokenSilently={getTokenSilently}
                           />
                       );

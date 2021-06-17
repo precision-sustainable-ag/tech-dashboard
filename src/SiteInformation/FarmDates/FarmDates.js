@@ -226,7 +226,7 @@ const FarmDates = () => {
                         rowData={rowData}
                         dataType="table"
                         setSnackbarData={setSnackbarData}
-                        labels={["farm-dates"]}
+                        labels={["farm-dates", rowData.code, rowData.affiliation]}
                       />
                     );
                   },
