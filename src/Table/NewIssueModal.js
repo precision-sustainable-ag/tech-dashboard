@@ -102,17 +102,13 @@ const NewIssueModal = (props) => {
 
       const body = tableData + " <br/> " + newComment;
 
-      let token = await getTokenSilently({
-        audience: `https://precision-sustaibale-ag/tech-dashboard`,
-      });
-
       const issueSet = createGithubIssue(
         issueTitle,
         body,
         labels,
         assignedPeople,
         props.nickname,
-        token
+        getTokenSilently
       );
 
       issueSet.then((res) => {

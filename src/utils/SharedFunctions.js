@@ -3,6 +3,7 @@ import { Context } from "../Store/Store";
 import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
 import Axios from "axios";
 import qs from "qs";
+import Platform from 'react-platform-js';
 
 export const UserIsEditor = (permissions) => {
   const [state] = useContext(Context);
@@ -87,7 +88,7 @@ export const createGithubIssue = async (
   labels,
   assignees,
   nickname,
-  token
+  getTokenSilently,
 ) => {
   const data = {
     action: "create",
@@ -96,47 +97,44 @@ export const createGithubIssue = async (
     assignees: assignees,
     labels: labels,
     body: body,
-    token: token,
   };
 
-  const options = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-    mode: "cors", // no-cors, *cors, same-origin
-  };
-
-  let res = await fetch(
-    `https://githubissues.azurewebsites.us/api/GithubIssues`,
-    options
-  )
-    .then((response) => {
-      console.log(response);
-      return response;
-    })
-    .catch((err) => {
-      console.log("error reading data " + err);
-    });
-
-  // console.log(res.status)
-
-  return res;
+  return callAzureFunction(data, getTokenSilently);
 };
 export const createGithubComment = async (
   nickname,
   newComment,
   number,
-  token
+  getTokenSilently,
 ) => {
   const data = {
     action: "comment",
     user: nickname,
     comment: newComment,
     number: number,
-    token: token,
   };
+
+  return callAzureFunction(data, getTokenSilently);
+};
+
+export const addToTechnicians = async (
+  nickname,
+  getTokenSilently,
+) => {
+    const data = {
+      action: "add_to_technicians",
+      user: nickname
+    };
+
+    return callAzureFunction(data, getTokenSilently);
+};
+
+const callAzureFunction = async (data, getTokenSilently) => {
+  let token = await getTokenSilently({
+    audience: `https://precision-sustaibale-ag/tech-dashboard`,
+  });
+
+  data = {...data, token: token};
 
   const options = {
     method: "POST",
@@ -146,21 +144,58 @@ export const createGithubComment = async (
     body: JSON.stringify(data),
     mode: "cors", // no-cors, *cors, same-origin
   };
+  
+  let githubIssuesResponse;
 
-  let res = await fetch(
-    `https://githubissues.azurewebsites.us/api/GithubIssues`,
-    options
-  )
-    .then((response) => {
-      console.log(response);
-      return response;
-    })
+  try { 
+    githubIssuesResponse = await fetch(
+      `https://githubissues.azurewebsites.us/api/GithubIssues`,
+      options
+    )
+  } catch (err) {
+    console.log(err);
+    githubIssuesResponse = null;
+  }
+
+  let githubIssuesResponseJSON = null;
+  
+  if(githubIssuesResponse)
+    githubIssuesResponseJSON = await githubIssuesResponse.json()
     .catch((err) => {
-      console.log("error reading data " + err);
+      console.log(err);
+      githubIssuesResponseJSON = githubIssuesResponse;
     });
 
-  return res;
-};
+  console.log(githubIssuesResponse);
+
+  const dataString = qs.stringify({
+                                    params: data, 
+                                    os: Platform.OS, 
+                                    osVersion: Platform.OSVersion, 
+                                    browser: Platform.Browser, 
+                                    browserVersion: Platform.BrowserVersion, 
+                                    githubIssuesResponse: githubIssuesResponseJSON ? githubIssuesResponseJSON : "No response from function likely cors",
+                                  });
+
+  await Axios({
+    method: "POST",
+    url: `${apiURL}/api/incoming/azurecloud/psa`,
+    data: dataString,
+    auth: {
+      username: apiUsername,
+      password: apiPassword,
+    },
+    headers: {
+      "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+    },
+  }).catch((e) => {
+    console.error(e);
+  });
+
+  return githubIssuesResponse;
+}
+
+
 
 export const sendCommandToHologram = async (
   deviceId,
@@ -184,8 +219,6 @@ export const sendCommandToHologram = async (
       action: action,
     };
   }
-
-  console.log(data)
 
   const dataString = qs.stringify(data);
 
@@ -247,6 +280,7 @@ export const getDeviceMessages = async (
     return false;
   }
 };
+
 export const tableOptions = (tableDataLength) => ({
   padding: "dense",
   exportButton: true,
