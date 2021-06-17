@@ -21,6 +21,17 @@ import { Context } from "../Store/Store";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 import { bannedRoles, fetchKoboPasswords, ucFirst } from "../utils/constants";
 import { BannedRoleMessage } from "../utils/CustomComponents";
+import { apiPassword, apiUsername } from "../utils/api_secret";
+import { debugAdmins, azureDebugURL } from "../utils/constants";
+
+import docco from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light";
+import dark from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-dark";
+import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
+import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
+import moment from "moment";
+SyntaxHighlighter.registerLanguage("json", json);
+
+// import { FaLessThanEqual } from "react-icons/fa";
 
 /**
  * Logged in User's Profile Page
@@ -91,6 +102,11 @@ const Profile = () => {
                 </CardContent>
               </Card>
             </Grid>
+            {debugAdmins.includes(state.userInfo.email) && (
+              <Grid item xs={12}>
+                <RenderDebugLogs email={state.userInfo.email} />
+              </Grid>
+            )}
           </Grid>
         )}
       </Grid>
@@ -170,6 +186,69 @@ const RenderGeneralInfo = ({ userInfo }) => {
         </TableBody>
       </Table>
     </TableContainer>
+  );
+};
+
+const RenderDebugLogs = (props) => {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const fetchDebugLog = async () => {
+      try {
+        const response = await fetch(azureDebugURL, {
+          headers: {
+            Authorization: "Basic " + btoa(`${apiUsername}:${apiPassword}`),
+          },
+        });
+
+        const records = await response.json();
+
+        const parsedData = records.data.map((rec) => {
+          return { ...rec, data: JSON.parse(rec.data) };
+        });
+        console.log(parsedData);
+        setData(parsedData);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    fetchDebugLog();
+  }, []);
+  return (
+    <>
+      <Typography variant="h5" id="debug">
+        Debug Log
+      </Typography>
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Date</TableCell>
+              <TableCell>Log</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.length > 0
+              ? data.map((records) => (
+                  <TableRow>
+                    <TableCell>
+                      {moment(records.server_timestamp).format("m/D/YY h:mm a")}
+                    </TableCell>
+                    <TableCell>
+                      <SyntaxHighlighter
+                        language="json"
+                        style={props.isDarkTheme ? dark : docco}
+                      >
+                        {JSON.stringify(records.data, undefined, 2)}
+                      </SyntaxHighlighter>
+                    </TableCell>
+                  </TableRow>
+                ))
+              : "No Data"}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   );
 };
 
