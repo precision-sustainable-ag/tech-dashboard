@@ -205,7 +205,7 @@ const RenderDebugLogs = (props) => {
         const parsedData = records.data.map((rec) => {
           return { ...rec, data: JSON.parse(rec.data) };
         });
-        console.log(parsedData);
+
         setData(parsedData);
       } catch (e) {
         console.log(e);
