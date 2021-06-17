@@ -24,9 +24,6 @@ import { Link } from "react-router-dom";
 import {
   ChevronRight,
   ChevronLeft,
-  Radio,
-  QuestionAnswer,
-  ViewList,
   AccountCircle,
   Lock,
   BrightnessHigh,
@@ -135,9 +132,7 @@ export default function Header(props) {
     stressCams: false,
   });
 
-  const {
-    getTokenSilently,
-  } = useAuth0();
+  const { getTokenSilently } = useAuth0();
 
   const handleOpenAllDataNav = () => {
     setOpenAllDataNav(!openAllDataNav);
@@ -307,7 +302,11 @@ export default function Header(props) {
                 open={profileMenuOpen}
                 onClose={handleProfileMenuClose}
               >
-                <MenuItem component={Link} to={"/profile"}>
+                <MenuItem
+                  component={Link}
+                  to={"/profile"}
+                  onClick={handleProfileMenuClose}
+                >
                   Profile
                 </MenuItem>
                 <MenuItem
