@@ -10,6 +10,8 @@ import {
     DialogContentText,
     DialogActions,
     Typography,
+    Tooltip,
+    withStyles,
   } from "@material-ui/core";
 import {sendCommandToHologram} from "../../utils/SharedFunctions"
 import {getDeviceMessages} from "../../utils/SharedFunctions"
@@ -19,6 +21,14 @@ import MuiAlert from "@material-ui/lab/Alert";
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
+
+const StyledButton = withStyles({
+    root: {
+      "&.Mui-disabled": {
+        pointerEvents: "auto"
+      }
+    }
+  })(Button);
 
 const StressCamButtons = (props) => {
     const [farmCode, setFarmCode] = useState("");
@@ -80,6 +90,19 @@ const StressCamButtons = (props) => {
         queryHologram();
     }
 
+    const ButtonWithTooltip = ({ tooltipText, disabled, onClick, ...other }) => {
+        const adjustedButtonProps = {
+          disabled: disabled,
+          component: disabled ? "div" : undefined,
+          onClick: disabled ? undefined : onClick,
+        };
+        return (
+          <Tooltip title={tooltipText}>
+            <StyledButton {...other} {...adjustedButtonProps}/>
+          </Tooltip>
+        );
+      };
+
     return(
     <>
         <Snackbar
@@ -128,26 +151,28 @@ const StressCamButtons = (props) => {
         <Grid item xs={12} md = {6} display="flex" align="center">
             <Grid container spacing = {1} display="flex" justify="center" align="center">
                 <Grid item xs={12} md={3}>
-                    <Button 
+                    <ButtonWithTooltip 
+                        tooltipText={buttonsDisabled || (farmCode.length !== 3) || (rep !== "1" && rep !== "2") ? "Check farm code and rep" : "Start your device in corn"} 
                         disabled={buttonsDisabled || (farmCode.length !== 3) || (rep !== "1" && rep !== "2")} 
+                        onClick={() => sendMessage("startCorn")}
                         fullWidth 
                         variant="contained" 
                         color={props.isDarkTheme ? "primary" : "default"} 
-                        onClick={() => sendMessage("startCorn")}
                     >
-                            Start in Corn
-                    </Button>
+                        Start in Corn
+                    </ButtonWithTooltip>
                 </Grid>
                 <Grid item xs={12} md={3}>
-                    <Button 
+                    <ButtonWithTooltip 
+                        tooltipText={buttonsDisabled || (farmCode.length !== 3) || (rep !== "1" && rep !== "2") ? "Check farm code and rep" : "Start your device in soy"} 
                         disabled={buttonsDisabled || (farmCode.length !== 3) || (rep !== "1" && rep !== "2")} 
+                        onClick={() => sendMessage("startSoy")}
                         fullWidth 
                         variant="contained" 
                         color={props.isDarkTheme ? "primary" : "default"} 
-                        onClick={() => sendMessage("startSoy")}
                     >
                         Start in Soybean
-                    </Button>
+                    </ButtonWithTooltip>
                 </Grid>
                 <Grid item xs={12} md={3}>
                     <Button 
