@@ -45,7 +45,7 @@ const ActualFarmDates = ({rowData, fetchFromApi}) => {
     const getEmptyTableCells = (number) => {
         let tableCells = [];
         for(let i = 0 ; i<number ; i++){
-            tableCells.push(<TableCell></TableCell>);
+            tableCells.push(<TableCell key={i}></TableCell>);
         }
         return tableCells;
     }
