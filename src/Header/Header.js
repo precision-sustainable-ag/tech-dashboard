@@ -45,6 +45,7 @@ import { Context } from "../Store/Store";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 import { githubToken } from "../utils/api_secret";
 import { addToTechnicians } from "../utils/SharedFunctions";
+import { debugAdmins } from "../utils/constants";
 
 //Global Vars
 const drawerWidth = 240;
@@ -309,6 +310,15 @@ export default function Header(props) {
                 >
                   Profile
                 </MenuItem>
+                {debugAdmins.includes(state.userInfo.email) && (
+                  <MenuItem
+                    component={Link}
+                    to={"/debug"}
+                    onClick={handleProfileMenuClose}
+                  >
+                    Debug
+                  </MenuItem>
+                )}
                 <MenuItem
                   onClick={() => logout({ returnTo: window.location.origin })}
                 >

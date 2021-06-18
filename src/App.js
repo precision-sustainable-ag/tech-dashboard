@@ -60,6 +60,7 @@ import TaskTimeline from "./Landing/TaskTimeline/TaskTimeline";
 
 import Protocols from "./Protocols/Protocols";
 import DecompBag from "./DecompBag/DecompBag";
+import Debug from "./Debug/Debug";
 
 // Helper function
 function useOnlineStatus() {
@@ -394,6 +395,12 @@ function App() {
                 <PrivateRoute
                   path={`/decomp-bags`}
                   component={DecompBag}
+                  exact
+                />
+
+                <PrivateRoute
+                  path={`/debug`}
+                  render={(props) => <Debug {...props} />}
                   exact
                 />
 
