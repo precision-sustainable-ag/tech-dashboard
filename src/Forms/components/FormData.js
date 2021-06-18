@@ -150,7 +150,7 @@ const FormData = (props) => {
                 setActiveIssueIndex(index);
               }}
             >
-              Comment
+              Add Comment
             </Button>
           </Tooltip>
         )}

@@ -152,7 +152,7 @@ const VisualsByCode = (props) => {
 
           const tdrDataRecords = await tdrDataFromApi.json();
 
-          setIssueBody(tdrDataRecords[tdrDataRecords.length - 1])
+          setIssueBody(tdrDataRecords[tdrDataRecords.length - 1]);
 
           const sortedByTimestamp = tdrDataRecords
             .sort((a, b) => a - b)
