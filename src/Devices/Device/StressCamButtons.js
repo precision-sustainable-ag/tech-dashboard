@@ -120,7 +120,7 @@ const StressCamButtons = (props) => {
         </Snackbar>
         <Grid item>
             <Typography variant="h5">Make sure your camera is connected to 2G/3G before sending commands</Typography>
-            <Typography variant="h5">Enter farm code and rep before sending start commands</Typography>
+            <Typography variant="h5">Enter 3 letter farm code and rep (1 or 2) before sending start commands</Typography>
         </Grid>
         
         <Grid item xs={12} md = {12}>
@@ -138,7 +138,7 @@ const StressCamButtons = (props) => {
                 <Grid item xs={12} md={6}>
                 <TextField
                     fullWidth
-                    placeholder="Enter the single digit rep number"
+                    placeholder="Enter the single digit rep number (1 or 2)"
                     variant="filled"
                     label="Rep Number"
                     value={rep}
@@ -152,7 +152,7 @@ const StressCamButtons = (props) => {
             <Grid container spacing = {1} display="flex" justify="center" align="center">
                 <Grid item xs={12} md={3}>
                     <ButtonWithTooltip 
-                        tooltipText={buttonsDisabled || (farmCode.length !== 3) || (rep !== "1" && rep !== "2") ? "Check farm code and rep" : "Start your device in corn"} 
+                        tooltipText={buttonsDisabled || (farmCode.length !== 3) || (rep !== "1" && rep !== "2") ? "Make sure farm code is 3 letters and rep number is 1 or 2" : "Start your device in corn"} 
                         disabled={buttonsDisabled || (farmCode.length !== 3) || (rep !== "1" && rep !== "2")} 
                         onClick={() => sendMessage("startCorn")}
                         fullWidth 
@@ -164,7 +164,7 @@ const StressCamButtons = (props) => {
                 </Grid>
                 <Grid item xs={12} md={3}>
                     <ButtonWithTooltip 
-                        tooltipText={buttonsDisabled || (farmCode.length !== 3) || (rep !== "1" && rep !== "2") ? "Check farm code and rep" : "Start your device in soy"} 
+                        tooltipText={buttonsDisabled || (farmCode.length !== 3) || (rep !== "1" && rep !== "2") ? "Make sure farm code is 3 letters and rep number is 1 or 2" : "Start your device in soy"} 
                         disabled={buttonsDisabled || (farmCode.length !== 3) || (rep !== "1" && rep !== "2")} 
                         onClick={() => sendMessage("startSoy")}
                         fullWidth 
