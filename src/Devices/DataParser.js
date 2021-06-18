@@ -197,6 +197,7 @@ const DataParser = (props) => {
       to={{
         pathname: `/devices/${deviceId}`,
         state: device,
+        activeTag: props.activeTag,
       }}
     />
   ) : (

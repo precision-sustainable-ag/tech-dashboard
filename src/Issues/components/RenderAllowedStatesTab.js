@@ -25,24 +25,25 @@ export const RenderAllowedStatesTab = ({
         let affiliations = res.data.data;
         let permittedAffiliations = [];
         if (state.userInfo.state === "all") {
-          let affiliationArray = [];
           affiliations.map((affiliation) => {
-            affiliationArray.push({affiliation: affiliation.affiliation});
+            permittedAffiliations.push({affiliation: affiliation.affiliation, active: affiliation.affiliation.valueOf() === activeState.valueOf()});
           })
-          setAllAffiliations(affiliationArray);
+          setAllAffiliations(permittedAffiliations);
         } else {
           const dbPermittedAffiliations = state.userInfo.state.split(",");
-          dbPermittedAffiliations.forEach((element) => {
+          dbPermittedAffiliations.sort().forEach((element) => {
             let a = affiliations.filter((data) => data.affiliation === element);
-            permittedAffiliations.push(a);
+            console.log(a);
+            permittedAffiliations.push({affiliation: a[0].affiliation, active: a[0].affiliation === activeState});
           });
-          setAllAffiliations(permittedAffiliations.flat());
+          console.log(permittedAffiliations);
+          setAllAffiliations(permittedAffiliations);
         }
       })
       .then(() => {
         setLoading(false);
       });
-  }, []);
+  }, [activeState]);
 
   const handleActiveAffiliation = (affiliation = "all") => {
     const newAffiliations = allAffiliations.map((rec) => {
@@ -60,14 +61,16 @@ export const RenderAllowedStatesTab = ({
   };
 
   return (  
-    <YearsAndAffiliations
-      title={"Issues"}
-      years={null}
-      handleActiveYear={null}
-      affiliations={allAffiliations}
-      handleActiveAffiliation={handleActiveAffiliation}
-      showYears={false}
-    />
+    allAffiliations.length > 0 ? 
+      <YearsAndAffiliations
+        title={"Issues"}
+        years={null}
+        handleActiveYear={null}
+        affiliations={allAffiliations}
+        handleActiveAffiliation={handleActiveAffiliation}
+        showYears={false}
+      />
+    : ""
   );
 };
 

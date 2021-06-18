@@ -39,7 +39,7 @@ import {
   CalendarToday,
 } from "@material-ui/icons";
 import moment from "moment-timezone";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useHistory } from "react-router-dom";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
 
 // Local Imports
@@ -109,9 +109,25 @@ const DeviceComponent = (props) => {
   const [pagesLoaded, setPagesLoaded] = useState(0);
   const [loadMoreDataURI, setLoadMoreDataURI] = useState("");
   const [timeEnd, setTimeEnd] = useState(Math.floor(Date.now() / 1000));
-  const { state } = useLocation();
+  const { state, activeTag } = useLocation();
   const [hologramApiFunctional, setHologramApiFunctional] = useState(true);
   const [fetchMessage, setFetchMessage] = useState("");
+  const history = useHistory();
+
+  useEffect(() => {
+    return () => {
+      if (history.action === "POP") {
+        history.push({
+          pathname: props.location.state.for === "watersensors"
+            ? "/devices/water-sensors"
+            : "/devices/stress-cams",
+          state: {
+            activeTag: activeTag,
+          },
+        });
+      }
+    };
+  }, [history, activeTag]);
 
   useEffect(() => {
     setUserTimezone(moment.tz.guess);
@@ -460,6 +476,21 @@ const DeviceComponent = (props) => {
                   {fetchMessage}
                 </Typography>
               </Grid>
+              {!hologramApiFunctional && (
+                <Grid item>
+                  <Button variant="contained" 
+                    color="primary" 
+                    size="small" 
+                    onClick={() => {
+                      fetchedCount = 0; 
+                      setHologramApiFunctional(true); 
+                      fetchMoreData();
+                    }}
+                  >
+                    Fetch more data
+                  </Button>
+                </Grid>
+              )}
             </Grid>
           </Grid>
         )}
