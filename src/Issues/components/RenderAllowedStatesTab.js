@@ -25,19 +25,19 @@ export const RenderAllowedStatesTab = ({
         let affiliations = res.data.data;
         let permittedAffiliations = [];
         if (state.userInfo.state === "all") {
-          let affiliationArray = [];
           affiliations.map((affiliation) => {
-            affiliationArray.push({affiliation: affiliation.affiliation, active: affiliation.affiliation.valueOf() === activeState.valueOf()});
+            permittedAffiliations.push({affiliation: affiliation.affiliation, active: affiliation.affiliation.valueOf() === activeState.valueOf()});
           })
-          setAllAffiliations(affiliationArray);
+          setAllAffiliations(permittedAffiliations);
         } else {
-          // broken for not all affiliations
           const dbPermittedAffiliations = state.userInfo.state.split(",");
-          dbPermittedAffiliations.forEach((element) => {
+          dbPermittedAffiliations.sort().forEach((element) => {
             let a = affiliations.filter((data) => data.affiliation === element);
-            permittedAffiliations.push(a);
+            console.log(a);
+            permittedAffiliations.push({affiliation: a[0].affiliation, active: a[0].affiliation === activeState});
           });
-          setAllAffiliations(permittedAffiliations.flat());
+          console.log(permittedAffiliations);
+          setAllAffiliations(permittedAffiliations);
         }
       })
       .then(() => {
