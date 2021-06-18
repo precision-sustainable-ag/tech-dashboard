@@ -83,6 +83,7 @@ export const RenderIssues = ({ stateLabel, userRole, filter }) => {
           to={{
             pathname: `/issues/${clickedIssueData.number}`,
             state: clickedIssueData,
+            stateLabel: stateLabel,
           }}
         />
       )),

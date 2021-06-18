@@ -45,7 +45,7 @@ const ActualFarmDates = ({rowData, fetchFromApi}) => {
     const getEmptyTableCells = (number) => {
         let tableCells = [];
         for(let i = 0 ; i<number ; i++){
-            tableCells.push(<TableCell></TableCell>);
+            tableCells.push(<TableCell key={i}></TableCell>);
         }
         return tableCells;
     }
@@ -59,7 +59,9 @@ const ActualFarmDates = ({rowData, fetchFromApi}) => {
                 {getEmptyTableCells(5)}
                 {data.map((date, index) => {
                     return (
-                        <TableCell key={index}><Typography variant="subtitle2">{date.recovery_date ? new Date(date.recovery_date).toLocaleDateString('en-US', {timeZone: 'UTC'}) : ""}</Typography></TableCell>
+                        <TableCell key={index}>
+                            <Typography variant="subtitle2">{date.recovery_date ? new Date(date.recovery_date).toLocaleDateString('en-US', {timeZone: 'UTC'}) : ""}</Typography>
+                        </TableCell>
                     )
                 })}
             </TableRow>
@@ -76,12 +78,11 @@ const ActualFarmDates = ({rowData, fetchFromApi}) => {
             <Table size="medium" stickyHeader>
                 <TableHead>
                     <TableRow>
-                        
                         {getEmptyTableCells(3)}
                         <TableCell><Typography variant="subtitle1">Subplot</Typography></TableCell>
                         <TableCell><Typography variant="subtitle1">Subsample</Typography></TableCell>
                         {getEmptyTableCells(5)}
-                        <TableCell><Typography variant="subtitle1">Harvest Actual</Typography></TableCell>
+                        <TableCell><Typography variant="subtitle1">T0 Actual</Typography></TableCell>
                         <TableCell><Typography variant="subtitle1">T1 Actual</Typography></TableCell>
                         <TableCell><Typography variant="subtitle1">T2 Actual</Typography></TableCell>
                         <TableCell><Typography variant="subtitle1">T3 Actual</Typography></TableCell>
@@ -89,7 +90,6 @@ const ActualFarmDates = ({rowData, fetchFromApi}) => {
                         <TableCell><Typography variant="subtitle1">T5 Actual</Typography></TableCell>
                     </TableRow>
                 </TableHead>
-                
                     <TableBody>
                         {generateRow(datesObject.s1sa, 1, "A")}
                         {generateRow(datesObject.s1sb, 1, "B")}
