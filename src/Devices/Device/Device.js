@@ -476,6 +476,21 @@ const DeviceComponent = (props) => {
                   {fetchMessage}
                 </Typography>
               </Grid>
+              {!hologramApiFunctional && (
+                <Grid item>
+                  <Button variant="contained" 
+                    color="primary" 
+                    size="small" 
+                    onClick={() => {
+                      fetchedCount = 0; 
+                      setHologramApiFunctional(true); 
+                      fetchMoreData();
+                    }}
+                  >
+                    Fetch more data
+                  </Button>
+                </Grid>
+              )}
             </Grid>
           </Grid>
         )}

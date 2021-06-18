@@ -168,6 +168,7 @@ const Comments = (props) => {
                   <Button
                     variant="contained"
                     color="primary"
+                    size="small"
                     disabled={props.buttonDisabled}
                     onClick={() => {
                       props.setShowNewIssueDialog(false);
