@@ -214,26 +214,6 @@ const FarmDates = () => {
               }}
               detailPanel={[
                 {
-<<<<<<< HEAD
-=======
-                  tooltip: "Add Comments",
-                  icon: "comment",
-
-                  openIcon: "message",
-                  render: (rowData) => {
-                    return (
-                      <IssueDialogue
-                        nickname={user.nickname}
-                        rowData={rowData}
-                        dataType="table"
-                        setSnackbarData={setSnackbarData}
-                        labels={["farm-dates", rowData.code, rowData.affiliation]}
-                      />
-                    );
-                  },
-                },
-                {
->>>>>>> dev
                   tooltip: "View actual dates",
                   render: (rowData) => {
                    return(

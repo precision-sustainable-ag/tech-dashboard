@@ -22,7 +22,7 @@ const Issues = (props) => {
 
   useEffect(() => {
     setActiveState(location.state ? location.state.activeAffiliation : "");
-  }, [location])
+  }, [location]);
 
   // setFilter("all")
 
