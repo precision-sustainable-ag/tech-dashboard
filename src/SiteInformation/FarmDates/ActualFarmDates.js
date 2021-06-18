@@ -57,6 +57,7 @@ const ActualFarmDates = ({rowData, fetchFromApi}) => {
                 <TableCell>{subplot}</TableCell>
                 <TableCell>{subsample}</TableCell>
                 {getEmptyTableCells(5)}
+<<<<<<< HEAD
                 {data.map((date, index) => 
                     <TableCell key={index}>
                         <Typography variant="subtitle2">
@@ -64,6 +65,13 @@ const ActualFarmDates = ({rowData, fetchFromApi}) => {
                         </Typography>
                     </TableCell>
                 )}
+=======
+                {data.map((date, index) => {
+                    return (
+                        <TableCell key={index}><Typography variant="subtitle2">{date.recovery_date ? new Date(date.recovery_date).toLocaleDateString('en-US', {timeZone: 'UTC'}) : ""}</Typography></TableCell>
+                    )
+                })}
+>>>>>>> dev
             </TableRow>
         )
     }

@@ -45,6 +45,17 @@ export const apiCall = async (url, options, from) => {
   });
 };
 
+export const debugAdmins = [
+  "rbandooni@live.in",
+  "mikah@theeducationalgardenproject.org",
+  "mikahpinegar@gmail.com",
+  "bwdavis3@ncsu.edu",
+  "brianwdavis@gmail.com",
+  "saseehav@ncsu.edu",
+  "screberg@ncsu.edu",
+];
+export const azureDebugURL = apiURL + "/api/debug/azure";
+
 export const statesHash = {
   AL: "Alabama",
   AK: "Alaska",

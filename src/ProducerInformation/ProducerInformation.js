@@ -196,7 +196,7 @@ const ProducerInformation = (props) => {
                 horizontal: "center",
               }}
               open={snackbarData.open}
-              autoHideDuration={2000}
+              autoHideDuration={10000}
               onClose={() =>
                 setSnackbarData({ ...snackbarData, open: !snackbarData.open })
               }
@@ -267,7 +267,7 @@ const ProducerInformation = (props) => {
                             rowData={rowData} 
                             dataType="table" 
                             setSnackbarData={setSnackbarData} 
-                            labels={["producer-information"]} 
+                            labels={["producer-information"].concat(rowData.codes.replace(/\s/g, '').split(","))} 
                             getTokenSilently={getTokenSilently}
                           />
                       );

@@ -234,6 +234,7 @@ function App() {
                       isDarkTheme={
                         theme.palette.type === "light" ? false : true
                       }
+                      title="Task Timeline"
                     />
                   )}
                   path="/"
@@ -246,6 +247,7 @@ function App() {
                       isDarkTheme={
                         theme.palette.type === "light" ? false : true
                       }
+                      title="On Farm Protocols"
                     />
                   )}
                 />
@@ -256,6 +258,7 @@ function App() {
                       isDarkTheme={
                         theme.palette.type === "light" ? false : true
                       }
+                      title="Devices - Stress Cams"
                     />
                   )}
                 />
@@ -266,6 +269,7 @@ function App() {
                       isDarkTheme={
                         theme.palette.type === "light" ? false : true
                       }
+                      title="Devices - Water Sensors"
                     />
                   )}
                 />
@@ -277,6 +281,7 @@ function App() {
                       isDarkTheme={
                         theme.palette.type === "light" ? false : true
                       }
+                      title="Contact Information and Site Enrollment"
                     />
                   )}
                 />
@@ -288,13 +293,19 @@ function App() {
                       isDarkTheme={
                         theme.palette.type === "light" ? false : true
                       }
+                      title="Farm Dates"
                     />
                   )}
                 />
 
                 <PrivateRoute
                   path="/site-information/farm-dates/calendar"
-                  component={FarmDatesCalendar}
+                  render={(props) => (
+                    <FarmDatesCalendar
+                      {...props}
+                      title="Farm Dates - Calendar"
+                    />
+                  )}
                   exact
                 />
 
@@ -303,7 +314,11 @@ function App() {
                   render={(props) => <SiteEnrollment {...props} />}
                 />
 
-                <PrivateRoute path="/issues" component={Issues} exact />
+                <PrivateRoute
+                  path="/issues"
+                  render={(props) => <Issues {...props} title="Issues" />}
+                  exact
+                />
                 <PrivateRoute
                   path="/issues/:issueNumber"
                   render={(props) => (
@@ -312,6 +327,7 @@ function App() {
                       isDarkTheme={
                         theme.palette.type === "light" ? false : true
                       }
+                      title="Issue"
                     />
                   )}
                 />
@@ -328,6 +344,7 @@ function App() {
                       isDarkTheme={
                         theme.palette.type === "light" ? false : true
                       }
+                      title="Device Data"
                     />
                   )}
                 />
@@ -340,6 +357,7 @@ function App() {
                       isDarkTheme={
                         theme.palette.type === "light" ? false : true
                       }
+                      title="Kobo Forms"
                     />
                   )}
                 />
@@ -351,6 +369,7 @@ function App() {
                       isDarkTheme={
                         theme.palette.type === "light" ? false : true
                       }
+                      title="Kobo Forms - Data"
                     />
                   )}
                 />
@@ -363,6 +382,7 @@ function App() {
                       isDarkTheme={
                         theme.palette.type === "light" ? false : true
                       }
+                      title="Producer Information"
                     />
                   )}
                 />
@@ -381,7 +401,9 @@ function App() {
 
                 <PrivateRoute
                   path={`/sensor-visuals`}
-                  render={(props) => <SensorVisuals type="watersensors" />}
+                  render={(props) => (
+                    <SensorVisuals type="watersensors" {...props} />
+                  )}
                   exact
                 />
                 <PrivateRoute

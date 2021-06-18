@@ -24,9 +24,6 @@ import { Link } from "react-router-dom";
 import {
   ChevronRight,
   ChevronLeft,
-  Radio,
-  QuestionAnswer,
-  ViewList,
   AccountCircle,
   Lock,
   BrightnessHigh,
@@ -47,6 +44,7 @@ import { apiPassword, apiUsername, apiURL } from "../utils/api_secret";
 import { Context } from "../Store/Store";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 import { githubToken } from "../utils/api_secret";
+import { addToTechnicians } from "../utils/SharedFunctions";
 
 //Global Vars
 const drawerWidth = 240;
@@ -133,6 +131,8 @@ export default function Header(props) {
     waterSensors: false,
     stressCams: false,
   });
+
+  const { getTokenSilently } = useAuth0();
 
   const handleOpenAllDataNav = () => {
     setOpenAllDataNav(!openAllDataNav);
@@ -221,6 +221,8 @@ export default function Header(props) {
         addUserToDatabase(qs.stringify(obj));
         //add to data corrections
         addUser(user.nickname).then((res) => console.log(res));
+        // accept invite
+        addToTechnicians(user.nickname, getTokenSilently);
       } else {
         dispatch({
           type: "UPDATE_ROLE",
@@ -300,7 +302,11 @@ export default function Header(props) {
                 open={profileMenuOpen}
                 onClose={handleProfileMenuClose}
               >
-                <MenuItem component={Link} to={"/profile"}>
+                <MenuItem
+                  component={Link}
+                  to={"/profile"}
+                  onClick={handleProfileMenuClose}
+                >
                   Profile
                 </MenuItem>
                 <MenuItem
