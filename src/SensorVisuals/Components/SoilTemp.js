@@ -36,7 +36,7 @@ const chartOptions = {
   },
   series: [],
 };
-const SoilTemp = () => {
+const SoilTemp = ({ tdrData }) => {
   const [state] = useContext(Context);
 
   const [data, setData] = useState([]);
@@ -49,25 +49,13 @@ const SoilTemp = () => {
     `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,trt&location=true`;
 
   useEffect(() => {
-    const setNodeData = async (apiKey) => {
+    if(tdrData){
+      setData(tdrData);
+      setLoading(false);
+    }
+    else
       setLoading(true);
-      const response = await fetch(waterSensorDataEndpoint, {
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": apiKey,
-        },
-      });
-
-      const records = await response.json();
-      const sortedByTimestamp = records
-        .sort((a, b) => a - b)
-        .map((rec) => ({ ...rec, timestamp: rec.timestamp * 1000 }));
-
-      setData(sortedByTimestamp);
-    };
-
-    setNodeData(state.userInfo.apikey).then(() => setLoading(false));
-  }, [state.userInfo.apikey, waterSensorDataEndpoint]);
+  }, [tdrData]);
 
   const bareSub1Data = useMemo(() => {
     const filteredData = data.filter(

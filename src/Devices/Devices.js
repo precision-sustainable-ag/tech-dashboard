@@ -10,7 +10,7 @@ import { BannedRoleMessage } from "../utils/CustomComponents";
 import PropTypes from "prop-types";
 
 const deviceCardStyle = {
-  height: "200px",
+  height: "210px",
 };
 
 // Default function
@@ -18,6 +18,12 @@ const DevicesComponent = (props) => {
   const [validDevices, setValidDevices] = useState([]);
   const [deviceTags, setDeviceTags] = useState([]);
   const [activeTag, setActiveTag] = useState("All");
+
+  const tag = props.activeTag;
+  useEffect(() => {
+    if(tag)
+      setActiveTag(tag);
+  }, [tag])
 
   useEffect(() => {
     if (activeTag === "All" && props.devices.length > 0) {
@@ -109,6 +115,7 @@ const DevicesComponent = (props) => {
                       key={device.id}
                       deviceData={device}
                       lastSession={true}
+                      activeTag={activeTag}
                     />
                   </Card>
                 </Grid>

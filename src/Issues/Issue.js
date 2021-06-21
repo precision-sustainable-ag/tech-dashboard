@@ -13,6 +13,7 @@ import { Octokit } from "@octokit/rest";
 import React, { useState, useEffect, useContext } from "react";
 import MDEditor from "@uiw/react-md-editor";
 import MuiAlert from "@material-ui/lab/Alert";
+import { useHistory } from "react-router-dom";
 
 
 // Local Imports
@@ -53,6 +54,21 @@ const Issue = (props) => {
   const [newCommentAdded, setNewCommentAdded] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [snackbarData, setSnackbarData] = useState({ open: false, text: "", severity: "success" });
+  const { location } = useHistory();
+  const history = useHistory();
+
+  useEffect(() => {
+    return () => {
+      if (history.action === "POP") {
+        history.push({
+          pathname: "/issues",
+          state: {
+            activeAffiliation: location ? location.stateLabel : null,
+          },
+        });
+      }
+    };
+  }, [history, location]);
 
   const hasIssueContent =
     props.location.state &&
@@ -101,12 +117,9 @@ const Issue = (props) => {
   };
 
   async function handleNewComment(body) {
-    let token = await getTokenSilently({
-      audience: `https://precision-sustaibale-ag/tech-dashboard`
-    });
     setButtonDisabled(true);
 
-    createGithubComment(user.nickname, body, issueNumber, token)
+    createGithubComment(user.nickname, body, issueNumber, getTokenSilently)
       .then((res) => {
         setNewCommentAdded(!newCommentAdded);
         setNewComment("");
@@ -236,7 +249,7 @@ const Issue = (props) => {
           horizontal: "center",
         }}
         open={snackbarData.open}
-        autoHideDuration={2000}
+        autoHideDuration={10000}
         onClose={() =>
           setSnackbarData({ ...snackbarData, open: !snackbarData.open })
         }

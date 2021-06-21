@@ -67,7 +67,7 @@ const Profile = () => {
 
         {Object.keys(state.userInfo).length > 0 && (
           <Grid item container xs={12} spacing={3}>
-            <Grid item xs={12} md={3}>
+            <Grid item xs={12} md={4}>
               <Card elevation={3}>
                 <CardHeader title="Github Details" />
                 <CardContent style={{ minHeight: "50vh" }}>
@@ -75,7 +75,7 @@ const Profile = () => {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12} md={3}>
+            <Grid item xs={12} md={4}>
               <Card elevation={3}>
                 <CardHeader title="Account Details" />
                 <CardContent style={{ minHeight: "50vh" }}>
@@ -83,7 +83,7 @@ const Profile = () => {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12} md={3}>
+            <Grid item xs={12} md={4}>
               <Card elevation={3}>
                 <CardHeader title="Kobo Details" />
                 <CardContent style={{ minHeight: "50vh" }}>

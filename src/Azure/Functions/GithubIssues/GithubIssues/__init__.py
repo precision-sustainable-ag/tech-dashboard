@@ -4,9 +4,10 @@ import http.client
 import requests	
 import json	
 import sys	
+import os
 
-# DEBUG = True
-DEBUG = False
+DEBUG = True
+# DEBUG = False
 
 # github issues class to handle actions on github issues	
 class GithubIssues:	
@@ -24,7 +25,7 @@ class GithubIssues:
     # method to fetch the Auth0 management API token	
     def get_token(self):	
         # payload and header	
-        auth0_payload = "{\"client_id\":\"RKkiHSDtTGQWijgy7q7Pi7sheonzWZke\",\"client_secret\":\"pzoI_Zwp4i-PSlb0lHVOZTyl8zZ8iQmuzJ8GNfR4pY1Ttr1PgXPK3Bbk-LdRXyf9\",\"audience\":\"https://psa-tech-dashboard.auth0.com/api/v2/\",\"grant_type\":\"client_credentials\"}"	
+        auth0_payload = os.environ["AUTH0_PAYLOAD"]
         auth0_headers = self.HEADER	
         # request token	
         self.auth0_connection.request("POST", "/oauth/token", auth0_payload, auth0_headers)	
@@ -64,7 +65,9 @@ class GithubIssues:
     def get_users_github_token(self):	
         for user in self.auth0_users_json_data:	
             if user.get("nickname") == self.user:	
-                github_user_token = user.get("identities")[0].get("access_token")	
+                github_user_token = user.get("identities")[0].get("access_token")
+            if user.get("nickname") == "brianwdavis":	
+                org_owner_token = user.get("identities")[0].get("access_token")
         # logging.infos users token for debugging	
         if DEBUG:
             # logging.info users token 
@@ -72,6 +75,7 @@ class GithubIssues:
             logging.info("\n\n")
         # sets class variable for the users github token	
         self.github_user_token = github_user_token	
+        self.org_owner_token = org_owner_token
     # method to make an issue using a specific users github token	
     def create_github_issue(self, title, body, assignees, labels):	
         # Create an issue on github.com using the given parameters	
@@ -157,6 +161,46 @@ class GithubIssues:
         self.get_users()	
         self.get_users_github_token()
 
+    def add_to_technicians(self, user):
+        url = 'https://api.github.com/orgs/precision-sustainable-ag/teams/technicians/memberships/%s' % user
+
+        # Headers	
+        headers = {	
+            "Authorization": "token %s" % self.org_owner_token,	
+            "Accept": "application/vnd.github.v3+json"	
+        }
+
+        # add to technicians
+        try:
+            response = requests.put(url, headers=headers)
+            status = json.loads(response.content.decode())
+            return True, status
+        except Exception:
+            logging.exception(Exception)
+            return False, "Could not add to org"
+
+    def accept_technicians_invite(self, user):
+        url = 'https://api.github.com/user/memberships/orgs/precision-sustainable-ag'
+
+        # Headers	
+        headers = {	
+            "Authorization": "token %s" % self.github_user_token,	
+            "Accept": "application/vnd.github.v3+json"	
+        }
+
+        data = {"state": "active"}
+        payload=json.dumps(data)
+
+        # accept invite
+        try:
+            response = requests.patch(url, data=payload, headers=headers)
+            status = json.loads(response.content.decode())
+            print(status)
+            return True, status
+        except Exception:
+            logging.exception(Exception)
+            return False, "Could not accept org invite"
+
 def main(req: func.HttpRequest) -> func.HttpResponse:	
     # variable to avoid reuse
     HEADER = { 'content-type': 'application/json' }
@@ -211,7 +255,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         if authenticated == "Not Authenticated":
             return func.HttpResponse(	
                 # body may be unneeded
-                body = token + " You are not authorized",	
+                body = json.dumps({"Message": token + " You are not authorized"}),	
                 status_code=401,	
                 headers=HEADER	
             )
@@ -259,12 +303,29 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                         status_code=400,	
                         headers=HEADER	
                     )	
+            elif action == "add_to_technicians":
+                add_status, add_response = ghi.add_to_technicians(user)
+                accept_status, accept_response = ghi.accept_technicians_invite(user)
+                if add_status and accept_status:
+                    return func.HttpResponse(	
+                        # body may be unneeded
+                        body = json.dumps({"Add message": add_response, "Accept message": accept_response}),	
+                        status_code=201,	
+                        headers=HEADER	
+                    )	
+                else:
+                    return func.HttpResponse(	
+                        # body may be unneeded
+                        body = json.dumps({"Add message": add_response, "Accept message": accept_response}),	
+                        status_code=400,	
+                        headers=HEADER	
+                    )	
     # handle exceptions 
     except Exception as error:
         logging.info("Program encountered exception: " + str(error))
         logging.exception(error)
         return func.HttpResponse(
-            body = str(error),
+            body = json.dumps({"Message": str(error)}),
             status_code=400,
             headers=HEADER
         )
