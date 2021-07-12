@@ -124,7 +124,7 @@ const FarmValuesTable = ({ data = [], year, affiliation = "all", setSnackbarData
                   </TableCell>
                 </CustomTableRow>  
 
-                {(index == currentIndex && open) && (
+                {(index === currentIndex && open) && (
                   <CustomTableRow key={`issue${index}`}>
                     <TableCell colSpan="12" style={{ "textAlign": "center" }}>
                       <IssueDialogue 
