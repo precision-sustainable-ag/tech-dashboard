@@ -1,5 +1,10 @@
 import { Button, Grid, Typography, Snackbar } from "@material-ui/core";
-import { onfarmAPI } from "../../utils/api_secret";
+import {
+  apiPassword,
+  apiURL,
+  apiUsername,
+  onfarmAPI,
+} from "../../utils/api_secret";
 import { ArrowBackIos } from "@material-ui/icons";
 import { Link, useHistory, useParams, useLocation } from "react-router-dom";
 import { lazy, useContext, useEffect, useState, Fragment } from "react";
@@ -21,12 +26,15 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
+const nicknameURL = apiURL + `/api/hologram/device/nicknames/code`;
+
 const VisualsByCode = (props) => {
   const [state] = useContext(Context);
   const history = useHistory();
   const { user } = useAuth0();
   const { code, year } = useParams();
   const [loading, setLoading] = useState(false);
+  const [deviceLink, setDeviceLink] = useState("");
   const [mapData, setMapData] = useState({
     open: false,
     locationData: [],
@@ -34,9 +42,7 @@ const VisualsByCode = (props) => {
   });
   const [tdrData, setTdrData] = useState([]);
 
-  const {
-    getTokenSilently,
-  } = useAuth0();
+  const { getTokenSilently } = useAuth0();
 
   // const [sensorData, setSensorData] = useState([]);
   const [gatewayData, setGatewayData] = useState([]);
@@ -54,8 +60,12 @@ const VisualsByCode = (props) => {
   const latLongEndpoint = onfarmAPI + `/locations?code=${code}&year=${year}`;
   const waterSensorDataEndpoint =
     onfarmAPI +
-    `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,trt&location=true`;
-  const [snackbarData, setSnackbarData] = useState({ open: false, text: "", severity: "success" });
+    `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,trt,center_depth,soil_temp&location=true`;
+  const [snackbarData, setSnackbarData] = useState({
+    open: false,
+    text: "",
+    severity: "success",
+  });
   const [showIssueDialog, setShowIssueDialog] = useState(false);
   const [issueBody, setIssueBody] = useState(null);
 
@@ -66,6 +76,22 @@ const VisualsByCode = (props) => {
   const waterNodeDataEndpoint =
     onfarmAPI +
     `/soil_moisture?type=node&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31`;
+
+  useEffect(() => {
+    const checkDeviceNicknames = async (code) => {
+      const response = await fetch(nicknameURL + `/${code.toUpperCase()}`, {
+        headers: {
+          Authorization: "Basic " + btoa(`${apiUsername}:${apiPassword}`),
+        },
+      });
+
+      const records = await response.json();
+
+      setDeviceLink(records.data.hologram_device_id);
+    };
+
+    if (code) checkDeviceNicknames(code);
+  }, [code]);
 
   useEffect(() => {
     return () => {
@@ -159,7 +185,7 @@ const VisualsByCode = (props) => {
             .map((rec) => ({ ...rec, timestamp: rec.timestamp * 1000 }));
 
           setTdrData(sortedByTimestamp);
-
+          console.log(sortedByTimestamp);
           setAllData(gatewayResponse, "gateway");
           // if (gatewayResponse.length !== 0) {
           const nodeRecords = await fetch(waterNodeDataEndpoint, {
@@ -268,21 +294,35 @@ const VisualsByCode = (props) => {
                 {showIssueDialog ? "Cancel" : "Create comment"}
               </Button>
             </Grid>
+            {/* {deviceLink && (
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  component={Link}
+                  to={`/devices/${deviceLink}`}
+                  size="small"
+                >
+                  Device status
+                </Button>
+              </Grid>
+            )} */}
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          {showIssueDialog && (
-            issueBody ? 
-              <IssueDialogue 
-                nickname={user.nickname} 
-                rowData={JSON.stringify(issueBody, null, "\t")} 
-                dataType="json" 
-                setSnackbarData={setSnackbarData} 
-                labels={[code, "tdr", "water-sensor-visuals"]} 
+          {showIssueDialog &&
+            (issueBody ? (
+              <IssueDialogue
+                nickname={user.nickname}
+                rowData={JSON.stringify(issueBody, null, "\t")}
+                dataType="json"
+                setSnackbarData={setSnackbarData}
+                labels={[code, "tdr", "water-sensor-visuals"]}
                 getTokenSilently={getTokenSilently}
               />
-            : <Typography variant="h6">Waiting for data</Typography>
-          )}
+            ) : (
+              <Typography variant="h6">Waiting for data</Typography>
+            ))}
         </Grid>
         {mapData.locationData.length > 0 && mapData.open && (
           <SensorMap mapData={mapData} />
@@ -294,8 +334,8 @@ const VisualsByCode = (props) => {
             <Grid container style={{ minHeight: "20vh" }}>
               <Grid item xs={12}>
                 <Typography variant="h6">
-                  No data available yet, have you installed sensors and filled out
-                  a koboform?
+                  No data available yet, have you installed sensors and filled
+                  out a koboform?
                 </Typography>
               </Grid>
               <Grid item xs={12}>
@@ -333,7 +373,7 @@ const VisualsByCode = (props) => {
                         VWC
                       </Typography>
                     </Grid>
-                    <VolumetricWater tdrData={tdrData}/>
+                    <VolumetricWater tdrData={tdrData} />
                   </Grid>
                   <Grid item container spacing={3}>
                     <Grid item xs={12}>
@@ -341,7 +381,7 @@ const VisualsByCode = (props) => {
                         Soil Temperature
                       </Typography>
                     </Grid>
-                    <SoilTemp tdrData={tdrData}/>
+                    <SoilTemp tdrData={tdrData} />
                   </Grid>
                   <Grid item container spacing={3}>
                     <Grid item xs={12}>
@@ -369,7 +409,6 @@ const VisualsByCode = (props) => {
         </Grid>
       </Grid>
     </Fragment>
-    
   );
 };
 

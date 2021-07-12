@@ -46,7 +46,7 @@ const NodeVoltage = () => {
   const { code, year } = useParams();
   const waterNodeDataEndpoint =
     onfarmAPI +
-    `/soil_moisture?type=node&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,nd_solar_voltage,nd_batt_voltage&location=true`;
+    `/soil_moisture?type=node&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=trt,subplot,timestamp,nd_solar_voltage,nd_batt_voltage,signal_strength&location=true`;
 
   useEffect(() => {
     const setNodeData = async (apiKey) => {
