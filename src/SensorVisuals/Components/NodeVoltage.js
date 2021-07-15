@@ -8,9 +8,11 @@ import HighchartsReact from "highcharts-react-official";
 import Highcharts from "highcharts";
 import { CustomLoader } from "../../utils/CustomComponents";
 
+const timezoneOffset = new Date().getTimezoneOffset() * 2
+
 const chartOptions = {
   time: {
-    timezoneOffset: new Date().getTimezoneOffset() * 2,
+    timezoneOffset: timezoneOffset,
   },
   chart: {
     type: "scatter",
@@ -125,8 +127,16 @@ const NodeVoltage = () => {
           name: "Signal Strength",
           data: sigStr,
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Strength: <b>{point.y}</b><br/>",
+            pointFormatter: function() {
+              const xDate = new Date(this.x)
+              xDate.setTime(xDate.getTime() - (timezoneOffset*60*1000))
+              const xDateString = xDate.toISOString()
+              const xDateSplit = xDateString.split("T")
+              const xYear = xDateSplit[0]
+              const xTime = xDateSplit[1].split(":").slice(0,2).join(":")
+              const dateString = `${xYear} ${xTime}`
+              return `Date: <b>${dateString}</b><br/>Strength: <b>${this.y * 20}</b><br/>`
+            }
           },
         },
       ],
@@ -174,8 +184,16 @@ const NodeVoltage = () => {
           name: "Signal Strength",
           data: sigStr,
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Strength: <b>{point.y}</b><br/>",
+            pointFormatter: function() {
+              const xDate = new Date(this.x)
+              xDate.setTime(xDate.getTime() - (timezoneOffset*60*1000))
+              const xDateString = xDate.toISOString()
+              const xDateSplit = xDateString.split("T")
+              const xYear = xDateSplit[0]
+              const xTime = xDateSplit[1].split(":").slice(0,2).join(":")
+              const dateString = `${xYear} ${xTime}`
+              return `Date: <b>${dateString}</b><br/>Strength: <b>${this.y * 20}</b><br/>`
+            }
           },
         },
       ],
@@ -224,8 +242,16 @@ const NodeVoltage = () => {
           name: "Signal Strength",
           data: sigStr,
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Strength: <b>{point.y}</b><br/>",
+            pointFormatter: function() {
+              const xDate = new Date(this.x)
+              xDate.setTime(xDate.getTime() - (timezoneOffset*60*1000))
+              const xDateString = xDate.toISOString()
+              const xDateSplit = xDateString.split("T")
+              const xYear = xDateSplit[0]
+              const xTime = xDateSplit[1].split(":").slice(0,2).join(":")
+              const dateString = `${xYear} ${xTime}`
+              return `Date: <b>${dateString}</b><br/>Strength: <b>${this.y * 20}</b><br/>`
+            }
           },
         },
       ],
@@ -275,8 +301,16 @@ const NodeVoltage = () => {
           name: "Signal Strength",
           data: sigStr,
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Strength: <b>{point.y}</b><br/>",
+            pointFormatter: function() {
+              const xDate = new Date(this.x)
+              xDate.setTime(xDate.getTime() - (timezoneOffset*60*1000))
+              const xDateString = xDate.toISOString()
+              const xDateSplit = xDateString.split("T")
+              const xYear = xDateSplit[0]
+              const xTime = xDateSplit[1].split(":").slice(0,2).join(":")
+              const dateString = `${xYear} ${xTime}`
+              return `Date: <b>${dateString}</b><br/>Strength: <b>${this.y * 20}</b><br/>`
+            }
           },
         },
       ],
