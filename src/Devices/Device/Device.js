@@ -355,7 +355,7 @@ const DeviceComponent = (props) => {
     jsonData = JSON.parse(jsonData);
 
     let dataStringParsed =
-      sensorType === "watersensors"
+      sensorType === "watersensors" && isBase64(jsonData.data)
         ? atob(jsonData.data)
         : isValidJson(jsonData.data)
         ? JSON.stringify(JSON.parse(jsonData.data), null, 2)
