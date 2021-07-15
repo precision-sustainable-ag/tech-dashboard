@@ -43,7 +43,7 @@ import { Link, useLocation, useHistory } from "react-router-dom";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
 
 // Local Imports
-import { apiUsername, apiPassword } from "../../utils/api_secret";
+import { apiUsername, apiPassword, apiURL } from "../../utils/api_secret";
 import { APIURL, APICreds, apiCorsUrl } from "../hologramConstants";
 import GoogleMap from "../../Location/GoogleMap";
 import { ScrollTop, useInfiniteScroll } from "../../utils/CustomComponents";
@@ -112,6 +112,7 @@ const DeviceComponent = (props) => {
   const { state, activeTag } = useLocation();
   const [hologramApiFunctional, setHologramApiFunctional] = useState(true);
   const [fetchMessage, setFetchMessage] = useState("");
+  const [nickname, setNickname] = useState("");
   const history = useHistory();
 
   useEffect(() => {
@@ -203,6 +204,19 @@ const DeviceComponent = (props) => {
     }
   }, [timeEnd]);
 
+  useEffect(() => {
+    checkIfDeviceHasNickname(props.location.state.id).then((res) => {
+      let data = res.data.data
+      if(typeof data === "string" && data.split(" ")[0] === "No"){
+        setNickname(props.history.location.state.name)
+      }
+      else{
+        let nick = data.nickname
+        setNickname(nick)
+      }
+    }).catch(err => {console.log(err)});
+  }, [props.location.state.id])
+
   const RenderGridListMap = () => {
     return (
       <Grid container spacing={2}>
@@ -228,7 +242,7 @@ const DeviceComponent = (props) => {
             variant="h4"
             color={props.isDarkTheme ? "primary" : "secondary"}
           >
-            Showing data for {props.history.location.state.name}
+            Showing data for {nickname}
           </Typography>
         </Grid>
         {/* <Grid item xs={12}>
@@ -584,6 +598,20 @@ const isValidJson = (json) => {
   } catch (error) {
     return false;
   }
+};
+
+const checkIfDeviceHasNickname = async (deviceId) => {
+  let data = await Axios({
+    method: "get",
+    url: `${apiURL}/api/hologram/device/nicknames/${deviceId}`,
+
+    auth: {
+      username: apiUsername,
+      password: apiPassword,
+    },
+    responseType: "json",
+  });
+  return data;
 };
 
 const isBase64 = (str = "") => {
