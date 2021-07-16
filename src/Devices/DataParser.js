@@ -17,6 +17,7 @@ import { Cancel, Edit, Save } from "@material-ui/icons";
 import Axios from "axios";
 import qs from "qs";
 import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
+import { checkIfDeviceHasNickname } from "../utils/constants";
 
 // Styles
 const deviceColors = {
@@ -121,19 +122,7 @@ const DataParser = (props) => {
   const [deviceActualName, setDeviceActualName] = useState("");
   const [deviceNickname, setDeviceNickname] = useState("");
   const [checkingNickname, setCheckingNickname] = useState(false);
-  const checkIfDeviceHasNickname = async (deviceId) => {
-    let data = await Axios({
-      method: "get",
-      url: `${apiURL}/api/hologram/device/nicknames/${deviceId}`,
 
-      auth: {
-        username: apiUsername,
-        password: apiPassword,
-      },
-      responseType: "json",
-    });
-    return data;
-  };
   useEffect(() => {
     setCheckingNickname(true);
     checkIfDeviceHasNickname(props.deviceData.id)

@@ -27,6 +27,20 @@ export const fetchKoboPasswords = async ({ state, showAllStates }) => {
   return { status, data, showAllStates };
 };
 
+export const checkIfDeviceHasNickname = async (deviceId) => {
+  let data = await Axios({
+    method: "get",
+    url: `${apiURL}/api/hologram/device/nicknames/${deviceId}`,
+
+    auth: {
+      username: apiUsername,
+      password: apiPassword,
+    },
+    responseType: "json",
+  });
+  return data;
+};
+
 export const apiCall = async (url, options, from) => {
   return await Axios({
     method: "post",
