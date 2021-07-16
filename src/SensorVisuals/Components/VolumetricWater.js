@@ -9,7 +9,7 @@ import Highcharts from "highcharts";
 import { CustomLoader } from "../../utils/CustomComponents";
 
 const chartOptions = {
-  time:{
+  time: {
     timezoneOffset: new Date().getTimezoneOffset() * 2,
   },
   chart: {
@@ -64,12 +64,10 @@ const VolumetricWater = ({ tdrData }) => {
   // );
 
   useEffect(() => {
-    if(tdrData){
+    if (tdrData) {
       setData(tdrData);
       setLoading(false);
-    }
-    else
-      setLoading(true);
+    } else setLoading(true);
   }, [tdrData]);
 
   const bareSub1Data = useMemo(() => {
