@@ -51,7 +51,7 @@ const StressCamButtons = (props) => {
     const queryHologram = () => {
         let count = 0;
         let interval = setInterval(() => {
-            getDeviceMessages(props.deviceId).then((res) => {  
+            getDeviceMessages(props.deviceId).then((res) => {    
                 let snackbarText = "Attempting to send message to your device " + (60 - count).toString() + " attempts remaining";
                 setSnackbarData({open: true, text: snackbarText, severity: "info"});    
                 const messages = JSON.parse(res.data.data);
