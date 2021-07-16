@@ -34,7 +34,20 @@ const chartOptions = {
     },
     type: "linear",
   },
-  series: [],
+  series: [
+    {
+      name: "Solar Voltage",
+      data: [],
+    },
+    {
+      name: "Battery Voltage",
+      data: [],
+    },
+    {
+      name: "Signal Strength",
+      data: [],
+    },
+  ],
 };
 
 const NodeVoltage = () => {
@@ -46,7 +59,7 @@ const NodeVoltage = () => {
   const { code, year } = useParams();
   const waterNodeDataEndpoint =
     onfarmAPI +
-    `/soil_moisture?type=node&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=trt,subplot,timestamp,nd_solar_voltage,nd_batt_voltage,signal_strength&location=true`;
+    `/soil_moisture?type=node&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=node_serial_no,serial,trt,subplot,timestamp,nd_solar_voltage,nd_batt_voltage,signal_strength&location=true`;
 
   useEffect(() => {
     const setNodeData = async (apiKey) => {
@@ -66,6 +79,7 @@ const NodeVoltage = () => {
           .map((rec) => ({ ...rec, timestamp: rec.timestamp * 1000 }));
 
         setData(sortedByTimestamp);
+        // console.log(sortedByTimestamp);
       } catch (e) {
         console.error(e);
         // setLoading(false);
@@ -86,6 +100,8 @@ const NodeVoltage = () => {
     const filteredData = data.filter(
       (rec) => rec.trt === "b" && rec.subplot === 1
     );
+    const serials = filteredData.map((r) => r.serial);
+    const uniqueSerials = [...new Set(serials)];
 
     const battVol = filteredData.map((rec) => [
       rec.timestamp,
@@ -103,6 +119,9 @@ const NodeVoltage = () => {
       ...chartOptions,
       title: {
         text: chartOptions.title.text + "Rep 1 Bare",
+      },
+      subtitle: {
+        text: "Serial: " + uniqueSerials.toString(),
       },
       series: [
         {
@@ -136,6 +155,10 @@ const NodeVoltage = () => {
     const filteredData = data.filter(
       (rec) => rec.trt === "b" && rec.subplot === 2
     );
+
+    const serials = filteredData.map((r) => r.serial);
+    const uniqueSerials = [...new Set(serials)];
+
     const battVol = filteredData.map((rec) => [
       rec.timestamp,
       rec.nd_batt_voltage,
@@ -152,6 +175,9 @@ const NodeVoltage = () => {
       ...chartOptions,
       title: {
         text: chartOptions.title.text + "Rep 2 Bare",
+      },
+      subtitle: {
+        text: "Serial: " + uniqueSerials.toString(),
       },
       series: [
         {
@@ -186,6 +212,9 @@ const NodeVoltage = () => {
       (rec) => rec.trt === "c" && rec.subplot === 1
     );
 
+    const serials = filteredData.map((r) => r.serial);
+    const uniqueSerials = [...new Set(serials)];
+
     const battVol = filteredData.map((rec) => [
       rec.timestamp,
       rec.nd_batt_voltage,
@@ -202,6 +231,9 @@ const NodeVoltage = () => {
       ...chartOptions,
       title: {
         text: chartOptions.title.text + "Rep 1 Cover",
+      },
+      subtitle: {
+        text: "Serial: " + uniqueSerials.toString(),
       },
       series: [
         {
@@ -237,6 +269,9 @@ const NodeVoltage = () => {
       (rec) => rec.trt === "c" && rec.subplot === 2
     );
 
+    const serials = filteredData.map((r) => r.serial);
+    const uniqueSerials = [...new Set(serials)];
+
     const battVol = filteredData.map((rec) => [
       rec.timestamp,
       rec.nd_batt_voltage,
@@ -253,6 +288,9 @@ const NodeVoltage = () => {
       ...chartOptions,
       title: {
         text: chartOptions.title.text + "Rep 2 Cover",
+      },
+      subtitle: {
+        text: "Serial: " + uniqueSerials.toString(),
       },
       series: [
         {
@@ -282,8 +320,6 @@ const NodeVoltage = () => {
       ],
     };
   }, [data]);
-
-  useEffect(() => {}, []);
 
   return (
     <Grid container>
