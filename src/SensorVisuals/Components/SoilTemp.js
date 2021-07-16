@@ -3,13 +3,13 @@ import React, { useState, useEffect, useContext, useMemo } from "react";
 import { Grid, Typography } from "@material-ui/core";
 import { onfarmAPI } from "../../utils/api_secret";
 import { useParams } from "react-router-dom";
-import { Context } from "../../Store/Store";
+
 import HighchartsReact from "highcharts-react-official";
 import Highcharts from "highcharts";
 import { CustomLoader } from "../../utils/CustomComponents";
 
 const chartOptions = {
-  time:{
+  time: {
     timezoneOffset: new Date().getTimezoneOffset() * 2,
   },
   chart: {
@@ -32,13 +32,12 @@ const chartOptions = {
     title: {
       text: "Temperature",
     },
-    type: "logarithmic",
+    min: -10,
+    max: 40,
   },
   series: [],
 };
 const SoilTemp = ({ tdrData }) => {
-  const [state] = useContext(Context);
-
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -49,12 +48,10 @@ const SoilTemp = ({ tdrData }) => {
     `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,trt&location=true`;
 
   useEffect(() => {
-    if(tdrData){
+    if (tdrData) {
       setData(tdrData);
       setLoading(false);
-    }
-    else
-      setLoading(true);
+    } else setLoading(true);
   }, [tdrData]);
 
   const bareSub1Data = useMemo(() => {
@@ -80,7 +77,8 @@ const SoilTemp = ({ tdrData }) => {
       title: {
         text: "Soil Temp - Rep 1 Bare",
       },
-      series: [{
+      series: [
+        {
           name: "Surface",
           data: surfaceDepth,
           tooltip: {
@@ -257,7 +255,7 @@ const SoilTemp = ({ tdrData }) => {
         text: "Soil Temp - Rep 2 Cover",
       },
       series: [
-                {
+        {
           name: "Surface",
           data: surfaceDepth,
           tooltip: {

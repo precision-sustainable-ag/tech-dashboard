@@ -32,7 +32,8 @@ const chartOptions = {
     title: {
       text: "VWC",
     },
-    type: "logarithmic",
+    min: 0,
+    max: 100,
   },
 
   series: [
