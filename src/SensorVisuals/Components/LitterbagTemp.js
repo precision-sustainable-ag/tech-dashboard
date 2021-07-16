@@ -29,7 +29,8 @@ const chartOptions = {
     title: {
       text: "t_lb",
     },
-    type: "logarithmic",
+    min: 0,
+    max: 50,
   },
 
   series: [
@@ -69,7 +70,10 @@ const TempByLbs = () => {
       const timeZoneOffset = new Date().getTimezoneOffset() * 60 * 1000 * 2;
       const sortedByTimestamp = records
         .sort((a, b) => a - b)
-        .map((rec) => ({ ...rec, timestamp: rec.timestamp * 1000 - timeZoneOffset}));
+        .map((rec) => ({
+          ...rec,
+          timestamp: rec.timestamp * 1000 - timeZoneOffset,
+        }));
 
       setData(sortedByTimestamp);
     };
@@ -77,52 +81,6 @@ const TempByLbs = () => {
     setNodeData(state.userInfo.apikey).then(() => setLoading(false));
   }, [state.userInfo.apikey, waterAmbientSensorDataEndpoint]);
 
-  // const bareSub1Data = useMemo(() => {
-  //   const filteredData = data.filter(
-  //     (rec) => rec.trt === "b" && rec.subplot === 1
-  //   );
-
-  //   const val = filteredData.map((rec) => [rec.timestamp, rec.t_lb]);
-  //   return {
-  //     ...chartOptions,
-  //     title: {
-  //       text: "Litterbag Temp - Rep 1 Bare",
-  //     },
-  //     series: [
-  //       {
-  //         name: "Litterbag Temp",
-  //         data: val,
-  //         tooltip: {
-  //           pointFormat:
-  //             "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Temp: <b>{point.y}</b><br/>",
-  //         },
-  //       },
-  //     ],
-  //   };
-  // }, [data]);
-  // const bareSub2Data = useMemo(() => {
-  //   const filteredData = data.filter(
-  //     (rec) => rec.trt === "b" && rec.subplot === 2
-  //   );
-
-  //   const val = filteredData.map((rec) => [rec.timestamp, rec.t_lb]);
-  //   return {
-  //     ...chartOptions,
-  //     title: {
-  //       text: "Litterbag Temp - Rep 2 Bare",
-  //     },
-  //     series: [
-  //       {
-  //         name: "Litterbag Temp",
-  //         data: val,
-  //         tooltip: {
-  //           pointFormat:
-  //             "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Temp: <b>{point.y}</b><br/>",
-  //         },
-  //       },
-  //     ],
-  //   };
-  // }, [data]);
   const coverSub1Data = useMemo(() => {
     const filteredData = data.filter(
       (rec) => rec.trt === "c" && rec.subplot === 1

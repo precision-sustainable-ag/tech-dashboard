@@ -22,7 +22,7 @@ import "./Styles/App.css";
 
 import { Switch, Route } from "react-router-dom";
 
-import { WifiOff } from "@material-ui/icons";
+import { Check, Clear, Replay, WifiOff } from "@material-ui/icons";
 
 import DeviceEnroll from "./Devices/Device-Enroll/DeviceEnroll";
 import WaterSensorByGateway from "./Devices/WaterSensorData/WaterSensorByGateway";
@@ -61,6 +61,15 @@ import TaskTimeline from "./Landing/TaskTimeline/TaskTimeline";
 import Protocols from "./Protocols/Protocols";
 import DecompBag from "./DecompBag/DecompBag";
 import Debug from "./Debug/Debug";
+import axios from "axios";
+import {
+  apiPassword,
+  apiURL,
+  apiUsername,
+  onfarmAPI,
+} from "./utils/api_secret";
+import { apiCorsUrl, APIURL } from "./Devices/hologramConstants";
+import QueryString from "qs";
 
 // Helper function
 function useOnlineStatus() {
@@ -180,6 +189,8 @@ function App() {
     }
   }, [theme]);
 
+  const [checkingAPIs, setCheckingAPIs] = useState(true);
+
   useEffect(() => {
     const checkAuth = async () => {
       if (isAuthenticated) {
@@ -209,6 +220,10 @@ function App() {
             </Typography>
           </Paper>
         </ThemeProvider>
+      </div>
+    ) : checkingAPIs ? (
+      <div className={classes.root}>
+        <APIChecker theme={muiTheme} setChecker={setCheckingAPIs} />
       </div>
     ) : isLoggedIn ? (
       <ThemeProvider theme={muiTheme}>
@@ -494,5 +509,247 @@ function App() {
     </div>
   );
 }
+
+const APIChecker = (props) => {
+  const { theme, setChecker } = props;
+
+  const [checkingApis, setCheckingApis] = useState({
+    phpAPI: true,
+    hologramAPI: true,
+    onfarmAPI: true,
+  });
+  const [apisWorking, setApisWorking] = useState({
+    phpAPI: false,
+    hologramAPI: false,
+    onfarmAPI: false,
+  });
+  useEffect(() => {
+    const hologramAPI = "/api/1/users/me";
+
+    // const onfarmAPI =
+    //   "https://api.precisionsustainableag.org/onfarm/raw?table=biomass_in_field&affiliation=MD";
+    // setCheckingApis((a) => ({ ...a, phpAPI: true }));
+    axios({
+      method: "post",
+      url: apiCorsUrl + `/watersensors`,
+      data: QueryString.stringify({
+        url: `${APIURL()}${hologramAPI}`,
+      }),
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+      },
+      auth: {
+        username: apiUsername,
+        password: apiPassword,
+      },
+      responseType: "json",
+    })
+      .then(sleeper())
+      .then((response) => {
+        if (response.status === 200) {
+          setApisWorking((a) => ({ ...a, phpAPI: true }));
+          setCheckingApis((a) => ({ ...a, phpAPI: false, hologramAPI: true }));
+        }
+      })
+      .then(sleeper())
+      .then(() => {
+        axios({
+          method: "post",
+          url: apiCorsUrl + `/watersensors`,
+          data: QueryString.stringify({
+            url: `${APIURL()}${hologramAPI}`,
+          }),
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+          },
+          auth: {
+            username: apiUsername,
+            password: apiPassword,
+          },
+          responseType: "json",
+        })
+          .then((response) => {
+            if (Object.keys(response.data.data).length > 0) {
+              setApisWorking((a) => ({ ...a, hologramAPI: true }));
+              setCheckingApis((a) => ({
+                ...a,
+                phpAPI: false,
+                hologramAPI: false,
+              }));
+            }
+          })
+          .then(sleeper())
+          .then(() => {
+            setCheckingApis((a) => ({ ...a, onfarmAPI: true }));
+            fetch(
+              onfarmAPI + `/raw?table=biomass_in_field&affiliation=MD`
+            ).then((r) => {
+              if (r.headers.get("content-type").split(";")[0] === "text/html") {
+                setApisWorking((a) => ({ ...a, onfarmAPI: true }));
+                setCheckingApis((a) => ({ ...a, onfarmAPI: false }));
+              }
+            });
+
+            //  fetch(onfarmAPI + `/raw?table=biomass_in_field&affiliation=MD`, {
+            //   headers: {
+            //     "Content-Type": "application/json",
+            //     "x-api-key": apiKey,
+            //   },
+            // }).then((res) => {
+          });
+      })
+
+      .catch((e) => console.error(e));
+  }, []);
+
+  useEffect(() => {
+    const { setChecker } = props;
+    if (Object.values(apisWorking).every(Boolean)) setChecker(false);
+  }, [apisWorking, props]);
+
+  const StatusChecker = ({ checkingApis, apisWorking, type }) => {
+    switch (type) {
+      case "phpAPI":
+        return (
+          <>
+            {checkingApis.phpAPI ? (
+              "checking.."
+            ) : apisWorking.phpAPI ? (
+              <Check color="primary" />
+            ) : (
+              <Clear />
+            )}
+          </>
+        );
+      case "hologramAPI":
+        return (
+          <>
+            {checkingApis.hologramAPI ? (
+              "checking.."
+            ) : apisWorking.hologramAPI ? (
+              <Check color="primary" />
+            ) : (
+              <Clear />
+            )}
+          </>
+        );
+      case "onfarmAPI":
+        return (
+          <>
+            {checkingApis.onfarmAPI ? (
+              "checking.."
+            ) : apisWorking.onfarmAPI ? (
+              <Check color="primary" />
+            ) : (
+              <Clear />
+            )}
+          </>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <>
+      <CssBaseline />
+      <ThemeProvider theme={theme}>
+        <Paper
+          style={{
+            height: "100vh",
+          }}
+        >
+          <Box height={"40vh"} />
+          <Box margin="0 auto" width="50%">
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Typography variant="h4" gutterBottom align="center">
+                  Verifying api status
+                </Typography>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Grid
+                  container
+                  direction="row"
+                  alignItems="center"
+                  justify="center"
+                >
+                  Tech Dashboard API{" "}
+                  <StatusChecker
+                    checkingApis={checkingApis}
+                    apisWorking={apisWorking}
+                    type={"phpAPI"}
+                  />
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid
+                  container
+                  direction="row"
+                  alignItems="center"
+                  justify="center"
+                >
+                  Hologram API{" "}
+                  <StatusChecker
+                    checkingApis={checkingApis}
+                    apisWorking={apisWorking}
+                    type={"hologramAPI"}
+                  />
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid
+                  container
+                  direction="row"
+                  alignItems="center"
+                  justify="center"
+                >
+                  Onfarm API{" "}
+                  <StatusChecker
+                    checkingApis={checkingApis}
+                    apisWorking={apisWorking}
+                    type={"onfarmAPI"}
+                  />
+                </Grid>
+              </Grid>
+              {Object.values(apisWorking).some((v, i, a) =>
+                a.includes(false)
+              ) &&
+                !Object.values(checkingApis).some((v, i, a) =>
+                  a.includes(true)
+                ) && (
+                  <Grid
+                    item
+                    container
+                    spacing={3}
+                    direction="row"
+                    alignItems="center"
+                    justify="center"
+                  >
+                    <Button
+                      startIcon={<Replay />}
+                      size="small"
+                      color="primary"
+                      variant="contained"
+                      onClick={() => window.location.reload()}
+                    >
+                      Retry
+                    </Button>
+                  </Grid>
+                )}
+            </Grid>
+          </Box>
+        </Paper>
+      </ThemeProvider>
+    </>
+  );
+};
+
+const sleeper = (ms = 500) => {
+  return function (x) {
+    return new Promise((resolve) => setTimeout(() => resolve(x), ms));
+  };
+};
 
 export default App;

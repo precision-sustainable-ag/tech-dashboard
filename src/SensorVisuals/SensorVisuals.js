@@ -152,8 +152,8 @@ const SensorVisuals = (props) => {
   }
 
   useEffect(() => {
-    if(location.state){
-      if(location.state.data){
+    if (location.state) {
+      if (location.state.data) {
         setData(location.state.data);
       }
     }
@@ -172,7 +172,7 @@ const SensorVisuals = (props) => {
           });
           const response = await records.json();
 
-          if(data.length == 0){
+          if (data.length === 0) {
             let newData = response.map((entry) => {
               return {
                 ...entry,
@@ -233,7 +233,7 @@ const SensorVisuals = (props) => {
     };
 
     fetchData(state.userInfo.apikey);
-  }, [state.userInfo.apikey, type, location.state]);
+  }, [state.userInfo.apikey, type, location.state, data.length]);
 
   const activeData = useMemo(() => {
     // console.log(JSON.stringify(data))

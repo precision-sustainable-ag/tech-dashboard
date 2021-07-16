@@ -8,9 +8,11 @@ import HighchartsReact from "highcharts-react-official";
 import Highcharts from "highcharts";
 import { CustomLoader } from "../../utils/CustomComponents";
 
+const timezoneOffset = new Date().getTimezoneOffset() * 2
+
 const chartOptions = {
   time: {
-    timezoneOffset: new Date().getTimezoneOffset() * 2,
+    timezoneOffset: timezoneOffset,
   },
   chart: {
     type: "scatter",
@@ -34,7 +36,20 @@ const chartOptions = {
     },
     type: "linear",
   },
-  series: [],
+  series: [
+    {
+      name: "Solar Voltage",
+      data: [],
+    },
+    {
+      name: "Battery Voltage",
+      data: [],
+    },
+    {
+      name: "Signal Strength",
+      data: [],
+    },
+  ],
 };
 
 const NodeVoltage = () => {
@@ -46,7 +61,7 @@ const NodeVoltage = () => {
   const { code, year } = useParams();
   const waterNodeDataEndpoint =
     onfarmAPI +
-    `/soil_moisture?type=node&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=trt,subplot,timestamp,nd_solar_voltage,nd_batt_voltage,signal_strength&location=true`;
+    `/soil_moisture?type=node&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=node_serial_no,serial,trt,subplot,timestamp,nd_solar_voltage,nd_batt_voltage,signal_strength&location=true`;
 
   useEffect(() => {
     const setNodeData = async (apiKey) => {
@@ -66,6 +81,7 @@ const NodeVoltage = () => {
           .map((rec) => ({ ...rec, timestamp: rec.timestamp * 1000 }));
 
         setData(sortedByTimestamp);
+        // console.log(sortedByTimestamp);
       } catch (e) {
         console.error(e);
         // setLoading(false);
@@ -86,6 +102,8 @@ const NodeVoltage = () => {
     const filteredData = data.filter(
       (rec) => rec.trt === "b" && rec.subplot === 1
     );
+    const serials = filteredData.map((r) => r.serial);
+    const uniqueSerials = [...new Set(serials)];
 
     const battVol = filteredData.map((rec) => [
       rec.timestamp,
@@ -104,54 +122,8 @@ const NodeVoltage = () => {
       title: {
         text: chartOptions.title.text + "Rep 1 Bare",
       },
-      series: [
-        {
-          name: "Solar Voltage",
-          data: solVol,
-          tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
-          },
-        },
-        {
-          name: "Battery Voltage",
-          data: battVol,
-          tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
-          },
-        },
-        {
-          name: "Signal Strength",
-          data: sigStr,
-          tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Strength: <b>{point.y}</b><br/>",
-          },
-        },
-      ],
-    };
-  }, [data]);
-  const bareSub2Data = useMemo(() => {
-    const filteredData = data.filter(
-      (rec) => rec.trt === "b" && rec.subplot === 2
-    );
-    const battVol = filteredData.map((rec) => [
-      rec.timestamp,
-      rec.nd_batt_voltage,
-    ]);
-    const solVol = filteredData.map((rec) => [
-      rec.timestamp,
-      rec.nd_solar_voltage,
-    ]);
-    const sigStr = filteredData.map((rec) => [
-      rec.timestamp,
-      rec.signal_strength / 20,
-    ]);
-    return {
-      ...chartOptions,
-      title: {
-        text: chartOptions.title.text + "Rep 2 Bare",
+      subtitle: {
+        text: "Serial: " + uniqueSerials.toString(),
       },
       series: [
         {
@@ -174,8 +146,80 @@ const NodeVoltage = () => {
           name: "Signal Strength",
           data: sigStr,
           tooltip: {
+            pointFormatter: function() {
+              const xDate = new Date(this.x)
+              xDate.setTime(xDate.getTime() - (timezoneOffset*60*1000))
+              const xDateString = xDate.toISOString()
+              const xDateSplit = xDateString.split("T")
+              const xYear = xDateSplit[0]
+              const xTime = xDateSplit[1].split(":").slice(0,2).join(":")
+              const dateString = `${xYear} ${xTime}`
+              return `Date: <b>${dateString}</b><br/>Strength: <b>${this.y * 20}</b><br/>`
+            }
+          },
+        },
+      ],
+    };
+  }, [data]);
+  const bareSub2Data = useMemo(() => {
+    const filteredData = data.filter(
+      (rec) => rec.trt === "b" && rec.subplot === 2
+    );
+
+    const serials = filteredData.map((r) => r.serial);
+    const uniqueSerials = [...new Set(serials)];
+
+    const battVol = filteredData.map((rec) => [
+      rec.timestamp,
+      rec.nd_batt_voltage,
+    ]);
+    const solVol = filteredData.map((rec) => [
+      rec.timestamp,
+      rec.nd_solar_voltage,
+    ]);
+    const sigStr = filteredData.map((rec) => [
+      rec.timestamp,
+      rec.signal_strength / 20,
+    ]);
+    return {
+      ...chartOptions,
+      title: {
+        text: chartOptions.title.text + "Rep 2 Bare",
+      },
+      subtitle: {
+        text: "Serial: " + uniqueSerials.toString(),
+      },
+      series: [
+        {
+          name: "Solar Voltage",
+          data: solVol,
+          tooltip: {
             pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Strength: <b>{point.y}</b><br/>",
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
+          },
+        },
+        {
+          name: "Battery Voltage",
+          data: battVol,
+          tooltip: {
+            pointFormat:
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
+          },
+        },
+        {
+          name: "Signal Strength",
+          data: sigStr,
+          tooltip: {
+            pointFormatter: function() {
+              const xDate = new Date(this.x)
+              xDate.setTime(xDate.getTime() - (timezoneOffset*60*1000))
+              const xDateString = xDate.toISOString()
+              const xDateSplit = xDateString.split("T")
+              const xYear = xDateSplit[0]
+              const xTime = xDateSplit[1].split(":").slice(0,2).join(":")
+              const dateString = `${xYear} ${xTime}`
+              return `Date: <b>${dateString}</b><br/>Strength: <b>${this.y * 20}</b><br/>`
+            }
           },
         },
       ],
@@ -185,6 +229,9 @@ const NodeVoltage = () => {
     const filteredData = data.filter(
       (rec) => rec.trt === "c" && rec.subplot === 1
     );
+
+    const serials = filteredData.map((r) => r.serial);
+    const uniqueSerials = [...new Set(serials)];
 
     const battVol = filteredData.map((rec) => [
       rec.timestamp,
@@ -203,56 +250,8 @@ const NodeVoltage = () => {
       title: {
         text: chartOptions.title.text + "Rep 1 Cover",
       },
-      series: [
-        {
-          name: "Solar Voltage",
-          data: solVol,
-          tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
-          },
-        },
-        {
-          name: "Battery Voltage",
-          data: battVol,
-          tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
-          },
-        },
-        {
-          name: "Signal Strength",
-          data: sigStr,
-          tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Strength: <b>{point.y}</b><br/>",
-          },
-        },
-      ],
-    };
-  }, [data]);
-
-  const coverSub2Data = useMemo(() => {
-    const filteredData = data.filter(
-      (rec) => rec.trt === "c" && rec.subplot === 2
-    );
-
-    const battVol = filteredData.map((rec) => [
-      rec.timestamp,
-      rec.nd_batt_voltage,
-    ]);
-    const solVol = filteredData.map((rec) => [
-      rec.timestamp,
-      rec.nd_solar_voltage,
-    ]);
-    const sigStr = filteredData.map((rec) => [
-      rec.timestamp,
-      rec.signal_strength / 20,
-    ]);
-    return {
-      ...chartOptions,
-      title: {
-        text: chartOptions.title.text + "Rep 2 Cover",
+      subtitle: {
+        text: "Serial: " + uniqueSerials.toString(),
       },
       series: [
         {
@@ -275,15 +274,86 @@ const NodeVoltage = () => {
           name: "Signal Strength",
           data: sigStr,
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Strength: <b>{point.y}</b><br/>",
+            pointFormatter: function() {
+              const xDate = new Date(this.x)
+              xDate.setTime(xDate.getTime() - (timezoneOffset*60*1000))
+              const xDateString = xDate.toISOString()
+              const xDateSplit = xDateString.split("T")
+              const xYear = xDateSplit[0]
+              const xTime = xDateSplit[1].split(":").slice(0,2).join(":")
+              const dateString = `${xYear} ${xTime}`
+              return `Date: <b>${dateString}</b><br/>Strength: <b>${this.y * 20}</b><br/>`
+            }
           },
         },
       ],
     };
   }, [data]);
 
-  useEffect(() => {}, []);
+  const coverSub2Data = useMemo(() => {
+    const filteredData = data.filter(
+      (rec) => rec.trt === "c" && rec.subplot === 2
+    );
+
+    const serials = filteredData.map((r) => r.serial);
+    const uniqueSerials = [...new Set(serials)];
+
+    const battVol = filteredData.map((rec) => [
+      rec.timestamp,
+      rec.nd_batt_voltage,
+    ]);
+    const solVol = filteredData.map((rec) => [
+      rec.timestamp,
+      rec.nd_solar_voltage,
+    ]);
+    const sigStr = filteredData.map((rec) => [
+      rec.timestamp,
+      rec.signal_strength / 20,
+    ]);
+    return {
+      ...chartOptions,
+      title: {
+        text: chartOptions.title.text + "Rep 2 Cover",
+      },
+      subtitle: {
+        text: "Serial: " + uniqueSerials.toString(),
+      },
+      series: [
+        {
+          name: "Solar Voltage",
+          data: solVol,
+          tooltip: {
+            pointFormat:
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
+          },
+        },
+        {
+          name: "Battery Voltage",
+          data: battVol,
+          tooltip: {
+            pointFormat:
+              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
+          },
+        },
+        {
+          name: "Signal Strength",
+          data: sigStr,
+          tooltip: {
+            pointFormatter: function() {
+              const xDate = new Date(this.x)
+              xDate.setTime(xDate.getTime() - (timezoneOffset*60*1000))
+              const xDateString = xDate.toISOString()
+              const xDateSplit = xDateString.split("T")
+              const xYear = xDateSplit[0]
+              const xTime = xDateSplit[1].split(":").slice(0,2).join(":")
+              const dateString = `${xYear} ${xTime}`
+              return `Date: <b>${dateString}</b><br/>Strength: <b>${this.y * 20}</b><br/>`
+            }
+          },
+        },
+      ],
+    };
+  }, [data]);
 
   return (
     <Grid container>

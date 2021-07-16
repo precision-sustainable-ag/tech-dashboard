@@ -17,6 +17,9 @@ import { useMemo } from "react";
 const GatewayChart = (props) => {
   const { data } = props;
 
+  const serials = data.map((r) => r.serial);
+  const uniqueSerials = [...new Set(serials)];
+
   const gwBattVol = useMemo(() => {
     return data.map((record) => {
       return [
@@ -61,12 +64,6 @@ const GatewayChart = (props) => {
     });
   }, [data]);
 
-  //   const highCharOptionData = useMemo(() => {
-
-  //    return highCharOptionDate.
-
-  //   }, []);
-
   const chartOptions = {
     time: {
       timezoneOffset: new Date().getTimezoneOffset() * 2,
@@ -79,6 +76,9 @@ const GatewayChart = (props) => {
     },
     title: {
       text: "Gateway Data",
+    },
+    subtitle: {
+      text: "Serial: " + uniqueSerials.toString(),
     },
     xAxis: {
       type: "datetime",
