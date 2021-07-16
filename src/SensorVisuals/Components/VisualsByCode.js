@@ -185,7 +185,7 @@ const VisualsByCode = (props) => {
             .map((rec) => ({ ...rec, timestamp: rec.timestamp * 1000 }));
 
           setTdrData(sortedByTimestamp);
-          console.log(sortedByTimestamp);
+
           setAllData(gatewayResponse, "gateway");
           // if (gatewayResponse.length !== 0) {
           const nodeRecords = await fetch(waterNodeDataEndpoint, {
@@ -294,7 +294,7 @@ const VisualsByCode = (props) => {
                 {showIssueDialog ? "Cancel" : "Create comment"}
               </Button>
             </Grid>
-            {/* {deviceLink && (
+            {deviceLink && (
               <Grid item>
                 <Button
                   variant="contained"
@@ -306,7 +306,7 @@ const VisualsByCode = (props) => {
                   Device status
                 </Button>
               </Grid>
-            )} */}
+            )}
           </Grid>
         </Grid>
         <Grid item xs={12}>
