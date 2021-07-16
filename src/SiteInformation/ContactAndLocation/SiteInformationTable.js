@@ -1,3 +1,4 @@
+// DEPRECATED
 import {
   Box,
   Collapse,
