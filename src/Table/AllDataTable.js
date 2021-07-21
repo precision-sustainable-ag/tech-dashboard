@@ -80,6 +80,7 @@ const tableHeaderOptions = [
     field: "affiliation",
     type: "string",
     align: "justify",
+    defaultGroupOrder: 0,
   },
   {
     title: "County",
@@ -92,6 +93,8 @@ const tableHeaderOptions = [
     field: "year",
     type: "numeric",
     align: "justify",
+    defaultGroupOrder: 1,
+    defaultGroupSort: "desc",
   },
   {
     title: "Field Address",
@@ -125,7 +128,11 @@ const AllDataTable = (props) => {
   );
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [snackbarData, setSnackbarData] = useState({ open: false, text: "", severity: "success" });
+  const [snackbarData, setSnackbarData] = useState({
+    open: false,
+    text: "",
+    severity: "success",
+  });
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editModalData, setEditModalData] = useState({});
 
