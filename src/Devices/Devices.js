@@ -8,6 +8,7 @@ import DataParser from "./DataParser";
 import { BannedRoleMessage } from "../utils/CustomComponents";
 // import "./Devices.scss";
 import PropTypes from "prop-types";
+import { useHistory } from "react-router-dom";
 
 const deviceCardStyle = {
   height: "210px",
@@ -18,12 +19,13 @@ const DevicesComponent = (props) => {
   const [validDevices, setValidDevices] = useState([]);
   const [deviceTags, setDeviceTags] = useState([]);
   const [activeTag, setActiveTag] = useState("All");
+  const history = useHistory();
 
-  const tag = props.activeTag;
+  const tag = props.activeTag || history.location.state.activeTag;
+
   useEffect(() => {
-    if(tag)
-      setActiveTag(tag);
-  }, [tag])
+    if (tag) setActiveTag(tag);
+  }, [tag]);
 
   useEffect(() => {
     if (activeTag === "All" && props.devices.length > 0) {

@@ -1,7 +1,7 @@
 // Dependency Imports
 import React, { useState, useEffect } from "react";
 import { green, yellow, grey } from "@material-ui/core/colors";
-import { Redirect } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import {
   Button,
   CardContent,
@@ -30,6 +30,7 @@ const deviceColors = {
 
 // Default function
 const DataParser = (props) => {
+  const history = useHistory();
   const [deviceId, setDeviceId] = useState(0);
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const [deviceBGColor, setDeviceBGColor] = useState("white");
@@ -42,7 +43,16 @@ const DataParser = (props) => {
   // console.log("deviceData", props.deviceData);
   const setDeviceState = (deviceId) => {
     setDeviceId(deviceId);
-    setShouldRedirect(true);
+    history.push(`/devices/${deviceId}`, {
+      ...device,
+      activeTag: props.activeTag,
+    });
+    // to={{
+    //     pathname: ,
+    //     state: device,
+    //     activeTag: props.activeTag,
+    //   }}
+    //setShouldRedirect(true);
   };
 
   useEffect(() => {
@@ -181,6 +191,7 @@ const DataParser = (props) => {
       },
     });
   };
+
   return shouldRedirect ? (
     <Redirect
       to={{

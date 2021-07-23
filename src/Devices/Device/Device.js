@@ -206,7 +206,7 @@ const DeviceComponent = (props) => {
           setMostRecentData(response.data.data);
           if (response.data.continues) {
             setLoadMoreDataURI(response.data.links.next);
-            setPagesLoaded(pagesLoaded + 1);
+            setPagesLoaded((pagesLoaded) => pagesLoaded + 1);
           }
         })
         .catch((e) => {
@@ -237,7 +237,7 @@ const DeviceComponent = (props) => {
           setMostRecentData(response.data.data);
           if (response.data.continues) {
             setLoadMoreDataURI(response.data.links.next);
-            setPagesLoaded(pagesLoaded + 1);
+            setPagesLoaded((pagesLoaded) => pagesLoaded + 1);
           }
         })
         .catch((e) => {
@@ -256,13 +256,19 @@ const DeviceComponent = (props) => {
             aria-label={`All Devices`}
             component={Link}
             tooltip="All Devices"
-            to={
-              props.location.state && props.location.state.for
-                ? props.location.state.for === "watersensors"
-                  ? "/devices/water-sensors"
-                  : "/devices/stress-cams"
-                : "/devices"
-            }
+            to={{
+              pathname:
+                props.location.state && props.location.state.for
+                  ? props.location.state.for === "watersensors"
+                    ? "/devices/water-sensors"
+                    : "/devices/stress-cams"
+                  : "/devices",
+              state: {
+                activeTag: history.location.state.activeTag
+                  ? history.location.state.activeTag
+                  : "All",
+              },
+            }}
             startIcon={<ArrowBackIosOutlined />}
           >
             All Devices
