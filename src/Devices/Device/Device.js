@@ -186,7 +186,7 @@ const DeviceComponent = (props) => {
       // console.log("undefined !");
       // get data from api
       setDeviceData({ name: "Loading" });
-
+      setIsFetching(true);
       Axios({
         method: "post",
         url: apiCorsUrl + `/watersensors`,
@@ -203,6 +203,7 @@ const DeviceComponent = (props) => {
         responseType: "json",
       })
         .then((response) => {
+          setIsFetching(false);
           setMostRecentData(response.data.data);
           if (response.data.continues) {
             setLoadMoreDataURI(response.data.links.next);
@@ -211,11 +212,12 @@ const DeviceComponent = (props) => {
         })
         .catch((e) => {
           console.error(e);
+          setIsFetching(false);
         });
     } else {
       // data passed from component via prop
       setDeviceData(props.location.state);
-
+      setIsFetching(true);
       Axios({
         method: "post",
         url: apiCorsUrl + `/${props.location.state.for}`,
@@ -234,6 +236,7 @@ const DeviceComponent = (props) => {
         responseType: "json",
       })
         .then((response) => {
+          setIsFetching(false);
           setMostRecentData(response.data.data);
           if (response.data.continues) {
             setLoadMoreDataURI(response.data.links.next);
@@ -242,6 +245,7 @@ const DeviceComponent = (props) => {
         })
         .catch((e) => {
           console.error(e);
+          setIsFetching(false);
         });
     }
   }, [timeEnd, deviceId]);
@@ -264,9 +268,10 @@ const DeviceComponent = (props) => {
                     : "/devices/stress-cams"
                   : "/devices",
               state: {
-                activeTag: history.location.state.activeTag
-                  ? history.location.state.activeTag
-                  : "All",
+                activeTag:
+                  history.location.state && history.location.state.activeTag
+                    ? history.location.state.activeTag
+                    : "All",
               },
             }}
             startIcon={<ArrowBackIosOutlined />}
@@ -393,7 +398,7 @@ const DeviceComponent = (props) => {
                       </code>
                     </TableCell>
                   )}
-                  {/* <TableCell>{getDataFromJSON(data.data, "tags")}</TableCell> */}
+
                   <TableCell datatype="">
                     {getDataFromJSON(
                       data.data,
@@ -408,7 +413,9 @@ const DeviceComponent = (props) => {
             ) : (
               <StyledTableRow>
                 <TableCell colSpan={3} align="center">
-                  <Typography variant="body1">No Data</Typography>
+                  <Typography variant="body1">
+                    {isFetching ? `Fetching Data` : `No Data`}
+                  </Typography>
                 </TableCell>
               </StyledTableRow>
             )}
@@ -539,7 +546,12 @@ const DeviceComponent = (props) => {
                 size={"small"}
                 component={Link}
                 startIcon={<Timeline />}
-                to={`/sensor-visuals/${chartRedirectYear}/${siteCode}`}
+                to={{
+                  pathname: `/sensor-visuals/${chartRedirectYear}/${siteCode}`,
+                  state: {
+                    activeTag: activeTag,
+                  },
+                }}
               >
                 Chart view
               </Button>

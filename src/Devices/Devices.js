@@ -21,11 +21,23 @@ const DevicesComponent = (props) => {
   const [activeTag, setActiveTag] = useState("All");
   const history = useHistory();
 
-  const tag = props.activeTag || history.location.state.activeTag;
+  // const tag = props.activeTag
+  //   ? props.activeTag
+  //   : history.location.state.activeTag
+  //   ? history.location.state.activeTag
+  //   : "All";
 
   useEffect(() => {
-    if (tag) setActiveTag(tag);
-  }, [tag]);
+    if (history.location.state) {
+      if (history.location.state.activeTag) {
+        setActiveTag(history.location.state.activeTag);
+      }
+    } else if (props.activeTag) {
+      setActiveTag(props.activeTag);
+    } else {
+      setActiveTag("All");
+    }
+  }, [history.location, props.activeTag]);
 
   useEffect(() => {
     if (activeTag === "All" && props.devices.length > 0) {
