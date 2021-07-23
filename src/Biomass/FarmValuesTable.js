@@ -9,16 +9,75 @@ import {
   Typography,
   withStyles,
   IconButton,
+  makeStyles,
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 import { useMemo } from "react";
 import { parseISO, format } from "date-fns";
-import { Comment  } from "@material-ui/icons";
+import { Comment } from "@material-ui/icons";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 import React, { useState } from "react";
-import IssueDialogue from './../Comments/IssueDialogue';
+import IssueDialogue from "./../Comments/IssueDialogue";
 
-const FarmValuesTable = ({ data = [], year, affiliation = "all", setSnackbarData }) => {
+const colHeaders = (unitType = "kg/ha") => [
+  {
+    name: "Code",
+    size: "60px",
+  },
+  {
+    name: "Rep",
+    size: "55px",
+  },
+  {
+    name: "Termination Date",
+    size: "135px",
+  },
+  {
+    name: "Cover Crop Species",
+    size: "",
+  },
+  {
+    name: `Uncorrected Dry Weight (${unitType})`,
+    size: "",
+  },
+  {
+    name: `Ash-Free Dry Weight (${unitType})`,
+    size: "",
+  },
+  {
+    name: "%N by NIR",
+    size: "",
+  },
+  {
+    name: "Carbohydrates %",
+    size: "",
+  },
+  {
+    name: "Cellulose %",
+    size: "",
+  },
+  {
+    name: "Lignin %",
+    size: "",
+  },
+];
+
+const useStyles = makeStyles({
+  root: {
+    width: "100%",
+  },
+  container: {
+    // maxHeight: "670px",
+  },
+});
+
+const FarmValuesTable = ({
+  data = [],
+  year,
+  affiliation = "all",
+  setSnackbarData,
+  units = "kg/ha",
+}) => {
   const record = useMemo(() => {
     return data
       .filter((rec) => {
@@ -26,6 +85,21 @@ const FarmValuesTable = ({ data = [], year, affiliation = "all", setSnackbarData
           return parseInt(rec.year) === year && rec.affiliation === affiliation;
         } else return parseInt(rec.year) === year;
       })
+      .map((rec) => ({
+        ...rec,
+        uncorrected_cc_dry_biomass_kg_ha:
+          Math.round(rec.uncorrected_cc_dry_biomass_kg_ha) || "N/A",
+        uncorrected_cc_dry_biomass_lb_ac:
+          Math.round(rec.uncorrected_cc_dry_biomass_kg_ha * 0.8922) || "N/A",
+        ash_corrected_cc_dry_biomass_kg_ha:
+          Math.round(rec.ash_corrected_cc_dry_biomass_kg_ha) || "N/A",
+        ash_corrected_cc_dry_biomass_lb_ac:
+          Math.round(rec.ash_corrected_cc_dry_biomass_kg_ha * 0.8922) || "N/A",
+        percent_n_nir: rec.percent_n_nir || "N/A",
+        percent_carbohydrates: rec.percent_carbohydrates || "N/A",
+        percent_cellulose: rec.percent_cellulose || "N/A",
+        percent_lignin: rec.percent_lignin || "N/A",
+      }))
       .sort(
         (a, b) =>
           new Date(b.cc_termination_date) - new Date(a.cc_termination_date)
@@ -33,45 +107,41 @@ const FarmValuesTable = ({ data = [], year, affiliation = "all", setSnackbarData
   }, [year, data, affiliation]);
   const [open, setOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(null);
+
   const { user } = useAuth0();
 
-  const {
-    getTokenSilently,
-  } = useAuth0();
+  const { getTokenSilently } = useAuth0();
+  const classes = useStyles();
 
   return record.length > 0 ? (
-    <TableContainer aria-label="Biomass farm values" component={Paper}>
-      <Table size="medium" stickyHeader>
-        <TableHead>
-          <TableRow>
-            <TableCell></TableCell>
-            <TableCell align="right">Code</TableCell>
-            <TableCell align="right">Subplot</TableCell>
-            <TableCell align="right">Termination Date</TableCell>
-            <TableCell align="right">Species</TableCell>
-            <TableCell align="right">Kg/ha Uncorrected</TableCell>
-            <TableCell align="right">Kg/ha Corrected</TableCell>
-            <TableCell align="right">
-              NIR <sup>%</sup>
-            </TableCell>
-            <TableCell align="right">
-              Carbohydrates <sup>%</sup>
-            </TableCell>
-            <TableCell align="right">
-              Cellulose <sup>%</sup>
-            </TableCell>
-            <TableCell align="right">
-              Lignin <sup>%</sup>
-            </TableCell>
-            <TableCell align="right">Moisture</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {record.map((record, index) => (
+    <>
+      <TableContainer
+        aria-label="Biomass farm values"
+        component={Paper}
+        className={classes.container}
+      >
+        <Table size="medium" stickyHeader>
+          <colgroup>
+            <col />
+            {colHeaders().map((col, index) => (
+              <col key={index} style={{ width: col.size }} />
+            ))}
+          </colgroup>
+          <RenderTableHeader units={units} />
+
+          <TableBody>
+            {record.map((record, index) => (
               <React.Fragment key={index}>
                 <CustomTableRow key={index}>
                   <TableCell>
-                    <IconButton aria-label="expand row" size="small" onClick={() => {!(index !== currentIndex && open) && setOpen(!open); setCurrentIndex(index)}}>
+                    <IconButton
+                      aria-label="expand row"
+                      size="small"
+                      onClick={() => {
+                        !(index !== currentIndex && open) && setOpen(!open);
+                        setCurrentIndex(index);
+                      }}
+                    >
                       {open ? <Comment /> : <Comment />}
                     </IconButton>
                   </TableCell>
@@ -88,69 +158,88 @@ const FarmValuesTable = ({ data = [], year, affiliation = "all", setSnackbarData
                     </>
                   )}
 
-                  <TableCell align="right">
+                  <TableCell align="center">
                     {format(
                       parseISO(record.cc_termination_date) || new Date(),
                       "PP"
                     )}
                   </TableCell>
-                  <TableCell align="right">
-                    {record.cc_species || <UnavailableText />}
+                  <TableCell align="center">
+                    {record.cc_species || "No Data"}
                   </TableCell>
-                  <TableCell align="right">
-                    {record.uncorrected_cc_dry_biomass_kg_ha || (
-                      <UnavailableText text="N/A" />
-                    )}
+                  <TableCell
+                    align="center"
+                    title={`Uncorrected cover crop dry biomass in ${units}`}
+                  >
+                    {units === "kg/ha"
+                      ? record.uncorrected_cc_dry_biomass_kg_ha
+                      : record.uncorrected_cc_dry_biomass_lb_ac}
                   </TableCell>
-                  <TableCell align="right">
-                    {record.ash_corrected_cc_dry_biomass_kg_ha || (
-                      <UnavailableText text="N/A" />
-                    )}
+                  <TableCell
+                    align="center"
+                    title={`Ash corrected cover crop dry biomass in ${units}`}
+                  >
+                    {units === "kg/ha"
+                      ? record.ash_corrected_cc_dry_biomass_kg_ha
+                      : record.ash_corrected_cc_dry_biomass_lb_ac}
                   </TableCell>
-                  <TableCell align="right">
-                    {record.percent_n_nir || <UnavailableText text="N/A" />}
+                  <TableCell align="center">{record.percent_n_nir}</TableCell>
+                  <TableCell align="center">
+                    {record.percent_carbohydrates}
                   </TableCell>
-                  <TableCell align="right">
-                    {record.percent_carbohydrates || <UnavailableText text="N/A" />}
+                  <TableCell align="center">
+                    {record.percent_cellulose}
                   </TableCell>
-                  <TableCell align="right">
-                    {record.percent_cellulose || <UnavailableText text="N/A" />}
-                  </TableCell>
-                  <TableCell align="right">
-                    {record.percent_lignin || <UnavailableText text="N/A" />}
-                  </TableCell>
-                  <TableCell align="right">
-                    {record.moisture_content || <UnavailableText text="N/A" />}
-                  </TableCell>
-                </CustomTableRow>  
+                  <TableCell align="center">{record.percent_lignin}</TableCell>
+                </CustomTableRow>
 
-                {(index === currentIndex && open) && (
+                {index === currentIndex && open && (
                   <CustomTableRow key={`issue${index}`}>
-                    <TableCell colSpan="12" style={{ "textAlign": "center" }}>
-                      <IssueDialogue 
-                        nickname={user.nickname} 
-                        rowData={record} 
-                        dataType="table" 
-                        setSnackbarData={setSnackbarData} 
-                        labels={["farm-values", record.code, "Subplot " + record.subplot.toString(), record.affiliation]} 
+                    <TableCell colSpan="12" style={{ textAlign: "center" }}>
+                      <IssueDialogue
+                        nickname={user.nickname}
+                        rowData={record}
+                        dataType="table"
+                        setSnackbarData={setSnackbarData}
+                        labels={[
+                          "farm-values",
+                          record.code,
+                          "Subplot " + record.subplot.toString(),
+                          record.affiliation,
+                        ]}
                         getTokenSilently={getTokenSilently}
                       />
                     </TableCell>
-                  </CustomTableRow>   
+                  </CustomTableRow>
                 )}
-              </React.Fragment>  
-            ))
-          }
-        </TableBody>
-      </Table>
-    </TableContainer>
+              </React.Fragment>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   ) : (
     <RenderEmptyTable />
   );
 };
 
-const UnavailableText = ({ text }) => (
-  <Typography variant="caption">{text || "No Data"}</Typography>
+/**
+ *
+ * @returns Table Header
+ * @param String units
+ */
+
+const RenderTableHeader = ({ units = "kg/ha" }) => (
+  <TableHead>
+    <TableRow>
+      <TableCell align="right"></TableCell>
+      {colHeaders(units).map((col, index) => (
+        <TableCell key={index} align="center">
+          {col.name}
+        </TableCell>
+      ))}
+    </TableRow>
+  </TableHead>
 );
 
 /**
@@ -160,29 +249,7 @@ const UnavailableText = ({ text }) => (
 const RenderEmptyTable = () => (
   <TableContainer component={Paper} aria-label="Biomass farm values">
     <Table size="medium">
-      <TableHead>
-        <TableRow>
-          <TableCell align="right">Code</TableCell>
-          <TableCell align="right">Subplot</TableCell>
-          <TableCell align="right">Termination Date</TableCell>
-          <TableCell align="right">Species</TableCell>
-          <TableCell align="right">Kg/ha Uncorrected</TableCell>
-          <TableCell align="right">Kg/ha Corrected</TableCell>
-          <TableCell align="right">
-            NIR <sup>%</sup>
-          </TableCell>
-          <TableCell align="right">
-            Carbohydrates <sup>%</sup>
-          </TableCell>
-          <TableCell align="right">
-            Cellulose <sup>%</sup>
-          </TableCell>
-          <TableCell align="right">
-            Lignin <sup>%</sup>
-          </TableCell>
-          <TableCell align="right">Moisture</TableCell>
-        </TableRow>
-      </TableHead>
+      <RenderTableHeader units={"kg/ha"} />
       <TableBody>
         <TableRow>
           <TableCell colSpan="11" align="center" variant="body">
@@ -206,8 +273,11 @@ const CustomTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-UnavailableText.propTypes = {
-  text: PropTypes.string,
+RenderTableHeader.defaultProps = {
+  units: "kg/ha",
+};
+RenderTableHeader.propTypes = {
+  units: PropTypes.oneOf(["kg/ha", "lbs/ac"]),
 };
 
 FarmValuesTable.propTypes = {
