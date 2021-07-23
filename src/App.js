@@ -523,6 +523,8 @@ const APIChecker = (props) => {
     hologramAPI: false,
     onfarmAPI: false,
   });
+  const [retry, setRetry] = useState(false);
+  const [apiIssue, setApiIssue] = useState(0);
   useEffect(() => {
     const hologramAPI = "/api/1/users/me";
 
@@ -549,7 +551,16 @@ const APIChecker = (props) => {
         if (response.status === 200) {
           setApisWorking((a) => ({ ...a, phpAPI: true }));
           setCheckingApis((a) => ({ ...a, phpAPI: false, hologramAPI: true }));
+        } else {
+          setApisWorking((a) => ({ ...a, phpAPI: false }));
+          setCheckingApis((a) => ({ ...a, phpAPI: false, hologramAPI: true }));
         }
+      })
+      .catch((e) => {
+        setApiIssue((apiIssue) => apiIssue + 1);
+        setApisWorking((a) => ({ ...a, phpAPI: false }));
+        setCheckingApis((a) => ({ ...a, phpAPI: false, hologramAPI: true }));
+        console.error(e);
       })
       .then(sleeper())
       .then(() => {
@@ -578,6 +589,16 @@ const APIChecker = (props) => {
               }));
             }
           })
+          .catch((e) => {
+            setApiIssue((apiIssue) => apiIssue + 1);
+            setApisWorking((a) => ({ ...a, hologramAPI: false }));
+            setCheckingApis((a) => ({
+              ...a,
+              phpAPI: false,
+              hologramAPI: false,
+            }));
+            console.error(e);
+          })
           .then(sleeper())
           .then(() => {
             setCheckingApis((a) => ({ ...a, onfarmAPI: true }));
@@ -599,8 +620,13 @@ const APIChecker = (props) => {
           });
       })
 
-      .catch((e) => console.error(e));
-  }, []);
+      .catch((e) => {
+        setApiIssue((apiIssue) => apiIssue + 1);
+        setApisWorking((a) => ({ ...a, onfarmAPI: false }));
+        setCheckingApis((a) => ({ ...a, onfarmAPI: false }));
+        console.error(e);
+      });
+  }, [retry]);
 
   useEffect(() => {
     const { setChecker } = props;
@@ -664,7 +690,9 @@ const APIChecker = (props) => {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Typography variant="h4" gutterBottom align="center">
-                  Verifying api status
+                  {apiIssue !== 0
+                    ? `Tech Dashboard is currently Down`
+                    : `Verifying api status`}
                 </Typography>
               </Grid>
 
@@ -732,7 +760,9 @@ const APIChecker = (props) => {
                       size="small"
                       color="primary"
                       variant="contained"
-                      onClick={() => window.location.reload()}
+                      onClick={() => {
+                        setRetry(!retry);
+                      }}
                     >
                       Retry
                     </Button>
@@ -746,7 +776,7 @@ const APIChecker = (props) => {
   );
 };
 
-const sleeper = (ms = 500) => {
+const sleeper = (ms = 100) => {
   return function (x) {
     return new Promise((resolve) => setTimeout(() => resolve(x), ms));
   };
