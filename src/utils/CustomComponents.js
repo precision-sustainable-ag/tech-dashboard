@@ -64,7 +64,7 @@ export const BannedRoleMessage = ({ title }) => {
     <Box component={Paper} elevation={1} p={2}>
       <Grid
         container
-        justify="center"
+        justifyContent="center"
         alignItems="center"
         direction="column"
         style={{ minHeight: "50vh" }}
@@ -226,10 +226,10 @@ export const useInfiniteScroll = (callback, hologramApiFunctional) => {
     if (
       window.innerHeight + document.documentElement.scrollTop <=
         0.9 * document.documentElement.offsetHeight ||
-        isFetching
+      isFetching
     )
       return;
-      
+
     setIsFetching(true);
   };
 

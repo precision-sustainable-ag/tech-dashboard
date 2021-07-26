@@ -227,7 +227,7 @@ const EditDataModal = (props) => {
       disableEscapeKeyDown
     >
       <DialogTitle id="form-dialog-title">
-        <Grid container justify="space-between">
+        <Grid container justifyContent="space-between">
           <Grid item>
             Site <mark>{props.data.code}</mark> of producer:{" "}
             <strong>{props.data.last_name}</strong> [{props.data.producer_id}]

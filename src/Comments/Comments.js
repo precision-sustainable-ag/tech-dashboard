@@ -45,7 +45,7 @@ const bodyFormatter = (dataType, rowData, newComment) => {
   } else body = newComment;
 
   return body;
-}
+};
 
 const Comments = (props) => {
   const [newComment, setNewComment] = useState("");
@@ -107,9 +107,8 @@ const Comments = (props) => {
     };
   }, []);
 
-  
   useEffect(() => {
-    if(props.removeCommentText){
+    if (props.removeCommentText) {
       setNewCommentBody("");
       props.setRemoveCommentText(false);
     }
@@ -209,7 +208,7 @@ const Comments = (props) => {
                     <Grid
                       container
                       direction="row"
-                      justify="flex-start"
+                      justifyContent="flex-start"
                       spacing={1}
                     >
                       <Grid item xs="auto" md="auto">

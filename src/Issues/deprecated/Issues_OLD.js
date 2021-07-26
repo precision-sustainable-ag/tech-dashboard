@@ -27,7 +27,6 @@ import { githubToken } from "../utils/api_secret";
 import { bannedRoles } from "../utils/constants";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 
-
 // Helper function (unused)
 const getAllRepoNames = async (url) => {
   let data = await Axios.get(url)
@@ -63,7 +62,7 @@ const getAllRepoNames = async (url) => {
   return data;
 };
 
-// Default function 
+// Default function
 export const ReposComponent = () => {
   const octokit = new Octokit({ auth: githubToken });
   const [state, dispatch] = React.useContext(Context);
@@ -175,7 +174,12 @@ export const ReposComponent = () => {
               />
             </>
           ) : (
-            <Grid container spacing={5} alignItems="center" justify="center">
+            <Grid
+              container
+              spacing={5}
+              alignItems="center"
+              justifyContent="center"
+            >
               <Grid item xs={12}>
                 <Typography variant="h5" align="center">
                   No issues for{" "}

@@ -3,7 +3,6 @@ import React, { useState, useEffect, Suspense } from "react";
 import {
   makeStyles,
   Box,
-  createMuiTheme,
   CssBaseline,
   ThemeProvider,
   Paper,
@@ -12,6 +11,7 @@ import {
   Button,
   Grid,
   responsiveFontSizes,
+  createTheme,
 } from "@material-ui/core";
 
 // Local Imports
@@ -151,7 +151,7 @@ function App() {
     },
   });
 
-  let muiTheme = createMuiTheme(theme);
+  let muiTheme = createTheme(theme);
   muiTheme = responsiveFontSizes(muiTheme);
 
   const toggleThemeDarkness = () => {
@@ -493,7 +493,12 @@ function App() {
           <Typography variant="h3" gutterBottom align="center">
             You are offline!
           </Typography>
-          <Grid container justify="center" alignItems="center" spacing={4}>
+          <Grid
+            container
+            justifyContent="center"
+            alignItems="center"
+            spacing={4}
+          >
             <Grid item>
               <WifiOff />
             </Grid>
@@ -701,7 +706,7 @@ const APIChecker = (props) => {
                   container
                   direction="row"
                   alignItems="center"
-                  justify="center"
+                  justifyContent="center"
                 >
                   Tech Dashboard API{" "}
                   <StatusChecker
@@ -716,7 +721,7 @@ const APIChecker = (props) => {
                   container
                   direction="row"
                   alignItems="center"
-                  justify="center"
+                  justifyContent="center"
                 >
                   Hologram API{" "}
                   <StatusChecker
@@ -731,7 +736,7 @@ const APIChecker = (props) => {
                   container
                   direction="row"
                   alignItems="center"
-                  justify="center"
+                  justifyContent="center"
                 >
                   Onfarm API{" "}
                   <StatusChecker
@@ -753,7 +758,7 @@ const APIChecker = (props) => {
                     spacing={3}
                     direction="row"
                     alignItems="center"
-                    justify="center"
+                    justifyContent="center"
                   >
                     <Button
                       startIcon={<Replay />}

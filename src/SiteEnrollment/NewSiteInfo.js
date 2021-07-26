@@ -80,9 +80,8 @@ export const NewSiteInfo = ({
     }
   }, [totalSites]);
 
-  const [modifyNewSiteDetailsModal, setModifyNewSiteDetailsModal] = useState(
-    false
-  );
+  const [modifyNewSiteDetailsModal, setModifyNewSiteDetailsModal] =
+    useState(false);
   const [selectedToEditSite, setSelectedToEditSite] = useState({
     code: "",
     irrigation: false,
@@ -233,7 +232,7 @@ export const NewSiteInfo = ({
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">
-          <Grid container justify="space-between">
+          <Grid container justifyContent="space-between">
             <Grid item>
               <Typography variant="h4">
                 Edit Details for {selectedToEditSite.code}
@@ -416,11 +415,10 @@ export const NewSiteInfo = ({
                       // );
                       // console.log(editableSite);
                       //   get site with code not relevant to the modal (selectedtoeditsite)
-                      let allSitesExceptCurrent = enrollmentData.growerInfo.sites.filter(
-                        (sites) => {
+                      let allSitesExceptCurrent =
+                        enrollmentData.growerInfo.sites.filter((sites) => {
                           return sites.code !== selectedToEditSite.code;
-                        }
-                      );
+                        });
                       //   append new data
                       allSitesExceptCurrent.push(selectedToEditSite);
 

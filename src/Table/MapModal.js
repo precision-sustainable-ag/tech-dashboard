@@ -29,7 +29,7 @@ const MapModal = ({
       maxWidth={maxWidth}
     >
       <DialogTitle>
-        <Grid container justify="space-between">
+        <Grid container justifyContent="space-between">
           <Typography variant="h4">Field Location</Typography>
           <IconButton onClick={() => setOpen(false)}>
             <Close />

@@ -494,7 +494,7 @@ const AllDataTable = (props) => {
           item
           container
           spacing={3}
-          // justify="space-evenly"
+          // justifyContent="space-evenly"
           // alignContent="center"
           // alignItems="center"
         >

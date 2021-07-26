@@ -594,10 +594,12 @@ const NodeSensorVisuals = (props) => {
   useEffect(() => {
     const init = async () => {
       setLoading(true);
-      let initialChartsData = await (await fetchBasicNodeData(activeChip, year))
-        .data;
-      let sensorChartData = await (await fetchSensorNodeData(activeChip, year))
-        .data;
+      let initialChartsData = await (
+        await fetchBasicNodeData(activeChip, year)
+      ).data;
+      let sensorChartData = await (
+        await fetchSensorNodeData(activeChip, year)
+      ).data;
       if (initialChartsData.data) {
         setInitialCharts(initialChartsData.data);
       }
@@ -612,7 +614,7 @@ const NodeSensorVisuals = (props) => {
   }, [activeChip]);
 
   return (
-    <Grid container justify="center">
+    <Grid container justifyContent="center">
       <Grid item md={12}>
         <Typography variant="h5" align="center">
           Node Data for {<NodeType />} {props.activeChip}

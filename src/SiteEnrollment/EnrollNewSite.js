@@ -252,7 +252,7 @@ const EnrollNewSite = (props) => {
         {enrollmentData.growerInfo.sites &&
         enrollmentData.growerInfo.sites.length > 0 ? (
           <Grid item xs={12}>
-            <Grid container justify="center" alignItems="center">
+            <Grid container justifyContent="center" alignItems="center">
               <Button
                 size="large"
                 variant="contained"

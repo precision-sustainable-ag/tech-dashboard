@@ -28,7 +28,7 @@ const NodeCharts = (props) => {
 
   const litterBagChartOptions = useMemo(
     () => ({
-      time:{
+      time: {
         timezoneOffset: new Date().getTimezoneOffset() * 2,
       },
       chart: {
@@ -99,7 +99,7 @@ const NodeCharts = (props) => {
 
   const sensorChartOptions = useMemo(
     () => ({
-      time:{
+      time: {
         timezoneOffset: new Date().getTimezoneOffset() * 2,
       },
       chart: {
@@ -187,7 +187,7 @@ const NodeCharts = (props) => {
 
   const voltageChartOptions = useMemo(
     () => ({
-      time:{
+      time: {
         timezoneOffset: new Date().getTimezoneOffset() * 2,
       },
       chart: {
@@ -239,7 +239,7 @@ const NodeCharts = (props) => {
   );
 
   return (
-    <Grid container justify="center" alignItems="center">
+    <Grid container justifyContent="center" alignItems="center">
       <Fragment>
         <Grid item container spacing={2}>
           <Grid item>

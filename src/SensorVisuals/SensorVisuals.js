@@ -280,7 +280,7 @@ const SensorVisuals = (props) => {
       <Grid item xs={12}>
         <Typography variant="h5">{displayTitle}</Typography>
       </Grid>
-      <Grid item container justify="space-between" spacing={2}>
+      <Grid item container justifyContent="space-between" spacing={2}>
         <Grid item container spacing={2} xs={12} md={6} lg={9}>
           <YearsChips years={years} handleActiveYear={handleActiveYear} />
         </Grid>

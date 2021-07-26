@@ -117,7 +117,12 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {
       </Grid>
 
       <Grid item sm={12}>
-        <Grid container alignContent="center" justify="center" spacing={2}>
+        <Grid
+          container
+          alignContent="center"
+          justifyContent="center"
+          spacing={2}
+        >
           <Grid item>
             <FormControlLabel
               value="existing"
@@ -314,7 +319,7 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {
       </Grid>
       <Grid item xs={12}>
         {/* <SiteSelection /> */}
-        <Grid container justify="center" alignItems="center">
+        <Grid container justifyContent="center" alignItems="center">
           <Grid item>
             <Button
               variant="contained"

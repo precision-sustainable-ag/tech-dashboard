@@ -563,7 +563,12 @@ const DeviceComponent = (props) => {
         </Grid>
         {isFetching && (
           <Grid item xs={12}>
-            <Grid container justify="center" alignItems="center" spacing={3}>
+            <Grid
+              container
+              justifyContent="center"
+              alignItems="center"
+              spacing={3}
+            >
               {hologramApiFunctional && (
                 <Grid item>
                   <Loading
@@ -702,7 +707,8 @@ const isValidJson = (json) => {
 };
 
 const isBase64 = (str = "") => {
-  const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+  const base64regex =
+    /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
 
   return base64regex.test(str);
 };

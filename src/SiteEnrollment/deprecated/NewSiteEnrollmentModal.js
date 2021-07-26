@@ -56,7 +56,11 @@ import {
 import { Map, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { statesHash, fetchGrowerByLastName, ucFirst } from "../../utils/constants";
+import {
+  statesHash,
+  fetchGrowerByLastName,
+  ucFirst,
+} from "../../utils/constants";
 import NewSiteEnrollmentYears from "./NewSiteEnrollmentYears";
 import NewSiteEnrollmentAffiliations from "./NewSiteEnrollmentAffiliations";
 import Loading from "react-loading";
@@ -344,7 +348,7 @@ const NewSiteEnrollmentModal = (props) => {
             container
             className={classes.grid}
             alignItems="center"
-            justify="center"
+            justifyContent="center"
           >
             <Grid item sm={12}>
               <Box position="relative" display="inline-flex">
@@ -357,7 +361,7 @@ const NewSiteEnrollmentModal = (props) => {
             container
             className={classes.grid}
             alignItems="center"
-            justify="center"
+            justifyContent="center"
           >
             <Grid item lg={12}>
               {mdMatch ? (
@@ -424,9 +428,9 @@ const NewSiteEnrollmentModal = (props) => {
                   </Button>
                 </div>
               ) : (
-                <Grid container justify="center">
+                <Grid container justifyContent="center">
                   <Grid item className={classes.instructions} lg={12}>
-                    <Grid container justify="center" alignItems="center">
+                    <Grid container justifyContent="center" alignItems="center">
                       {getStepContent(activeStep)}
                     </Grid>
                   </Grid>
@@ -495,10 +499,8 @@ const GrowerInfo = (props) => {
     text: "",
   });
   const [growerLastNameSearch, setGrowerLastNameSearch] = useState("");
-  const [
-    growerLastNameSearchLoading,
-    setGrowerLastNameSearchLoading,
-  ] = useState(false);
+  const [growerLastNameSearchLoading, setGrowerLastNameSearchLoading] =
+    useState(false);
   const [growerInfoFetch, setGrowerInfoFetch] = useState([
     new ExistingGrower("", "", "", "", ""),
   ]);
@@ -1237,12 +1239,12 @@ const SiteInfo = (props) => {
                               ? { ...obj, irrigation: event.target.checked }
                               : obj
                           );
-                          const newGlobalObj = props.completeEnrollmentInfo.sites.map(
-                            (obj) =>
+                          const newGlobalObj =
+                            props.completeEnrollmentInfo.sites.map((obj) =>
                               obj.code === site.code
                                 ? { ...obj, irrigation: event.target.checked }
                                 : obj
-                          );
+                            );
                           props.setCompleteEnrollmentInfo({
                             ...completeEnrollmentInfo,
                             sites: newGlobalObj,
@@ -1270,12 +1272,12 @@ const SiteInfo = (props) => {
                               ? { ...obj, address: event.target.value }
                               : obj
                           );
-                          const newGlobalObj = props.completeEnrollmentInfo.sites.map(
-                            (obj) =>
+                          const newGlobalObj =
+                            props.completeEnrollmentInfo.sites.map((obj) =>
                               obj.code === site.code
                                 ? { ...obj, address: event.target.value }
                                 : obj
-                          );
+                            );
                           props.setCompleteEnrollmentInfo({
                             ...completeEnrollmentInfo,
                             sites: newGlobalObj,
@@ -1303,12 +1305,12 @@ const SiteInfo = (props) => {
                               ? { ...obj, county: event.target.value }
                               : obj
                           );
-                          const newGlobalObj = props.completeEnrollmentInfo.sites.map(
-                            (obj) =>
+                          const newGlobalObj =
+                            props.completeEnrollmentInfo.sites.map((obj) =>
                               obj.code === site.code
                                 ? { ...obj, county: event.target.value }
                                 : obj
-                          );
+                            );
                           props.setCompleteEnrollmentInfo({
                             ...completeEnrollmentInfo,
                             sites: newGlobalObj,
@@ -1346,12 +1348,12 @@ const SiteInfo = (props) => {
                               ? { ...obj, latitide: event.target.value }
                               : obj
                           );
-                          const newGlobalObj = props.completeEnrollmentInfo.sites.map(
-                            (obj) =>
+                          const newGlobalObj =
+                            props.completeEnrollmentInfo.sites.map((obj) =>
                               obj.code === site.code
                                 ? { ...obj, latitide: event.target.value }
                                 : obj
-                          );
+                            );
                           props.setCompleteEnrollmentInfo({
                             ...completeEnrollmentInfo,
                             sites: newGlobalObj,
@@ -1385,12 +1387,12 @@ const SiteInfo = (props) => {
                               ? { ...obj, longitude: event.target.value }
                               : obj
                           );
-                          const newGlobalObj = props.completeEnrollmentInfo.sites.map(
-                            (obj) =>
+                          const newGlobalObj =
+                            props.completeEnrollmentInfo.sites.map((obj) =>
                               obj.code === site.code
                                 ? { ...obj, longitude: event.target.value }
                                 : obj
-                          );
+                            );
                           props.setCompleteEnrollmentInfo({
                             ...completeEnrollmentInfo,
                             sites: newGlobalObj,
@@ -1421,15 +1423,15 @@ const SiteInfo = (props) => {
                                 }
                               : obj
                           );
-                          const newGlobalObj = props.completeEnrollmentInfo.sites.map(
-                            (obj) =>
+                          const newGlobalObj =
+                            props.completeEnrollmentInfo.sites.map((obj) =>
                               obj.code === site.code
                                 ? {
                                     ...obj,
                                     additionalContact: event.target.value,
                                   }
                                 : obj
-                          );
+                            );
                           props.setCompleteEnrollmentInfo({
                             ...completeEnrollmentInfo,
                             sites: newGlobalObj,
@@ -1457,12 +1459,12 @@ const SiteInfo = (props) => {
                               ? { ...obj, notes: event.target.value }
                               : obj
                           );
-                          const newGlobalObj = props.completeEnrollmentInfo.sites.map(
-                            (obj) =>
+                          const newGlobalObj =
+                            props.completeEnrollmentInfo.sites.map((obj) =>
                               obj.code === site.code
                                 ? { ...obj, notes: event.target.value }
                                 : obj
-                          );
+                            );
                           props.setCompleteEnrollmentInfo({
                             ...completeEnrollmentInfo,
                             sites: newGlobalObj,
@@ -1617,7 +1619,7 @@ const ConfirmationStep = (props) => {
           container
           spacing={3}
           style={{ paddingTop: "2em" }}
-          justify="center"
+          justifyContent="center"
         >
           <Grid item lg={12}>
             <Typography variant="body1">
@@ -1707,7 +1709,7 @@ const ConfirmationStep = (props) => {
           container
           spacing={3}
           style={{ paddingTop: "2em" }}
-          justify="center"
+          justifyContent="center"
         >
           <Grid item xs={12}>
             <Typography variant="subtitle1" gutterBottom>

@@ -17,13 +17,13 @@ export const SingleIssueBodyBubble = ({
   const justify = "flex-start";
   const updateDate = new Date(updated_at);
   return (
-    <Grid container justify={justify}>
+    <Grid container justifyContent={justify}>
       <Grid item>
         <Grid
           container
           spacing={2}
           alignItems="center"
-          justify="flex-start"
+          justifyContent="flex-start"
           direction="row"
         >
           <Grid item>
@@ -45,7 +45,7 @@ export const SingleIssueBodyBubble = ({
             <Grid
               container
               style={{ padding: 0 }}
-              justify={justify}
+              justifyContent={justify}
               alignItems={justify}
             >
               <Grid item>
@@ -65,7 +65,7 @@ export const SingleIssueBodyBubble = ({
                 </div>
               </Grid>
               <Grid item xs={12}>
-                <Grid container justify={justify}>
+                <Grid container justifyContent={justify}>
                   <Grid item>
                     <Typography
                       variant="caption"

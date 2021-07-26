@@ -70,13 +70,13 @@ const IssueBubbleBody = ({ issueData, user, isDarkTheme }) => {
 
   const updateDate = new Date(issueData.updated_at);
   return (
-    <Grid container justify={justify}>
+    <Grid container justifyContent={justify}>
       <Grid item>
         <Grid
           container
           spacing={2}
           alignItems="center"
-          justify="flex-start"
+          justifyContent="flex-start"
           direction={justify === "flex-start" ? "row" : "row-reverse"}
         >
           <Grid item>
@@ -112,7 +112,7 @@ const IssueBubbleBody = ({ issueData, user, isDarkTheme }) => {
             <Grid
               container
               style={{ padding: 0 }}
-              justify={justify}
+              justifyContent={justify}
               alignItems={justify}
             >
               {/* ${justify} ${
@@ -137,7 +137,7 @@ const IssueBubbleBody = ({ issueData, user, isDarkTheme }) => {
                 </ChatBubbleBody>
               </Grid>
               <Grid item xs={12}>
-                <Grid container justify={justify}>
+                <Grid container justifyContent={justify}>
                   <Grid item>
                     <Typography
                       variant="caption"

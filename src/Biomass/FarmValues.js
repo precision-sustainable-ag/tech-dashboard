@@ -164,7 +164,7 @@ const FarmValues = () => {
             lg={3}
             sm={12}
             container
-            justify="flex-end"
+            justifyContent="flex-end"
             alignItems="center"
           >
             <div>
