@@ -12,7 +12,7 @@
     "autosuggest-highlight": "^3.1.1",
     "axios": "^0.21.1",
     "clsx": "^1.1.1",
-    "date-fns": "^2.22.1",
+    "date-fns": "^2.23.0",
     "google-map-react": "^2.1.10",
     "highcharts": "^9.1.2",
     "highcharts-react-official": "^3.0.0",
