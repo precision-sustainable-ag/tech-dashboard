@@ -34,7 +34,7 @@
     "react-platform-js": "0.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.3",
-    "react-syntax-highlighter": "^15.4.3",
+    "react-syntax-highlighter": "^15.4.4",
     "sass": "^1.35.2",
     "styled-components": "^5.2.3"
   },
