@@ -14,10 +14,10 @@ module.exports = {
   },
   plugins: ["react", "react-hooks"],
   rules: {
-    // "react/jsx-uses-react": "error",
-    // "react/jsx-uses-vars": "error",
-    // "react-hooks/exhaustive-deps": "warn",
-    // "react-hooks/rules-of-hooks": "warn",
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "react-hooks/rules-of-hooks": "warn",
   },
   settings: {
     react: {
