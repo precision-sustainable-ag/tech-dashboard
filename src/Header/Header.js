@@ -1,11 +1,9 @@
 // Dependency Imports
 import React, { useEffect, useContext, useState } from "react";
 import clsx from "clsx";
-import Apistatus from "../APIStatus"; 
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 import { RiSensorFill, RiTimeLine } from "react-icons/all";
-import ErrorIcon from "@material-ui/icons/Error";
 import {
   Drawer,
   AppBar,
@@ -37,7 +35,6 @@ import {
   BugReport,
   Storage,
   Person,
-  CheckCircleRounded
 } from "@material-ui/icons";
 import Axios from "axios";
 import { Octokit } from "@octokit/rest";
@@ -123,9 +120,7 @@ export default function Header(props) {
   const [anchorEl, setAnchorEl] = useState(null);
   const profileMenuOpen = Boolean(anchorEl);
   const [state, dispatch] = useContext(Context);
-  const [auth0works,setAuth0works] = useState(true);
-  const [anchorForAPIs, setAnchorForAPIs] = useState(null);
-      
+
   const { logout, user, loginWithRedirect } = useAuth0();
   const [openAllDataNav, setOpenAllDataNav] = useState(false);
   const [openDevicesNav, setOpenDevicesNav] = useState(false);
@@ -139,15 +134,6 @@ export default function Header(props) {
   });
 
   const { getTokenSilently } = useAuth0();
-  
-
-
-  //   const apiCheck = () => {
-  //   props.setApiStatus(!isAPIStatus);
-  // }
-	const handleCloseAPIMenu = () => {
-		setAnchorForAPIs(null);
-	};
 
   const handleOpenAllDataNav = () => {
     setOpenAllDataNav(!openAllDataNav);
@@ -159,9 +145,6 @@ export default function Header(props) {
     setOpen(true);
   };
 
-  const handleOpenAPIMenu = (event) => {
-		setAnchorForAPIs(event.currentTarget);
-	};
   const handleDrawerClose = () => {
     setOpen(false);
   };
@@ -176,13 +159,6 @@ export default function Header(props) {
   const toggleThemeDarkness = () => {
     props.setDarkTheme();
   };
-
-function CheckLoggedInAuth0(){getTokenSilently()
-        .then((token)=>{
-          console.log("Auth0 works when the user is logged in")
-        }).catch(e=>setAuth0works(false))
-		  }
-  useEffect(()=>{CheckLoggedInAuth0()},[anchorForAPIs]);
 
   const addUserToDatabase = async (dataString) => {
     try {
@@ -293,23 +269,6 @@ function CheckLoggedInAuth0(){getTokenSilently()
           <Typography variant="h6" noWrap className={classes.title}>
             PSA Tech Dashboard
           </Typography>
-          <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleOpenAPIMenu} color="inherit">
-            <CheckCircleRounded/>
-          </IconButton>
-          <Menu
-            id="simple-menu"
-            anchorEl={anchorForAPIs}
-            keepMounted
-            open={Boolean(anchorForAPIs)}
-            onClose={handleCloseAPIMenu}
-          >
-            <MenuItem onClick={handleCloseAPIMenu}>
-            <IconButton onClick = {() => {CheckLoggedInAuth0()}}>
-            {(auth0works)? (<CheckCircleRounded color="primary"/>):(<ErrorIcon color="primary"/>)}</IconButton>
-            <Typography>Auth0</Typography>
-            </MenuItem>
-            <Apistatus/>
-          </Menu>
           <IconButton color="inherit" onClick={toggleThemeDarkness}>
             {props.isDarkTheme ? <BrightnessLow /> : <BrightnessHigh />}
           </IconButton>

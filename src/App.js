@@ -71,8 +71,6 @@ import {
 import { apiCorsUrl, APIURL } from "./Devices/hologramConstants";
 import QueryString from "qs";
 
-
-
 // Helper function
 function useOnlineStatus() {
   const [online, setOnline] = useState(window.navigator.onLine);
@@ -120,8 +118,9 @@ function App() {
     getTokenSilently,
   } = useAuth0();
   const classes = useStyles();
-  const [auth0works,setauth0works] = useState(true);
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   const [theme, setTheme] = useState({
     palette: {
       primary: { main: "#2e7d32" },
@@ -192,31 +191,16 @@ function App() {
 
   const [checkingAPIs, setCheckingAPIs] = useState(true);
 
-  useEffect(()=>{setauth0works(isAuthenticated === true || isAuthenticated === false);},[isAuthenticated]);
-
   useEffect(() => {
     const checkAuth = async () => {
       if (isAuthenticated) {
         setIsLoggedIn(true);
-        getTokenSilently()
-        .then((token)=>{
-          console.log("Auth0 works when the user is logged in")
-        }).catch(e=>console.log(e));
-
-      } else if (isAuthenticated === false){
+      } else {
         setIsLoggedIn(false);
       }
-       else{
-         setTimeout(()=>{
-           if (isAuthenticated !==true && isAuthenticated !== false){
-             setauth0works(false);
-             setInterval(()=>{checkAuth();console.log("Calling check auth");},5000);
-           }
-         },10000);
-       }
     };
     if (!loading) {
-      checkAuth()
+      checkAuth();
     }
   }, [loading, getTokenSilently, isAuthenticated]);
 
@@ -480,16 +464,6 @@ function App() {
             <Typography variant="h3" gutterBottom align="center">
               Please Log In To Continue
             </Typography>
-            {auth0works ? 
-            (<Typography variant="h6" gutterBottom align="center">
-              {/* Auth0 works */}
-            </Typography>):
-            (<Typography variant="h5" gutterBottom align="center">
-              Auth0 is not responding, trying to reconnect  
-            </Typography>)}
-
-
-
             <Typography variant="body1" gutterBottom align="center">
               <Button
                 variant="contained"
