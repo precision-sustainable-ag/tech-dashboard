@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 // import { Map, Marker, Popup, TileLayer } from "react-leaflet";
-import Skeleton from "@material-ui/lab/Skeleton";
+// import Skeleton from "@material-ui/lab/Skeleton";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 
 import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
@@ -46,12 +46,14 @@ import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
 
 // Local Imports
 import { apiUsername, apiPassword } from "../../utils/api_secret";
-import { APIURL, APICreds, apiCorsUrl } from "../hologramConstants";
-import GoogleMap from "../../Location/GoogleMap";
+import { APIURL, apiCorsUrl } from "../hologramConstants";
+
 import { ScrollTop, useInfiniteScroll } from "../../utils/CustomComponents";
 import Loading from "react-loading";
 import StressCamButtons from "./StressCamButtons";
 import { checkIfDeviceHasNickname } from "../../utils/constants";
+import { bool, any } from "prop-types";
+
 // import { theme } from "highcharts";
 
 SyntaxHighlighter.registerLanguage("json", json);
@@ -682,16 +684,16 @@ const DeviceComponent = (props) => {
   );
 };
 
-const LoadingSkeleton = () => {
-  <Grid container spacing={4}>
-    <Grid item xs={12}>
-      <Skeleton variant="rect" width="100%" height="300px" animation="wave" />
-    </Grid>
-    <Grid item xs={12}>
-      <Skeleton variant="rect" width="100%" height="50vh" animation="pulse" />
-    </Grid>
-  </Grid>;
-};
+// const LoadingSkeleton = () => {
+//   <Grid container spacing={4}>
+//     <Grid item xs={12}>
+//       <Skeleton variant="rect" width="100%" height="300px" animation="wave" />
+//     </Grid>
+//     <Grid item xs={12}>
+//       <Skeleton variant="rect" width="100%" height="50vh" animation="pulse" />
+//     </Grid>
+//   </Grid>;
+// };
 
 const isValidJson = (json) => {
   if (!(json && typeof json === "string")) {
@@ -713,3 +715,9 @@ const isBase64 = (str = "") => {
   return base64regex.test(str);
 };
 export default DeviceComponent;
+
+DeviceComponent.propTypes = {
+  location: any,
+  isDarkTheme: bool,
+  history: any,
+};

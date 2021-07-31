@@ -13,6 +13,7 @@ import {
   responsiveFontSizes,
   createTheme,
 } from "@material-ui/core";
+import PropTypes from "prop-types";
 
 // Local Imports
 import { useAuth0 } from "./Auth/react-auth0-spa";
@@ -62,12 +63,7 @@ import Protocols from "./Protocols/Protocols";
 import DecompBag from "./DecompBag/DecompBag";
 import Debug from "./Debug/Debug";
 import axios from "axios";
-import {
-  apiPassword,
-  apiURL,
-  apiUsername,
-  onfarmAPI,
-} from "./utils/api_secret";
+import { apiPassword, apiUsername, onfarmAPI } from "./utils/api_secret";
 import { apiCorsUrl, APIURL } from "./Devices/hologramConstants";
 import QueryString from "qs";
 
@@ -241,7 +237,7 @@ function App() {
 
               <Switch>
                 <Route
-                  render={(props) => (
+                  render={() => (
                     // <LandingComponent
                     //   {...props}
                     //   isDarkTheme={theme.palette.type === "light" ? false : true}
@@ -258,7 +254,7 @@ function App() {
                 />
                 <PrivateRoute
                   path="/on-farm-protocols"
-                  render={(props) => (
+                  render={() => (
                     <Protocols
                       isDarkTheme={
                         theme.palette.type === "light" ? false : true
@@ -269,7 +265,7 @@ function App() {
                 />
                 <PrivateRoute
                   path="/devices/stress-cams"
-                  render={(props) => (
+                  render={() => (
                     <StressCams
                       isDarkTheme={
                         theme.palette.type === "light" ? false : true
@@ -280,7 +276,7 @@ function App() {
                 />
                 <PrivateRoute
                   path="/devices/water-sensors"
-                  render={(props) => (
+                  render={() => (
                     <WaterSensors
                       isDarkTheme={
                         theme.palette.type === "light" ? false : true
@@ -292,7 +288,7 @@ function App() {
 
                 <PrivateRoute
                   path="/site-information/contact-enrollment"
-                  render={(props) => (
+                  render={() => (
                     <AllDataTable
                       isDarkTheme={
                         theme.palette.type === "light" ? false : true
@@ -304,7 +300,7 @@ function App() {
                 <PrivateRoute
                   path="/site-information/farm-dates"
                   exact
-                  render={(props) => (
+                  render={() => (
                     <FarmDates
                       isDarkTheme={
                         theme.palette.type === "light" ? false : true
@@ -634,9 +630,8 @@ const APIChecker = (props) => {
   }, [retry]);
 
   useEffect(() => {
-    const { setChecker } = props;
     if (Object.values(apisWorking).every(Boolean)) setChecker(false);
-  }, [apisWorking, props]);
+  }, [apisWorking, setChecker]);
 
   const StatusChecker = ({ checkingApis, apisWorking, type }) => {
     switch (type) {
@@ -680,7 +675,19 @@ const APIChecker = (props) => {
         return null;
     }
   };
-
+  StatusChecker.propTypes = {
+    checkingApis: PropTypes.shape({
+      phpAPI: PropTypes.bool,
+      onfarmAPI: PropTypes.bool,
+      hologramAPI: PropTypes.bool,
+    }),
+    apisWorking: PropTypes.shape({
+      phpAPI: PropTypes.bool,
+      onfarmAPI: PropTypes.bool,
+      hologramAPI: PropTypes.bool,
+    }),
+    type: PropTypes.oneOf(["onfarmAPI", "hologramAPI", "phpAPI"]),
+  };
   return (
     <>
       <CssBaseline />
@@ -788,3 +795,8 @@ const sleeper = (ms = 100) => {
 };
 
 export default App;
+
+APIChecker.propTypes = {
+  theme: PropTypes.object,
+  setChecker: PropTypes.func,
+};
