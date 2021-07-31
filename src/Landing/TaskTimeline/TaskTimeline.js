@@ -9,8 +9,6 @@ import { Link } from "react-router-dom";
 // Default function
 const TaskTimeline = () => {
   const [htmlData, setHtmlData] = useState("");
-
-  // const ref = useRef();
   useEffect(() => {
     const fetchData = async () => {
       let data = await fetch(`${apiURL}/api/psa/internal/pages/1592`, {
