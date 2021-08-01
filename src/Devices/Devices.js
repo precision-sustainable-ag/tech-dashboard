@@ -18,7 +18,7 @@ import { BannedRoleMessage } from "../utils/CustomComponents";
 import PropTypes from "prop-types";
 import { useHistory } from "react-router-dom";
 import { Search } from "@material-ui/icons";
-import { apiPassword, apiUsername } from "../utils/api_secret";
+import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
 
 const deviceCardStyle = {
   height: "210px",
@@ -53,7 +53,7 @@ const DevicesComponent = (props) => {
         }
         return acc;
       }, []);
-      const fetchNicknamesURL = `https://admin.onfarmtech.org/api/hologram/device/nicknames/bulk`;
+      const fetchNicknamesURL = `${apiURL}/api/hologram/device/nicknames/bulk`;
 
       // const response = await axios({
       //   url: fetchNicknamesURL,
