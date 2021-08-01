@@ -18,6 +18,7 @@ import { Comment } from "@material-ui/icons";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 import React, { useState } from "react";
 import IssueDialogue from "./../Comments/IssueDialogue";
+import { useWindowDimensions } from "../utils/SharedFunctions";
 
 const colHeaders = (unitType = "kg/ha") => [
   {
@@ -67,10 +68,14 @@ const useStyles = makeStyles({
     width: "100%",
   },
   container: {
-    // maxHeight: "670px",
+    maxHeight:
+      window.innerHeight < 900 && window.innerHeight > 600
+        ? (window.innerHeight - 130) * 0.7
+        : (window.innerHeight < 600) * 0.7
+        ? (window.innerHeight - 200) * 0.7
+        : window.innerHeight * 0.7,
   },
 });
-
 const FarmValuesTable = ({
   data = [],
   year,
@@ -78,6 +83,16 @@ const FarmValuesTable = ({
   setSnackbarData,
   units = "kg/ha",
 }) => {
+  // let height = window.innerHeight;
+
+  // if (height < 900 && height > 600) {
+  //   height -= 130;
+  // } else if (height < 600) {
+  //   height -= 200;
+  // }
+
+  // console.log(height);
+
   const record = useMemo(() => {
     return data
       .filter((rec) => {
@@ -132,7 +147,7 @@ const FarmValuesTable = ({
           <TableBody>
             {record.map((record, index) => (
               <React.Fragment key={index}>
-                <CustomTableRow key={index}>
+                <CustomTableRow>
                   <TableCell>
                     <IconButton
                       aria-label="expand row"

@@ -124,7 +124,7 @@ const FarmValues = () => {
   const [units, setUnits] = useState("kg/ha");
 
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={3} style={{ maxHeight: "90vh" }}>
       {fetching ? (
         <CustomLoader />
       ) : farmValues.length === 0 ? (
