@@ -101,11 +101,23 @@ export const BannedRoleMessage = ({ title }) => {
   );
 };
 
-export const CustomLoader = (props) => {
-  const width = props.width || "200px";
-  const height = props.height || "200px";
-  const color = props.color || "#3f51b5";
+BannedRoleMessage.propTypes = {
+  title: PropTypes.string.isRequired,
+};
+
+export const CustomLoader = ({ width, height, color }) => {
   return <Loading type="bars" width={width} height={height} color={color} />;
+};
+
+CustomLoader.propTypes = {
+  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  color: PropTypes.string,
+};
+CustomLoader.defaultProps = {
+  width: "200px",
+  height: "200px",
+  color: "#3f51b5",
 };
 
 export const BarsLoader = (props) => {
@@ -190,6 +202,17 @@ export const BarsLoader = (props) => {
   );
 };
 
+BarsLoader.propTypes = {
+  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  color: PropTypes.string,
+};
+BarsLoader.defaultProps = {
+  width: "200px",
+  height: "200px",
+  color: "#3f51b5",
+};
+
 export const useAutoRefresh = (callback = () => {}, delay = 1000) => {
   const intervalId = React.useRef(null);
   const savedCallback = React.useRef(callback);
@@ -270,6 +293,9 @@ export const ScrollTop = (props) => {
       </div>
     </Zoom>
   );
+};
+ScrollTop.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export const YearsAndAffiliations = (props) => {
