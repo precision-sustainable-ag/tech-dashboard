@@ -1,7 +1,15 @@
 // Dependency Imports
 import React, { useState, useEffect } from "react";
 import Loading from "react-loading";
-import { Card, Chip, Grid, Typography } from "@material-ui/core";
+import {
+  Card,
+  Chip,
+  Grid,
+  Icon,
+  InputAdornment,
+  Typography,
+  TextField,
+} from "@material-ui/core";
 
 // Local Imports
 import DataParser from "./DataParser";
@@ -9,6 +17,8 @@ import { BannedRoleMessage } from "../utils/CustomComponents";
 // import "./Devices.scss";
 import PropTypes from "prop-types";
 import { useHistory } from "react-router-dom";
+import { Search } from "@material-ui/icons";
+import { apiPassword, apiUsername } from "../utils/api_secret";
 
 const deviceCardStyle = {
   height: "210px",
@@ -17,7 +27,10 @@ const deviceCardStyle = {
 // Default function
 const DevicesComponent = (props) => {
   const [validDevices, setValidDevices] = useState([]);
+  const [devicesWithNicknames, setDevicesWithNicknames] = useState([]);
+  const [searchedDevices, setSearchedDevices] = useState([]);
   const [deviceTags, setDeviceTags] = useState([]);
+  const [deviceSearchText, setDeviceSearchText] = useState("");
   const [activeTag, setActiveTag] = useState("All");
   const history = useHistory();
 
@@ -26,6 +39,80 @@ const DevicesComponent = (props) => {
   //   : history.location.state.activeTag
   //   ? history.location.state.activeTag
   //   : "All";
+
+  useEffect(() => {
+    if (validDevices.length === 0) return false;
+
+    // console.log(validDevices);
+
+    const initNicknamesFetch = async () => {
+      const deviceIds = validDevices.reduce((acc, device) => {
+        if (acc.length === 0) return [device.id];
+        else {
+          if (!acc.includes(device.id)) acc.push(device.id);
+        }
+        return acc;
+      }, []);
+      const fetchNicknamesURL = `https://admin.onfarmtech.org/api/hologram/device/nicknames/bulk`;
+
+      // const response = await axios({
+      //   url: fetchNicknamesURL,
+      //   method: "post",
+      //   auth: {
+      //     username: apiUsername,
+      //     password: apiPassword,
+      //   },
+      //   data: JSON.stringify(deviceIds),
+      // });
+
+      const response = await fetch(fetchNicknamesURL, {
+        method: "post",
+        headers: {
+          Authorization:
+            "Basic " +
+            Buffer.from(apiUsername + ":" + apiPassword, "binary").toString(
+              "base64"
+            ),
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        },
+        body: `q=${deviceIds.toString()}`,
+      });
+
+      const nicknameRecords = await response.json();
+
+      const devicesWithNicknames = validDevices.map((device) => {
+        return {
+          ...device,
+          nickname:
+            nicknameRecords.data
+              .filter((rec) => parseInt(rec.device_id) === parseInt(device.id))
+              .map((r) => r.nickname)
+              .toString() || null,
+        };
+      });
+
+      setDevicesWithNicknames(devicesWithNicknames);
+    };
+
+    initNicknamesFetch();
+  }, [validDevices]);
+
+  useEffect(() => {
+    if (deviceSearchText) {
+      const likeExp = deviceSearchText.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
+      const regex = new RegExp(`w*${likeExp}w*`, "gi");
+      const filtered = devicesWithNicknames.filter(
+        (device) =>
+          regex.test(device.nickname) ||
+          regex.test(device.name) ||
+          regex.test(device.id)
+      );
+
+      setSearchedDevices(filtered);
+    } else {
+      setSearchedDevices(devicesWithNicknames);
+    }
+  }, [deviceSearchText, devicesWithNicknames]);
 
   useEffect(() => {
     if (history.location.state) {
@@ -90,6 +177,7 @@ const DevicesComponent = (props) => {
                 onClick={() => setActiveTag("All")}
               />
             </Grid>
+
             {deviceTags.length > 0
               ? deviceTags.map((tag) => (
                   <Grid item key={`tag-${tag}`}>
@@ -114,10 +202,28 @@ const DevicesComponent = (props) => {
               ""
             )}
           </Grid>
-          {validDevices.length > 0 ? (
-            validDevices.map((device) =>
+          <Grid item xs={12}>
+            <TextField
+              variant="outlined"
+              label="Search Devices"
+              value={deviceSearchText}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Icon>
+                      <Search />
+                    </Icon>
+                  </InputAdornment>
+                ),
+              }}
+              helperText="Enter device id or name"
+              onChange={(e) => setDeviceSearchText(e.target.value)}
+            />
+          </Grid>
+          {searchedDevices.length > 0 ? (
+            searchedDevices.map((device) =>
               device.lastsession ? (
-                <Grid item xs={12} md={2} key={device.id}>
+                <Grid item xs={12} md={3} lg={2} sm={6} key={device.id}>
                   <Card
                     style={deviceCardStyle}
                     variant="elevation"
@@ -152,7 +258,13 @@ const DevicesComponent = (props) => {
               )
             )
           ) : (
-            <Typography variant="body1">No Devices Found</Typography>
+            <Grid item xs={12}>
+              <Typography variant="h6">
+                No Devices Found{" "}
+                {deviceSearchText &&
+                  `with nickname | device id | device name  "${deviceSearchText.toUpperCase()}"`}
+              </Typography>
+            </Grid>
           )}
         </Grid>
       )}
@@ -233,6 +345,7 @@ DevicesComponent.propTypes = {
   loading: PropTypes.bool.isRequired,
   devices: PropTypes.array.isRequired,
   userInfo: PropTypes.object,
+  activeTag: PropTypes.string,
 };
 
 export default DevicesComponent;
