@@ -73,18 +73,19 @@ const SiteEnrollment = (props) => {
         />
       ) : (
         <Grid item xs={12}>
-          {showStateSpecificSites ? (
-            <Typography variant="body1" gutterBottom>
-              {stateSitesEnrolled} sites enrolled in your team:{" "}
-              {state.userInfo.state}
-            </Typography>
-          ) : (
-            ""
-          )}
           {!fetchingStats ? (
-            <Typography variant="body1">
-              {totalSitesEnrolled} sites enrolled across all teams.
-            </Typography>
+            <>
+              {showStateSpecificSites && (
+                <Typography variant="body1" gutterBottom>
+                  {stateSitesEnrolled} sites enrolled in your team
+                  {state.userInfo.state.split(",").length > 1 ? "s" : ""}:{" "}
+                  {state.userInfo.state.split(",").join(", ")}
+                </Typography>
+              )}
+              <Typography variant="body1">
+                {totalSitesEnrolled} sites enrolled across all teams.
+              </Typography>
+            </>
           ) : (
             <CustomLoader width="50px" height="50px" />
           )}
