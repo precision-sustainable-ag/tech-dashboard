@@ -87,13 +87,12 @@ const SearchBox = ({
       );
     },
     setData: ({ results, status }, main_text) => {
-      console.log(results);
       if (status === "OK") {
         // setAddress(results.formatted_address);
         const county = results[0].address_components.filter(
           (e) => e.types[0] === "administrative_area_level_2"
         );
-        console.log(county);
+
         if (county.length !== 0) {
           // If google is able to find the county, pick the first preference!
           fetchLocalData.fetchGeocode(results, county, main_text);
@@ -105,12 +104,15 @@ const SearchBox = ({
       }
     },
     fetchGeocode: (results, county, main_text) => {
+      const state = results[0].address_components[4].short_name || "";
+
       setSelectedToEditSite({
         ...selectedToEditSite,
         latitude: results[0].geometry.location.lat(),
         longitude: results[0].geometry.location.lng(),
         county: county[0].long_name,
         address: main_text,
+        state: state,
       });
     },
   };
@@ -136,7 +138,8 @@ const SearchBox = ({
 
     if (!autocompleteService.current && window.google) {
       if (window.google.maps) {
-        autocompleteService.current = new window.google.maps.places.AutocompleteService();
+        autocompleteService.current =
+          new window.google.maps.places.AutocompleteService();
       }
     }
     if (!autocompleteService.current) {

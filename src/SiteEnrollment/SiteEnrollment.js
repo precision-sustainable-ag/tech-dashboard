@@ -1,10 +1,5 @@
 // Dependency Imports
-import {
-  Button,
-  Grid,
-  Snackbar,
-  Typography,
-} from "@material-ui/core";
+import { Button, Grid, Snackbar, Typography } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import Axios from "axios";
 import React, { useState, useEffect, useContext } from "react";
@@ -13,27 +8,26 @@ import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../Store/Store";
 import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
 import { bannedRoles } from "../utils/constants";
-import { BannedRoleMessage } from "../utils/CustomComponents";
+import { BannedRoleMessage, CustomLoader } from "../utils/CustomComponents";
 import EnrollNewSite from "./EnrollNewSite";
 
-// Default function 
+// Default function
 const SiteEnrollment = (props) => {
-  const [state, dispatch] = useContext(Context);
-  const [totalSitesEnrolled, setTotalSitesEnrolled] = React.useState(0);
-  const [stateSitesEnrolled, setStateSitesEnrolled] = React.useState(0);
-  const [showStateSpecificSites, setShowStateSpecificSites] = React.useState(
-    false
-  );
-  const [showContent, setShowContent] = React.useState(false);
-  const [bannedRolesCheckMessage, setBannedRolesCheckMessage] = React.useState(
+  const [state] = useContext(Context);
+  const [totalSitesEnrolled, setTotalSitesEnrolled] = useState(0);
+  const [stateSitesEnrolled, setStateSitesEnrolled] = useState(0);
+  const [showStateSpecificSites, setShowStateSpecificSites] = useState(false);
+  const [showContent, setShowContent] = useState(false);
+  const [bannedRolesCheckMessage, setBannedRolesCheckMessage] = useState(
     "Checking your permissions.."
   );
   const [enrollNewSite, setEnrollNewSite] = useState(false);
   const [savedData, setSavedData] = useState(false);
+  const [fetchingStats, setFetchingStats] = useState(true);
   useEffect(() => {
     if (state.userInfo.state) {
       if (state.userInfo.role) {
-        if (bannedRoles.includes(state.userRole)) {
+        if (bannedRoles.includes(state.userInfo.role)) {
           setShowContent(false);
           setBannedRolesCheckMessage(
             <BannedRoleMessage title="Site Enrollment" />
@@ -45,10 +39,13 @@ const SiteEnrollment = (props) => {
           } else {
             setShowStateSpecificSites(true);
           }
-          getStats(state.userInfo.state).then((data) => {
-            setTotalSitesEnrolled(data.total);
-            setStateSitesEnrolled(data.state);
-          });
+          setFetchingStats(true);
+          getStats(state.userInfo.state)
+            .then((data) => {
+              setTotalSitesEnrolled(data.total);
+              setStateSitesEnrolled(data.state);
+            })
+            .then(() => setFetchingStats(false));
         }
       }
     }
@@ -84,9 +81,13 @@ const SiteEnrollment = (props) => {
           ) : (
             ""
           )}
-          <Typography variant="body1">
-            {totalSitesEnrolled} sites enrolled across all teams.
-          </Typography>
+          {!fetchingStats ? (
+            <Typography variant="body1">
+              {totalSitesEnrolled} sites enrolled across all teams.
+            </Typography>
+          ) : (
+            <CustomLoader width="50px" height="50px" />
+          )}
         </Grid>
       )}
       <Snackbar

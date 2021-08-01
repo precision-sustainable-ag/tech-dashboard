@@ -100,6 +100,41 @@ export const NewSiteInfo = ({
     setSelectedToEditSite(siteInfo);
     setModifyNewSiteDetailsModal(true);
   };
+
+  const handleUpdateNewSite = () => {
+    // console.log(enrollmentData.growerInfo.sites);
+    // console.log(selectedToEditSite);
+    // let editableSite = enrollmentData.growerInfo.sites.filter(
+    //   (sites) => {
+    //     return sites.code === selectedToEditSite.code;
+    //   }
+    // );
+    // console.log(editableSite);
+    //   get site with code not relevant to the modal (selectedtoeditsite)
+    let allSitesExceptCurrent = enrollmentData.growerInfo.sites.filter(
+      (sites) => {
+        return sites.code !== selectedToEditSite.code;
+      }
+    );
+    //   append new data
+    allSitesExceptCurrent.push(selectedToEditSite);
+
+    //   sort Alphabetical
+    // const sortedAllSitesExceptCurrent = allSitesExceptCurrent.sort(
+    //   (a, b) => b.code < a.code
+    // );
+    setEnrollmentData({
+      ...enrollmentData,
+      growerInfo: {
+        ...enrollmentData.growerInfo,
+        sites: allSitesExceptCurrent,
+      },
+    });
+
+    //   close the modal
+    setModifyNewSiteDetailsModal(!modifyNewSiteDetailsModal);
+  };
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
@@ -405,37 +440,7 @@ export const NewSiteInfo = ({
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => {
-                      // console.log(enrollmentData.growerInfo.sites);
-                      // console.log(selectedToEditSite);
-                      // let editableSite = enrollmentData.growerInfo.sites.filter(
-                      //   (sites) => {
-                      //     return sites.code === selectedToEditSite.code;
-                      //   }
-                      // );
-                      // console.log(editableSite);
-                      //   get site with code not relevant to the modal (selectedtoeditsite)
-                      let allSitesExceptCurrent =
-                        enrollmentData.growerInfo.sites.filter((sites) => {
-                          return sites.code !== selectedToEditSite.code;
-                        });
-                      //   append new data
-                      allSitesExceptCurrent.push(selectedToEditSite);
-
-                      //   sort Alphabetical
-                      // const sortedAllSitesExceptCurrent = allSitesExceptCurrent.sort(
-                      //   (a, b) => b.code < a.code
-                      // );
-                      setEnrollmentData({
-                        ...enrollmentData,
-                        growerInfo: {
-                          ...enrollmentData.growerInfo,
-                          sites: allSitesExceptCurrent,
-                        },
-                      });
-                      //   close the modal
-                      setModifyNewSiteDetailsModal(!modifyNewSiteDetailsModal);
-                    }}
+                    onClick={handleUpdateNewSite}
                   >
                     Update
                   </Button>
