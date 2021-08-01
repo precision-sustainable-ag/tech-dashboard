@@ -6,10 +6,10 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
   withStyles,
   IconButton,
   makeStyles,
+  Button,
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 import { useMemo } from "react";
@@ -18,7 +18,6 @@ import { Comment } from "@material-ui/icons";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 import React, { useState } from "react";
 import IssueDialogue from "./../Comments/IssueDialogue";
-import { useWindowDimensions } from "../utils/SharedFunctions";
 
 const colHeaders = (unitType = "kg/ha") => [
   {
@@ -47,6 +46,10 @@ const colHeaders = (unitType = "kg/ha") => [
   },
   {
     name: "%N by NIR",
+    size: "",
+  },
+  {
+    name: "C:N",
     size: "",
   },
   {
@@ -111,6 +114,7 @@ const FarmValuesTable = ({
         ash_corrected_cc_dry_biomass_lb_ac:
           Math.round(rec.ash_corrected_cc_dry_biomass_kg_ha * 0.8922) || "N/A",
         percent_n_nir: rec.percent_n_nir || "N/A",
+        c_n_ratio: rec.CN_ratio ? parseFloat(rec.CN_ratio).toFixed(2) : "N/A",
         percent_carbohydrates: rec.percent_carbohydrates || "N/A",
         percent_cellulose: rec.percent_cellulose || "N/A",
         percent_lignin: rec.percent_lignin || "N/A",
@@ -199,6 +203,7 @@ const FarmValuesTable = ({
                       : record.ash_corrected_cc_dry_biomass_lb_ac}
                   </TableCell>
                   <TableCell align="center">{record.percent_n_nir}</TableCell>
+                  <TableCell align="center">{record.c_n_ratio}</TableCell>
                   <TableCell align="center">
                     {record.percent_carbohydrates}
                   </TableCell>
@@ -262,8 +267,9 @@ const RenderTableHeader = ({ units = "kg/ha" }) => (
  * @returns Empty table
  */
 const RenderEmptyTable = () => (
-  <TableContainer component={Paper} aria-label="Biomass farm values">
+  <TableContainer component={Paper} aria-label="Empty Biomass farm values">
     <Table size="medium">
+      <caption>No data available from API</caption>
       <RenderTableHeader units={"kg/ha"} />
       <TableBody>
         <TableRow>
