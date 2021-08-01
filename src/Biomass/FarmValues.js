@@ -1,4 +1,4 @@
-import { Grid, Typography, Snackbar, Button } from "@material-ui/core";
+import { Grid, Snackbar, Button } from "@material-ui/core";
 import React, { useState, useEffect, useContext, Fragment } from "react";
 import { Context } from "../Store/Store";
 import { onfarmAPI } from "../utils/api_secret";
@@ -92,7 +92,7 @@ const FarmValues = () => {
 
           const affiliations = response
             .reduce(
-              (prev, curr, index, arr) =>
+              (prev, curr) =>
                 !prev.includes(curr.affiliation)
                   ? [...prev, curr.affiliation]
                   : [...prev],
