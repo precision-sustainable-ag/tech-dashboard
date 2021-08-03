@@ -1,4 +1,4 @@
-import { Grid, Snackbar, Button } from "@material-ui/core";
+import { Grid, Snackbar, Button, Switch, withStyles } from "@material-ui/core";
 import React, { useState, useEffect, useContext, Fragment } from "react";
 import { Context } from "../Store/Store";
 import { onfarmAPI } from "../utils/api_secret";
@@ -123,6 +123,14 @@ const FarmValues = () => {
 
   const [units, setUnits] = useState("kg/ha");
 
+  const changeSwitchUnits = (e) => {
+    if (e.target.checked) {
+      setUnits("lbs/ac");
+    } else {
+      setUnits("kg/ha");
+    }
+  };
+
   return (
     <Grid container spacing={3} style={{ maxHeight: "90vh" }}>
       {fetching ? (
@@ -166,21 +174,14 @@ const FarmValues = () => {
             container
             justifyContent="flex-end"
             alignItems="center"
+            component="label"
           >
-            <div>
-              <Button
-                variant="contained"
-                size="small"
-                title={`Change Units to ${
-                  units === "kg/ha" ? "lbs/ac" : "kg/ha"
-                }`}
-                onClick={() =>
-                  units === "kg/ha" ? setUnits("lbs/ac") : setUnits("kg/ha")
-                }
-              >
-                Toggle Units
-              </Button>
-            </div>
+            <Grid item>kg/ha</Grid>
+            <CustomSwitch
+              checked={units === "lbs/ac"}
+              onChange={changeSwitchUnits}
+            />
+            <Grid item>lbs/ac</Grid>
           </Grid>
           {/* Farm Values Table */}
           <Grid item container xs={12}>
@@ -199,3 +200,25 @@ const FarmValues = () => {
 };
 
 export default FarmValues;
+
+const CustomSwitch = withStyles((theme) => ({
+  switchBase: {
+    "&$checked": {
+      color: theme.palette.common.white,
+      "& + $track": {
+        opacity: 1,
+        backgroundColor: theme.palette.grey[500],
+        borderColor: theme.palette.primary.main,
+      },
+    },
+  },
+  thumb: {
+    backgroundColor: theme.palette.primary.main,
+    boxShadow: "none",
+  },
+  track: {
+    opacity: 1,
+    backgroundColor: theme.palette.grey[500],
+  },
+  checked: {},
+}))(Switch);
