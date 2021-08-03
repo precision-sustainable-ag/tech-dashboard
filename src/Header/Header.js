@@ -38,6 +38,7 @@ import {
 } from "@material-ui/icons";
 import Axios from "axios";
 import { Octokit } from "@octokit/rest";
+import PropTypes from "prop-types";
 
 // Local Imports
 import { apiPassword, apiUsername, apiURL } from "../utils/api_secret";
@@ -160,35 +161,6 @@ export default function Header(props) {
     props.setDarkTheme();
   };
 
-  const addUserToDatabase = async (dataString) => {
-    try {
-      await Axios({
-        method: "POST",
-        url: `${apiURL}/api/users`,
-        data: dataString,
-        auth: {
-          username: apiUsername,
-          password: apiPassword,
-        },
-        headers: {
-          "content-type": "application/x-www-form-urlencoded;charset=utf-8",
-        },
-      }).then((response) => {
-        if (response.data.return) {
-          // user added
-          dispatch({
-            type: "UPDATE_ROLE",
-            data: {
-              userRole: "default",
-            },
-          });
-        }
-      });
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   async function addUser(username) {
     const octokit = new Octokit({ auth: githubToken });
     return await octokit.request(
@@ -202,51 +174,78 @@ export default function Header(props) {
     );
   }
 
-  const fetchRole = async (user) => {
-    dispatch({
-      type: "UPDATING_USER_INFO",
-    });
-    await Axios.get(`${apiURL}/api/users/${user.email}`, {
-      auth: {
-        username: apiUsername,
-        password: apiPassword,
-      },
-    }).then((response) => {
-      let data = response.data;
-      if (data.data === null) {
-        //  user does not exist.. add record with default role
-        let obj = {
-          email: user.email,
-        };
-
-        addUserToDatabase(qs.stringify(obj));
-        //add to data corrections
-        addUser(user.nickname).then((res) => console.log(res));
-        // accept invite
-        addToTechnicians(user.nickname, getTokenSilently);
-      } else {
-        dispatch({
-          type: "UPDATE_ROLE",
-          data: {
-            userRole: data.data.role,
-          },
-        });
-        dispatch({
-          type: "UPDATE_USER_INFO",
-          data: {
-            userInfo: data.data,
-          },
-        });
-        //update user details to state
-      }
-    });
-  };
-
   useEffect(() => {
+    const addUserToDatabase = async (dataString) => {
+      try {
+        await Axios({
+          method: "POST",
+          url: `${apiURL}/api/users`,
+          data: dataString,
+          auth: {
+            username: apiUsername,
+            password: apiPassword,
+          },
+          headers: {
+            "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+          },
+        }).then((response) => {
+          if (response.data.return) {
+            // user added
+            dispatch({
+              type: "UPDATE_ROLE",
+              data: {
+                userRole: "default",
+              },
+            });
+          }
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    const fetchRole = async (user) => {
+      dispatch({
+        type: "UPDATING_USER_INFO",
+      });
+      await Axios.get(`${apiURL}/api/users/${user.email}`, {
+        auth: {
+          username: apiUsername,
+          password: apiPassword,
+        },
+      }).then((response) => {
+        let data = response.data;
+        if (data.data === null) {
+          //  user does not exist.. add record with default role
+          let obj = {
+            email: user.email,
+          };
+
+          addUserToDatabase(qs.stringify(obj));
+          //add to data corrections
+          addUser(user.nickname).then((res) => console.log(res));
+          // accept invite
+          addToTechnicians(user.nickname, getTokenSilently);
+        } else {
+          dispatch({
+            type: "UPDATE_ROLE",
+            data: {
+              userRole: data.data.role,
+            },
+          });
+          dispatch({
+            type: "UPDATE_USER_INFO",
+            data: {
+              userInfo: data.data,
+            },
+          });
+          //update user details to state
+        }
+      });
+    };
     if (user) {
       fetchRole(user);
     }
-  }, [user]);
+  }, [user, getTokenSilently, dispatch]);
   return (
     <div className={classes.root}>
       <AppBar
@@ -577,3 +576,9 @@ export default function Header(props) {
     </div>
   );
 }
+
+Header.propTypes = {
+  setDarkTheme: PropTypes.func,
+  isDarkTheme: PropTypes.bool,
+  isLoggedIn: PropTypes.bool,
+};

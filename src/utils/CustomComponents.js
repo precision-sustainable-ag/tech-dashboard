@@ -232,29 +232,31 @@ export const useAutoRefresh = (callback = () => {}, delay = 1000) => {
   return intervalId.current;
 };
 
-export const useInfiniteScroll = (callback, hologramApiFunctional) => {
+export const useInfiniteScroll = (
+  callback = () => {},
+  hologramApiFunctional = true
+) => {
   const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
+    const isScrolling = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop <=
+          0.9 * document.documentElement.offsetHeight ||
+        isFetching
+      )
+        return;
+
+      setIsFetching(true);
+    };
     window.addEventListener("scroll", isScrolling);
     return () => window.removeEventListener("scroll", isScrolling);
-  }, []);
+  }, [isFetching]);
 
   useEffect(() => {
     if (!isFetching || !hologramApiFunctional) return;
     callback();
-  }, [isFetching]);
-
-  const isScrolling = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop <=
-        0.9 * document.documentElement.offsetHeight ||
-      isFetching
-    )
-      return;
-
-    setIsFetching(true);
-  };
+  }, [isFetching, callback, hologramApiFunctional]);
 
   return [isFetching, setIsFetching];
 };

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import MDEditor, { commands } from "@uiw/react-md-editor";
 import React, { useState, useEffect } from "react";
 import { PersonAdd, QuestionAnswer } from "@material-ui/icons";
@@ -14,6 +15,7 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
+import PropTypes from "prop-types";
 
 const bodyFormatter = (dataType, rowData, newComment) => {
   let body;
@@ -106,13 +108,15 @@ const Comments = (props) => {
       setGithubUsers([]);
     };
   }, []);
+  const { removeCommentText, setRemoveCommentText } = props;
 
   useEffect(() => {
-    if (props.removeCommentText) {
+    if (removeCommentText) {
       setNewCommentBody("");
-      props.setRemoveCommentText(false);
+      setRemoveCommentText(false);
     }
-  }, [props.removeCommentText]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [removeCommentText]);
 
   const body = bodyFormatter(props.dataType, props.rowData, newComment);
 
@@ -253,3 +257,8 @@ const Comments = (props) => {
 };
 
 export default Comments;
+
+Comments.propTypes = {
+  removeCommentText: PropTypes.bool,
+  setRemoveCommentText: PropTypes.func,
+};

@@ -16,6 +16,7 @@ import {
 import { sendCommandToHologram } from "../../utils/SharedFunctions";
 import { getDeviceMessages } from "../../utils/SharedFunctions";
 import MuiAlert from "@material-ui/lab/Alert";
+import PropTypes from "prop-types";
 
 // Helper function
 function Alert(props) {
@@ -45,17 +46,17 @@ const StressCamButtons = (props) => {
     setOpen(false);
     setButtonsDisabled(false);
   };
-
+  const { deviceId, isDarkTheme } = props;
   const sendShutdownMessage = () => {
     setOpen(false);
-    sendCommandToHologram(props.deviceId, null, null, "shutdown", null);
+    sendCommandToHologram(deviceId, null, null, "shutdown", null);
     queryHologram();
   };
 
   const queryHologram = () => {
     let count = 0;
     let interval = setInterval(() => {
-      getDeviceMessages(props.deviceId).then((res) => {
+      getDeviceMessages(deviceId).then((res) => {
         let snackbarText =
           "Attempting to send message to your device " +
           (60 - count).toString() +
@@ -93,7 +94,7 @@ const StressCamButtons = (props) => {
     setButtonsDisabled(true);
     if (command === "startCorn")
       sendCommandToHologram(
-        props.deviceId,
+        deviceId,
         farmCode.toUpperCase(),
         rep,
         "start",
@@ -101,14 +102,14 @@ const StressCamButtons = (props) => {
       );
     else if (command === "startSoy")
       sendCommandToHologram(
-        props.deviceId,
+        deviceId,
         farmCode.toUpperCase(),
         rep,
         "start",
         "soybean"
       );
     else if (command === "stop")
-      sendCommandToHologram(props.deviceId, null, null, "stop", null);
+      sendCommandToHologram(deviceId, null, null, "stop", null);
     else if (command === "shutdown") {
       setOpen(true);
       return;
@@ -130,6 +131,11 @@ const StressCamButtons = (props) => {
     );
   };
 
+  ButtonWithTooltip.propTypes = {
+    tooltipText: PropTypes.string,
+    disabled: PropTypes.bool,
+    onClick: PropTypes.any,
+  };
   return (
     <>
       <Snackbar
@@ -205,7 +211,7 @@ const StressCamButtons = (props) => {
               onClick={() => sendMessage("startCorn")}
               fullWidth
               variant="contained"
-              color={props.isDarkTheme ? "primary" : "default"}
+              color={isDarkTheme ? "primary" : "default"}
             >
               Start in Corn
             </ButtonWithTooltip>
@@ -227,7 +233,7 @@ const StressCamButtons = (props) => {
               onClick={() => sendMessage("startSoy")}
               fullWidth
               variant="contained"
-              color={props.isDarkTheme ? "primary" : "default"}
+              color={isDarkTheme ? "primary" : "default"}
             >
               Start in Soybean
             </ButtonWithTooltip>
@@ -237,7 +243,7 @@ const StressCamButtons = (props) => {
               disabled={buttonsDisabled}
               fullWidth
               variant="contained"
-              color={props.isDarkTheme ? "primary" : "default"}
+              color={isDarkTheme ? "primary" : "default"}
               onClick={() => sendMessage("stop")}
             >
               Stop
@@ -248,7 +254,7 @@ const StressCamButtons = (props) => {
               disabled={buttonsDisabled}
               fullWidth
               variant="contained"
-              color={props.isDarkTheme ? "primary" : "default"}
+              color={isDarkTheme ? "primary" : "default"}
               onClick={() => sendMessage("shutdown")}
             >
               Shutdown
@@ -285,3 +291,8 @@ const StressCamButtons = (props) => {
 };
 
 export default StressCamButtons;
+
+StressCamButtons.propTypes = {
+  deviceId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  isDarkTheme: PropTypes.bool,
+};

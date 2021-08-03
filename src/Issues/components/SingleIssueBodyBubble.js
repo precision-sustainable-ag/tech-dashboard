@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import Avatar from "@material-ui/core/Avatar";
 
 import MDEditor from "@uiw/react-md-editor";
-
+import PropTypes from "prop-types";
 import { IconButton, Grid, Tooltip } from "@material-ui/core";
 import "./IssueBodyBubble.scss";
 import { format_AM_PM } from "../../utils/constants";
@@ -92,4 +92,9 @@ export const SingleIssueBodyBubble = ({
       </Grid>
     </Grid>
   );
+};
+
+SingleIssueBodyBubble.propTypes = {
+  issue: PropTypes.object,
+  isDarkTheme: PropTypes.bool,
 };

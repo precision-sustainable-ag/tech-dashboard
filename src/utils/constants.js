@@ -61,6 +61,7 @@ export const apiCall = async (url, options, from) => {
 
 export const debugAdmins = [
   "rbandooni@live.in",
+  "rbandooni90@gmail.com",
   "mikah@theeducationalgardenproject.org",
   "mikahpinegar@gmail.com",
   "bwdavis3@ncsu.edu",
@@ -69,6 +70,7 @@ export const debugAdmins = [
   "screberg@ncsu.edu",
 ];
 export const azureDebugURL = apiURL + "/api/debug/azure";
+export const githubWebhookDebugURL = apiURL + "/api/debug/github";
 
 export const statesHash = {
   AL: "Alabama",

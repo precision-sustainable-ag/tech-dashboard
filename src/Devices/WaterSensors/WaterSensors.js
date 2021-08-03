@@ -5,18 +5,18 @@ import qs from "qs";
 import { useHistory } from "react-router-dom";
 
 // Local Imports
-import DataParser from "../DataParser";
+
 import * as Constants from "../hologramConstants";
 import { bannedRoles, apiCall, compareStrings } from "../../utils/constants";
 import { apiUsername, apiPassword } from "../../utils/api_secret";
-import { BannedRoleMessage } from "../../utils/CustomComponents";
+
 import "../Devices.scss";
 import { Context } from "../../Store/Store";
 import DevicesComponent from "../Devices";
 
 // Default function
 const WaterSensors = () => {
-  const [state, dispatch] = useContext(Context);
+  const [state] = useContext(Context);
   const [devices, setDevices] = useState([]);
   const [showDevices, setShowDevices] = useState(false);
   const [devicesLoadingState, setDevicesLoadingState] = useState(true);
@@ -30,6 +30,7 @@ const WaterSensors = () => {
         setShowDevices(false);
       } else {
         // get tag id for
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         finalAPIURL = Constants.APIURL();
         // Check user state or retrieve all devices
         let apiParams;
@@ -56,8 +57,8 @@ const WaterSensors = () => {
                 if (deviceState.includes(obj.name)) return obj;
               });
               // console.log(matchedResult);
-              let tagsIdArray = [];
-              let tagsId = matchedResult.map((val, index) => {
+
+              let tagsId = matchedResult.map((val) => {
                 // console.log(val);
                 // console.log(val.id);
                 // let tagId = val.id;
@@ -133,7 +134,7 @@ const WaterSensors = () => {
       });
   };
 
-  const tagsApiCall = async (url, options) => {
+  const tagsApiCall = async (url) => {
     let tagsData = [];
 
     await Axios({

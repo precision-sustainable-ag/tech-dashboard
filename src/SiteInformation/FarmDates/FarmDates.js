@@ -1,4 +1,5 @@
-import { useState, useEffect, useContext } from "react";
+/* eslint-disable react/display-name */
+import React, { useState, useEffect, useContext } from "react";
 import { Grid, Typography, Snackbar, Button } from "@material-ui/core";
 import { Context } from "../../Store/Store";
 import MaterialTable from "material-table";
@@ -118,8 +119,12 @@ const FarmDates = () => {
   const [showBannedMessage, setShowBannedMessage] = useState(false);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth0();
-  const [snackbarData, setSnackbarData] = useState({ open: false, text: "", severity: "success" });
-  
+  const [snackbarData, setSnackbarData] = useState({
+    open: false,
+    text: "",
+    severity: "success",
+  });
+
   useEffect(() => {
     if (state.userInfo.role && bannedRoles.includes(state.userInfo.role)) {
       setShowBannedMessage(true);
@@ -176,7 +181,9 @@ const FarmDates = () => {
                 setSnackbarData({ ...snackbarData, open: !snackbarData.open })
               }
             >
-              <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
+              <Alert severity={snackbarData.severity}>
+                {snackbarData.text}
+              </Alert>
             </Snackbar>
             <MaterialTable
               title={"Farm Dates"}
@@ -216,14 +223,14 @@ const FarmDates = () => {
                 {
                   tooltip: "View actual dates",
                   render: (rowData) => {
-                   return(
-                     <FarmDatesDropdown
-                        rowData={rowData} 
-                        fetchFromApi={fetchFromApi} 
-                        nickname={user.nickname} 
+                    return (
+                      <FarmDatesDropdown
+                        rowData={rowData}
+                        fetchFromApi={fetchFromApi}
+                        nickname={user.nickname}
                         setSnackbarData={setSnackbarData}
-                     />
-                   )
+                      />
+                    );
                   },
                 },
               ]}

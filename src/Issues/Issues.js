@@ -1,5 +1,5 @@
-import { useState, useEffect, useContext } from "react";
-import { Box, Grid, Slide, Select, MenuItem, Typography } from "@material-ui/core";
+import React, { useState, useEffect, useContext } from "react";
+import { Grid, Slide, Select, MenuItem, Typography } from "@material-ui/core";
 import { Context } from "../Store/Store";
 import Loading from "react-loading";
 import { useHistory } from "react-router-dom";
@@ -12,7 +12,7 @@ import { RenderIssues } from "./components/RenderIssues";
  * A wrapper component for Issues that loads the RenderIssues component
  */
 
-const Issues = (props) => {
+const Issues = () => {
   const [state] = useContext(Context);
   const [activeState, setActiveState] = useState("");
   const [assignedStates, setAssignedStates] = useState([]);
@@ -27,12 +27,14 @@ const Issues = (props) => {
   // setFilter("all")
 
   const handleFilterChange = (event) => {
-    setFilter(event.target.value)
-  }
+    setFilter(event.target.value);
+  };
 
   useEffect(() => {
     if (Object.keys(state.userInfo).length > 0 && state.userInfo.state) {
-      setActiveState(activeState ? activeState : state.userInfo.state.split(",")[0]);
+      setActiveState((activeState) =>
+        activeState ? activeState : state.userInfo.state.split(",")[0]
+      );
       setAssignedStates(state.userInfo.state.split(","));
       setShowLoader(false);
     } else {
@@ -51,14 +53,15 @@ const Issues = (props) => {
           assignedStates={assignedStates}
         />
         <Grid item>
-          <Grid container spacing = {1}>
-            <Grid item><Typography variant="body1">Filter Issues</Typography></Grid>
+          <Grid container spacing={1}>
+            <Grid item>
+              <Typography variant="body1">Filter Issues</Typography>
+            </Grid>
             <Grid item>
               <Select
                 autoFocus
                 value={filter}
                 onChange={handleFilterChange}
-                
                 defaultValue="all"
                 // defaultChecked="all"
                 // inputProps={{
@@ -69,15 +72,18 @@ const Issues = (props) => {
                 <MenuItem value="all">all</MenuItem>
                 <MenuItem value="kobo-forms">kobo-forms</MenuItem>
                 <MenuItem value="site-information">site-information</MenuItem>
-                <MenuItem value="producer-information">producer-information</MenuItem>
+                <MenuItem value="producer-information">
+                  producer-information
+                </MenuItem>
                 <MenuItem value="farm-dates">farm-dates</MenuItem>
                 <MenuItem value="farm-values">farm-values</MenuItem>
-                <MenuItem value="water-sensor-visuals">water-sensor-visuals</MenuItem>
+                <MenuItem value="water-sensor-visuals">
+                  water-sensor-visuals
+                </MenuItem>
               </Select>
             </Grid>
           </Grid>
         </Grid>
-        
       </Grid>
       <Slide
         in={!showLoader || !state.loadingUser}
@@ -85,7 +91,11 @@ const Issues = (props) => {
         timeout={800}
       >
         <div style={{ paddingTop: "20px" }}>
-          <RenderIssues stateLabel={activeState} userRole={state.userRole} filter={filter}/>
+          <RenderIssues
+            stateLabel={activeState}
+            userRole={state.userRole}
+            filter={filter}
+          />
         </div>
       </Slide>
     </>

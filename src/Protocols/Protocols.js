@@ -1,7 +1,8 @@
 // import React, { useState, useEffect } from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Paper, Typography, Grid, Button } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
+import PropTypes from "prop-types";
 import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
 import parse, { attributesToProps } from "html-react-parser";
 import { Link } from "react-router-dom";
@@ -83,3 +84,6 @@ const Protocols = () => {
 };
 
 export default Protocols;
+Protocols.propTypes = {
+  href: PropTypes.string,
+};

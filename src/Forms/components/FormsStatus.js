@@ -1,13 +1,13 @@
 import {
   Avatar,
-  Button,
   ListItem,
   ListItemAvatar,
   ListItemText,
 } from "@material-ui/core";
 import { Storage } from "@material-ui/icons";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useCallback } from "react";
 import { useHistory } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const FormsStatus = ({ form }) => {
   const history = useHistory();
@@ -16,11 +16,13 @@ const FormsStatus = ({ form }) => {
   //   form.uid,
   // ]);
 
-  const loadRoute = useCallback(() =>
-    history.push({
-      pathname: `/kobo-forms/${form.uid}`,
-      state: { name: form.name },
-    })
+  const loadRoute = useCallback(
+    () =>
+      history.push({
+        pathname: `/kobo-forms/${form.uid}`,
+        state: { name: form.name },
+      }),
+    [form.name, form.uid, history]
   );
 
   return (
@@ -43,3 +45,7 @@ const FormsStatus = ({ form }) => {
   );
 };
 export default FormsStatus;
+
+FormsStatus.propTypes = {
+  form: PropTypes.object,
+};

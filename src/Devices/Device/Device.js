@@ -250,7 +250,8 @@ const DeviceComponent = (props) => {
           setIsFetching(false);
         });
     }
-  }, [timeEnd, deviceId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeEnd, deviceId, props.location.state]);
 
   const RenderGridListMap = () => {
     return (

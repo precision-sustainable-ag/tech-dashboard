@@ -9,7 +9,6 @@ import {
   withStyles,
   IconButton,
   makeStyles,
-  Button,
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 import { useMemo } from "react";
@@ -305,6 +304,8 @@ FarmValuesTable.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
   year: PropTypes.number.isRequired,
   affiliation: PropTypes.string,
+  setSnackbarData: PropTypes.func,
+  units: PropTypes.oneOf(["kg/ha", "lbs/ac"]),
 };
 
 export default FarmValuesTable;

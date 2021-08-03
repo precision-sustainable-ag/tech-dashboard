@@ -1,6 +1,8 @@
+/* eslint-disable react/display-name */
+/* eslint-disable react/prop-types */
 // Dependency Imports
 import React, { useContext, useState, useEffect } from "react";
-import Axios from "axios";
+// import Axios from "axios";
 import Loading from "react-loading";
 import { Grid, Typography, Button, Tooltip, Snackbar } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
@@ -19,7 +21,7 @@ import EditDataModal from "./EditDataModal";
 import UnenrollSiteModal from "./UnenrollSiteModal";
 import NewIssueModal from "./NewIssueModal";
 import { BannedRoleMessage } from "../utils/CustomComponents";
-import { apiUsername, apiPassword, onfarmAPI } from "../utils/api_secret";
+import { onfarmAPI } from "../utils/api_secret";
 import { UserIsEditor } from "../utils/SharedFunctions";
 import MapModal from "./MapModal";
 import { useAuth0 } from "../Auth/react-auth0-spa";
@@ -140,7 +142,7 @@ const AllDataTable = (props) => {
   const [unenrollOpen, setUnenrollOpen] = useState(false);
 
   const [valuesEdited, setValuesEdited] = useState(false);
-  const [siteRemoved, setSiteRemoved] = useState(false);
+  // const [siteRemoved, setSiteRemoved] = useState(false);
   const [showNewIssueDialog, setShowNewIssueDialog] = useState(false);
   const [newIssueData, setNewIssueData] = useState({});
 
@@ -300,19 +302,19 @@ const AllDataTable = (props) => {
     }
   };
 
-  const getAllTableData = async (url) => {
-    return await Axios({
-      url: url,
-      method: "get",
-      auth: {
-        username: apiUsername,
-        password: apiPassword,
-      },
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  };
+  // const getAllTableData = async (url) => {
+  //   return await Axios({
+  //     url: url,
+  //     method: "get",
+  //     auth: {
+  //       username: apiUsername,
+  //       password: apiPassword,
+  //     },
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   });
+  // };
 
   const [mapModalOpen, setMapModalOpen] = useState(false);
   const [mapModalData, setMapModalData] = useState([]);

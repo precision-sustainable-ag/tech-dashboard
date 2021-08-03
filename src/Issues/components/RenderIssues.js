@@ -15,9 +15,8 @@ import { Octokit } from "@octokit/rest";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import Loading from "react-loading";
-import { useAuth0 } from "../../Auth/react-auth0-spa";
 import { githubToken } from "../../utils/api_secret";
-import { bannedRoles, ucFirst } from "../../utils/constants";
+import { ucFirst } from "../../utils/constants";
 
 import MDEditor from "@uiw/react-md-editor";
 import { Link } from "react-router-dom";
@@ -27,7 +26,7 @@ import "./RenderIssues.scss";
  * A component to render issues based on a given state labels
  */
 
-export const RenderIssues = ({ stateLabel, userRole, filter }) => {
+export const RenderIssues = ({ stateLabel, filter }) => {
   const [showIssues, setShowIssues] = useState(false);
   const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -74,21 +73,21 @@ export const RenderIssues = ({ stateLabel, userRole, filter }) => {
   // flag to make sure usernames gave been set in userNames state
   const [doneSettingUsernames, setDoneSettingUsernames] = useState(false);
 
-  const RouterLinkToIssue = React.useMemo(
-    () =>
-      React.forwardRef((linkProps, ref) => (
-        <Link
-          ref={ref}
-          {...linkProps}
-          to={{
-            pathname: `/issues/${clickedIssueData.number}`,
-            state: clickedIssueData,
-            stateLabel: stateLabel,
-          }}
-        />
-      )),
-    [clickedIssueData]
-  );
+  // const RouterLinkToIssue = React.useMemo(
+  //   () =>
+  //     ( React.forwardRef((linkProps, ref) => (
+  //       <Link
+  //         ref={ref}
+  //         {...linkProps}
+  //         to={{
+  //           pathname: `/issues/${clickedIssueData.number}`,
+  //           state: clickedIssueData,
+  //           stateLabel: stateLabel,
+  //         }}
+  //       />
+  //     ))),
+  //   [clickedIssueData]
+  // );
 
   useEffect(() => {
     if (doneSettingUsernames) {
@@ -249,7 +248,7 @@ export const RenderIssues = ({ stateLabel, userRole, filter }) => {
               <AccordionDetails>
                 <Grid container spacing={2}>
                   <Grid item xs={12} className="issueMarkdown">
-                    <MDEditor.Markdown source={issue.body}/>
+                    <MDEditor.Markdown source={issue.body} />
                   </Grid>
                   <Grid item xs={12}>
                     <RenderUserCredits
@@ -261,12 +260,17 @@ export const RenderIssues = ({ stateLabel, userRole, filter }) => {
               </AccordionDetails>
               <AccordionActions style={{ justifyContent: "flex-start" }}>
                 <Button
-                  component={RouterLinkToIssue}
+                  component={Link}
                   // component={
                   //   <Link
                   //     to={{ pathname: `/issues/${issue.number}`, state: issue }}
                   //   />
                   // }
+                  to={{
+                    pathname: `/issues/${clickedIssueData.number}`,
+                    state: clickedIssueData,
+                    stateLabel: stateLabel,
+                  }}
                   variant="contained"
                   color="primary"
                 >
@@ -343,4 +347,5 @@ RenderIssues.propTypes = {
   stateLabel: PropTypes.string.isRequired,
   /** User's role from the RAW database */
   userRole: PropTypes.string.isRequired,
+  filter: PropTypes.any,
 };

@@ -18,10 +18,10 @@ import {
   useMediaQuery,
   useTheme,
 } from "@material-ui/core";
-import { Close } from "@material-ui/icons";
+// import { Close } from "@material-ui/icons";
 import Axios from "axios";
 import React, { useState, useEffect } from "react";
-
+import PropTypes from "prop-types";
 // Local Imports
 import Location from "../Location/Location";
 import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
@@ -72,13 +72,14 @@ export const NewSiteInfo = ({
           };
         });
         siteTemplate = siteTemplate.sort((a, b) => b.code < a.code);
-        setEnrollmentData({
+        setEnrollmentData((enrollmentData) => ({
           ...enrollmentData,
           growerInfo: { ...enrollmentData.growerInfo, sites: siteTemplate },
-        });
+        }));
       });
     }
-  }, [totalSites]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [totalSites, enrollmentData.affiliation]);
 
   const [modifyNewSiteDetailsModal, setModifyNewSiteDetailsModal] =
     useState(false);
@@ -461,4 +462,9 @@ export const NewSiteInfo = ({
       </Dialog>
     </Grid>
   );
+};
+
+NewSiteInfo.propTypes = {
+  enrollmentData: PropTypes.object,
+  setEnrollmentData: PropTypes.func,
 };

@@ -35,7 +35,7 @@ const SensorVisuals = (props) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [years, setYears] = useState([]);
-  const [affiliations, setAffiliations] = useState([]);
+  const [, setAffiliations] = useState([]);
   const [state] = useContext(Context);
   const [codeSearchText, setCodeSearchText] = useState("");
 
@@ -237,16 +237,16 @@ const SensorVisuals = (props) => {
 
   const activeData = useMemo(() => {
     // console.log(JSON.stringify(data))
-    const activeYear = years.reduce((acc, curr, ind, arr) => {
+    const activeYear = years.reduce((acc, curr) => {
       if (curr.active) {
         return curr.year;
       } else return acc;
     }, "");
 
-    const activeAffiliation = affiliations.reduce((acc, curr, index, array) => {
-      if (curr.active) return curr.affiliation;
-      else return acc;
-    }, "");
+    // const activeAffiliation = affiliations.reduce((acc, curr, index, array) => {
+    //   if (curr.active) return curr.affiliation;
+    //   else return acc;
+    // }, "");
     if (!codeSearchText) {
       return data.filter((data) => data.year === activeYear);
     } else {
@@ -256,22 +256,22 @@ const SensorVisuals = (props) => {
           data.code.includes(codeSearchText.toLowerCase())
       );
     }
-  }, [years, data, codeSearchText, affiliations]);
+  }, [years, data, codeSearchText]);
 
   const activeYear = useMemo(() => {
-    return years.reduce((acc, curr, ind, arr) => {
+    return years.reduce((acc, curr) => {
       if (curr.active) {
         return curr.year;
       } else return acc;
     }, "");
   }, [years]);
 
-  const activeAffiliation = useMemo(() => {
-    return affiliations.reduce((acc, curr, index, array) => {
-      if (curr.active) return curr.affiliation;
-      else return acc;
-    }, "");
-  }, [affiliations]);
+  // const activeAffiliation = useMemo(() => {
+  //   return affiliations.reduce((acc, curr, index, array) => {
+  //     if (curr.active) return curr.affiliation;
+  //     else return acc;
+  //   }, "");
+  // }, [affiliations]);
 
   return loading && data.length === 0 ? (
     <CustomLoader />
