@@ -38,7 +38,7 @@ const useStyles = makeStyles(() => ({
     color: "white",
   },
 }));
-console.log("runnnn");
+
 // Helper functions
 const getNodeSerialNo = async (gatewayNo, year) => {
   return await Axios({
