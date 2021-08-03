@@ -32,7 +32,7 @@ const updateRole = (state, action) => {
   };
 };
 
-const updatingUserInfo = (state, action) => {
+const updatingUserInfo = (state) => {
   return {
     ...state,
     loadingUser: true,

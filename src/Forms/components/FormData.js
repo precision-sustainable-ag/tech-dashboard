@@ -21,6 +21,7 @@ import { Context } from "../../Store/Store";
 import { fetchKoboPasswords } from "../../utils/constants";
 import IssueDialogue from "../../Comments/IssueDialogue";
 import FormEntry from "./FormEntry";
+import PropTypes from "prop-types";
 
 SyntaxHighlighter.registerLanguage("json", json);
 
@@ -28,6 +29,8 @@ SyntaxHighlighter.registerLanguage("json", json);
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
+
+const timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
 const FormData = (props) => {
   const [data, setData] = useState([]);
@@ -43,9 +46,12 @@ const FormData = (props) => {
   const [showNewIssueDialog, setShowNewIssueDialog] = useState(false);
 
   const [affiliationLookup, setAffiliationLookup] = useState({});
-  const [timezoneOffset, setTimezoneOffset] = useState(new Date().getTimezoneOffset() * 60 * 1000);
-  
-  const [snackbarData, setSnackbarData] = useState({ open: false, text: "", severity: "success" });
+
+  const [snackbarData, setSnackbarData] = useState({
+    open: false,
+    text: "",
+    severity: "success",
+  });
   const [newIssueData, setNewIssueData] = useState({});
   const [activeIssueIndex, setActiveIssueIndex] = useState(null);
 
@@ -85,12 +91,17 @@ const FormData = (props) => {
           state: state.userInfo.state,
         })
           .then(({ data }) => {
-            const allowedKoboAccounts = data.reduce(
-              (acc, curr) => !acc.includes(curr.kobo_account) ? [...acc, curr.kobo_account] : acc
-              , []
-            ).sort();
+            const allowedKoboAccounts = data
+              .reduce(
+                (acc, curr) =>
+                  !acc.includes(curr.kobo_account)
+                    ? [...acc, curr.kobo_account]
+                    : acc,
+                []
+              )
+              .sort();
             setAffiliationLookup({});
-            data.forEach(function (item, index) {
+            data.forEach(function (item) {
               const kobo_account = item.kobo_account;
               const affiliation = item.state;
 
@@ -109,11 +120,11 @@ const FormData = (props) => {
           .then(() => setFetching(false));
       }
     });
-  }, [formId, state.userInfo.state]);
+  }, [formId, state.userInfo.state, affiliationLookup]);
 
   useEffect(() => {
     const recalculate = async () => {
-      return await new Promise((resolve, reject) => {
+      return await new Promise((resolve) => {
         if (originalData.length > 0) {
           if (activeAccount === "all") resolve(originalData);
           else {
@@ -155,7 +166,7 @@ const FormData = (props) => {
           </Tooltip>
         )}
 
-        {(showNewIssueDialog && index === activeIssueIndex) ? (
+        {showNewIssueDialog && index === activeIssueIndex ? (
           <IssueDialogue
             nickname={user.nickname}
             rowData={JSON.stringify(newIssueData, null, "\t")}
@@ -172,10 +183,15 @@ const FormData = (props) => {
             ]}
             setShowNewIssueDialog={setShowNewIssueDialog}
           />
-        ) : ""
-        }
+        ) : (
+          ""
+        )}
       </div>
     );
+  };
+  CreateNewIssue.propTypes = {
+    issueData: PropTypes.any,
+    index: PropTypes.number,
   };
 
   const RenderFormsData = () => {
@@ -183,7 +199,7 @@ const FormData = (props) => {
       <Grid item xs={12}>
         <Typography variant="h5">Fetching Data...</Typography>
       </Grid>
-    ) : (data.length === 0 && originalData.length === 0) ? (
+    ) : data.length === 0 && originalData.length === 0 ? (
       <Grid item xs={12}>
         <Typography variant="h5">
           {" "}
@@ -201,15 +217,15 @@ const FormData = (props) => {
         </Grid>
         {data.map((record = {}, index) => {
           return (
-            <FormEntry 
-              record={record} 
+            <FormEntry
+              record={record}
               index={index}
-              key={`record${index}`} 
-              isDarkTheme={props.isDarkTheme} 
-              CreateNewIssue={CreateNewIssue} 
-              timezoneOffset={timezoneOffset} 
+              key={`record${index}`}
+              isDarkTheme={props.isDarkTheme}
+              CreateNewIssue={CreateNewIssue}
+              timezoneOffset={timezoneOffset}
             />
-          )
+          );
         })}
       </>
     );
@@ -289,33 +305,9 @@ const FormData = (props) => {
   );
 };
 
-/**
- *
- * @param {Date} submittedDate
- * @returns {{submittedHours: Number, submittedMinutes: String | Number, submittedSeconds: String | Number, am_pm: String}} Formatted Date items
- */
-
-const parseDate = (submittedDate) => {
-  const submittedHours =
-    submittedDate.getHours() > 12
-      ? submittedDate.getHours() - 12
-      : submittedDate.getHours();
-  const submittedMinutes =
-    submittedDate.getMinutes() < 10
-      ? "0" + submittedDate.getMinutes()
-      : submittedDate.getMinutes();
-  var submittedSeconds =
-    submittedDate.getSeconds() < 10
-      ? "0" + submittedDate.getSeconds()
-      : submittedDate.getSeconds();
-  const am_pm = submittedDate.getHours() >= 12 ? "PM" : "AM";
-
-  return {
-    submittedHours,
-    submittedMinutes,
-    submittedSeconds,
-    am_pm,
-  };
-};
-
 export default FormData;
+
+FormData.propTypes = {
+  isDarkTheme: PropTypes.bool,
+  assetId: PropTypes.object,
+};

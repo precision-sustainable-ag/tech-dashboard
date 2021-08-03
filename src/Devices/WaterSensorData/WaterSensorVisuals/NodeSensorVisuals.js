@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /*
 DEPRECATED
 
@@ -14,7 +15,7 @@ import HighchartsReact from "highcharts-react-official";
 // Local Imports
 import { apiUsername, apiURL, apiPassword } from "../../../utils/api_secret";
 import { BarsLoader } from "../../../utils/CustomComponents";
-
+import PropTypes from "prop-types";
 const qs = require("qs");
 
 // Default Function
@@ -727,3 +728,9 @@ const fetchSensorNodeData = async (nodeSerialNo, year) => {
 };
 
 export default NodeSensorVisuals;
+
+NodeSensorVisuals.propTypes = {
+  activeChip: PropTypes.string,
+  year: PropTypes.any,
+  bareNodeSerialNo: PropTypes.any,
+};

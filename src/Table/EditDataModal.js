@@ -20,6 +20,7 @@ import Axios from "axios";
 // Local Imports
 import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
 import Location from "../Location/Location";
+import PropTypes from "prop-types";
 
 //Global Vars
 const qs = require("qs");
@@ -126,7 +127,7 @@ const EditDataModal = (props) => {
     if (checkLatLng) {
       //   call update api
       postModalUpdate(newData)
-        .then((res) => {
+        .then(() => {
           props.handleEditModalClose();
           props.setValuesEdited(!props.valuesEdited);
           // console.log(res);
@@ -524,3 +525,29 @@ const postModalUpdate = async (data) => {
 };
 
 export default EditDataModal;
+
+EditDataModal.propTypes = {
+  open: PropTypes.bool.isRequired,
+  data: PropTypes.shape({
+    cid: PropTypes.any,
+    code: PropTypes.any,
+    year: PropTypes.any,
+    affiliation: PropTypes.any,
+    county: PropTypes.any,
+    longitude: PropTypes.any,
+    latitude: PropTypes.any,
+    notes: PropTypes.any,
+    additional_contact: PropTypes.any,
+    address: PropTypes.any,
+    producer_id: PropTypes.any,
+    state: PropTypes.any,
+    last_name: PropTypes.any,
+    email: PropTypes.any,
+    phone: PropTypes.any,
+    latlng: PropTypes.any,
+    tableData: PropTypes.any,
+  }),
+  handleEditModalClose: PropTypes.func,
+  setValuesEdited: PropTypes.func,
+  valuesEdited: PropTypes.bool,
+};

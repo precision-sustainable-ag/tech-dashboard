@@ -25,7 +25,15 @@ const deviceCardStyle = {
 };
 
 // Default function
-const DevicesComponent = (props) => {
+const DevicesComponent = ({
+  for: forWhom,
+  activeTag: activeTg,
+  devices,
+  userInfo,
+  from,
+  showDevices,
+  loading,
+}) => {
   const [validDevices, setValidDevices] = useState([]);
   const [devicesWithNicknames, setDevicesWithNicknames] = useState([]);
   const [searchedDevices, setSearchedDevices] = useState([]);
@@ -33,12 +41,6 @@ const DevicesComponent = (props) => {
   const [deviceSearchText, setDeviceSearchText] = useState("");
   const [activeTag, setActiveTag] = useState("All");
   const history = useHistory();
-
-  // const tag = props.activeTag
-  //   ? props.activeTag
-  //   : history.location.state.activeTag
-  //   ? history.location.state.activeTag
-  //   : "All";
 
   useEffect(() => {
     if (validDevices.length === 0) return false;
@@ -119,51 +121,51 @@ const DevicesComponent = (props) => {
       if (history.location.state.activeTag) {
         setActiveTag(history.location.state.activeTag);
       }
-    } else if (props.activeTag) {
-      setActiveTag(props.activeTag);
+    } else if (activeTg) {
+      setActiveTag(activeTg);
     } else {
       setActiveTag("All");
     }
-  }, [history.location, props.activeTag]);
+  }, [history.location, activeTg]);
 
   useEffect(() => {
-    if (activeTag === "All" && props.devices.length > 0) {
-      if (props.from === "watersensors") {
-        const devicesWithTags = filterAllDevices(props.devices);
+    if (activeTag === "All" && devices.length > 0) {
+      if (from === "watersensors") {
+        const devicesWithTags = filterAllDevices(devices);
         setValidDevices(devicesWithTags);
       } else {
-        setValidDevices(props.devices);
+        setValidDevices(devices);
       }
     } else {
-      if (props.devices.length > 0) {
+      if (devices.length > 0) {
         if (activeTag === "All") {
-          if (props.from === "watersensors") {
-            const devicesWithTags = filterAllDevices(props.devices);
+          if (from === "watersensors") {
+            const devicesWithTags = filterAllDevices(devices);
             setValidDevices(devicesWithTags);
           } else {
-            setValidDevices(props.devices);
+            setValidDevices(devices);
           }
         } else if (activeTag === "Untagged") {
-          const devicesWithoutTags = filterAllDevicesWithoutTags(props.devices);
+          const devicesWithoutTags = filterAllDevicesWithoutTags(devices);
           setValidDevices(devicesWithoutTags);
         } else {
-          const filteredDevices = filterDevicesByTags(props.devices, activeTag);
+          const filteredDevices = filterDevicesByTags(devices, activeTag);
           setValidDevices(filteredDevices);
         }
       }
     }
-  }, [activeTag, props]);
+  }, [activeTag, devices, from]);
 
   useEffect(() => {
-    if (props.devices.length > 0) {
-      const tags = getAllTags(props.devices).sort();
+    if (devices.length > 0) {
+      const tags = getAllTags(devices).sort();
       setDeviceTags(tags);
     }
-  }, [props]);
+  }, [devices]);
 
-  return props.showDevices ? (
+  return showDevices ? (
     <Grid container>
-      {props.loading ? (
+      {loading ? (
         <Grid item xs={12}>
           <Loading type="bars" width="200px" height="200px" color="#3f51b5" />
         </Grid>
@@ -189,8 +191,7 @@ const DevicesComponent = (props) => {
                   </Grid>
                 ))
               : ""}
-            {props.userInfo.state === "all" ||
-            props.userInfo.state === "All" ? (
+            {userInfo.state === "all" || userInfo.state === "All" ? (
               <Grid item>
                 <Chip
                   color={activeTag === "Untagged" ? "primary" : "default"}
@@ -231,7 +232,7 @@ const DevicesComponent = (props) => {
                     className="deviceDataWrapper"
                   >
                     <DataParser
-                      for={props.for}
+                      for={forWhom}
                       key={device.id}
                       deviceData={device}
                       lastSession={true}
@@ -248,7 +249,7 @@ const DevicesComponent = (props) => {
                     className="deviceDataWrapper"
                   >
                     <DataParser
-                      for={props.for}
+                      for={forWhom}
                       key={device.id}
                       deviceData={device}
                       lastSession={false}
@@ -286,8 +287,7 @@ const getAllTags = (devices) => {
   const tagsArray = tags.flat();
 
   tagsArray.forEach((tag) => {
-    if (uniqueTags.includes(tag.name) || tag.name === "PSA_GLOBAL") {
-    } else {
+    if (!(uniqueTags.includes(tag.name) || tag.name === "PSA_GLOBAL")) {
       uniqueTags.push(tag.name);
     }
   });
@@ -340,12 +340,14 @@ const filterAllDevices = (devices) => {
   return devicesWithTags;
 };
 
+export default DevicesComponent;
+
 DevicesComponent.propTypes = {
   showDevices: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,
   devices: PropTypes.array.isRequired,
   userInfo: PropTypes.object,
   activeTag: PropTypes.string,
+  for: PropTypes.string,
+  from: PropTypes.string,
 };
-
-export default DevicesComponent;

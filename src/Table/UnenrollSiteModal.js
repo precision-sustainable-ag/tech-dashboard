@@ -12,14 +12,14 @@ import {
   Typography,
 } from "@material-ui/core";
 import Axios from "axios";
-
+import PropTypes from "prop-types";
 // Local Imports
 import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
 
 //Global Vars
 const qs = require("qs");
 
-// Default function 
+// Default function
 const UnenrollSiteModal = (props) => {
   const open = props.open;
   const [confirmText, setConfirmText] = useState("");
@@ -131,20 +131,15 @@ const UnenrollSiteModal = (props) => {
 
 export default UnenrollSiteModal;
 
-class SiteEnrollment {
-  cid = String("");
-  code = String("");
-  year = String("");
-  affiliation = String("");
-  county = String("");
-  longitude = parseFloat(0);
-  latitude = parseFloat(0);
-  notes = String("");
-  additional_contact = String("");
-  producer_id = String("");
-  address = String("");
-  state = String("");
+UnenrollSiteModal.propTypes = {
+  open: PropTypes.bool,
+  data: PropTypes.any,
+  handleUnenrollClose: PropTypes.func,
+  setValuesEdited: PropTypes.func,
+  valuesEdited: PropTypes.bool,
+};
 
+class SiteEnrollment {
   constructor(obj) {
     //   unmutable
     this.cid = obj.cid;
@@ -163,7 +158,7 @@ class SiteEnrollment {
     this.state = obj.state;
   }
 
-  sanitizeData = () => {
+  sanitizeData() {
     if (!this.additional_contact) this.additional_contact = "-999";
     if (!this.address) this.address = "-999";
     if (!this.county) this.county = "-999";
@@ -171,5 +166,5 @@ class SiteEnrollment {
     if (isNaN(this.longitude)) this.longitude = -999;
     if (!this.state) this.state = "-999";
     if (!this.notes) this.notes = "-999";
-  };
+  }
 }

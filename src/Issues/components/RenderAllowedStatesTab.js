@@ -1,19 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Grid, Chip, } from "@material-ui/core";
+
 import PropTypes from "prop-types";
 import { apiPassword, apiURL, apiUsername } from "../../utils/api_secret";
 import Axios from "axios";
 import { Context } from "../../Store/Store";
 import { YearsAndAffiliations } from "../../utils/CustomComponents";
 
-export const RenderAllowedStatesTab = ({
-  assignedStates = [],
-  setActiveState,
-  activeState,
-}) => {
-  const [loading, setLoading] = useState();
+export const RenderAllowedStatesTab = ({ setActiveState, activeState }) => {
+  const [, setLoading] = useState(true);
   const [allAffiliations, setAllAffiliations] = useState([]);
-  const [state, dispatch] = useContext(Context);
+  const [state] = useContext(Context);
 
   useEffect(() => {
     setLoading(true);
@@ -26,15 +22,22 @@ export const RenderAllowedStatesTab = ({
         let permittedAffiliations = [];
         if (state.userInfo.state === "all") {
           affiliations.map((affiliation) => {
-            permittedAffiliations.push({affiliation: affiliation.affiliation, active: affiliation.affiliation.valueOf() === activeState.valueOf()});
-          })
+            permittedAffiliations.push({
+              affiliation: affiliation.affiliation,
+              active:
+                affiliation.affiliation.valueOf() === activeState.valueOf(),
+            });
+          });
           setAllAffiliations(permittedAffiliations);
         } else {
           const dbPermittedAffiliations = state.userInfo.state.split(",");
           dbPermittedAffiliations.sort().forEach((element) => {
             let a = affiliations.filter((data) => data.affiliation === element);
             console.log(a);
-            permittedAffiliations.push({affiliation: a[0].affiliation, active: a[0].affiliation === activeState});
+            permittedAffiliations.push({
+              affiliation: a[0].affiliation,
+              active: a[0].affiliation === activeState,
+            });
           });
           console.log(permittedAffiliations);
           setAllAffiliations(permittedAffiliations);
@@ -43,7 +46,8 @@ export const RenderAllowedStatesTab = ({
       .then(() => {
         setLoading(false);
       });
-  }, [activeState]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeState, state.userInfo.state]);
 
   const handleActiveAffiliation = (affiliation = "all") => {
     const newAffiliations = allAffiliations.map((rec) => {
@@ -60,17 +64,17 @@ export const RenderAllowedStatesTab = ({
     setAllAffiliations(sortedNewAffiliations);
   };
 
-  return (  
-    allAffiliations.length > 0 ? 
-      <YearsAndAffiliations
-        title={"Issues"}
-        years={null}
-        handleActiveYear={null}
-        affiliations={allAffiliations}
-        handleActiveAffiliation={handleActiveAffiliation}
-        showYears={false}
-      />
-    : ""
+  return allAffiliations.length > 0 ? (
+    <YearsAndAffiliations
+      title={"Issues"}
+      years={null}
+      handleActiveYear={null}
+      affiliations={allAffiliations}
+      handleActiveAffiliation={handleActiveAffiliation}
+      showYears={false}
+    />
+  ) : (
+    ""
   );
 };
 
@@ -82,8 +86,6 @@ const fetchSiteAffiliations = async () => {
     },
   });
 };
-
-
 
 RenderAllowedStatesTab.propTypes = {
   assignedStates: PropTypes.array.isRequired,

@@ -6,6 +6,7 @@ import Avatar from "@material-ui/core/Avatar";
 
 import MDEditor from "@uiw/react-md-editor";
 
+import PropTypes from "prop-types";
 // import "./IssueBodyBubble.scss";
 import { IconButton, Grid, Tooltip, makeStyles } from "@material-ui/core";
 import { format_AM_PM } from "../../utils/constants";
@@ -50,7 +51,7 @@ const useStyles = makeStyles({
   },
 });
 
-const IssueBubbleBody = ({ issueData, user, isDarkTheme }) => {
+const IssueBubbleBody = ({ issueData, user }) => {
   const classes = useStyles();
   let side = issueData.hasMention
     ? issueData.user.login === user.nickname
@@ -167,3 +168,9 @@ const IssueBubbleBody = ({ issueData, user, isDarkTheme }) => {
 };
 
 export default IssueBubbleBody;
+
+IssueBubbleBody.propTypes = {
+  issueData: PropTypes.any,
+  isDarkTheme: PropTypes.bool,
+  user: PropTypes.object,
+};

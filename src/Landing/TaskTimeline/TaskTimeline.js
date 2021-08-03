@@ -5,6 +5,7 @@ import { apiPassword, apiURL, apiUsername } from "../../utils/api_secret";
 import { Skeleton } from "@material-ui/lab";
 import parse, { attributesToProps } from "html-react-parser";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
 // Default function
 const TaskTimeline = () => {
@@ -76,3 +77,7 @@ const TaskTimeline = () => {
 };
 
 export default TaskTimeline;
+
+TaskTimeline.propTypes = {
+  href: PropTypes.string,
+};

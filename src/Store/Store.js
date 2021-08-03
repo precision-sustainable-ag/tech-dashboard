@@ -1,6 +1,6 @@
 // Dependency Imports
 import React, { createContext, useReducer } from "react";
-
+import PropTypes from "prop-types";
 // Local Imports
 import Reducer from "./Reducer";
 
@@ -22,6 +22,10 @@ const Store = ({ children }) => {
   return (
     <Context.Provider value={[state, dispatch]}>{children}</Context.Provider>
   );
+};
+
+Store.propTypes = {
+  children: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
 };
 
 export const Context = createContext(initialState);

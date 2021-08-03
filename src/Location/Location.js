@@ -2,7 +2,7 @@
 import { Grid } from "@material-ui/core";
 import React, { useState } from "react";
 import GoogleMapsReact from "google-map-react";
-
+import PropTypes from "prop-types";
 // Local Imports
 import "./marker.scss";
 import { googleApiKey } from "../utils/api_secret";
@@ -27,8 +27,8 @@ const Location = ({
     mapInstance: null,
     mapsApi: null,
   });
-  const [addressString, setAddressString] = useState("");
-  const [zoom, setZoom] = useState(defaultZoom);
+
+  const zoom = defaultZoom;
 
   const apiLoaded = (map, mapsApi) => {
     setApiStates({
@@ -89,13 +89,13 @@ const Location = ({
             center={
               markerLatLng.lat && markerLatLng.lng ? markerLatLng : center
             }
-            onChildMouseUp={(childKey, childProps, e) => {
+            onChildMouseUp={() => {
               setDraggable(true);
             }}
-            onChildMouseDown={(childKey, childProps, e) => {
+            onChildMouseDown={() => {
               setDraggable(false);
             }}
-            onChildMouseMove={(childKey, childProps, e) => {
+            onChildMouseMove={(e) => {
               setDraggable(true);
               addressLookup(e.lat, e.lng).then((res) => {
                 if (res.status === "OK") {
@@ -178,7 +178,7 @@ const Location = ({
 };
 
 // Helper function
-const Marker = (props) => {
+const Marker = () => {
   return (
     <>
       <div className="pin"></div>
@@ -189,10 +189,21 @@ const Marker = (props) => {
 
 export default Location;
 
-//   <TextField
-//     label="Search for address"
-//     value={addressString}
-//     fullWidth
-//     variant="filled"
-//     onChange={(e) => setAddressString(e.target.value)}
-//   />
+Location.propTypes = {
+  center: PropTypes.shape({
+    lat: PropTypes.number,
+    lng: PropTypes.number,
+  }),
+  mapHeight: PropTypes.number,
+  defaultZoom: PropTypes.number,
+  searchLabel: PropTypes.string,
+  markerLatLng: PropTypes.shape({
+    lat: PropTypes.number,
+    lng: PropTypes.number,
+  }),
+  selectedToEditSite: PropTypes.object,
+  setMarkerLatLng: PropTypes.func,
+  setCounty: PropTypes.func,
+  setAddress: PropTypes.func,
+  setSelectedToEditSite: PropTypes.func,
+};

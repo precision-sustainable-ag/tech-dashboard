@@ -11,6 +11,7 @@ import { bannedRoles } from "../utils/constants";
 import { BannedRoleMessage } from "../utils/CustomComponents";
 
 import FormsStatus from "./components/FormsStatus";
+import PropTypes from "prop-types";
 
 // Default function
 const Forms = ({ isDarkTheme }) => {
@@ -87,3 +88,7 @@ const Forms = ({ isDarkTheme }) => {
 };
 
 export default Forms;
+
+Forms.propTypes = {
+  isDarkTheme: PropTypes.bool,
+};

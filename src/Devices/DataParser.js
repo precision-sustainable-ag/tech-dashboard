@@ -17,7 +17,7 @@ import { Cancel, Edit, Save } from "@material-ui/icons";
 import Axios from "axios";
 import qs from "qs";
 import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
-// import { checkIfDeviceHasNickname } from "../utils/constants";
+import PropTypes from "prop-types";
 
 // Styles
 const deviceColors = {
@@ -32,7 +32,7 @@ const deviceColors = {
 const DataParser = (props) => {
   const history = useHistory();
   const [deviceId, setDeviceId] = useState(0);
-  const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [shouldRedirect] = useState(false);
   const [deviceBGColor, setDeviceBGColor] = useState("white");
   const [deviceDateStr, setDeviceDateStr] = useState("");
   const [dateStatus, setDateStatus] = useState("");
@@ -137,7 +137,7 @@ const DataParser = (props) => {
     setShowEditBtn(true);
     setDeviceActualName(deviceName);
   };
-  const handleMouseLeave = (deviceName) => {
+  const handleMouseLeave = () => {
     if (isDeviceNameBeingEdited) {
       setShowEditBtn(true);
     } else {
@@ -350,3 +350,10 @@ const DataParser = (props) => {
 };
 
 export default DataParser;
+
+DataParser.propTypes = {
+  activeTag: PropTypes.string,
+  lastSession: PropTypes.any,
+  deviceData: PropTypes.any,
+  for: PropTypes.string,
+};

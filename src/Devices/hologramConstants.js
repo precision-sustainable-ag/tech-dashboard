@@ -10,12 +10,12 @@ export const apiCorsUrl = `${apiURL}/api/hologram/remote/devices`;
 
 // Helper Functions
 export const APIURL = () => {
-  let mockServerURL =
-    "https://private-anon-6a91fec95a-hologram.apiary-mock.com";
+  // let mockServerURL =
+  //   "https://private-anon-6a91fec95a-hologram.apiary-mock.com";
   let productionServerURL = "https://dashboard.hologram.io";
-  let debuggingProxyURL =
-    "https://private-anon-6a91fec95a-hologram.apiary-proxy.com";
-  let finalAPIURL = debuggingProxyURL;
+  // let debuggingProxyURL =
+  //   "https://private-anon-6a91fec95a-hologram.apiary-proxy.com";
+  // let finalAPIURL = debuggingProxyURL;
 
   console.log("env: ", process.env.NODE_ENV);
 

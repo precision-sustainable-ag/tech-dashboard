@@ -1,7 +1,7 @@
 // Dependency Imports
 import React, { useEffect } from "react";
 import { makeStyles, Chip } from "@material-ui/core";
-
+import PropTypes from "prop-types";
 // const useStyles = makeStyles(theme => ({
 //   root: {
 //     backgroundColor: theme.palette.background.paper
@@ -27,11 +27,10 @@ const useStyles = makeStyles((theme) => ({
 const WaterSensorByGatewayTopbar = (props) => {
   const classes = useStyles();
 
-  const bareNodes = props.bareNodes;
-  const coverNodes = props.coverNodes;
-  let activeChip = props.activeChip;
+  let { activeChip, coverNodes, bareNodes, setActiveChip } = props;
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     activeChip = props.activeChip;
 
     return () => {};
@@ -41,8 +40,6 @@ const WaterSensorByGatewayTopbar = (props) => {
       {bareNodes.length > 0 ? (
         <div>
           {bareNodes.map((node, index) => {
-            let icon;
-
             return (
               <Chip
                 color={activeChip === node ? "primary" : "secondary"}
@@ -51,7 +48,7 @@ const WaterSensorByGatewayTopbar = (props) => {
                 label={node}
                 onClick={() => {
                   console.log("bare node chip clicked");
-                  if (activeChip !== node) props.setActiveChip(node);
+                  if (activeChip !== node) setActiveChip(node);
                 }}
                 className={classes.chip}
               />
@@ -64,8 +61,6 @@ const WaterSensorByGatewayTopbar = (props) => {
       {coverNodes.length > 0 ? (
         <div>
           {coverNodes.map((node, index) => {
-            let icon;
-
             return (
               <Chip
                 title={`Cover Node, Serial No: ${node}`}
@@ -73,7 +68,7 @@ const WaterSensorByGatewayTopbar = (props) => {
                 key={index}
                 label={node}
                 onClick={() => {
-                  if (activeChip !== node) props.setActiveChip(node);
+                  if (activeChip !== node) setActiveChip(node);
                   console.log("cover node chip clicked");
                 }}
                 className={classes.chip}
@@ -89,3 +84,10 @@ const WaterSensorByGatewayTopbar = (props) => {
 };
 
 export default WaterSensorByGatewayTopbar;
+
+WaterSensorByGatewayTopbar.propTypes = {
+  activeChip: PropTypes.string,
+  coverNodes: PropTypes.array,
+  bareNodes: PropTypes.array,
+  setActiveChip: PropTypes.func,
+};

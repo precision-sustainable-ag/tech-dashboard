@@ -15,7 +15,7 @@ import { ArrowBackIosOutlined } from "@material-ui/icons";
 // Local Imports
 import GatewayVisual from "./WaterSensorVisuals/GatewayVisual";
 import WaterSensorByGatewayTopbar from "./WaterSensorByGatewayTopbar";
-import NodeSensorVisuals from "./WaterSensorVisuals/NodeSensorVisuals";
+// import NodeSensorVisuals from "./WaterSensorVisuals/NodeSensorVisuals";
 import { apiUsername, apiPassword, apiURL } from "../../utils/api_secret";
 import PropTypes from "prop-types";
 
@@ -38,7 +38,7 @@ const useStyles = makeStyles(() => ({
     color: "white",
   },
 }));
-
+console.log("runnnn");
 // Helper functions
 const getNodeSerialNo = async (gatewayNo, year) => {
   return await Axios({
@@ -152,7 +152,7 @@ const WaterSensorByGateway = (props) => {
       .then(() => {
         // console.log(coverNodeObject);
       });
-  }, []);
+  }, [gatewayNo, location.state.year]);
 
   useEffect(() => {
     setLoadingNodes((lodingNodes) => !lodingNodes);
@@ -204,7 +204,7 @@ const WaterSensorByGateway = (props) => {
           />
         </Grid>
         <Grid item md={12}>
-          <NodeSensorVisuals
+          {/* <NodeSensorVisuals
             bareNodeSerialNo={bareNodeSerialNo}
             coverNodeSerialNo={coverNodeSerialNo}
             activeChip={activeChip}
@@ -212,7 +212,7 @@ const WaterSensorByGateway = (props) => {
             year={location.state.year}
             loadingNodes={loadingNodes}
             setLoadingNodes={setLoadingNodes}
-          />
+          /> */}
         </Grid>
       </Grid>
     </div>
@@ -222,3 +222,8 @@ const WaterSensorByGateway = (props) => {
 };
 
 export default WaterSensorByGateway;
+
+WaterSensorByGateway.propTypes = {
+  location: PropTypes.object,
+  match: PropTypes.object,
+};

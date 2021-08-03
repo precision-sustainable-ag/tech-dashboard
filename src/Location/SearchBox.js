@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 // Dependency Imports
 import React, { useEffect } from "react";
 import TextField from "@material-ui/core/TextField";
