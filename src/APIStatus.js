@@ -1,0 +1,180 @@
+
+import React,{useState,useEffect} from "react";
+import {MenuItem,IconButton,Typography} from "@material-ui/core";
+import {CheckCircleRounded} from "@material-ui/icons";
+import CircularProgress from '@material-ui/core/CircularProgress';
+import ErrorIcon from "@material-ui/icons/Error";
+import axios from "axios";
+import { apiCorsUrl, APIURL } from "./Devices/hologramConstants";
+import QueryString from "qs";
+import {
+  apiPassword,
+  apiUsername,
+  onfarmAPI,
+} from "./utils/api_secret";
+const hologramAPI = "/api/1/users/me";
+
+const Apistatus = ()=>{
+  // const handleClose = () => {
+  //   setAnchorEle(null);
+  // };
+  // const [anchorEle, setAnchorEle] = useState(null);
+  // const handleClick = (event) => {
+  //   setAnchorEle(event.currentTarget);
+  // };
+
+const [devAPI,setDevAPI] = useState(null);
+const [gitHubAPI,setGitHubAPI] = useState(null);
+
+
+
+useEffect(()=>{
+  fetchfromInternal();
+  fetchFromAPIHologram();
+  fetchFromPHPAPI();
+  fetchFromAPIWeather(onfarmAPI);
+  fetchFromAPIGitHub(`https://api.github.com/repos/precision-sustainable-ag/data_corrections/`);
+},[]);
+
+
+const [internalAPI,setInternalAPI] = useState(null);
+const [HologramAPI,setHologramAPI] = useState(null);
+const [phpAPI,setPHPAPI] = useState(null);
+
+const fetchfromInternal = () =>{
+            fetch(
+              onfarmAPI + `/raw?table=biomass_in_field&affiliation=MD`
+            ).then((r) => {
+              if (r.headers.get("content-type").split(";")[0] === "text/html") {setInternalAPI(true);
+            }else {setInternalAPI(false);}
+      })
+    }
+
+const fetchFromAPIHologram = ()=> {
+        axios({
+          method: "post",
+          url: apiCorsUrl + `/watersensors`,
+          data: QueryString.stringify({
+            url: `${APIURL()}${hologramAPI}`,
+          }),
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+          },
+          auth: {
+            username: apiUsername,
+            password: apiPassword,
+          },
+          responseType: "json",
+        })
+          .then((response) => {
+            if (Object.keys(response.data.data).length > 0) {setHologramAPI(true);}
+			else{
+				setHologramAPI(false);
+			}
+			}
+			)
+          }
+
+const fetchFromPHPAPI = () =>{
+  
+axios({
+      method: "post",
+      url: apiCorsUrl + `/watersensors`,
+      data: QueryString.stringify({
+        url: `${APIURL()}${hologramAPI}`,
+      }),
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+      },
+      auth: {
+        username: apiUsername,
+        password: apiPassword,
+      },
+      responseType: "json",
+    }).then((response) => {
+        if (response.status === 200) {
+          setPHPAPI(true);
+        }
+		else{
+          setPHPAPI(false);
+        }
+      })
+ }
+
+const fetchFromAPIWeather = async (url) =>{
+   
+    await fetch(url, {
+        mode: `no-cors`
+      })
+      .then(result=>setDevAPI(result))
+      .then(res=>{
+        console.log(res)})
+      .catch(e=>{
+        console.log(e)
+      });
+ }
+
+
+ const fetchFromAPIGitHub = async (url) =>{
+   
+    await fetch(url, {
+        mode: `no-cors`
+      })
+      .then(result=>setGitHubAPI(result))
+      .then(res=>{
+        console.log(res)})
+      .catch(e=>{
+        console.log(e)
+      });
+ }
+
+
+     return (<>
+     <MenuItem>
+       <IconButton onClick = {fetchFromPHPAPI}>
+         {
+            (phpAPI === null) ? (<CircularProgress color="primary" />)
+              :phpAPI ? (<CheckCircleRounded color="primary"/>)
+              : (<ErrorIcon color="primary"/>)
+         }
+         </IconButton>
+         <Typography>On farm API</Typography>
+       </MenuItem>
+
+       <MenuItem>
+         <IconButton onClick = {fetchFromAPIHologram}>
+           {
+           (HologramAPI === null) ? (<CircularProgress color="primary" />)
+           :(HologramAPI) ? (<CheckCircleRounded color="primary"/>)
+           :(<ErrorIcon color="primary"/>)
+          }
+           </IconButton>
+           <Typography>Hologram</Typography>
+           </MenuItem>
+
+        <MenuItem>
+         <IconButton onClick = {() => {fetchFromAPIWeather(onfarmAPI)}}>
+           {(devAPI)?(<CheckCircleRounded color="primary"/>):(<ErrorIcon color="primary"/>)}</IconButton>
+           <Typography>Dev API</Typography>
+           </MenuItem>
+           
+        <MenuItem>
+         <IconButton onClick = {() => {fetchfromInternal()}}>
+          {
+           (internalAPI === null) ? (<CircularProgress color="primary" />)
+           :(internalAPI) ? (<CheckCircleRounded color="primary"/>)
+           :(<ErrorIcon color="primary"/>)
+          }
+          </IconButton>
+           <Typography>Internal API</Typography>
+           </MenuItem>
+
+           <MenuItem>
+         <IconButton onClick = {() => {fetchFromAPIGitHub(`https://api.github.com/repos/precision-sustainable-ag/data_corrections/`)}}>
+           {(gitHubAPI)?(<CheckCircleRounded color="primary"/>):(<ErrorIcon color="primary"/>)}</IconButton>
+           <Typography>Git Hub</Typography></MenuItem>
+       </>)
+ }
+ export default Apistatus
+
+
