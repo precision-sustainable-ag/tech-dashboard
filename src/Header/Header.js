@@ -328,7 +328,7 @@ export default function Header(props) {
             open={Boolean(anchorForAPIs)}
             onClose={handleCloseAPIMenu}
           >
-            <MenuItem onClick={handleCloseAPIMenu}>
+            <MenuItem>
             <IconButton onClick = {() => {CheckLoggedInAuth0()}}>
             {(auth0works)? (<CheckCircleRounded color="primary"/>):(<ErrorIcon color="primary"/>)}</IconButton>
             <Typography>Auth0</Typography>
