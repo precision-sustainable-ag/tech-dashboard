@@ -1,6 +1,6 @@
 
 import React,{useState,useEffect} from "react";
-import {MenuItem,IconButton,Typography} from "@material-ui/core";
+import {MenuItem,Typography,Button} from "@material-ui/core";
 import {CheckCircleRounded} from "@material-ui/icons";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ErrorIcon from "@material-ui/icons/Error";
@@ -119,50 +119,54 @@ const Apistatus = ()=>{
   }
 
 
-      return (<>
+      return (
+      <>
       <MenuItem>
-        <IconButton onClick = {fetchFromPHPAPI}>
+        <Button href="#text-buttons" onClick = {fetchFromPHPAPI} label="Button" labelStyle={{ fontSize: '63px'}}>
           {
               (phpAPI === null) ? (<CircularProgress color="primary" />)
                 :phpAPI ? (<CheckCircleRounded color="primary"/>)
                 : (<ErrorIcon color="primary"/>)
           }
-          </IconButton>
           <Typography>On farm API</Typography>
-        </MenuItem>
+        </Button>
+      </MenuItem>
 
         <MenuItem>
-          <IconButton onClick = {fetchFromAPIHologram}>
+          <Button onClick = {fetchFromAPIHologram}>
             {
             (HologramAPI === null) ? (<CircularProgress color="primary" />)
             :(HologramAPI) ? (<CheckCircleRounded color="primary"/>)
             :(<ErrorIcon color="primary"/>)
             }
-            </IconButton>
             <Typography>Hologram</Typography>
-            </MenuItem>
+          </Button>
+        </MenuItem>
 
-          <MenuItem>
-          <IconButton onClick = {() => {fetchFromAPIWeather(onfarmAPI)}}>
-            {(devAPI)?(<CheckCircleRounded color="primary"/>):(<ErrorIcon color="primary"/>)}</IconButton>
+        <MenuItem>
+          <Button onClick = {() => {fetchFromAPIWeather(onfarmAPI)}}>
+            {(devAPI)?(<CheckCircleRounded color="primary"/>):(<ErrorIcon color="primary"/>)}
             <Typography>Dev API</Typography>
-            </MenuItem>
+          </Button>
+        </MenuItem>
             
-          <MenuItem>
-          <IconButton onClick = {() => {fetchfromInternal()}}>
+        <MenuItem>
+          <Button onClick = {() => {fetchfromInternal()}}>
             {
             (internalAPI === null) ? (<CircularProgress color="primary" />)
             :(internalAPI) ? (<CheckCircleRounded color="primary"/>)
             :(<ErrorIcon color="primary"/>)
             }
-            </IconButton>
             <Typography>Internal API</Typography>
-            </MenuItem>
+          </Button>
+        </MenuItem>
 
-            <MenuItem>
-          <IconButton onClick = {() => {fetchFromAPIGitHub(`https://api.github.com/repos/precision-sustainable-ag/data_corrections/`)}}>
-            {(gitHubAPI)?(<CheckCircleRounded color="primary"/>):(<ErrorIcon color="primary"/>)}</IconButton>
-            <Typography>Git Hub</Typography></MenuItem>
+        <MenuItem>
+          <Button onClick = {() => {fetchFromAPIGitHub(`https://api.github.com/repos/precision-sustainable-ag/data_corrections/`)}}>
+            {(gitHubAPI)?(<CheckCircleRounded color="primary"/>):(<ErrorIcon color="primary"/>)}
+            <Typography>Git Hub</Typography>
+          </Button>
+        </MenuItem>
         </>)
  }
  export default Apistatus

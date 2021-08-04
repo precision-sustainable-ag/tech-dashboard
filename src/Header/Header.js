@@ -21,6 +21,7 @@ import {
   MenuItem,
   Collapse,
   Icon,
+  Button
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import {
@@ -329,9 +330,10 @@ export default function Header(props) {
             onClose={handleCloseAPIMenu}
           >
             <MenuItem>
-            <IconButton onClick = {() => {CheckLoggedInAuth0()}}>
-            {(auth0works)? (<CheckCircleRounded color="primary"/>):(<ErrorIcon color="primary"/>)}</IconButton>
-            <Typography>Auth0</Typography>
+            <Button onClick = {() => {CheckLoggedInAuth0()}}>
+            {(auth0works)? (<CheckCircleRounded color="primary"/>):(<ErrorIcon color="primary"/>)}
+            <Typography> Auth0 </Typography>
+            </Button>
             </MenuItem>
             <Apistatus/>
           </Menu>
