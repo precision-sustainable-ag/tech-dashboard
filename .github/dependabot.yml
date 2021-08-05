@@ -5,7 +5,7 @@ updates:
     schedule:
       interval: monthly
       timezone: America/New_York
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
     target-branch: dev
     reviewers:
-      - rbandooni
+      - brianwdavis
