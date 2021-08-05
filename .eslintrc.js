@@ -18,6 +18,7 @@ module.exports = {
     "react/jsx-uses-vars": "error",
     "react-hooks/exhaustive-deps": "warn",
     "react-hooks/rules-of-hooks": "warn",
+    "react/jsx-pascal-case": "error",
   },
   settings: {
     react: {
