@@ -63,11 +63,59 @@ import Protocols from "./Protocols/Protocols";
 import DecompBag from "./DecompBag/DecompBag";
 import Debug from "./Debug/Debug";
 import axios from "axios";
-import { apiPassword, apiUsername, onfarmAPI } from "./utils/api_secret";
+import {
+  apiPassword,
+  apiUsername,
+  onfarmAPI,
+  onfarmStaticApiKey,
+} from "./utils/api_secret";
 import { apiCorsUrl, APIURL } from "./Devices/hologramConstants";
 import QueryString from "qs";
 
 // Helper function
+
+const useOnFarmApiStatus = () => {
+  const [status, setStatus] = useState({ checking: true, working: true });
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const url = `${onfarmAPI}/raw?table=cc_mixture`;
+
+    const fetchApi = async () => {
+      try {
+        const response = await fetch(url, {
+          headers: {
+            "x-api-key": onfarmStaticApiKey,
+          },
+        });
+
+        const records = await response.json();
+
+        if (Array.isArray(records) && response.status === 200) {
+          setStatus({ checking: false, working: true });
+        } else {
+          setStatus({ checking: false, working: false });
+        }
+      } catch (e) {
+        console.error(e);
+        setStatus({ checking: false, working: false });
+      }
+    };
+
+    // run every 2 minutes
+    const apiTimer = setTimeout(() => {
+      setCount((c) => c + 1);
+      fetchApi();
+    }, 2 * 60000);
+
+    // run immediately on homepage
+    if (window.location.pathname === "/") fetchApi();
+
+    return () => clearTimeout(apiTimer);
+  }, [count]);
+  return status;
+};
+
 function useOnlineStatus() {
   const [online, setOnline] = useState(window.navigator.onLine);
 
@@ -106,6 +154,17 @@ const useStyles = makeStyles((theme) => ({
 // Default function
 function App() {
   const online = useOnlineStatus();
+  const { checking: onfarmApiChecking, working: onfarmApiWorking } =
+    useOnFarmApiStatus();
+
+  // useEffect(() => {
+  //   if (!onfarmApiChecking && !onfarmApiWorking) {
+  //     setOnline(false);
+  //   } else {
+  //     setOnline(useOnlineStatus);
+  //   }
+  // }, [onfarmApiChecking, onfarmApiWorking]);
+
   const {
     loading,
     isAuthenticated,
@@ -200,7 +259,7 @@ function App() {
     }
   }, [loading, getTokenSilently, isAuthenticated]);
 
-  return online ? (
+  return online && onfarmApiWorking ? (
     loading ? (
       <div className={classes.root}>
         <CssBaseline />
@@ -486,9 +545,19 @@ function App() {
           }}
         >
           <Box height={"40vh"} />
-          <Typography variant="h3" gutterBottom align="center">
-            You are offline!
-          </Typography>
+
+          {!online ? (
+            <Typography variant="h3" gutterBottom align="center">
+              You are Offline!
+            </Typography>
+          ) : (
+            <Typography variant="h3" gutterBottom align="center">
+              {!onfarmApiChecking && !onfarmApiWorking
+                ? `On Farm API is currently down!`
+                : `You are offline!`}
+            </Typography>
+          )}
+
           <Grid
             container
             justifyContent="center"
@@ -499,10 +568,20 @@ function App() {
               <WifiOff />
             </Grid>
             <Grid item>
-              <Typography variant="body1" gutterBottom align="center">
-                &nbsp;This app requires an active internet connection. Please
-                check your network!
-              </Typography>
+              {!online ? (
+                <Typography variant="body1" gutterBottom align="center">
+                  &nbsp;This app requires an active internet connection. Please
+                  check your network!
+                </Typography>
+              ) : (
+                <Typography variant="body1" gutterBottom align="center">
+                  &nbsp;
+                  {!onfarmApiChecking && !onfarmApiWorking
+                    ? `Retrying...`
+                    : `This app requires an active internet connection. Please
+                check your network!`}
+                </Typography>
+              )}
             </Grid>
           </Grid>
         </Paper>
@@ -517,12 +596,10 @@ const APIChecker = (props) => {
   const [checkingApis, setCheckingApis] = useState({
     phpAPI: true,
     hologramAPI: true,
-    onfarmAPI: true,
   });
   const [apisWorking, setApisWorking] = useState({
     phpAPI: false,
     hologramAPI: false,
-    onfarmAPI: false,
   });
   const [retry, setRetry] = useState(false);
   const [apiIssue, setApiIssue] = useState(0);
@@ -598,25 +675,6 @@ const APIChecker = (props) => {
               hologramAPI: false,
             }));
             console.error(e);
-          })
-
-          .then(() => {
-            setCheckingApis((a) => ({ ...a, onfarmAPI: true }));
-            fetch(
-              onfarmAPI + `/raw?table=biomass_in_field&affiliation=MD`
-            ).then((r) => {
-              if (r.headers.get("content-type").split(";")[0] === "text/html") {
-                setApisWorking((a) => ({ ...a, onfarmAPI: true }));
-                setCheckingApis((a) => ({ ...a, onfarmAPI: false }));
-              }
-            });
-
-            //  fetch(onfarmAPI + `/raw?table=biomass_in_field&affiliation=MD`, {
-            //   headers: {
-            //     "Content-Type": "application/json",
-            //     "x-api-key": apiKey,
-            //   },
-            // }).then((res) => {
           });
       })
 
@@ -658,18 +716,7 @@ const APIChecker = (props) => {
             )}
           </>
         );
-      case "onfarmAPI":
-        return (
-          <>
-            {checkingApis.onfarmAPI ? (
-              "checking.."
-            ) : apisWorking.onfarmAPI ? (
-              <Check color="primary" />
-            ) : (
-              <Clear />
-            )}
-          </>
-        );
+
       default:
         return null;
     }
@@ -734,21 +781,6 @@ const APIChecker = (props) => {
                     checkingApis={checkingApis}
                     apisWorking={apisWorking}
                     type={"hologramAPI"}
-                  />
-                </Grid>
-              </Grid>
-              <Grid item xs={12}>
-                <Grid
-                  container
-                  direction="row"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  Onfarm API{" "}
-                  <StatusChecker
-                    checkingApis={checkingApis}
-                    apisWorking={apisWorking}
-                    type={"onfarmAPI"}
                   />
                 </Grid>
               </Grid>
