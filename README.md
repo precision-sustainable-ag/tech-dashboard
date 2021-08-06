@@ -262,7 +262,3 @@ Some of the near future changes that I can think of:
 ### Remarks
 
 - The Timeline and Protocols components would work fine until and unless the respective pages are deleted or replaced from the WordPress dashboard, in which case, the hardcoded page ID’s in the URLS would need to be replaced [(https://github.com/precision-sustainable-ag/tech-dashboard/blob/5eee5d0cb6d8e7943936439a46186524cfac8539/src/Landing/TaskTimeline/TaskTimeline.js#L15](https://github.com/precision-sustainable-ag/tech-dashboard/blob/5eee5d0cb6d8e7943936439a46186524cfac8539/src/Landing/TaskTimeline/TaskTimeline.js#L15))
-
-<!--stackedit_data:
-eyJoaXN0b3J5IjpbMTI1NzMxMDUxNF19
--->
