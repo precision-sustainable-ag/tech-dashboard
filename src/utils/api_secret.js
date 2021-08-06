@@ -18,6 +18,7 @@ const {
   REACT_APP_ONFARM_OLD_API_URL,
   REACT_APP_CONTACT_PERSON_NAME,
   REACT_APP_CONTACT_PERSON_EMAIL,
+  REACT_APP_ONFARM_GLOBAL_API_KEY,
 } = process.env;
 
 export const apiPassword = REACT_APP_ONFARM_OLD_API_PASSWORD;
@@ -25,6 +26,8 @@ export const apiPassword = REACT_APP_ONFARM_OLD_API_PASSWORD;
 export const apiUsername = REACT_APP_ONFARM_OLD_API_USERNAME;
 
 export const apiURL = REACT_APP_ONFARM_OLD_API_URL;
+
+export const onfarmStaticApiKey = REACT_APP_ONFARM_GLOBAL_API_KEY;
 
 export const onfarmAPI =
   NODE_ENV === "production"
