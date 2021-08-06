@@ -1,7 +1,7 @@
 // Dependency Imports
 import React, { useEffect, useContext, useState } from "react";
 import clsx from "clsx";
-import Apistatus from "../APIStatus"; 
+import ApiStatus from "../APIStatus/APIStatus";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 import { RiSensorFill, RiTimeLine } from "react-icons/all";
@@ -21,7 +21,7 @@ import {
   MenuItem,
   Collapse,
   Icon,
-  Button
+  Button,
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import {
@@ -125,9 +125,9 @@ export default function Header(props) {
   const [anchorEl, setAnchorEl] = useState(null);
   const profileMenuOpen = Boolean(anchorEl);
   const [state, dispatch] = useContext(Context);
-  const [auth0works,setAuth0works] = useState(true);
+  const [auth0works, setAuth0works] = useState(true);
   const [anchorForAPIs, setAnchorForAPIs] = useState(null);
-      
+
   const { logout, user, loginWithRedirect } = useAuth0();
   const [openAllDataNav, setOpenAllDataNav] = useState(false);
   const [openDevicesNav, setOpenDevicesNav] = useState(false);
@@ -142,8 +142,8 @@ export default function Header(props) {
 
   const { getTokenSilently } = useAuth0();
   const handleCloseAPIMenu = () => {
-		setAnchorForAPIs(null);
-	};
+    setAnchorForAPIs(null);
+  };
   const handleOpenAllDataNav = () => {
     setOpenAllDataNav(!openAllDataNav);
   };
@@ -155,8 +155,8 @@ export default function Header(props) {
   };
 
   const handleOpenAPIMenu = (event) => {
-		setAnchorForAPIs(event.currentTarget);
-	};
+    setAnchorForAPIs(event.currentTarget);
+  };
 
   const handleDrawerClose = () => {
     setOpen(false);
@@ -173,11 +173,13 @@ export default function Header(props) {
     props.setDarkTheme();
   };
 
-  function CheckLoggedInAuth0(){getTokenSilently()
-        .then(()=>{
-          console.log("Auth0 works when the user is logged in")
-        }).catch(()=>setAuth0works(false))
-	}
+  function CheckLoggedInAuth0() {
+    getTokenSilently()
+      .then(() => {
+        console.log("Auth0 works when the user is logged in");
+      })
+      .catch(() => setAuth0works(false));
+  }
   // useEffect(()=>{
   //   CheckLoggedInAuth0();
   // },[anchorForAPIs]);
@@ -210,7 +212,6 @@ export default function Header(props) {
   //     console.error(e);
   //   }
   // };
-
 
   async function addUser(username) {
     const octokit = new Octokit({ auth: githubToken });
@@ -319,8 +320,13 @@ export default function Header(props) {
           <Typography variant="h6" noWrap className={classes.title}>
             PSA Tech Dashboard
           </Typography>
-          <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleOpenAPIMenu} color="inherit">
-            <CheckCircleRounded/>
+          <IconButton
+            aria-controls="simple-menu"
+            aria-haspopup="true"
+            onClick={handleOpenAPIMenu}
+            color="inherit"
+          >
+            <CheckCircleRounded />
           </IconButton>
           <Menu
             id="simple-menu"
@@ -330,12 +336,20 @@ export default function Header(props) {
             onClose={handleCloseAPIMenu}
           >
             <MenuItem>
-            <Button onClick = {() => {CheckLoggedInAuth0()}}>
-            {(auth0works)? (<CheckCircleRounded color="primary"/>):(<ErrorIcon color="primary"/>)}
-            <Typography> Auth0 </Typography>
-            </Button>
+              <Button
+                onClick={() => {
+                  CheckLoggedInAuth0();
+                }}
+              >
+                {auth0works ? (
+                  <CheckCircleRounded color="primary" />
+                ) : (
+                  <ErrorIcon color="primary" />
+                )}
+                <Typography> Auth0 </Typography>
+              </Button>
             </MenuItem>
-            <Apistatus/>
+            <ApiStatus />
           </Menu>
           <IconButton color="inherit" onClick={toggleThemeDarkness}>
             {props.isDarkTheme ? <BrightnessLow /> : <BrightnessHigh />}
