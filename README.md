@@ -256,6 +256,7 @@ Some of the near future changes that I can think of:
 - Migrate from `@auth0/auth0-spa-js` to `@auth0/auth0-react`
 - Decoupling tightly-coupled components and prefer using pure components instead
 - Testing
+- The .env file is currently located [here](https://docs.google.com/document/d/15FF6zoSzuInZCwE58KcTE3njKp4O38xq564KgQOg_2c/edit?usp=sharing). Using JWT would be ideal instead.
 
 ---
 
