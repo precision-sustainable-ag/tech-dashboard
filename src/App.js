@@ -74,15 +74,15 @@ import QueryString from "qs";
 
 // Helper function
 
-const useOnFarmApiStatus = () => {
+const useOnFarmApiStatus = (manualRetry = false) => {
   const [status, setStatus] = useState({ checking: true, working: true });
   const [count, setCount] = useState(0);
-
   useEffect(() => {
     const url = `${onfarmAPI}/raw?table=cc_mixture`;
 
     const fetchApi = async () => {
       try {
+        setStatus({ checking: true, working: false });
         const response = await fetch(url, {
           headers: {
             "x-api-key": onfarmStaticApiKey,
@@ -109,10 +109,10 @@ const useOnFarmApiStatus = () => {
     }, 2 * 60000);
 
     // run immediately on homepage
-    if (window.location.pathname === "/") fetchApi();
+    if (window.location.pathname === "/" || manualRetry) fetchApi();
 
     return () => clearTimeout(apiTimer);
-  }, [count]);
+  }, [count, manualRetry]);
   return status;
 };
 
@@ -153,9 +153,11 @@ const useStyles = makeStyles((theme) => ({
 
 // Default function
 function App() {
+  const classes = useStyles();
   const online = useOnlineStatus();
+  const [onFarmManualCheck, setOnFarmManualCheck] = useState(false);
   const { checking: onfarmApiChecking, working: onfarmApiWorking } =
-    useOnFarmApiStatus();
+    useOnFarmApiStatus(onFarmManualCheck);
 
   // useEffect(() => {
   //   if (!onfarmApiChecking && !onfarmApiWorking) {
@@ -165,14 +167,8 @@ function App() {
   //   }
   // }, [onfarmApiChecking, onfarmApiWorking]);
 
-  const {
-    loading,
-    isAuthenticated,
-    loginWithRedirect,
-
-    getTokenSilently,
-  } = useAuth0();
-  const classes = useStyles();
+  const { loading, isAuthenticated, loginWithRedirect, getTokenSilently } =
+    useAuth0();
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -259,7 +255,7 @@ function App() {
     }
   }, [loading, getTokenSilently, isAuthenticated]);
 
-  return online && onfarmApiWorking ? (
+  return online && (onfarmApiWorking || onfarmApiChecking) ? (
     loading ? (
       <div className={classes.root}>
         <CssBaseline />
@@ -547,11 +543,11 @@ function App() {
           <Box height={"40vh"} />
 
           {!online ? (
-            <Typography variant="h3" gutterBottom align="center">
+            <Typography variant="h4" gutterBottom align="center">
               You are Offline!
             </Typography>
           ) : (
-            <Typography variant="h3" gutterBottom align="center">
+            <Typography variant="h4" gutterBottom align="center">
               {!onfarmApiChecking && !onfarmApiWorking
                 ? `On Farm API is currently down!`
                 : `You are offline!`}
@@ -583,6 +579,18 @@ function App() {
                 </Typography>
               )}
             </Grid>
+
+            {!onfarmApiChecking && !onfarmApiWorking && (
+              <Grid item>
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={() => setOnFarmManualCheck((v) => !v)}
+                >
+                  Retry
+                </Button>
+              </Grid>
+            )}
           </Grid>
         </Paper>
       </ThemeProvider>
