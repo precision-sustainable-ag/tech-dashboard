@@ -170,7 +170,7 @@ function App() {
     if (theme.palette.type !== "light") {
       // update localstorage
       window.localStorage.setItem("theme", "dark");
-      document.body.style.backgroundColor = "#333";
+      document.body.style.backgroundColor = "#121212";
       document.body.style.color = "#fbfbfb";
     } else {
       // update localstorage
@@ -205,7 +205,7 @@ function App() {
       <div className={classes.root}>
         <CssBaseline />
         <ThemeProvider theme={muiTheme}>
-          <Paper
+          <Box
             style={{
               height: "100vh",
             }}
@@ -214,7 +214,7 @@ function App() {
             <Typography variant="h3" gutterBottom align="center">
               Loading
             </Typography>
-          </Paper>
+          </Box>
         </ThemeProvider>
       </div>
     ) : checkingAPIs ? (
@@ -547,7 +547,6 @@ const APIChecker = (props) => {
       },
       responseType: "json",
     })
-      .then(sleeper())
       .then((response) => {
         if (response.status === 200) {
           setApisWorking((a) => ({ ...a, phpAPI: true }));
@@ -563,7 +562,7 @@ const APIChecker = (props) => {
         setCheckingApis((a) => ({ ...a, phpAPI: false, hologramAPI: true }));
         console.error(e);
       })
-      .then(sleeper())
+
       .then(() => {
         axios({
           method: "post",
@@ -600,7 +599,7 @@ const APIChecker = (props) => {
             }));
             console.error(e);
           })
-          .then(sleeper())
+
           .then(() => {
             setCheckingApis((a) => ({ ...a, onfarmAPI: true }));
             fetch(
@@ -692,7 +691,7 @@ const APIChecker = (props) => {
     <>
       <CssBaseline />
       <ThemeProvider theme={theme}>
-        <Paper
+        <Box
           style={{
             height: "100vh",
           }}
@@ -782,16 +781,10 @@ const APIChecker = (props) => {
                 )}
             </Grid>
           </Box>
-        </Paper>
+        </Box>
       </ThemeProvider>
     </>
   );
-};
-
-const sleeper = (ms = 100) => {
-  return function (x) {
-    return new Promise((resolve) => setTimeout(() => resolve(x), ms));
-  };
 };
 
 export default App;
