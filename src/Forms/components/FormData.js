@@ -120,7 +120,8 @@ const FormData = (props) => {
           .then(() => setFetching(false));
       }
     });
-  }, [formId, state.userInfo.state, affiliationLookup]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formId, state.userInfo.state]);
 
   useEffect(() => {
     const recalculate = async () => {
