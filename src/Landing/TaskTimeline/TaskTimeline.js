@@ -5,8 +5,31 @@ import { apiPassword, apiURL, apiUsername } from "../../utils/api_secret";
 import { Skeleton } from "@material-ui/lab";
 import parse, { attributesToProps } from "html-react-parser";
 import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
 
+const options = {
+  replace: (domNode) => {
+    if (domNode.attribs && domNode.name === "a") {
+      const props = attributesToProps(domNode.attribs);
+      if (props.href.startsWith("https://onfarmtech.org/")) {
+        const relativeLink = props.href.replace("https://onfarmtech.org", "");
+        props.target = "_self";
+        return (
+          <Button
+            size="small"
+            component={Link}
+            to={relativeLink}
+            {...props}
+            variant="text"
+            style={{ textTransform: "capitalize" }}
+          >
+            {relativeLink.split("/").join("").split("-").join(" ")}
+          </Button>
+        );
+      }
+    }
+  },
+  trim: true,
+};
 // Default function
 const TaskTimeline = () => {
   const [htmlData, setHtmlData] = useState("");
@@ -28,33 +51,6 @@ const TaskTimeline = () => {
     fetchData();
   }, []);
 
-  const options = {
-    replace: (domNode) => {
-      if (domNode.attribs && domNode.name === "a") {
-        const props = attributesToProps(domNode.attribs);
-
-        if (props.href.startsWith("https://onfarmtech.org/")) {
-          // domNode
-          console.log(domNode);
-          const relativeLink = props.href.replace("https://onfarmtech.org", "");
-          props.target = "_self";
-          return (
-            <Button
-              size="small"
-              component={Link}
-              to={relativeLink}
-              {...props}
-              variant="text"
-              style={{ textTransform: "capitalize" }}
-            >
-              {relativeLink.split("/").join("").split("-").join(" ")}
-            </Button>
-          );
-        }
-      }
-    },
-    trim: true,
-  };
   return (
     <Grid container>
       <Grid item xs={12}>
@@ -77,7 +73,3 @@ const TaskTimeline = () => {
 };
 
 export default TaskTimeline;
-
-TaskTimeline.propTypes = {
-  href: PropTypes.string,
-};
