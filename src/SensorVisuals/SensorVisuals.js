@@ -18,16 +18,8 @@ const datesURL = onfarmAPI + `/raw?table=site_information`;
 
 const stressCamAPIEndpoint = ``;
 
-// Styles
-const deviceColors = {
-  bothSubplots: green[800],
-  oneSubplot: green[400],
-  loading: grey[400],
-  default: "white",
-};
-
 const SensorVisuals = (props) => {
-  const { type } = props;
+  const { isDarkTheme, type } = props;
   const { location } = useHistory();
 
   const displayTitle =
@@ -38,6 +30,14 @@ const SensorVisuals = (props) => {
   const [, setAffiliations] = useState([]);
   const [state] = useContext(Context);
   const [codeSearchText, setCodeSearchText] = useState("");
+
+  // Styles
+  const deviceColors = {
+    bothSubplots: green[800],
+    oneSubplot: green[400],
+    loading: grey[400],
+    default: "default",
+  };
 
   const handleActiveYear = (year = "") => {
     const newYears = years.map((yearInfo) => {
@@ -152,10 +152,8 @@ const SensorVisuals = (props) => {
   }
 
   useEffect(() => {
-    if (location.state) {
-      if (location.state.data) {
-        setData(location.state.data);
-      }
+    if (location.state && location.state.data) {
+      setData(location.state.data);
     }
 
     const fetchData = async (apiKey) => {
@@ -308,6 +306,7 @@ const SensorVisuals = (props) => {
               color={entry.color}
               lastUpdated={entry.lastUpdated}
               data={data}
+              isDarkTheme={isDarkTheme}
             />
             {/* <div>{data.code}</div> */}
           </Grid>
@@ -323,6 +322,7 @@ SensorVisuals.defaultProps = {
 
 SensorVisuals.propTypes = {
   type: PropTypes.oneOf(["watersensors", "stresscams"]).isRequired,
+  isDarkTheme: PropTypes.bool.isRequired,
 };
 
 export default SensorVisuals;
