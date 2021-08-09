@@ -146,7 +146,6 @@ const SensorVisuals = (props) => {
           }
         });
         setLoading(false);
-        console.log(responseArray);
         let responseWithFilter = responseArray.filter((r) => {
           return r.protocols_enrolled !== "-999";
         });
