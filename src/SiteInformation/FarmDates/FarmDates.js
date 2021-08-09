@@ -135,7 +135,10 @@ const FarmDates = () => {
         fetchFarmDatesFromApi(state.userInfo.apikey).then((response) => {
           makeDateObjects(response)
             .then((response) => {
-              setFarmDatesData(response);
+              let responseWithFilter = response.filter((r) => {
+                return r.protocols_enrolled !== "-999";
+              });
+              setFarmDatesData(responseWithFilter);
             })
             .finally(() => setLoading(false));
         });

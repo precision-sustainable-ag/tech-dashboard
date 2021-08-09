@@ -145,8 +145,11 @@ const SensorVisuals = (props) => {
             }
           }
         });
-        setData(responseArray);
         setLoading(false);
+        let responseWithFilter = responseArray.filter((r) => {
+          return r.protocols_enrolled !== "-999";
+        });
+        setData(responseWithFilter);
       });
     });
   }
