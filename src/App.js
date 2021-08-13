@@ -475,7 +475,7 @@ function App() {
                 <PrivateRoute
                   path={`/sensor-visuals`}
                   render={(props) => (
-                    <SensorVisuals type="watersensors" {...props} />
+                    <SensorVisuals isDarkTheme={theme.palette.type === "light" ? false : true} type="watersensors" {...props} />
                   )}
                   exact
                 />

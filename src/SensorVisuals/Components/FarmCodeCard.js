@@ -8,10 +8,14 @@ import {
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import { grey } from "@material-ui/core/colors";
 
 const FarmCodeCard = (props) => {
-  const { code, year, lastUpdated, data, color } = props;
+  let { code, year, lastUpdated, data, color, isDarkTheme } = props;
   const theme = useTheme();
+
+  if(color === "default")
+    color = isDarkTheme ? grey[700] : "white"
 
   return (
     <Card
@@ -62,6 +66,7 @@ FarmCodeCard.propTypes = {
   lastUpdated: PropTypes.any,
   data: PropTypes.any,
   color: PropTypes.any,
+  isDarkTheme: PropTypes.bool
 };
 
 export default FarmCodeCard;
