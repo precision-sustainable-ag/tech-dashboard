@@ -41,7 +41,7 @@ import {
   Timeline,
 } from "@material-ui/icons";
 import moment from "moment-timezone";
-import { Link, useLocation, useHistory, useParams } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
 
 // Local Imports
@@ -108,10 +108,9 @@ const useStyles = makeStyles((theme) => ({
 const DeviceComponent = (props) => {
   const { deviceId } = useParams();
   const { palette } = useTheme();
-  const { activeTag } = useLocation();
   const history = useHistory();
+  const activeTag = history.location.state ? history.location.state.activeTag : "all";
   const classes = useStyles();
-
   const [deviceData, setDeviceData] = useState({ name: "" });
   const [mostRecentData, setMostRecentData] = useState([]);
   const [userTimezone, setUserTimezone] = useState("America/New_York");
