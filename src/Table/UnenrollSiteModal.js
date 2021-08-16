@@ -29,7 +29,7 @@ const UnenrollSiteModal = (props) => {
     // disenroll and close
     setConfirmBtnStatus("Please Wait..");
     const site = new SiteEnrollment(props.data);
-    site.sanitizeData();
+    site.unenrollSite();
     const dataString = qs.stringify(site);
 
     Axios({
@@ -158,13 +158,7 @@ class SiteEnrollment {
     this.state = obj.state;
   }
 
-  sanitizeData() {
-    if (!this.additional_contact) this.additional_contact = "-999";
-    if (!this.address) this.address = "-999";
-    if (!this.county) this.county = "-999";
-    if (isNaN(this.latitude)) this.latitude = -999;
-    if (isNaN(this.longitude)) this.longitude = -999;
-    if (!this.state) this.state = "-999";
-    if (!this.notes) this.notes = "-999";
+  unenrollSite() {
+    this.protocols_enrolled = "-999";
   }
 }
