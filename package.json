@@ -9,7 +9,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.60",
     "@octokit/rest": "^18.9.1",
-    "@uiw/react-md-editor": "^3.4.11",
+    "@uiw/react-md-editor": "^3.4.12",
     "autosuggest-highlight": "^3.1.1",
     "axios": "^0.21.1",
     "clsx": "^1.1.1",
