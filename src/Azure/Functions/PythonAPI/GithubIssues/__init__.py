@@ -253,14 +253,9 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         # instantiate GithupIssues class
         ghi = GithubIssues(user)
         # authenticate user based on token	
-        authenticated = authenticator.authenticate(token)	
-        if authenticated == "Not Authenticated":
-            return func.HttpResponse(	
-                # body may be unneeded
-                body = json.dumps({"Message": token + " You are not authorized"}),	
-                status_code=401,	
-                headers=HEADER	
-            )
+        authenticated, response = authenticator.authenticate(token)
+        if not authenticated:
+            return func.HttpResponse(json.dumps(response), headers={'content-type': 'application/json'}, status_code=400)
         else:
             # if action is create
             # set all the needed class variables
