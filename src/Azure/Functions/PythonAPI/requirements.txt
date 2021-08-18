@@ -1,0 +1,13 @@
+# DO NOT include azure-functions-worker in this file
+# The Python Worker is managed by Azure Functions platform
+# Manually managing azure-functions-worker may cause unexpected issues
+
+azure-functions
+requests
+pandas
+psycopg2
+sqlalchemy
+mysql
+mysql.connector
+six
+python-jose
