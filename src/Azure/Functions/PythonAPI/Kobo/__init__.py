@@ -44,7 +44,7 @@ class KoboAPI:
         mysql_password = os.environ.get('MYSQL_PASSWORD')
         
         # Make mysql connections
-        mysql_engine_string = "mysql://{0}:{1}@{2}/{3}".format(mysql_user, mysql_password, mysql_host, mysql_dbname)
+        mysql_engine_string = "mysql+mysqlconnector://{0}:{1}@{2}/{3}".format(mysql_user, mysql_password, mysql_host, mysql_dbname)
         self.mysql_engine = sqlalchemy.create_engine(mysql_engine_string)
 
         print("connected to mysql live")
@@ -65,35 +65,31 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         pass
     else:
         token = req_body.get('token')
+        asset_name = req_body.get('asset_name')
 
-    authenticated, response = authenticator.authenticate(token)
-    if not authenticated:
-        return func.HttpResponse(json.dumps(response), headers={'content-type': 'application/json'}, status_code=400)
-    # print(authenticated)
+    try:
+        authenticated, response = authenticator.authenticate(token)
+        if not authenticated:
+            return func.HttpResponse(json.dumps(response), headers={'content-type': 'application/json'}, status_code=400)
 
-    # if authenticated == "Not Authenticated":
-    #     return func.HttpResponse(authenticated, status_code=200)
+        kobo = KoboAPI()
+        invalid_uids = kobo.fetch_bad_uids_data(asset_name)
+        all_rows = kobo.fetch_all_data(asset_name)
 
-    kobo = KoboAPI()
-    invalid_uids = kobo.fetch_bad_uids_data("psa gps")
-    # print(invalid_uids)
+        data = {
+            "valid_data": [],
+            "invalid_data": []
+        }
 
-    all_rows = kobo.fetch_all_data("psa gps")
-    # print(all_rows)
+        for index, row_entry in all_rows.iterrows():
+            if row_entry.get("uid") in invalid_uids:
+                # print(row_entry.get("uid"))
+                data["invalid_data"].append(row_entry.get("data"))
+            else:
+                data["valid_data"].append(row_entry.get("data"))
 
-    data = {
-        "valid_data": [],
-        "invalid_data": []
-    }
-
-    for index, row_entry in all_rows.iterrows():
-        if row_entry.get("uid") in invalid_uids:
-            print(row_entry.get("uid"))
-            data["invalid_data"].append(row_entry.get("data"))
-        else:
-            data["valid_data"].append(row_entry.get("data"))
-
-    # print(json.dumps(data["valid_data"]))
-    # print(json.dumps(data["invalid_data"]))
-
-    return func.HttpResponse(body=json.dumps(data), headers={'content-type': 'application/json'}, status_code=200)
+        return func.HttpResponse(body=json.dumps(data), headers={'content-type': 'application/json'}, status_code=200)
+    except Exception:
+        error = traceback.format_exc()
+        logging.error(error)
+        return func.HttpResponse(error, status_code=200)

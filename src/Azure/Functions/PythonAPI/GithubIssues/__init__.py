@@ -5,6 +5,7 @@ import requests
 import json	
 import sys	
 import os
+import traceback
 
 from ..SharedFunctions import authenticator
 
@@ -178,7 +179,7 @@ class GithubIssues:
             status = json.loads(response.content.decode())
             return True, status
         except Exception:
-            logging.exception(Exception)
+            logging.exception(traceback.format_exc())
             return False, "Could not add to org"
 
     def accept_technicians_invite(self, user):
@@ -200,7 +201,7 @@ class GithubIssues:
             print(status)
             return True, status
         except Exception:
-            logging.exception(Exception)
+            logging.exception(traceback.format_exc())
             return False, "Could not accept org invite"
 
 def main(req: func.HttpRequest) -> func.HttpResponse:	
@@ -319,10 +320,10 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                     )	
     # handle exceptions 
     except Exception as error:
-        logging.info("Program encountered exception: " + str(error))
+        logging.info("Program encountered exception: " + traceback.format_exc())
         logging.exception(error)
         return func.HttpResponse(
-            body = json.dumps({"Message": str(error)}),
+            body = json.dumps({"Message": traceback.format_exc()}),
             status_code=400,
             headers=HEADER
         )

@@ -5,9 +5,11 @@
 azure-functions
 requests
 pandas
-psycopg2
+psycopg2-binary
 sqlalchemy
-mysql
-mysql.connector
+mysql-connector-python
+# mysql
+# mysql-connector
+# mysql.connector
 six
 python-jose
