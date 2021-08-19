@@ -6,9 +6,10 @@ import {
   Typography,
   Tooltip,
   Snackbar,
+  Switch, 
+  withStyles
 } from "@material-ui/core";
-import axios from "axios";
-import { apiPassword, apiURL, apiUsername } from "../../utils/api_secret";
+// import axios from "axios";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import { useAuth0 } from "../../Auth/react-auth0-spa";
 import { QuestionAnswer, ArrowBackIosOutlined } from "@material-ui/icons";
@@ -39,6 +40,7 @@ const FormData = (props) => {
   const [state] = useContext(Context);
   const [allowedAccounts, setAllowedAccounts] = useState([]);
   const [activeAccount, setActiveAccount] = useState("all");
+  const { getTokenSilently } = useAuth0();
 
   const { formId } = useParams();
   const { user } = useAuth0();
@@ -55,21 +57,46 @@ const FormData = (props) => {
   const [newIssueData, setNewIssueData] = useState({});
   const [activeIssueIndex, setActiveIssueIndex] = useState(null);
 
-  const fetchData = async (assetId, userType = "psa") => {
-    return await axios.get(`${apiURL}/api/kobo/${userType}/data/${assetId}`, {
-      auth: {
-        username: apiUsername,
-        password: apiPassword,
-      },
+  const fetchData = async (assetName) => {
+    const token = await getTokenSilently({
+      audience: `https://precision-sustaibale-ag/tech-dashboard`,
     });
+
+    let body = {
+      token: token,
+      asset_name: assetName
+    }
+
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+      mode: "cors", // no-cors, *cors, same-origin
+    };
+  
+    // let koboResponse;
+  
+    try {
+      return await fetch(
+        `https://correctionsapi.azurewebsites.us/api/kobo`,
+        options
+      ).then(res => res.json());
+    } catch (err) {
+      console.log(err);
+      return null;
+    }
   };
 
   useEffect(() => {
     setFetching(true);
-    const records = fetchData(formId, "psa")
+    const records = fetchData("psa gps")
       .then((response) => {
-        if (response.status !== 200) throw new Error(response.statusText);
-        let records = response.data.data.results || [];
+        console.log(response);
+        if (response === null) throw new Error(response.statusText);
+        let records = response.valid_data || [];
+
         if (records.length > 0) {
           records = records.sort(
             (a, b) =>
@@ -85,6 +112,7 @@ const FormData = (props) => {
       });
 
     records.then((recs) => {
+      console.log(recs);
       if (state.userInfo.state) {
         fetchKoboPasswords({
           showAllStates: "true",
@@ -111,9 +139,27 @@ const FormData = (props) => {
             });
 
             setAllowedAccounts(allowedKoboAccounts);
-            const filteredRecords = recs.filter((rec) =>
+            console.log(recs, allowedKoboAccounts);
+
+            let json_recs = recs.map(rec => {
+              // return JSON.parse(rec)
+              let json_rec = JSON.parse(rec)
+              return Object.keys(json_rec).sort().reduce(
+                (obj, key) => { 
+                  obj[key] = json_rec[key]; 
+                  return obj;
+                }, 
+                {}
+              )
+            }
+            )
+            
+            console.log(json_recs);
+
+            const filteredRecords = json_recs.filter((rec) =>
               allowedKoboAccounts.includes(rec._submitted_by)
             );
+            console.log(filteredRecords);
             setData(filteredRecords);
             setOriginalData(filteredRecords);
           })
@@ -123,9 +169,10 @@ const FormData = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formId, state.userInfo.state]);
 
+
   useEffect(() => {
     const recalculate = async () => {
-      return await new Promise((resolve) => {
+      return new Promise((resolve) => {
         if (originalData.length > 0) {
           if (activeAccount === "all") resolve(originalData);
           else {
@@ -196,6 +243,7 @@ const FormData = (props) => {
   };
 
   const RenderFormsData = () => {
+    console.log(data);
     return fetching ? (
       <Grid item xs={12}>
         <Typography variant="h5">Fetching Data...</Typography>
@@ -287,6 +335,12 @@ const FormData = (props) => {
             </>
           )}
         </Grid>
+        <Grid item>Valid Forms</Grid>
+            <CustomSwitch
+              // checked={units === "lbs/ac"}
+              // onChange={changeSwitchUnits}
+            />
+            <Grid item>Invalid Forms</Grid>
         {state.loadingUser ? (
           <Grid item xs={12}>
             <Typography variant="h5">Fetching Data...</Typography>
@@ -305,6 +359,28 @@ const FormData = (props) => {
     </div>
   );
 };
+
+const CustomSwitch = withStyles((theme) => ({
+  switchBase: {
+    "&$checked": {
+      color: theme.palette.common.white,
+      "& + $track": {
+        opacity: 1,
+        backgroundColor: theme.palette.grey[500],
+        borderColor: theme.palette.primary.main,
+      },
+    },
+  },
+  thumb: {
+    backgroundColor: theme.palette.primary.main,
+    boxShadow: "none",
+  },
+  track: {
+    opacity: 1,
+    backgroundColor: theme.palette.grey[500],
+  },
+  checked: {},
+}))(Switch);
 
 export default FormData;
 
