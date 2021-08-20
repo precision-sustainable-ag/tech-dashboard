@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, Fragment } from "react";
 import {
   Grid,
   Typography,
@@ -13,6 +13,7 @@ import {
   TableCell,
   Button,
   TableHead,
+  Link
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 
@@ -207,38 +208,42 @@ const RenderGithubDetails = ({ user }) => {
 };
 const RenderKoboDetails = ({ koboData = { data: [{}], allStates: false } }) => {
   return koboData.data.length > 0 ? (
-    <TableContainer>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              <Typography variant="body1">State</Typography>
-            </TableCell>
-            <TableCell>
-              <Typography variant="body1">Username</Typography>
-            </TableCell>
-            <TableCell>
-              <Typography variant="body1">Password</Typography>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {koboData.data.map((item, index) => (
-            <TableRow key={`koboTableRow${index}`}>
+    <Fragment>
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
               <TableCell>
-                <Typography variant="body1">{item.state}</Typography>
+                <Typography variant="body1">State</Typography>
               </TableCell>
               <TableCell>
-                <Typography variant="body1">{item.kobo_account}</Typography>
+                <Typography variant="body1">Username</Typography>
               </TableCell>
               <TableCell>
-                <Typography variant="body1">{item.password}</Typography>
+                <Typography variant="body1">Password</Typography>
               </TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {koboData.data.map((item, index) => (
+              <TableRow key={`koboTableRow${index}`}>
+                <TableCell>
+                  <Typography variant="body1">{item.state}</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="body1">{item.kobo_account}</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="body1">{item.password}</Typography>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      
+      <Link href="https://docs.google.com/document/d/1rsSmhmEXTms_MDP745cyEUPTWbbvA34DU4A3jPc34qI/edit"><Typography>How to login</Typography></Link>
+    </Fragment>
   ) : (
     ""
   );
