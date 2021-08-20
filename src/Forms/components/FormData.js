@@ -84,7 +84,7 @@ const FormData = (props) => {
   
     try {
       return await fetch(
-        `https://correctionsapi.azurewebsites.us/api/kobo`,
+        `https://premiumpythonapi.azurewebsites.us/api/Kobo?`,
         options
       ).then(res => res.json());
     } catch (err) {
