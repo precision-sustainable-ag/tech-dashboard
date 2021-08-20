@@ -8,9 +8,7 @@ import {
   CardHeader,
   FormControlLabel,
   Grid,
-  MenuItem,
   Radio,
-  Select,
   TextField,
   Typography,
 } from "@material-ui/core";
@@ -18,6 +16,7 @@ import { Check, Save } from "@material-ui/icons";
 import Axios from "axios";
 import React, { useState, useEffect } from "react";
 import InputMask from "react-input-mask";
+import PropTypes from "prop-types";
 
 // Local Imports
 import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
@@ -32,7 +31,7 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {
   const [growerType, setGrowerType] = useState("existing");
   const [growerLastNameSearch, setGrowerLastNameSearch] = useState("");
   const [allGrowers, setAllGrowers] = useState([]);
-  const [siteCodes, setSiteCodes] = useState([]);
+  const [, setSiteCodes] = useState([]);
   const [showSitesInfo, setShowSitesInfo] = useState(false);
   const [savingProducerId, setSavingProducerId] = useState(false);
 
@@ -96,20 +95,20 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {
           //   console.log(allSiteData);
         });
     }
-    setEnrollmentData({
-      ...enrollmentData,
+    setEnrollmentData((enroll) => ({
+      ...enroll,
       growerInfo: {
         collaborationStatus: "University",
         producerId: "",
         phone: "",
-        producerId: "",
         firstName: "",
         lastName: "",
         email: "",
       },
-    });
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [growerLastNameSearch, growerType]);
-  const [maskedTel, setMaskedTel] = useState("");
+  // const [maskedTel, setMaskedTel] = useState("");
   return (
     <>
       <Grid item sm={12}>
@@ -117,7 +116,12 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {
       </Grid>
 
       <Grid item sm={12}>
-        <Grid container alignContent="center" justify="center" spacing={2}>
+        <Grid
+          container
+          alignContent="center"
+          justifyContent="center"
+          spacing={2}
+        >
           <Grid item>
             <FormControlLabel
               value="existing"
@@ -314,7 +318,7 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {
       </Grid>
       <Grid item xs={12}>
         {/* <SiteSelection /> */}
-        <Grid container justify="center" alignItems="center">
+        <Grid container justifyContent="center" alignItems="center">
           <Grid item>
             <Button
               variant="contained"
@@ -468,30 +472,30 @@ const ExistingGrowersGrid = ({
   );
 };
 
-const SiteSelection = ({ growerInfo, setGrowerInfo }) => {
-  return (
-    <>
-      <Grid container></Grid>
-    </>
-  );
-};
+// const SiteSelection = ({ growerInfo, setGrowerInfo }) => {
+//   return (
+//     <>
+//       <Grid container></Grid>
+//     </>
+//   );
+// };
 
-const getSiteCodesForProducer = async (producerId) => {
-  let fetchSitesPromise = await fetchSiteCodesForProducer(producerId);
-  let codes = [];
-  let data = fetchSitesPromise.data.data;
-  codes = data.map((r, i) => {
-    return r.code;
-  });
+// const getSiteCodesForProducer = async (producerId) => {
+//   let fetchSitesPromise = await fetchSiteCodesForProducer(producerId);
+//   let codes = [];
+//   let data = fetchSitesPromise.data.data;
+//   codes = data.map((r, i) => {
+//     return r.code;
+//   });
 
-  let strId = `siteCodesFor-${producerId}`;
+//   let strId = `siteCodesFor-${producerId}`;
 
-  if (codes.length === 0) {
-    document.getElementById(strId).textContent = "No Sites";
-  } else {
-    document.getElementById(strId).textContent = [codes.toString()];
-  }
-};
+//   if (codes.length === 0) {
+//     document.getElementById(strId).textContent = "No Sites";
+//   } else {
+//     document.getElementById(strId).textContent = [codes.toString()];
+//   }
+// };
 
 const fetchSiteCodesForProducer = async (producerId) => {
   return await Axios({
@@ -532,4 +536,9 @@ const saveNewGrowerAndFetchProducerId = async (enrollmentData = {}) => {
       "content-type": "application/x-www-form-urlencoded;charset=utf-8",
     },
   });
+};
+
+GrowerInformation.propTypes = {
+  enrollmentData: PropTypes.object,
+  setEnrollmentData: PropTypes.func,
 };

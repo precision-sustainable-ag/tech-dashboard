@@ -1,9 +1,9 @@
+import React, { useMemo } from "react";
 import { Button, Grid, Paper, Toolbar } from "@material-ui/core";
 import { GpsFixed } from "@material-ui/icons";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
-import { useMemo } from "react";
-
+import PropTypes from "prop-types";
 // const useStyles = makeStyles((theme) => ({
 //   root: {
 //     display: "flex",
@@ -188,6 +188,8 @@ const GatewayChart = (props) => {
   );
 };
 
+export default GatewayChart;
+
 GatewayChart.defaultProps = {
   code: "VMF",
   serials: {
@@ -199,4 +201,7 @@ GatewayChart.defaultProps = {
   data: [],
 };
 
-export default GatewayChart;
+GatewayChart.propTypes = {
+  code: PropTypes.string,
+  data: PropTypes.array,
+};

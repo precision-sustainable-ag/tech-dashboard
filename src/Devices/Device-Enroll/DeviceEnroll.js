@@ -26,7 +26,7 @@ import {
   FormGroup,
 } from "@material-ui/core";
 import Axios from "axios";
-import { Add, CropFree, Check, Save } from "@material-ui/icons";
+import { CropFree, Check } from "@material-ui/icons";
 
 // Local Imports
 import { apiUsername, apiPassword } from "../../utils/api_secret";

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 // Dependency Imports
 import React, { useState, useEffect, useContext } from "react";
 import createAuth0Client from "@auth0/auth0-spa-js";
@@ -10,6 +11,7 @@ export const Auth0Context = React.createContext();
 export const useAuth0 = () => useContext(Auth0Context);
 export const Auth0Provider = ({
   children,
+
   onRedirectCallback = DEFAULT_REDIRECT_CALLBACK,
   ...initOptions
 }) => {
@@ -21,7 +23,10 @@ export const Auth0Provider = ({
 
   useEffect(() => {
     const initAuth0 = async () => {
-      const auth0FromHook = await createAuth0Client({...initOptions, audience: `https://precision-sustaibale-ag/tech-dashboard`});
+      const auth0FromHook = await createAuth0Client({
+        ...initOptions,
+        audience: `https://precision-sustaibale-ag/tech-dashboard`,
+      });
       setAuth0(auth0FromHook);
 
       if (

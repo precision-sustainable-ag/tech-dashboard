@@ -1,7 +1,7 @@
 // Dependency Imports
 import React, { useState, useEffect } from "react";
 import { green, yellow, grey } from "@material-ui/core/colors";
-import { Redirect } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import {
   Button,
   CardContent,
@@ -17,7 +17,7 @@ import { Cancel, Edit, Save } from "@material-ui/icons";
 import Axios from "axios";
 import qs from "qs";
 import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
-import { checkIfDeviceHasNickname } from "../utils/constants";
+import PropTypes from "prop-types";
 
 // Styles
 const deviceColors = {
@@ -30,8 +30,9 @@ const deviceColors = {
 
 // Default function
 const DataParser = (props) => {
+  const history = useHistory();
   const [deviceId, setDeviceId] = useState(0);
-  const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [shouldRedirect] = useState(false);
   const [deviceBGColor, setDeviceBGColor] = useState("white");
   const [deviceDateStr, setDeviceDateStr] = useState("");
   const [dateStatus, setDateStatus] = useState("");
@@ -42,7 +43,16 @@ const DataParser = (props) => {
   // console.log("deviceData", props.deviceData);
   const setDeviceState = (deviceId) => {
     setDeviceId(deviceId);
-    setShouldRedirect(true);
+    history.push(`/devices/${deviceId}`, {
+      ...device,
+      activeTag: props.activeTag,
+    });
+    // to={{
+    //     pathname: ,
+    //     state: device,
+    //     activeTag: props.activeTag,
+    //   }}
+    //setShouldRedirect(true);
   };
 
   useEffect(() => {
@@ -119,33 +129,15 @@ const DataParser = (props) => {
   }, [device.lastsession, device.links]);
   const [showEditBtn, setShowEditBtn] = useState(false);
   const [isDeviceNameBeingEdited, setIsDeviceNameBeingEdited] = useState(false);
-  const [deviceActualName, setDeviceActualName] = useState("");
-  const [deviceNickname, setDeviceNickname] = useState("");
-  const [checkingNickname, setCheckingNickname] = useState(false);
-
-  useEffect(() => {
-    setCheckingNickname(true);
-    checkIfDeviceHasNickname(props.deviceData.id)
-      .then((res) => {
-        if (res.data.status === "success") {
-          if (typeof res.data.data !== "object") {
-            // no device nickname found
-            setDeviceNickname("");
-          } else {
-            setDeviceNickname(res.data.data.nickname);
-          }
-        }
-      })
-      .then(() => {
-        setCheckingNickname(false);
-      });
-  }, [props.deviceData.id]);
+  const [deviceActualName, setDeviceActualName] = useState(
+    device.nickname || device.name
+  );
 
   const handleMouseEnter = (deviceName) => {
     setShowEditBtn(true);
     setDeviceActualName(deviceName);
   };
-  const handleMouseLeave = (deviceName) => {
+  const handleMouseLeave = () => {
     if (isDeviceNameBeingEdited) {
       setShowEditBtn(true);
     } else {
@@ -156,7 +148,8 @@ const DataParser = (props) => {
     updateDeviceNickname()
       .then((r) => {
         if (r.data.status === "success") {
-          setDeviceNickname(deviceActualName);
+          // setDeviceNickname(deviceActualName);
+          device["nickname"] = deviceActualName;
           setIsDeviceNameBeingEdited(false);
           setShowEditBtn(false);
         }
@@ -169,7 +162,7 @@ const DataParser = (props) => {
   const updateDeviceNickname = () => {
     // send a put/post request
     return Axios({
-      method: deviceNickname ? "put" : "post",
+      method: device.nickname ? "put" : "post",
       url: `${apiURL}/api/hologram/device/nicknames`,
       auth: {
         username: apiUsername,
@@ -181,6 +174,7 @@ const DataParser = (props) => {
       },
     });
   };
+
   return shouldRedirect ? (
     <Redirect
       to={{
@@ -196,8 +190,8 @@ const DataParser = (props) => {
           handleMouseEnter(
             deviceActualName
               ? deviceActualName
-              : deviceNickname
-              ? deviceNickname
+              : device.nickname
+              ? device.nickname
               : device.name
           )
         }
@@ -205,8 +199,8 @@ const DataParser = (props) => {
           handleMouseLeave(
             deviceActualName
               ? deviceActualName
-              : deviceNickname
-              ? deviceNickname
+              : device.nickname
+              ? device.nickname
               : device.name
           )
         }
@@ -225,10 +219,8 @@ const DataParser = (props) => {
               value={deviceActualName}
               onChange={(e) => setDeviceActualName(e.target.value)}
             />
-          ) : deviceNickname ? (
-            deviceNickname
-          ) : checkingNickname ? (
-            "Loading.."
+          ) : device.nickname ? (
+            device.nickname
           ) : (
             device.name
           )}
@@ -319,10 +311,8 @@ const DataParser = (props) => {
           >
             {device.lastsession ? (
               <Grid item xs={12}>
-                {deviceNickname && (
-                  <Typography variant="body1">
-                    {props.deviceData.name}
-                  </Typography>
+                {device.nickname && (
+                  <Typography variant="body1">{device.name}</Typography>
                 )}
                 <Typography variant="body1">
                   Last Session: {deviceDateStr}
@@ -360,3 +350,10 @@ const DataParser = (props) => {
 };
 
 export default DataParser;
+
+DataParser.propTypes = {
+  activeTag: PropTypes.string,
+  lastSession: PropTypes.any,
+  deviceData: PropTypes.any,
+  for: PropTypes.string,
+};

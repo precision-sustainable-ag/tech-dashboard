@@ -26,7 +26,7 @@ const localizer = dateFnsLocalizer({
 
 // const currentMonthInt = new Date(Date.now()).getMonth();
 
-const FarmDatesCalendar = (props) => {
+const FarmDatesCalendar = () => {
   const [state] = useContext(Context);
   const [data, setData] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
@@ -288,7 +288,7 @@ const FarmDatesCalendar = (props) => {
           views={["month", "week", "day", "agenda"]}
           onSelectEvent={(event) => alert(event.title)}
           culture="en-US"
-          eventPropGetter={(event, start, end, isSelected) => {
+          eventPropGetter={(event) => {
             let newStyle = {
               backgroundColor: "lightgrey",
               color: "black",

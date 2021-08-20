@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // Dependency Imports
 import {
   Button,
@@ -8,13 +9,13 @@ import {
   Typography,
   Snackbar,
 } from "@material-ui/core";
-import { ArrowBack, PersonAdd } from "@material-ui/icons";
+import { ArrowBack } from "@material-ui/icons";
 import { Octokit } from "@octokit/rest";
 import React, { useState, useEffect, useContext } from "react";
 import MDEditor from "@uiw/react-md-editor";
 import MuiAlert from "@material-ui/lab/Alert";
 import { useHistory } from "react-router-dom";
-
+import PropTypes from "prop-types";
 
 // Local Imports
 import { Context } from "../Store/Store";
@@ -24,11 +25,8 @@ import { Link } from "react-router-dom";
 import { useAuth0 } from "../Auth/react-auth0-spa";
 import IssueBubbleBody from "./components/IssueBodyBubble";
 import { SingleIssueBodyBubble } from "./components/SingleIssueBodyBubble";
-import { createGithubComment } from "../utils/SharedFunctions"
-import Comments from "../Comments/Comments"
-
-
-  
+import { createGithubComment } from "../utils/SharedFunctions";
+import Comments from "../Comments/Comments";
 
 // Global vars
 var replyParser = require("node-email-reply-parser");
@@ -40,20 +38,22 @@ function Alert(props) {
 
 // Default function
 const Issue = (props) => {
-  const {
-    getTokenSilently,
-  } = useAuth0();
+  const { getTokenSilently } = useAuth0();
 
   const issueNumber = props.match.params.issueNumber
     ? parseInt(props.match.params.issueNumber)
     : null;
-  const [state, dispatch] = useContext(Context);
+  const [state] = useContext(Context);
   const [showIssue, setShowIssue] = useState(false);
   const [issueBody, setIssueBody] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [newCommentAdded, setNewCommentAdded] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
-  const [snackbarData, setSnackbarData] = useState({ open: false, text: "", severity: "success" });
+  const [snackbarData, setSnackbarData] = useState({
+    open: false,
+    text: "",
+    severity: "success",
+  });
   const { location } = useHistory();
   const history = useHistory();
 
@@ -119,40 +119,42 @@ const Issue = (props) => {
   async function handleNewComment(body) {
     setButtonDisabled(true);
 
-    createGithubComment(user.nickname, body, issueNumber, getTokenSilently)
-      .then((res) => {
-        setNewCommentAdded(!newCommentAdded);
-        setNewComment("");
-        setButtonDisabled(false);
-        if(res){
-          if(res.status === 201){
-            setSnackbarData({
-              open: true,
-              text: `New comment has been created`,
-              severity: "success"
-              // text: "created test issue"
-            });
-          }
-          else{
-            console.log("Function could not create issue");
-            setSnackbarData({
-              open: true,
-              text: `Could not create comment (error code 0)`,
-              severity: "error"
-              // text: "created test issue"
-            });
-          }
-        } else {
-          console.log("No response from function, likely cors");
+    createGithubComment(
+      user.nickname,
+      body,
+      issueNumber,
+      getTokenSilently
+    ).then((res) => {
+      setNewCommentAdded(!newCommentAdded);
+      setNewComment("");
+      setButtonDisabled(false);
+      if (res) {
+        if (res.status === 201) {
           setSnackbarData({
             open: true,
-            text: `Could not create comment (error code 1)`,
-            severity: "error"
+            text: `New comment has been created`,
+            severity: "success",
+            // text: "created test issue"
+          });
+        } else {
+          console.log("Function could not create issue");
+          setSnackbarData({
+            open: true,
+            text: `Could not create comment (error code 0)`,
+            severity: "error",
             // text: "created test issue"
           });
         }
+      } else {
+        console.log("No response from function, likely cors");
+        setSnackbarData({
+          open: true,
+          text: `Could not create comment (error code 1)`,
+          severity: "error",
+          // text: "created test issue"
+        });
       }
-    )
+    });
   }
 
   useEffect(() => {
@@ -164,7 +166,7 @@ const Issue = (props) => {
     else setShowIssue(true);
   }, [issueNumber]);
 
-  const [showPreview, setShowPreview] = useState(false);
+  const showPreview = false;
 
   const getIssueDetails = async () => {
     return await octokit.request(
@@ -174,8 +176,8 @@ const Issue = (props) => {
         repo: "data_corrections",
         issue_number: issueNumber,
         headers: {
-          'If-None-Match': ''
-        }
+          "If-None-Match": "",
+        },
       }
     );
   };
@@ -186,7 +188,7 @@ const Issue = (props) => {
   //   return `${user.name}`;
   // };
 
-  const [githubUsers, setGithubUsers] = useState([]);
+  const [, setGithubUsers] = useState([]);
 
   useEffect(() => {
     async function getUsers() {
@@ -213,33 +215,33 @@ const Issue = (props) => {
     };
   }, []);
 
-  const [showUsersDialog, setShowUsersDialog] = useState(false);
-  const [searchUser, setSearchUser] = useState("");
+  // const [, setShowUsersDialog] = useState(false);
+  // const [searchUser, setSearchUser] = useState("");
 
-  const filteredUsers = React.useMemo(() => {
-    return githubUsers.filter((user) =>
-      user.login.toLowerCase().includes(searchUser.toLowerCase())
-    );
-  }, [searchUser, githubUsers]);
+  // const filteredUsers = React.useMemo(() => {
+  //   return githubUsers.filter((user) =>
+  //     user.login.toLowerCase().includes(searchUser.toLowerCase())
+  //   );
+  // }, [searchUser, githubUsers]);
 
-  const githubUserMentionCommand = {
-    name: "MentionUser",
-    keyCommand: "MentionUser",
-    buttonProps: { "aria-label": "Mention user" },
-    icon: <PersonAdd style={{ width: "12px", height: "12px" }} />,
-    execute: (state, api) => {
-      console.log(state, api);
-      if (!state.selectedText) {
-        // no text selected, show all users
-        setSearchUser("");
-        setShowUsersDialog(true);
-      } else {
-        // find users that begin with selected users
-        setSearchUser(state.selectedText);
-        setShowUsersDialog(true);
-      }
-    },
-  };
+  // const githubUserMentionCommand = {
+  //   name: "MentionUser",
+  //   keyCommand: "MentionUser",
+  //   buttonProps: { "aria-label": "Mention user" },
+  //   icon: <PersonAdd style={{ width: "12px", height: "12px" }} />,
+  //   execute: (state, api) => {
+  //     console.log(state, api);
+  //     if (!state.selectedText) {
+  //       // no text selected, show all users
+  //       setSearchUser("");
+  //       setShowUsersDialog(true);
+  //     } else {
+  //       // find users that begin with selected users
+  //       setSearchUser(state.selectedText);
+  //       setShowUsersDialog(true);
+  //     }
+  //   },
+  // };
 
   return (
     <React.Fragment>
@@ -319,7 +321,10 @@ const Issue = (props) => {
               )}
             </Grid>
           </Grid>
-          <Comments handleNewComment={handleNewComment} buttonDisabled={buttonDisabled}/>
+          <Comments
+            handleNewComment={handleNewComment}
+            buttonDisabled={buttonDisabled}
+          />
         </Grid>
       </Slide>
     </React.Fragment>
@@ -327,3 +332,8 @@ const Issue = (props) => {
 };
 
 export default Issue;
+
+Issue.propTypes = {
+  match: PropTypes.object,
+  location: PropTypes.object,
+};

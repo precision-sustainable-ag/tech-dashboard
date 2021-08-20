@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useContext, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
-import { Grid, Typography } from "@material-ui/core";
-import { onfarmAPI } from "../../utils/api_secret";
-import { useParams } from "react-router-dom";
-import { Context } from "../../Store/Store";
+import { Grid } from "@material-ui/core";
+
 import HighchartsReact from "highcharts-react-official";
 import Highcharts from "highcharts";
+import PropTypes from "prop-types";
 import { CustomLoader } from "../../utils/CustomComponents";
 
 const chartOptions = {
@@ -49,20 +48,20 @@ const chartOptions = {
 };
 
 const VolumetricWater = ({ tdrData }) => {
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const { code, year } = useParams();
+  // const { code, year } = useParams();
 
-  const waterSensorDataEndpoint =
-    onfarmAPI +
-    `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,trt&location=true`;
-  // const chartOptions = useMemo(
-  //   () => (),
-  //   [vwcData, type]
-  // );
+  // const waterSensorDataEndpoint =
+  //   onfarmAPI +
+  //   `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,trt&location=true`;
+  // // const chartOptions = useMemo(
+  // //   () => (),
+  // //   [vwcData, type]
+  // // );
 
   useEffect(() => {
     if (tdrData) {
@@ -337,3 +336,7 @@ const VolumetricWater = ({ tdrData }) => {
 };
 
 export default VolumetricWater;
+
+VolumetricWater.propTypes = {
+  tdrData: PropTypes.array,
+};

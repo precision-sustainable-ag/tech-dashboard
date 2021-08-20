@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useContext, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
-import { Grid, Typography } from "@material-ui/core";
-import { onfarmAPI } from "../../utils/api_secret";
-import { useParams } from "react-router-dom";
+import { Grid } from "@material-ui/core";
+// import { onfarmAPI } from "../../utils/api_secret";
+// import { useParams } from "react-router-dom";
 
 import HighchartsReact from "highcharts-react-official";
 import Highcharts from "highcharts";
+import PropTypes from "prop-types";
 import { CustomLoader } from "../../utils/CustomComponents";
 
 const chartOptions = {
@@ -41,11 +42,11 @@ const SoilTemp = ({ tdrData }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const { code, year } = useParams();
+  // const { code, year } = useParams();
 
-  const waterSensorDataEndpoint =
-    onfarmAPI +
-    `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,trt&location=true`;
+  // const waterSensorDataEndpoint =
+  //   onfarmAPI +
+  //   `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,trt&location=true`;
 
   useEffect(() => {
     if (tdrData) {
@@ -320,3 +321,7 @@ const SoilTemp = ({ tdrData }) => {
 };
 
 export default SoilTemp;
+
+SoilTemp.propTypes = {
+  tdrData: PropTypes.array,
+};

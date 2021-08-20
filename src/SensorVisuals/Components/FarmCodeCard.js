@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Typography,
   Card,
@@ -7,46 +8,52 @@ import {
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import { grey } from "@material-ui/core/colors";
 
 const FarmCodeCard = (props) => {
-  const { code, year, lastUpdated, data, color } = props;
+  let { code, year, lastUpdated, data, color, isDarkTheme } = props;
   const theme = useTheme();
 
+  if(color === "default")
+    color = isDarkTheme ? grey[700] : "white"
+
   return (
-    <Card style={{backgroundColor: color, height: "75px"}} elevation={theme.palette.type === "dark" ? 4 : 1} >
+    <Card
+      style={{ backgroundColor: color, height: "75px" }}
+      elevation={theme.palette.type === "dark" ? 4 : 1}
+    >
       {color !== "white" && (
-      <CardActionArea 
-        component={Link} 
-        enabled="false"
-        style={{height: "75px"}}
-        to={
-          {
-            pathname: `/sensor-visuals/${year}/${code.toUpperCase()}`, 
-            state: {data: data}
-          }
-        }>
-        <CardContent style={{height: "75px"}}>
-          <Typography align="center" variant="body1">
-            {code.toUpperCase()}
-          </Typography>
-          {lastUpdated && 
+        <CardActionArea
+          component={Link}
+          enabled="false"
+          style={{ height: "75px" }}
+          to={{
+            pathname: `/sensor-visuals/${year}/${code.toUpperCase()}`,
+            state: { data: data },
+          }}
+        >
+          <CardContent style={{ height: "75px" }}>
             <Typography align="center" variant="body1">
-              {lastUpdated}
+              {code.toUpperCase()}
             </Typography>
-          }
-        </CardContent>
-      </CardActionArea>
+            {lastUpdated && (
+              <Typography align="center" variant="body1">
+                {lastUpdated}
+              </Typography>
+            )}
+          </CardContent>
+        </CardActionArea>
       )}
       {color === "white" && (
-        <CardContent style={{height: "75px"}}>
+        <CardContent style={{ height: "75px" }}>
           <Typography align="center" variant="body1">
             {code.toUpperCase()}
           </Typography>
-          {lastUpdated && 
+          {lastUpdated && (
             <Typography align="center" variant="body1">
               {lastUpdated}
             </Typography>
-          }
+          )}
         </CardContent>
       )}
     </Card>
@@ -55,6 +62,11 @@ const FarmCodeCard = (props) => {
 
 FarmCodeCard.propTypes = {
   code: PropTypes.string.isRequired,
+  year: PropTypes.any,
+  lastUpdated: PropTypes.any,
+  data: PropTypes.any,
+  color: PropTypes.any,
+  isDarkTheme: PropTypes.bool
 };
 
 export default FarmCodeCard;

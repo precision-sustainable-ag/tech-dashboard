@@ -7,13 +7,10 @@ import {
   MenuItem,
   Select,
   Typography,
-  useMediaQuery,
-  useTheme,
-  makeStyles,
 } from "@material-ui/core";
 import Axios from "axios";
 import { Alert } from "@material-ui/lab";
-
+import PropTypes from "prop-types";
 // Local Imports
 import { Context } from "../Store/Store";
 import GrowerInformation from "./GrowerInformation";
@@ -22,18 +19,18 @@ import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
 //Global Vars
 const qs = require("qs");
 
-const useStyles = makeStyles((theme) => ({
-  labelRoot: {
-    fontSize: "1.2rem",
-  },
-}));
+// const useStyles = makeStyles(() => ({
+//   labelRoot: {
+//     fontSize: "1.2rem",
+//   },
+// }));
 
 // Default function
 const EnrollNewSite = (props) => {
-  const [state, dispatch] = useContext(Context);
-  const theme = useTheme();
-  const styles = useStyles(theme);
-  const mediumUpScreen = useMediaQuery(theme.breakpoints.up("md"));
+  const [state] = useContext(Context);
+  // const theme = useTheme();
+  // const styles = useStyles(theme);
+  // const mediumUpScreen = useMediaQuery(theme.breakpoints.up("md"));
 
   const [loading, setLoading] = useState();
   const currentYear = new Date().getFullYear();
@@ -97,7 +94,7 @@ const EnrollNewSite = (props) => {
         .then((res) => {
           console.log(res.data);
         })
-        .then((res) => {
+        .then(() => {
           // reset everything
           setEnrollmentData({
             year: "none",
@@ -142,7 +139,7 @@ const EnrollNewSite = (props) => {
       .then(() => {
         setLoading(false);
       });
-  }, []);
+  }, [state.userInfo.state]);
   const [affiliationError, setAffiliationError] = useState(false);
   const [enrollmentYearError, setEnrollmentYearError] = useState(false);
   return (
@@ -252,7 +249,7 @@ const EnrollNewSite = (props) => {
         {enrollmentData.growerInfo.sites &&
         enrollmentData.growerInfo.sites.length > 0 ? (
           <Grid item xs={12}>
-            <Grid container justify="center" alignItems="center">
+            <Grid container justifyContent="center" alignItems="center">
               <Button
                 size="large"
                 variant="contained"
@@ -273,9 +270,20 @@ const EnrollNewSite = (props) => {
 
 export default EnrollNewSite;
 
+EnrollNewSite.propTypes = {
+  setEnrollNewSite: PropTypes.func,
+  setSaveData: PropTypes.func,
+  enrollNewSite: PropTypes.any,
+};
+
 // Helper functions
 const LoadingWrapper = ({ children, loading }) => {
   return loading ? "Loading" : <>{children}</>;
+};
+
+LoadingWrapper.propTypes = {
+  children: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
+  loading: PropTypes.bool,
 };
 
 const fetchSiteAffiliations = async () => {

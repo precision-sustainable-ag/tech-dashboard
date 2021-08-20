@@ -79,15 +79,18 @@ const tableHeaderOptions = [
   },
 ];
 
-const ProducerInformation = (props) => {
+const ProducerInformation = () => {
   const [tableData, setTableData] = useState([]);
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [editModalData, setEditModalData] = useState([]);
-  const [editModalOpen, setEditModalOpen] = useState(false);
+
   const [state] = useContext(Context);
   const { user } = useAuth0();
-  const [snackbarData, setSnackbarData] = useState({ open: false, text: "", severity: "success" });
+  const [snackbarData, setSnackbarData] = useState({
+    open: false,
+    text: "",
+    severity: "success",
+  });
 
   const allowEditing = () => {
     let permissions = state.userInfo.permissions;
@@ -96,9 +99,7 @@ const ProducerInformation = (props) => {
     return permissions.split(",").some((i) => allowedPermissions.includes(i));
   };
 
-  const {
-    getTokenSilently,
-  } = useAuth0();
+  const { getTokenSilently } = useAuth0();
 
   useEffect(() => {
     const fetchProducers = async () => {
@@ -191,91 +192,94 @@ const ProducerInformation = (props) => {
       ) : (
         <Fragment>
           <Snackbar
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "center",
-              }}
-              open={snackbarData.open}
-              autoHideDuration={10000}
-              onClose={() =>
-                setSnackbarData({ ...snackbarData, open: !snackbarData.open })
-              }
-            >
-              <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-            </Snackbar>
-            <Grid item xs={12}>
-              <MaterialTable
-                editable={
-                  allowEditing() && {
-                    onRowUpdate: (newData, oldData) => {
-                      return new Promise((resolve, reject) => {
-                        const { producer_id } = oldData;
-                        const { email, last_name, phone, first_name } = newData;
-                        // const filteredData = tableData.filter((records) => records.producer_id !== producer_id);
-                        if (!producer_id) {
-                          reject("Producer id missing");
-                        } else {
-                          const preparedData = {
-                            first_name: first_name || "",
-                            last_name: last_name || "",
-                            email: email || "",
-                            phone: phone || "",
-                          };
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "center",
+            }}
+            open={snackbarData.open}
+            autoHideDuration={10000}
+            onClose={() =>
+              setSnackbarData({ ...snackbarData, open: !snackbarData.open })
+            }
+          >
+            <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
+          </Snackbar>
+          <Grid item xs={12}>
+            <MaterialTable
+              editable={
+                allowEditing() && {
+                  onRowUpdate: (newData, oldData) => {
+                    return new Promise((resolve, reject) => {
+                      const { producer_id } = oldData;
+                      const { email, last_name, phone, first_name } = newData;
+                      // const filteredData = tableData.filter((records) => records.producer_id !== producer_id);
+                      if (!producer_id) {
+                        reject("Producer id missing");
+                      } else {
+                        const preparedData = {
+                          first_name: first_name || "",
+                          last_name: last_name || "",
+                          email: email || "",
+                          phone: phone || "",
+                        };
 
-                          axios({
-                            url: `${apiURL}/api/producers/${producer_id}`,
-                            method: "POST",
-                            data: QueryString.stringify(preparedData),
-                            auth: {
-                              username: apiUsername,
-                              password: apiPassword,
-                            },
+                        axios({
+                          url: `${apiURL}/api/producers/${producer_id}`,
+                          method: "POST",
+                          data: QueryString.stringify(preparedData),
+                          auth: {
+                            username: apiUsername,
+                            password: apiPassword,
+                          },
+                        })
+                          .then((res) => {
+                            if (res.data.data) {
+                              const dataUpdate = [...tableData];
+                              const index = oldData.tableData.id;
+                              dataUpdate[index] = newData;
+                              setTableData([...dataUpdate]);
+                            }
                           })
-                            .then((res) => {
-                              if (res.data.data) {
-                                const dataUpdate = [...tableData];
-                                const index = oldData.tableData.id;
-                                dataUpdate[index] = newData;
-                                setTableData([...dataUpdate]);
-                              }
-                            })
-                            .then(() => {
-                              resolve();
-                            })
-                            .catch((e) => {
-                              reject(e);
-                            });
-                        }
-                      });
-                    },
-                  }
-                }
-                columns={tableHeaderOptions}
-                data={tableData}
-                title="Producer Information"
-                options={tableOptions(tableData)}
-                detailPanel={[
-                  {
-                    tooltip: "Add Comments",
-                    icon: "comment",
-
-                    openIcon: "message",
-                    render: (rowData) => {
-                      return (
-                          <IssueDialogue 
-                            nickname={user.nickname} 
-                            rowData={rowData} 
-                            dataType="table" 
-                            setSnackbarData={setSnackbarData} 
-                            labels={["producer-information"].concat(rowData.codes.replace(/\s/g, '').split(","))} 
-                            getTokenSilently={getTokenSilently}
-                          />
-                      );
-                    },
+                          .then(() => {
+                            resolve();
+                          })
+                          .catch((e) => {
+                            reject(e);
+                          });
+                      }
+                    });
                   },
-                ]}
-              />
-            </Grid>
+                }
+              }
+              columns={tableHeaderOptions}
+              data={tableData}
+              title="Producer Information"
+              options={tableOptions(tableData)}
+              detailPanel={[
+                {
+                  tooltip: "Add Comments",
+                  icon: "comment",
+
+                  openIcon: "message",
+                  // eslint-disable-next-line react/display-name
+                  render: (rowData) => {
+                    return (
+                      <IssueDialogue
+                        nickname={user.nickname}
+                        rowData={rowData}
+                        dataType="table"
+                        setSnackbarData={setSnackbarData}
+                        labels={["producer-information"].concat(
+                          rowData.codes.replace(/\s/g, "").split(",")
+                        )}
+                        getTokenSilently={getTokenSilently}
+                      />
+                    );
+                  },
+                },
+              ]}
+            />
+          </Grid>
         </Fragment>
       )}
     </Grid>

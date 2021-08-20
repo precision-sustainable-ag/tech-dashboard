@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import Avatar from "@material-ui/core/Avatar";
 
 import MDEditor from "@uiw/react-md-editor";
-
+import PropTypes from "prop-types";
 import { IconButton, Grid, Tooltip } from "@material-ui/core";
 import "./IssueBodyBubble.scss";
 import { format_AM_PM } from "../../utils/constants";
@@ -17,13 +17,13 @@ export const SingleIssueBodyBubble = ({
   const justify = "flex-start";
   const updateDate = new Date(updated_at);
   return (
-    <Grid container justify={justify}>
+    <Grid container justifyContent={justify}>
       <Grid item>
         <Grid
           container
           spacing={2}
           alignItems="center"
-          justify="flex-start"
+          justifyContent="flex-start"
           direction="row"
         >
           <Grid item>
@@ -45,7 +45,7 @@ export const SingleIssueBodyBubble = ({
             <Grid
               container
               style={{ padding: 0 }}
-              justify={justify}
+              justifyContent={justify}
               alignItems={justify}
             >
               <Grid item>
@@ -65,7 +65,7 @@ export const SingleIssueBodyBubble = ({
                 </div>
               </Grid>
               <Grid item xs={12}>
-                <Grid container justify={justify}>
+                <Grid container justifyContent={justify}>
                   <Grid item>
                     <Typography
                       variant="caption"
@@ -92,4 +92,9 @@ export const SingleIssueBodyBubble = ({
       </Grid>
     </Grid>
   );
+};
+
+SingleIssueBodyBubble.propTypes = {
+  issue: PropTypes.object,
+  isDarkTheme: PropTypes.bool,
 };

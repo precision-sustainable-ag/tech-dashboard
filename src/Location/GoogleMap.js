@@ -3,9 +3,11 @@ File meant to serve as a plain static map with a pin,
 no extra features are intended
 For extra features, import Location.js
 */
-import { Grid } from "@material-ui/core";
-import { useState } from "react";
+
+import React from "react";
 import GoogleMapsReact from "google-map-react";
+import PropTypes from "prop-types";
+
 import { googleApiKey } from "../utils/api_secret";
 
 const GoogleMap = ({ lat = 35.763197, lng = -78.700187, from = "" }) => {
@@ -15,7 +17,7 @@ const GoogleMap = ({ lat = 35.763197, lng = -78.700187, from = "" }) => {
         streetViewControl: true,
 
         panControl: false,
-        mapTypeControl: false,
+
         scrollwheel: false,
         fullscreenControl: false,
         styles: [
@@ -69,7 +71,7 @@ const GoogleMap = ({ lat = 35.763197, lng = -78.700187, from = "" }) => {
   );
 };
 
-const Marker = (props) => {
+const Marker = () => {
   return (
     <>
       <div className="pin"></div>
@@ -79,3 +81,9 @@ const Marker = (props) => {
 };
 
 export default GoogleMap;
+
+GoogleMap.propTypes = {
+  lat: PropTypes.number,
+  lng: PropTypes.number,
+  from: PropTypes.string,
+};

@@ -18,16 +18,8 @@ const datesURL = onfarmAPI + `/raw?table=site_information`;
 
 const stressCamAPIEndpoint = ``;
 
-// Styles
-const deviceColors = {
-  bothSubplots: green[800],
-  oneSubplot: green[400],
-  loading: grey[400],
-  default: "white",
-};
-
 const SensorVisuals = (props) => {
-  const { type } = props;
+  const { isDarkTheme, type } = props;
   const { location } = useHistory();
 
   const displayTitle =
@@ -35,9 +27,17 @@ const SensorVisuals = (props) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [years, setYears] = useState([]);
-  const [affiliations, setAffiliations] = useState([]);
+  const [, setAffiliations] = useState([]);
   const [state] = useContext(Context);
   const [codeSearchText, setCodeSearchText] = useState("");
+
+  // Styles
+  const deviceColors = {
+    bothSubplots: green[800],
+    oneSubplot: green[400],
+    loading: grey[400],
+    default: "default",
+  };
 
   const handleActiveYear = (year = "") => {
     const newYears = years.map((yearInfo) => {
@@ -145,17 +145,18 @@ const SensorVisuals = (props) => {
             }
           }
         });
-        setData(responseArray);
         setLoading(false);
+        let responseWithFilter = responseArray.filter((r) => {
+          return r.protocols_enrolled !== "-999";
+        });
+        setData(responseWithFilter);
       });
     });
   }
 
   useEffect(() => {
-    if (location.state) {
-      if (location.state.data) {
-        setData(location.state.data);
-      }
+    if (location.state && location.state.data) {
+      setData(location.state.data);
     }
 
     const fetchData = async (apiKey) => {
@@ -237,16 +238,16 @@ const SensorVisuals = (props) => {
 
   const activeData = useMemo(() => {
     // console.log(JSON.stringify(data))
-    const activeYear = years.reduce((acc, curr, ind, arr) => {
+    const activeYear = years.reduce((acc, curr) => {
       if (curr.active) {
         return curr.year;
       } else return acc;
     }, "");
 
-    const activeAffiliation = affiliations.reduce((acc, curr, index, array) => {
-      if (curr.active) return curr.affiliation;
-      else return acc;
-    }, "");
+    // const activeAffiliation = affiliations.reduce((acc, curr, index, array) => {
+    //   if (curr.active) return curr.affiliation;
+    //   else return acc;
+    // }, "");
     if (!codeSearchText) {
       return data.filter((data) => data.year === activeYear);
     } else {
@@ -256,22 +257,22 @@ const SensorVisuals = (props) => {
           data.code.includes(codeSearchText.toLowerCase())
       );
     }
-  }, [years, data, codeSearchText, affiliations]);
+  }, [years, data, codeSearchText]);
 
   const activeYear = useMemo(() => {
-    return years.reduce((acc, curr, ind, arr) => {
+    return years.reduce((acc, curr) => {
       if (curr.active) {
         return curr.year;
       } else return acc;
     }, "");
   }, [years]);
 
-  const activeAffiliation = useMemo(() => {
-    return affiliations.reduce((acc, curr, index, array) => {
-      if (curr.active) return curr.affiliation;
-      else return acc;
-    }, "");
-  }, [affiliations]);
+  // const activeAffiliation = useMemo(() => {
+  //   return affiliations.reduce((acc, curr, index, array) => {
+  //     if (curr.active) return curr.affiliation;
+  //     else return acc;
+  //   }, "");
+  // }, [affiliations]);
 
   return loading && data.length === 0 ? (
     <CustomLoader />
@@ -280,7 +281,7 @@ const SensorVisuals = (props) => {
       <Grid item xs={12}>
         <Typography variant="h5">{displayTitle}</Typography>
       </Grid>
-      <Grid item container justify="space-between" spacing={2}>
+      <Grid item container justifyContent="space-between" spacing={2}>
         <Grid item container spacing={2} xs={12} md={6} lg={9}>
           <YearsChips years={years} handleActiveYear={handleActiveYear} />
         </Grid>
@@ -308,6 +309,7 @@ const SensorVisuals = (props) => {
               color={entry.color}
               lastUpdated={entry.lastUpdated}
               data={data}
+              isDarkTheme={isDarkTheme}
             />
             {/* <div>{data.code}</div> */}
           </Grid>
@@ -323,6 +325,7 @@ SensorVisuals.defaultProps = {
 
 SensorVisuals.propTypes = {
   type: PropTypes.oneOf(["watersensors", "stresscams"]).isRequired,
+  isDarkTheme: PropTypes.bool.isRequired,
 };
 
 export default SensorVisuals;

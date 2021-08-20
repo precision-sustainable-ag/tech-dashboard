@@ -251,7 +251,7 @@ const NewIssueModal = (props) => {
       disableBackdropClick
     >
       <DialogTitle id="form-dialog-title">
-        <Grid container justify="space-between">
+        <Grid container justifyContent="space-between">
           <Grid item>Submit a new Issue</Grid>
           <Grid item>
             <Select

@@ -1,3 +1,4 @@
+import React from "react";
 import { Button, Grid, Typography, Snackbar } from "@material-ui/core";
 import {
   apiPassword,
@@ -28,7 +29,7 @@ function Alert(props) {
 
 const nicknameURL = apiURL + `/api/hologram/device/nicknames/code`;
 
-const VisualsByCode = (props) => {
+const VisualsByCode = () => {
   const [state] = useContext(Context);
   const history = useHistory();
   const { user } = useAuth0();

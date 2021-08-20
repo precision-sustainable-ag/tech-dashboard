@@ -1,68 +1,171 @@
 // Dependency Imports
 import React, { useState, useEffect } from "react";
 import Loading from "react-loading";
-import { Card, Chip, Grid, Typography } from "@material-ui/core";
+import {
+  Card,
+  Chip,
+  Grid,
+  Icon,
+  InputAdornment,
+  Typography,
+  TextField,
+} from "@material-ui/core";
 
 // Local Imports
 import DataParser from "./DataParser";
 import { BannedRoleMessage } from "../utils/CustomComponents";
 // import "./Devices.scss";
 import PropTypes from "prop-types";
+import { useHistory } from "react-router-dom";
+import { Search } from "@material-ui/icons";
+import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
 
 const deviceCardStyle = {
   height: "210px",
 };
 
 // Default function
-const DevicesComponent = (props) => {
+const DevicesComponent = ({
+  for: forWhom,
+  activeTag: activeTg,
+  devices,
+  userInfo,
+  from,
+  showDevices,
+  loading,
+}) => {
   const [validDevices, setValidDevices] = useState([]);
+  const [devicesWithNicknames, setDevicesWithNicknames] = useState([]);
+  const [searchedDevices, setSearchedDevices] = useState([]);
   const [deviceTags, setDeviceTags] = useState([]);
+  const [deviceSearchText, setDeviceSearchText] = useState("");
   const [activeTag, setActiveTag] = useState("All");
-
-  const tag = props.activeTag;
-  useEffect(() => {
-    if(tag)
-      setActiveTag(tag);
-  }, [tag])
+  const history = useHistory();
 
   useEffect(() => {
-    if (activeTag === "All" && props.devices.length > 0) {
-      if (props.from === "watersensors") {
-        const devicesWithTags = filterAllDevices(props.devices);
+    if (validDevices.length === 0) return false;
+
+    // console.log(validDevices);
+
+    const initNicknamesFetch = async () => {
+      const deviceIds = validDevices.reduce((acc, device) => {
+        if (acc.length === 0) return [device.id];
+        else {
+          if (!acc.includes(device.id)) acc.push(device.id);
+        }
+        return acc;
+      }, []);
+      const fetchNicknamesURL = `${apiURL}/api/hologram/device/nicknames/bulk`;
+
+      // const response = await axios({
+      //   url: fetchNicknamesURL,
+      //   method: "post",
+      //   auth: {
+      //     username: apiUsername,
+      //     password: apiPassword,
+      //   },
+      //   data: JSON.stringify(deviceIds),
+      // });
+
+      const response = await fetch(fetchNicknamesURL, {
+        method: "post",
+        headers: {
+          Authorization:
+            "Basic " +
+            Buffer.from(apiUsername + ":" + apiPassword, "binary").toString(
+              "base64"
+            ),
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        },
+        body: `q=${deviceIds.toString()}`,
+      });
+
+      const nicknameRecords = await response.json();
+
+      const devicesWithNicknames = validDevices.map((device) => {
+        return {
+          ...device,
+          nickname:
+            nicknameRecords.data
+              .filter((rec) => parseInt(rec.device_id) === parseInt(device.id))
+              .map((r) => r.nickname)
+              .toString() || null,
+        };
+      });
+
+      setDevicesWithNicknames(devicesWithNicknames);
+    };
+
+    initNicknamesFetch();
+  }, [validDevices]);
+
+  useEffect(() => {
+    if (deviceSearchText) {
+      const likeExp = deviceSearchText.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
+      const regex = new RegExp(`w*${likeExp}w*`, "gi");
+      const filtered = devicesWithNicknames.filter(
+        (device) =>
+          regex.test(device.nickname) ||
+          regex.test(device.name) ||
+          regex.test(device.id)
+      );
+
+      setSearchedDevices(filtered);
+    } else {
+      setSearchedDevices(devicesWithNicknames);
+    }
+  }, [deviceSearchText, devicesWithNicknames]);
+
+  useEffect(() => {
+    if (history.location.state) {
+      if (history.location.state.activeTag) {
+        setActiveTag(history.location.state.activeTag);
+      }
+    } else if (activeTg) {
+      setActiveTag(activeTg);
+    } else {
+      setActiveTag("All");
+    }
+  }, [history.location, activeTg]);
+
+  useEffect(() => {
+    if (activeTag === "All" && devices.length > 0) {
+      if (from === "watersensors") {
+        const devicesWithTags = filterAllDevices(devices);
         setValidDevices(devicesWithTags);
       } else {
-        setValidDevices(props.devices);
+        setValidDevices(devices);
       }
     } else {
-      if (props.devices.length > 0) {
+      if (devices.length > 0) {
         if (activeTag === "All") {
-          if (props.from === "watersensors") {
-            const devicesWithTags = filterAllDevices(props.devices);
+          if (from === "watersensors") {
+            const devicesWithTags = filterAllDevices(devices);
             setValidDevices(devicesWithTags);
           } else {
-            setValidDevices(props.devices);
+            setValidDevices(devices);
           }
         } else if (activeTag === "Untagged") {
-          const devicesWithoutTags = filterAllDevicesWithoutTags(props.devices);
+          const devicesWithoutTags = filterAllDevicesWithoutTags(devices);
           setValidDevices(devicesWithoutTags);
         } else {
-          const filteredDevices = filterDevicesByTags(props.devices, activeTag);
+          const filteredDevices = filterDevicesByTags(devices, activeTag);
           setValidDevices(filteredDevices);
         }
       }
     }
-  }, [activeTag, props]);
+  }, [activeTag, devices, from]);
 
   useEffect(() => {
-    if (props.devices.length > 0) {
-      const tags = getAllTags(props.devices).sort();
+    if (devices.length > 0) {
+      const tags = getAllTags(devices).sort();
       setDeviceTags(tags);
     }
-  }, [props]);
+  }, [devices]);
 
-  return props.showDevices ? (
+  return showDevices ? (
     <Grid container>
-      {props.loading ? (
+      {loading ? (
         <Grid item xs={12}>
           <Loading type="bars" width="200px" height="200px" color="#3f51b5" />
         </Grid>
@@ -76,6 +179,7 @@ const DevicesComponent = (props) => {
                 onClick={() => setActiveTag("All")}
               />
             </Grid>
+
             {deviceTags.length > 0
               ? deviceTags.map((tag) => (
                   <Grid item key={`tag-${tag}`}>
@@ -87,8 +191,7 @@ const DevicesComponent = (props) => {
                   </Grid>
                 ))
               : ""}
-            {props.userInfo.state === "all" ||
-            props.userInfo.state === "All" ? (
+            {userInfo.state === "all" || userInfo.state === "All" ? (
               <Grid item>
                 <Chip
                   color={activeTag === "Untagged" ? "primary" : "default"}
@@ -100,10 +203,28 @@ const DevicesComponent = (props) => {
               ""
             )}
           </Grid>
-          {validDevices.length > 0 ? (
-            validDevices.map((device) =>
+          <Grid item xs={12}>
+            <TextField
+              variant="outlined"
+              label="Search Devices"
+              value={deviceSearchText}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Icon>
+                      <Search />
+                    </Icon>
+                  </InputAdornment>
+                ),
+              }}
+              helperText="Enter device id or name"
+              onChange={(e) => setDeviceSearchText(e.target.value)}
+            />
+          </Grid>
+          {searchedDevices.length > 0 ? (
+            searchedDevices.map((device) =>
               device.lastsession ? (
-                <Grid item xs={12} md={2} key={device.id}>
+                <Grid item xs={12} md={3} lg={2} sm={6} key={device.id}>
                   <Card
                     style={deviceCardStyle}
                     variant="elevation"
@@ -111,7 +232,7 @@ const DevicesComponent = (props) => {
                     className="deviceDataWrapper"
                   >
                     <DataParser
-                      for={props.for}
+                      for={forWhom}
                       key={device.id}
                       deviceData={device}
                       lastSession={true}
@@ -128,7 +249,7 @@ const DevicesComponent = (props) => {
                     className="deviceDataWrapper"
                   >
                     <DataParser
-                      for={props.for}
+                      for={forWhom}
                       key={device.id}
                       deviceData={device}
                       lastSession={false}
@@ -138,7 +259,13 @@ const DevicesComponent = (props) => {
               )
             )
           ) : (
-            <Typography variant="body1">No Devices Found</Typography>
+            <Grid item xs={12}>
+              <Typography variant="h6">
+                No Devices Found{" "}
+                {deviceSearchText &&
+                  `with nickname | device id | device name  "${deviceSearchText.toUpperCase()}"`}
+              </Typography>
+            </Grid>
           )}
         </Grid>
       )}
@@ -160,8 +287,7 @@ const getAllTags = (devices) => {
   const tagsArray = tags.flat();
 
   tagsArray.forEach((tag) => {
-    if (uniqueTags.includes(tag.name) || tag.name === "PSA_GLOBAL") {
-    } else {
+    if (!(uniqueTags.includes(tag.name) || tag.name === "PSA_GLOBAL")) {
       uniqueTags.push(tag.name);
     }
   });
@@ -214,11 +340,14 @@ const filterAllDevices = (devices) => {
   return devicesWithTags;
 };
 
+export default DevicesComponent;
+
 DevicesComponent.propTypes = {
   showDevices: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,
   devices: PropTypes.array.isRequired,
   userInfo: PropTypes.object,
+  activeTag: PropTypes.string,
+  for: PropTypes.string,
+  from: PropTypes.string,
 };
-
-export default DevicesComponent;

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 // import { Map, Marker, Popup, TileLayer } from "react-leaflet";
-import Skeleton from "@material-ui/lab/Skeleton";
+// import Skeleton from "@material-ui/lab/Skeleton";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 
 import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
@@ -41,17 +41,19 @@ import {
   Timeline,
 } from "@material-ui/icons";
 import moment from "moment-timezone";
-import { Link, useLocation, useHistory, useParams } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
 
 // Local Imports
 import { apiUsername, apiPassword } from "../../utils/api_secret";
-import { APIURL, APICreds, apiCorsUrl } from "../hologramConstants";
-import GoogleMap from "../../Location/GoogleMap";
+import { APIURL, apiCorsUrl } from "../hologramConstants";
+
 import { ScrollTop, useInfiniteScroll } from "../../utils/CustomComponents";
 import Loading from "react-loading";
 import StressCamButtons from "./StressCamButtons";
 import { checkIfDeviceHasNickname } from "../../utils/constants";
+import { bool, any } from "prop-types";
+
 // import { theme } from "highcharts";
 
 SyntaxHighlighter.registerLanguage("json", json);
@@ -106,10 +108,9 @@ const useStyles = makeStyles((theme) => ({
 const DeviceComponent = (props) => {
   const { deviceId } = useParams();
   const { palette } = useTheme();
-  const { activeTag } = useLocation();
   const history = useHistory();
+  const activeTag = history.location.state ? history.location.state.activeTag : "all";
   const classes = useStyles();
-
   const [deviceData, setDeviceData] = useState({ name: "" });
   const [mostRecentData, setMostRecentData] = useState([]);
   const [userTimezone, setUserTimezone] = useState("America/New_York");
@@ -186,7 +187,7 @@ const DeviceComponent = (props) => {
       // console.log("undefined !");
       // get data from api
       setDeviceData({ name: "Loading" });
-
+      setIsFetching(true);
       Axios({
         method: "post",
         url: apiCorsUrl + `/watersensors`,
@@ -203,19 +204,21 @@ const DeviceComponent = (props) => {
         responseType: "json",
       })
         .then((response) => {
+          setIsFetching(false);
           setMostRecentData(response.data.data);
           if (response.data.continues) {
             setLoadMoreDataURI(response.data.links.next);
-            setPagesLoaded(pagesLoaded + 1);
+            setPagesLoaded((pagesLoaded) => pagesLoaded + 1);
           }
         })
         .catch((e) => {
           console.error(e);
+          setIsFetching(false);
         });
     } else {
       // data passed from component via prop
       setDeviceData(props.location.state);
-
+      setIsFetching(true);
       Axios({
         method: "post",
         url: apiCorsUrl + `/${props.location.state.for}`,
@@ -234,17 +237,20 @@ const DeviceComponent = (props) => {
         responseType: "json",
       })
         .then((response) => {
+          setIsFetching(false);
           setMostRecentData(response.data.data);
           if (response.data.continues) {
             setLoadMoreDataURI(response.data.links.next);
-            setPagesLoaded(pagesLoaded + 1);
+            setPagesLoaded((pagesLoaded) => pagesLoaded + 1);
           }
         })
         .catch((e) => {
           console.error(e);
+          setIsFetching(false);
         });
     }
-  }, [timeEnd, deviceId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeEnd, deviceId, props.location.state]);
 
   const RenderGridListMap = () => {
     return (
@@ -256,13 +262,20 @@ const DeviceComponent = (props) => {
             aria-label={`All Devices`}
             component={Link}
             tooltip="All Devices"
-            to={
-              props.location.state && props.location.state.for
-                ? props.location.state.for === "watersensors"
-                  ? "/devices/water-sensors"
-                  : "/devices/stress-cams"
-                : "/devices"
-            }
+            to={{
+              pathname:
+                props.location.state && props.location.state.for
+                  ? props.location.state.for === "watersensors"
+                    ? "/devices/water-sensors"
+                    : "/devices/stress-cams"
+                  : "/devices",
+              state: {
+                activeTag:
+                  history.location.state && history.location.state.activeTag
+                    ? history.location.state.activeTag
+                    : "All",
+              },
+            }}
             startIcon={<ArrowBackIosOutlined />}
           >
             All Devices
@@ -387,7 +400,7 @@ const DeviceComponent = (props) => {
                       </code>
                     </TableCell>
                   )}
-                  {/* <TableCell>{getDataFromJSON(data.data, "tags")}</TableCell> */}
+
                   <TableCell datatype="">
                     {getDataFromJSON(
                       data.data,
@@ -402,7 +415,9 @@ const DeviceComponent = (props) => {
             ) : (
               <StyledTableRow>
                 <TableCell colSpan={3} align="center">
-                  <Typography variant="body1">No Data</Typography>
+                  <Typography variant="body1">
+                    {isFetching ? `Fetching Data` : `No Data`}
+                  </Typography>
                 </TableCell>
               </StyledTableRow>
             )}
@@ -533,7 +548,12 @@ const DeviceComponent = (props) => {
                 size={"small"}
                 component={Link}
                 startIcon={<Timeline />}
-                to={`/sensor-visuals/${chartRedirectYear}/${siteCode}`}
+                to={{
+                  pathname: `/sensor-visuals/${chartRedirectYear}/${siteCode}`,
+                  state: {
+                    activeTag: activeTag,
+                  },
+                }}
               >
                 Chart view
               </Button>
@@ -545,7 +565,12 @@ const DeviceComponent = (props) => {
         </Grid>
         {isFetching && (
           <Grid item xs={12}>
-            <Grid container justify="center" alignItems="center" spacing={3}>
+            <Grid
+              container
+              justifyContent="center"
+              alignItems="center"
+              spacing={3}
+            >
               {hologramApiFunctional && (
                 <Grid item>
                   <Loading
@@ -659,16 +684,16 @@ const DeviceComponent = (props) => {
   );
 };
 
-const LoadingSkeleton = () => {
-  <Grid container spacing={4}>
-    <Grid item xs={12}>
-      <Skeleton variant="rect" width="100%" height="300px" animation="wave" />
-    </Grid>
-    <Grid item xs={12}>
-      <Skeleton variant="rect" width="100%" height="50vh" animation="pulse" />
-    </Grid>
-  </Grid>;
-};
+// const LoadingSkeleton = () => {
+//   <Grid container spacing={4}>
+//     <Grid item xs={12}>
+//       <Skeleton variant="rect" width="100%" height="300px" animation="wave" />
+//     </Grid>
+//     <Grid item xs={12}>
+//       <Skeleton variant="rect" width="100%" height="50vh" animation="pulse" />
+//     </Grid>
+//   </Grid>;
+// };
 
 const isValidJson = (json) => {
   if (!(json && typeof json === "string")) {
@@ -684,8 +709,15 @@ const isValidJson = (json) => {
 };
 
 const isBase64 = (str = "") => {
-  const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+  const base64regex =
+    /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
 
   return base64regex.test(str);
 };
 export default DeviceComponent;
+
+DeviceComponent.propTypes = {
+  location: any,
+  isDarkTheme: bool,
+  history: any,
+};

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /*
 DEPRECATED
 
@@ -14,7 +15,7 @@ import HighchartsReact from "highcharts-react-official";
 // Local Imports
 import { apiUsername, apiURL, apiPassword } from "../../../utils/api_secret";
 import { BarsLoader } from "../../../utils/CustomComponents";
-
+import PropTypes from "prop-types";
 const qs = require("qs");
 
 // Default Function
@@ -594,10 +595,12 @@ const NodeSensorVisuals = (props) => {
   useEffect(() => {
     const init = async () => {
       setLoading(true);
-      let initialChartsData = await (await fetchBasicNodeData(activeChip, year))
-        .data;
-      let sensorChartData = await (await fetchSensorNodeData(activeChip, year))
-        .data;
+      let initialChartsData = await (
+        await fetchBasicNodeData(activeChip, year)
+      ).data;
+      let sensorChartData = await (
+        await fetchSensorNodeData(activeChip, year)
+      ).data;
       if (initialChartsData.data) {
         setInitialCharts(initialChartsData.data);
       }
@@ -612,7 +615,7 @@ const NodeSensorVisuals = (props) => {
   }, [activeChip]);
 
   return (
-    <Grid container justify="center">
+    <Grid container justifyContent="center">
       <Grid item md={12}>
         <Typography variant="h5" align="center">
           Node Data for {<NodeType />} {props.activeChip}
@@ -725,3 +728,9 @@ const fetchSensorNodeData = async (nodeSerialNo, year) => {
 };
 
 export default NodeSensorVisuals;
+
+NodeSensorVisuals.propTypes = {
+  activeChip: PropTypes.string,
+  year: PropTypes.any,
+  bareNodeSerialNo: PropTypes.any,
+};

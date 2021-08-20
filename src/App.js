@@ -3,7 +3,6 @@ import React, { useState, useEffect, Suspense } from "react";
 import {
   makeStyles,
   Box,
-  createMuiTheme,
   CssBaseline,
   ThemeProvider,
   Paper,
@@ -12,7 +11,9 @@ import {
   Button,
   Grid,
   responsiveFontSizes,
+  createTheme,
 } from "@material-ui/core";
+import PropTypes from "prop-types";
 
 // Local Imports
 import { useAuth0 } from "./Auth/react-auth0-spa";
@@ -64,14 +65,57 @@ import Debug from "./Debug/Debug";
 import axios from "axios";
 import {
   apiPassword,
-  apiURL,
   apiUsername,
   onfarmAPI,
+  onfarmStaticApiKey,
 } from "./utils/api_secret";
 import { apiCorsUrl, APIURL } from "./Devices/hologramConstants";
 import QueryString from "qs";
 
 // Helper function
+
+const useOnFarmApiStatus = (manualRetry = false) => {
+  const [status, setStatus] = useState({ checking: true, working: true });
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    const url = `${onfarmAPI}/raw?table=cc_mixture`;
+
+    const fetchApi = async () => {
+      try {
+        setStatus({ checking: true, working: false });
+        const response = await fetch(url, {
+          headers: {
+            "x-api-key": onfarmStaticApiKey,
+          },
+        });
+
+        const records = await response.json();
+
+        if (Array.isArray(records) && response.status === 200) {
+          setStatus({ checking: false, working: true });
+        } else {
+          setStatus({ checking: false, working: false });
+        }
+      } catch (e) {
+        console.error(e);
+        setStatus({ checking: false, working: false });
+      }
+    };
+
+    // run every 2 minutes
+    const apiTimer = setTimeout(() => {
+      setCount((c) => c + 1);
+      fetchApi();
+    }, 2 * 60000);
+
+    // run immediately on homepage
+    if (window.location.pathname === "/" || manualRetry) fetchApi();
+
+    return () => clearTimeout(apiTimer);
+  }, [count, manualRetry]);
+  return status;
+};
+
 function useOnlineStatus() {
   const [online, setOnline] = useState(window.navigator.onLine);
 
@@ -109,15 +153,22 @@ const useStyles = makeStyles((theme) => ({
 
 // Default function
 function App() {
-  const online = useOnlineStatus();
-  const {
-    loading,
-    isAuthenticated,
-    loginWithRedirect,
-
-    getTokenSilently,
-  } = useAuth0();
   const classes = useStyles();
+  const online = useOnlineStatus();
+  const [onFarmManualCheck, setOnFarmManualCheck] = useState(false);
+  const { checking: onfarmApiChecking, working: onfarmApiWorking } =
+    useOnFarmApiStatus(onFarmManualCheck);
+
+  // useEffect(() => {
+  //   if (!onfarmApiChecking && !onfarmApiWorking) {
+  //     setOnline(false);
+  //   } else {
+  //     setOnline(useOnlineStatus);
+  //   }
+  // }, [onfarmApiChecking, onfarmApiWorking]);
+
+  const { loading, isAuthenticated, loginWithRedirect, getTokenSilently } =
+    useAuth0();
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -151,7 +202,7 @@ function App() {
     },
   });
 
-  let muiTheme = createMuiTheme(theme);
+  let muiTheme = createTheme(theme);
   muiTheme = responsiveFontSizes(muiTheme);
 
   const toggleThemeDarkness = () => {
@@ -174,7 +225,7 @@ function App() {
     if (theme.palette.type !== "light") {
       // update localstorage
       window.localStorage.setItem("theme", "dark");
-      document.body.style.backgroundColor = "#333";
+      document.body.style.backgroundColor = "#121212";
       document.body.style.color = "#fbfbfb";
     } else {
       // update localstorage
@@ -204,12 +255,12 @@ function App() {
     }
   }, [loading, getTokenSilently, isAuthenticated]);
 
-  return online ? (
+  return online && (onfarmApiWorking || onfarmApiChecking) ? (
     loading ? (
       <div className={classes.root}>
         <CssBaseline />
         <ThemeProvider theme={muiTheme}>
-          <Paper
+          <Box
             style={{
               height: "100vh",
             }}
@@ -218,7 +269,7 @@ function App() {
             <Typography variant="h3" gutterBottom align="center">
               Loading
             </Typography>
-          </Paper>
+          </Box>
         </ThemeProvider>
       </div>
     ) : checkingAPIs ? (
@@ -241,7 +292,7 @@ function App() {
 
               <Switch>
                 <Route
-                  render={(props) => (
+                  render={() => (
                     // <LandingComponent
                     //   {...props}
                     //   isDarkTheme={theme.palette.type === "light" ? false : true}
@@ -258,7 +309,7 @@ function App() {
                 />
                 <PrivateRoute
                   path="/on-farm-protocols"
-                  render={(props) => (
+                  render={() => (
                     <Protocols
                       isDarkTheme={
                         theme.palette.type === "light" ? false : true
@@ -269,7 +320,7 @@ function App() {
                 />
                 <PrivateRoute
                   path="/devices/stress-cams"
-                  render={(props) => (
+                  render={() => (
                     <StressCams
                       isDarkTheme={
                         theme.palette.type === "light" ? false : true
@@ -280,7 +331,7 @@ function App() {
                 />
                 <PrivateRoute
                   path="/devices/water-sensors"
-                  render={(props) => (
+                  render={() => (
                     <WaterSensors
                       isDarkTheme={
                         theme.palette.type === "light" ? false : true
@@ -292,7 +343,7 @@ function App() {
 
                 <PrivateRoute
                   path="/site-information/contact-enrollment"
-                  render={(props) => (
+                  render={() => (
                     <AllDataTable
                       isDarkTheme={
                         theme.palette.type === "light" ? false : true
@@ -304,7 +355,7 @@ function App() {
                 <PrivateRoute
                   path="/site-information/farm-dates"
                   exact
-                  render={(props) => (
+                  render={() => (
                     <FarmDates
                       isDarkTheme={
                         theme.palette.type === "light" ? false : true
@@ -424,7 +475,7 @@ function App() {
                 <PrivateRoute
                   path={`/sensor-visuals`}
                   render={(props) => (
-                    <SensorVisuals type="watersensors" {...props} />
+                    <SensorVisuals isDarkTheme={theme.palette.type === "light" ? false : true} type="watersensors" {...props} />
                   )}
                   exact
                 />
@@ -490,19 +541,56 @@ function App() {
           }}
         >
           <Box height={"40vh"} />
-          <Typography variant="h3" gutterBottom align="center">
-            You are offline!
-          </Typography>
-          <Grid container justify="center" alignItems="center" spacing={4}>
+
+          {!online ? (
+            <Typography variant="h4" gutterBottom align="center">
+              You are Offline!
+            </Typography>
+          ) : (
+            <Typography variant="h4" gutterBottom align="center">
+              {!onfarmApiChecking && !onfarmApiWorking
+                ? `On Farm API is currently down!`
+                : `You are offline!`}
+            </Typography>
+          )}
+
+          <Grid
+            container
+            justifyContent="center"
+            alignItems="center"
+            spacing={4}
+          >
             <Grid item>
               <WifiOff />
             </Grid>
             <Grid item>
-              <Typography variant="body1" gutterBottom align="center">
-                &nbsp;This app requires an active internet connection. Please
-                check your network!
-              </Typography>
+              {!online ? (
+                <Typography variant="body1" gutterBottom align="center">
+                  &nbsp;This app requires an active internet connection. Please
+                  check your network!
+                </Typography>
+              ) : (
+                <Typography variant="body1" gutterBottom align="center">
+                  &nbsp;
+                  {!onfarmApiChecking && !onfarmApiWorking
+                    ? `Retrying...`
+                    : `This app requires an active internet connection. Please
+                check your network!`}
+                </Typography>
+              )}
             </Grid>
+
+            {!onfarmApiChecking && !onfarmApiWorking && (
+              <Grid item>
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={() => setOnFarmManualCheck((v) => !v)}
+                >
+                  Retry
+                </Button>
+              </Grid>
+            )}
           </Grid>
         </Paper>
       </ThemeProvider>
@@ -516,13 +604,13 @@ const APIChecker = (props) => {
   const [checkingApis, setCheckingApis] = useState({
     phpAPI: true,
     hologramAPI: true,
-    onfarmAPI: true,
   });
   const [apisWorking, setApisWorking] = useState({
     phpAPI: false,
     hologramAPI: false,
-    onfarmAPI: false,
   });
+  const [retry, setRetry] = useState(false);
+  const [apiIssue, setApiIssue] = useState(0);
   useEffect(() => {
     const hologramAPI = "/api/1/users/me";
 
@@ -544,14 +632,22 @@ const APIChecker = (props) => {
       },
       responseType: "json",
     })
-      .then(sleeper())
       .then((response) => {
         if (response.status === 200) {
           setApisWorking((a) => ({ ...a, phpAPI: true }));
           setCheckingApis((a) => ({ ...a, phpAPI: false, hologramAPI: true }));
+        } else {
+          setApisWorking((a) => ({ ...a, phpAPI: false }));
+          setCheckingApis((a) => ({ ...a, phpAPI: false, hologramAPI: true }));
         }
       })
-      .then(sleeper())
+      .catch((e) => {
+        setApiIssue((apiIssue) => apiIssue + 1);
+        setApisWorking((a) => ({ ...a, phpAPI: false }));
+        setCheckingApis((a) => ({ ...a, phpAPI: false, hologramAPI: true }));
+        console.error(e);
+      })
+
       .then(() => {
         axios({
           method: "post",
@@ -578,34 +674,29 @@ const APIChecker = (props) => {
               }));
             }
           })
-          .then(sleeper())
-          .then(() => {
-            setCheckingApis((a) => ({ ...a, onfarmAPI: true }));
-            fetch(
-              onfarmAPI + `/raw?table=biomass_in_field&affiliation=MD`
-            ).then((r) => {
-              if (r.headers.get("content-type").split(";")[0] === "text/html") {
-                setApisWorking((a) => ({ ...a, onfarmAPI: true }));
-                setCheckingApis((a) => ({ ...a, onfarmAPI: false }));
-              }
-            });
-
-            //  fetch(onfarmAPI + `/raw?table=biomass_in_field&affiliation=MD`, {
-            //   headers: {
-            //     "Content-Type": "application/json",
-            //     "x-api-key": apiKey,
-            //   },
-            // }).then((res) => {
+          .catch((e) => {
+            setApiIssue((apiIssue) => apiIssue + 1);
+            setApisWorking((a) => ({ ...a, hologramAPI: false }));
+            setCheckingApis((a) => ({
+              ...a,
+              phpAPI: false,
+              hologramAPI: false,
+            }));
+            console.error(e);
           });
       })
 
-      .catch((e) => console.error(e));
-  }, []);
+      .catch((e) => {
+        setApiIssue((apiIssue) => apiIssue + 1);
+        setApisWorking((a) => ({ ...a, onfarmAPI: false }));
+        setCheckingApis((a) => ({ ...a, onfarmAPI: false }));
+        console.error(e);
+      });
+  }, [retry]);
 
   useEffect(() => {
-    const { setChecker } = props;
     if (Object.values(apisWorking).every(Boolean)) setChecker(false);
-  }, [apisWorking, props]);
+  }, [apisWorking, setChecker]);
 
   const StatusChecker = ({ checkingApis, apisWorking, type }) => {
     switch (type) {
@@ -633,28 +724,29 @@ const APIChecker = (props) => {
             )}
           </>
         );
-      case "onfarmAPI":
-        return (
-          <>
-            {checkingApis.onfarmAPI ? (
-              "checking.."
-            ) : apisWorking.onfarmAPI ? (
-              <Check color="primary" />
-            ) : (
-              <Clear />
-            )}
-          </>
-        );
+
       default:
         return null;
     }
   };
-
+  StatusChecker.propTypes = {
+    checkingApis: PropTypes.shape({
+      phpAPI: PropTypes.bool,
+      onfarmAPI: PropTypes.bool,
+      hologramAPI: PropTypes.bool,
+    }),
+    apisWorking: PropTypes.shape({
+      phpAPI: PropTypes.bool,
+      onfarmAPI: PropTypes.bool,
+      hologramAPI: PropTypes.bool,
+    }),
+    type: PropTypes.oneOf(["onfarmAPI", "hologramAPI", "phpAPI"]),
+  };
   return (
     <>
       <CssBaseline />
       <ThemeProvider theme={theme}>
-        <Paper
+        <Box
           style={{
             height: "100vh",
           }}
@@ -664,7 +756,9 @@ const APIChecker = (props) => {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Typography variant="h4" gutterBottom align="center">
-                  Verifying api status
+                  {apiIssue !== 0
+                    ? `Tech Dashboard is currently Down`
+                    : `Verifying api status`}
                 </Typography>
               </Grid>
 
@@ -673,7 +767,7 @@ const APIChecker = (props) => {
                   container
                   direction="row"
                   alignItems="center"
-                  justify="center"
+                  justifyContent="center"
                 >
                   Tech Dashboard API{" "}
                   <StatusChecker
@@ -688,28 +782,13 @@ const APIChecker = (props) => {
                   container
                   direction="row"
                   alignItems="center"
-                  justify="center"
+                  justifyContent="center"
                 >
                   Hologram API{" "}
                   <StatusChecker
                     checkingApis={checkingApis}
                     apisWorking={apisWorking}
                     type={"hologramAPI"}
-                  />
-                </Grid>
-              </Grid>
-              <Grid item xs={12}>
-                <Grid
-                  container
-                  direction="row"
-                  alignItems="center"
-                  justify="center"
-                >
-                  Onfarm API{" "}
-                  <StatusChecker
-                    checkingApis={checkingApis}
-                    apisWorking={apisWorking}
-                    type={"onfarmAPI"}
                   />
                 </Grid>
               </Grid>
@@ -725,14 +804,16 @@ const APIChecker = (props) => {
                     spacing={3}
                     direction="row"
                     alignItems="center"
-                    justify="center"
+                    justifyContent="center"
                   >
                     <Button
                       startIcon={<Replay />}
                       size="small"
                       color="primary"
                       variant="contained"
-                      onClick={() => window.location.reload()}
+                      onClick={() => {
+                        setRetry(!retry);
+                      }}
                     >
                       Retry
                     </Button>
@@ -740,16 +821,15 @@ const APIChecker = (props) => {
                 )}
             </Grid>
           </Box>
-        </Paper>
+        </Box>
       </ThemeProvider>
     </>
   );
 };
 
-const sleeper = (ms = 500) => {
-  return function (x) {
-    return new Promise((resolve) => setTimeout(() => resolve(x), ms));
-  };
-};
-
 export default App;
+
+APIChecker.propTypes = {
+  theme: PropTypes.object,
+  setChecker: PropTypes.func,
+};

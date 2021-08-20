@@ -6,6 +6,7 @@ import Avatar from "@material-ui/core/Avatar";
 
 import MDEditor from "@uiw/react-md-editor";
 
+import PropTypes from "prop-types";
 // import "./IssueBodyBubble.scss";
 import { IconButton, Grid, Tooltip, makeStyles } from "@material-ui/core";
 import { format_AM_PM } from "../../utils/constants";
@@ -50,7 +51,7 @@ const useStyles = makeStyles({
   },
 });
 
-const IssueBubbleBody = ({ issueData, user, isDarkTheme }) => {
+const IssueBubbleBody = ({ issueData, user }) => {
   const classes = useStyles();
   let side = issueData.hasMention
     ? issueData.user.login === user.nickname
@@ -70,13 +71,13 @@ const IssueBubbleBody = ({ issueData, user, isDarkTheme }) => {
 
   const updateDate = new Date(issueData.updated_at);
   return (
-    <Grid container justify={justify}>
+    <Grid container justifyContent={justify}>
       <Grid item>
         <Grid
           container
           spacing={2}
           alignItems="center"
-          justify="flex-start"
+          justifyContent="flex-start"
           direction={justify === "flex-start" ? "row" : "row-reverse"}
         >
           <Grid item>
@@ -112,7 +113,7 @@ const IssueBubbleBody = ({ issueData, user, isDarkTheme }) => {
             <Grid
               container
               style={{ padding: 0 }}
-              justify={justify}
+              justifyContent={justify}
               alignItems={justify}
             >
               {/* ${justify} ${
@@ -137,7 +138,7 @@ const IssueBubbleBody = ({ issueData, user, isDarkTheme }) => {
                 </ChatBubbleBody>
               </Grid>
               <Grid item xs={12}>
-                <Grid container justify={justify}>
+                <Grid container justifyContent={justify}>
                   <Grid item>
                     <Typography
                       variant="caption"
@@ -167,3 +168,9 @@ const IssueBubbleBody = ({ issueData, user, isDarkTheme }) => {
 };
 
 export default IssueBubbleBody;
+
+IssueBubbleBody.propTypes = {
+  issueData: PropTypes.any,
+  isDarkTheme: PropTypes.bool,
+  user: PropTypes.object,
+};

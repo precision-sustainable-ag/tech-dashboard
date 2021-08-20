@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Grid, Typography } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { onfarmAPI } from "../utils/api_secret";
 import { Context } from "../Store/Store";
 import { CustomLoader } from "../utils/CustomComponents";

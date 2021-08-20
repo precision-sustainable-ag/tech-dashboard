@@ -1,8 +1,12 @@
-import { Grid, Typography, Snackbar } from "@material-ui/core";
+import { Grid, Snackbar, Switch, withStyles } from "@material-ui/core";
 import React, { useState, useEffect, useContext, Fragment } from "react";
 import { Context } from "../Store/Store";
 import { onfarmAPI } from "../utils/api_secret";
-import { CustomLoader, YearsAndAffiliations } from "../utils/CustomComponents";
+import {
+  BannedRoleMessage,
+  CustomLoader,
+  YearsAndAffiliations,
+} from "../utils/CustomComponents";
 import { uniqueYears } from "../utils/SharedFunctions";
 import MuiAlert from "@material-ui/lab/Alert";
 
@@ -16,11 +20,15 @@ function Alert(props) {
 const currentYear = new Date().getFullYear();
 const FarmValues = () => {
   const [state] = useContext(Context);
-  const [fetching, setFetching] = useState(false);
+  const [fetching, setFetching] = useState(true);
   const [farmValues, setFarmValues] = useState([]);
   const [farmYears, setFarmYears] = useState([]);
   const [affiliations, setAffiliations] = useState([]);
-  const [snackbarData, setSnackbarData] = useState({ open: false, text: "", severity: "success" });
+  const [snackbarData, setSnackbarData] = useState({
+    open: false,
+    text: "",
+    severity: "success",
+  });
 
   const activeFarmYear = () => {
     const activeYear = farmYears
@@ -71,6 +79,7 @@ const FarmValues = () => {
       const data = await response.json();
       return data;
     };
+    if (farmValues.length > 0) return false;
 
     if (state.userInfo.apikey) {
       setFetching(true);
@@ -83,7 +92,7 @@ const FarmValues = () => {
 
           const affiliations = response
             .reduce(
-              (prev, curr, index, arr) =>
+              (prev, curr) =>
                 !prev.includes(curr.affiliation)
                   ? [...prev, curr.affiliation]
                   : [...prev],
@@ -103,23 +112,32 @@ const FarmValues = () => {
               : 0
           );
           setAffiliations(sortedAffiliations);
-
-          setFetching(false);
         })
+        .then(() => setFetching(false))
         .catch((e) => {
           console.error(e);
           setFetching(false);
         });
     }
-  }, [state.userInfo.apikey]);
+  }, [state.userInfo.apikey, farmValues.length]);
+
+  const [units, setUnits] = useState("kg/ha");
+
+  const changeSwitchUnits = (e) => {
+    if (e.target.checked) {
+      setUnits("lbs/ac");
+    } else {
+      setUnits("kg/ha");
+    }
+  };
 
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={3} style={{ maxHeight: "90vh" }}>
       {fetching ? (
         <CustomLoader />
       ) : farmValues.length === 0 ? (
-        <Grid item>
-          <Typography variant="h5">No Data</Typography>
+        <Grid item xs={12}>
+          <BannedRoleMessage title="Biomass - Farm Values" />
         </Grid>
       ) : (
         <Fragment>
@@ -137,17 +155,38 @@ const FarmValues = () => {
             <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
           </Snackbar>
           {/* Years and Affiliation */}
-          <YearsAndAffiliations
-            title={"Farm Values"}
-            years={farmYears}
-            handleActiveYear={handleActiveYear}
-            affiliations={affiliations}
-            handleActiveAffiliation={handleActiveAffiliation}
-            showYears={true}
-          />
+          <Grid item lg={9} sm={12}>
+            <Grid container spacing={3}>
+              <YearsAndAffiliations
+                title={"Farm Values"}
+                years={farmYears}
+                handleActiveYear={handleActiveYear}
+                affiliations={affiliations}
+                handleActiveAffiliation={handleActiveAffiliation}
+                showYears={true}
+              />
+            </Grid>
+          </Grid>
+          <Grid
+            item
+            lg={3}
+            sm={12}
+            container
+            justifyContent="flex-end"
+            alignItems="center"
+            component="label"
+          >
+            <Grid item>kg/ha</Grid>
+            <CustomSwitch
+              checked={units === "lbs/ac"}
+              onChange={changeSwitchUnits}
+            />
+            <Grid item>lbs/ac</Grid>
+          </Grid>
           {/* Farm Values Table */}
           <Grid item container xs={12}>
             <FarmValuesTable
+              units={units}
               data={farmValues}
               year={activeFarmYear() || currentYear}
               affiliation={activeAffiliation() || "all"}
@@ -161,3 +200,25 @@ const FarmValues = () => {
 };
 
 export default FarmValues;
+
+const CustomSwitch = withStyles((theme) => ({
+  switchBase: {
+    "&$checked": {
+      color: theme.palette.common.white,
+      "& + $track": {
+        opacity: 1,
+        backgroundColor: theme.palette.grey[500],
+        borderColor: theme.palette.primary.main,
+      },
+    },
+  },
+  thumb: {
+    backgroundColor: theme.palette.primary.main,
+    boxShadow: "none",
+  },
+  track: {
+    opacity: 1,
+    backgroundColor: theme.palette.grey[500],
+  },
+  checked: {},
+}))(Switch);

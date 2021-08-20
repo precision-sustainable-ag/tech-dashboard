@@ -3,7 +3,7 @@ import { Context } from "../Store/Store";
 import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
 import Axios from "axios";
 import qs from "qs";
-import Platform from 'react-platform-js';
+import Platform from "react-platform-js";
 
 export const UserIsEditor = (permissions) => {
   const [state] = useContext(Context);
@@ -47,9 +47,9 @@ export function useWindowResize() {
 // called by useWindowDimensions hook
 function debounce(fn, ms) {
   let timer;
-  return (_) => {
+  return () => {
     clearTimeout(timer);
-    timer = setTimeout((_) => {
+    timer = setTimeout(() => {
       timer = null;
       fn.apply(this, arguments);
     }, ms);
@@ -74,7 +74,7 @@ export function useWindowDimensions() {
 
     window.addEventListener("resize", debouncedHandleResize);
 
-    return (_) => {
+    return () => {
       window.removeEventListener("resize", debouncedHandleResize);
     };
   });
@@ -88,7 +88,7 @@ export const createGithubIssue = async (
   labels,
   assignees,
   nickname,
-  getTokenSilently,
+  getTokenSilently
 ) => {
   const data = {
     action: "create",
@@ -105,7 +105,7 @@ export const createGithubComment = async (
   nickname,
   newComment,
   number,
-  getTokenSilently,
+  getTokenSilently
 ) => {
   const data = {
     action: "comment",
@@ -117,16 +117,13 @@ export const createGithubComment = async (
   return callAzureFunction(data, getTokenSilently);
 };
 
-export const addToTechnicians = async (
-  nickname,
-  getTokenSilently,
-) => {
-    const data = {
-      action: "add_to_technicians",
-      user: nickname
-    };
+export const addToTechnicians = async (nickname, getTokenSilently) => {
+  const data = {
+    action: "add_to_technicians",
+    user: nickname,
+  };
 
-    return callAzureFunction(data, getTokenSilently);
+  return callAzureFunction(data, getTokenSilently);
 };
 
 const callAzureFunction = async (data, getTokenSilently) => {
@@ -134,7 +131,7 @@ const callAzureFunction = async (data, getTokenSilently) => {
     audience: `https://precision-sustaibale-ag/tech-dashboard`,
   });
 
-  data = {...data, token: token};
+  data = { ...data, token: token };
 
   const options = {
     method: "POST",
@@ -144,38 +141,41 @@ const callAzureFunction = async (data, getTokenSilently) => {
     body: JSON.stringify(data),
     mode: "cors", // no-cors, *cors, same-origin
   };
-  
+
   let githubIssuesResponse;
 
-  try { 
+  try {
     githubIssuesResponse = await fetch(
       `https://githubissues.azurewebsites.us/api/GithubIssues`,
       options
-    )
+    );
   } catch (err) {
     console.log(err);
     githubIssuesResponse = null;
   }
 
   let githubIssuesResponseJSON = null;
-  
-  if(githubIssuesResponse)
-    githubIssuesResponseJSON = await githubIssuesResponse.json()
-    .catch((err) => {
-      console.log(err);
-      githubIssuesResponseJSON = githubIssuesResponse;
-    });
+
+  if (githubIssuesResponse)
+    githubIssuesResponseJSON = await githubIssuesResponse
+      .json()
+      .catch((err) => {
+        console.log(err);
+        githubIssuesResponseJSON = githubIssuesResponse;
+      });
 
   console.log(githubIssuesResponse);
 
   const dataString = qs.stringify({
-                                    params: data, 
-                                    os: Platform.OS, 
-                                    osVersion: Platform.OSVersion, 
-                                    browser: Platform.Browser, 
-                                    browserVersion: Platform.BrowserVersion, 
-                                    githubIssuesResponse: githubIssuesResponseJSON ? githubIssuesResponseJSON : "No response from function likely cors",
-                                  });
+    params: data,
+    os: Platform.OS,
+    osVersion: Platform.OSVersion,
+    browser: Platform.Browser,
+    browserVersion: Platform.BrowserVersion,
+    githubIssuesResponse: githubIssuesResponseJSON
+      ? githubIssuesResponseJSON
+      : "No response from function likely cors",
+  });
 
   await Axios({
     method: "POST",
@@ -193,9 +193,7 @@ const callAzureFunction = async (data, getTokenSilently) => {
   });
 
   return githubIssuesResponse;
-}
-
-
+};
 
 export const sendCommandToHologram = async (
   deviceId,
@@ -205,7 +203,7 @@ export const sendCommandToHologram = async (
   crop
 ) => {
   let data;
-  if(action === "start"){
+  if (action === "start") {
     data = {
       device_id: deviceId,
       farm_code: farmCode,
@@ -248,14 +246,12 @@ export const sendCommandToHologram = async (
   }
 };
 
-export const getDeviceMessages = async (
-  deviceId,
-) => {
+export const getDeviceMessages = async (deviceId) => {
   console.log(deviceId);
 
   const data = {
-    device_id: deviceId
-  }
+    device_id: deviceId,
+  };
   const dataString = qs.stringify(data);
 
   let req = await Axios({

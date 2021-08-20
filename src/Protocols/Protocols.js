@@ -1,159 +1,66 @@
 // import React, { useState, useEffect } from "react";
-import { Paper, Typography, Grid } from "@material-ui/core";
+import React, { useEffect, useState } from "react";
+import { Paper, Typography, Grid, Button } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
-import { useMemo, useState } from "react";
+import PropTypes from "prop-types";
 import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
-
-const linkData = [
-  {
-    title: "Decomp Bags and Biomass",
-    data: [
-      {
-        label: "Protocol",
-        url:
-          "https://docs.google.com/document/d/1VCGoRWoIpadd96jmpdEcjRWy5ia3nNR8rJ07_XL_K7Y/edit",
-      },
-      {
-        label: "Decomp bag biomass video",
-        url: "https://www.youtube.com/watch?v=-dBwwF906eE&t=51s",
-      },
-      {
-        label: "Kobo decomp bag pre weight form",
-        url: "https://ee.kobotoolbox.org/x/A0vJkKxS",
-      },
-      {
-        label: "Kobo decomp bag dry weight form",
-        url: "https://ee.kobotoolbox.org/x/UUEvjBK0",
-      },
-      {
-        label: "Kobo biomass decomp bag form",
-        url: "https://ee.kobotoolbox.org/x/v82BT9fq",
-      },
-      {
-        label: "Kobo decomp bag collect form",
-        url: "https://ee.kobotoolbox.org/x/mWXqWfvy",
-      },
-    ],
-  },
-  {
-    title: "Acclima Sensors",
-    data: [
-      {
-        label: "Protocol",
-        url:
-          "https://docs.google.com/document/d/1iUqeEHn3PLBMi9rbwVUQZcQDpdx_d-4gyS9ptdFmouI/edit",
-      },
-      {
-        label: "Installation video",
-        url: "https://www.youtube.com/watch?v=BDPQ7zMMv-A&t=170s",
-      },
-      {
-        label: "Gateway and Node Part 1 video",
-        url: "https://www.youtube.com/watch?v=zly3VXBy3pw&t=103s",
-      },
-      {
-        label: "Gateway and Node Part 2 video",
-        url: "https://www.youtube.com/watch?v=PzTtuH0uTdw",
-      },
-      {
-        label: "Kobo water sensor install form",
-        url: "https://ee.kobotoolbox.org/x/dcm60P5u",
-      },
-      {
-        label: "Kobo water sensor uninstall form",
-        url: "https://ee.kobotoolbox.org/x/becz2BBJ",
-      },
-    ],
-  },
-  {
-    title: "KoBoCollect",
-    data: [
-      {
-        label: "Protocol",
-        url:
-          "https://docs.google.com/document/d/1rsSmhmEXTms_MDP745cyEUPTWbbvA34DU4A3jPc34qI/edit",
-      },
-      {
-        label: "Kobo Login",
-        url: "https://kf.kobotoolbox.org/accounts/login/?next=/#/",
-      },
-      {
-        label: "KoboCollect app tutorial video",
-        url: "https://www.youtube.com/watch?v=A88vF9eqY8I&feature=youtu.be",
-      },
-      {
-        label: "KoboCollect web tutorial video",
-        url: "https://www.youtube.com/watch?v=h8NNsdYILlU",
-      },
-    ],
-  },
-  {
-    title: "Yield",
-    data: [
-      {
-        label: "Protocol",
-        url:
-          "https://docs.google.com/document/d/17NnUof6IQbPwM-uLFmb_O4kxxXu9CUhCa3a28pokUcA/edit",
-      },
-      {
-        label: "Kobo yield form",
-        url: "https://ee.kobotoolbox.org/x/TvRNAAyF",
-      },
-      {
-        label: "Register to share yield monitor data",
-        url: "https://www.analytics.ag/ncsu",
-      },
-    ],
-  },
-  {
-    title: "Enrolling a Grower/Field Set Up",
-    data: [
-      {
-        label: "How to Enroll a Grower Protocol",
-        url:
-          "https://docs.google.com/document/d/1vDT4d-1brXJZX0_bJTUQOzcseLNY_n0bOnIBIZXg-XM/edit",
-      },
-      {
-        label: "Kobo farm history survey",
-        url: "https://ee.kobotoolbox.org/x/ggAJsJ8P",
-      },
-      {
-        label: "Kobo GPS form",
-        url: "https://ee.kobotoolbox.org/x/nQY7I8Z5",
-      },
-      {
-        label: "On-Farm Overview/ Field Design",
-        url:
-          "https://docs.google.com/document/d/113egv4qi2qYuWIMdy7NQJ6h1857Yxfwq/edit",
-      },
-    ],
-  },
-  {
-    title: "Weeds",
-    data: [],
-  },
-];
+import parse, { attributesToProps } from "html-react-parser";
+import { Link } from "react-router-dom";
 
 const Protocols = () => {
   const [htmlData, setHtmlData] = useState("");
 
-  let data = useMemo(() => {
+  useEffect(() => {
     const fetchData = async () => {
       let data = await fetch(`${apiURL}/api/psa/internal/pages/957`, {
         headers: {
-          Authorization: "Basic " + btoa(`${apiUsername}:${apiPassword}`),
+          Authorization: `Basic ${Buffer.from(
+            apiUsername + ":" + apiPassword,
+            "binary"
+          ).toString("base64")}`,
         },
       });
+      let response = await data.text();
 
-      return await data.text();
+      setHtmlData(response);
     };
 
-    return fetchData();
+    fetchData();
   }, []);
 
-  data.then((resp) => {
-    setHtmlData(resp);
-  });
+  const options = {
+    replace: (domNode) => {
+      // if (domNode.attribs && domNode.name === "span") {
+      //   const props = attributesToProps(domNode.attribs);
+      //   // props.style = {};
+      //   return <span {...props} />;
+      // }
+
+      if (domNode.attribs && domNode.name === "a") {
+        const props = attributesToProps(domNode.attribs);
+
+        if (props.href.startsWith("https://onfarmtech.org/")) {
+          // domNode
+          console.log(domNode);
+          const relativeLink = props.href.replace("https://onfarmtech.org", "");
+          props.target = "_self";
+          return (
+            <Button
+              size="small"
+              component={Link}
+              to={relativeLink}
+              {...props}
+              variant="text"
+              style={{ textTransform: "capitalize" }}
+            >
+              {relativeLink.split("/").join("").split("-").join(" ")}
+            </Button>
+          );
+        }
+      }
+    },
+    trim: true,
+  };
 
   return (
     <Grid container>
@@ -167,11 +74,9 @@ const Protocols = () => {
         {!htmlData ? (
           <Skeleton width="100%" height="50vh" />
         ) : (
-          <Paper
-            style={{ padding: "1em" }}
-            elevation={3}
-            dangerouslySetInnerHTML={{ __html: htmlData ? htmlData : "" }}
-          />
+          <Paper style={{ padding: "1em" }} elevation={3}>
+            {parse(htmlData, options)}
+          </Paper>
         )}
       </Grid>
     </Grid>
@@ -179,3 +84,6 @@ const Protocols = () => {
 };
 
 export default Protocols;
+Protocols.propTypes = {
+  href: PropTypes.string,
+};

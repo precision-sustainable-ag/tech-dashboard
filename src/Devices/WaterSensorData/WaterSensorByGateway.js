@@ -15,11 +15,12 @@ import { ArrowBackIosOutlined } from "@material-ui/icons";
 // Local Imports
 import GatewayVisual from "./WaterSensorVisuals/GatewayVisual";
 import WaterSensorByGatewayTopbar from "./WaterSensorByGatewayTopbar";
-import NodeSensorVisuals from "./WaterSensorVisuals/NodeSensorVisuals";
+// import NodeSensorVisuals from "./WaterSensorVisuals/NodeSensorVisuals";
 import { apiUsername, apiPassword, apiURL } from "../../utils/api_secret";
+import PropTypes from "prop-types";
 
 // Styles
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   gridList: {
     width: "100%",
     height: "50px",
@@ -52,23 +53,23 @@ const getNodeSerialNo = async (gatewayNo, year) => {
 
 // Default Function
 const WaterSensorByGateway = (props) => {
+  const { location, match } = props;
   const classes = useStyles();
-  const gatewayNo =
-    props.location.state.gatewaysno || props.match.params.gatewayId;
+  const gatewayNo = location.state.gatewaysno || match.params.gatewayId;
 
   const [bareNodeSerialNo, setBareNodeSerialNo] = useState([
-    props.location.state.bareNodeSerialNo || "",
+    location.state.bareNodeSerialNo || "",
   ]);
   const [coverNodeSerialNo, setCoverNodeSerialNo] = useState([
-    props.location.state.bareNodeSerialNo || "",
+    location.state.bareNodeSerialNo || "",
   ]);
   const [loading, setLoading] = useState(false);
   const [activeChip, setActiveChip] = useState("");
   const [loadingNodes, setLoadingNodes] = useState(false);
 
-  const [bareNodeObject, setBareNodeObject] = useState({});
-  const [coverNodeObject, setCoverNodeObject] = useState({});
-  const [year, setYear] = useState(props.location.state.year);
+  const [, setBareNodeObject] = useState({});
+  const [, setCoverNodeObject] = useState({});
+  const [year] = useState(location.state.year);
   //   get all nodes in the gateway, and get all sensors in each node
   //    this can be done by making a nested object here
   /* eg. gatewayNo: {
@@ -83,13 +84,14 @@ const WaterSensorByGateway = (props) => {
 
   // first lets get node serial number
 
-  const setNodeArrays = (nodeData, resolve, reject) => {
+  const setNodeArrays = (nodeData, resolve) => {
     let bareNodeArray = [];
     let coverNodeArray = [];
     let bareNodeObject = {};
     let coverNodeObject = {};
 
-    let innerPromise = new Promise(async (resolve, reject) => {
+    // eslint-disable-next-line no-async-promise-executor
+    let innerPromise = new Promise(async (resolve) => {
       for (let node in nodeData) {
         //   let i = 0;
         //   console.log(node);
@@ -130,10 +132,7 @@ const WaterSensorByGateway = (props) => {
   };
   useEffect(() => {
     setLoading(true);
-    let nodeSerialNosPromise = getNodeSerialNo(
-      gatewayNo,
-      props.location.state.year
-    );
+    let nodeSerialNosPromise = getNodeSerialNo(gatewayNo, location.state.year);
 
     nodeSerialNosPromise
       .then((nodesObject) => {
@@ -153,10 +152,10 @@ const WaterSensorByGateway = (props) => {
       .then(() => {
         // console.log(coverNodeObject);
       });
-  }, []);
+  }, [gatewayNo, location.state.year]);
 
   useEffect(() => {
-    setLoadingNodes(!loadingNodes);
+    setLoadingNodes((lodingNodes) => !lodingNodes);
   }, [activeChip]);
 
   return !loading ? (
@@ -199,21 +198,21 @@ const WaterSensorByGateway = (props) => {
             coverNodes={coverNodeSerialNo}
             activeChip={activeChip}
             setActiveChip={setActiveChip}
-            year={props.location.state.year}
+            year={location.state.year}
             loadingNodes={loadingNodes}
             setLoadingNodes={setLoadingNodes}
           />
         </Grid>
         <Grid item md={12}>
-          <NodeSensorVisuals
+          {/* <NodeSensorVisuals
             bareNodeSerialNo={bareNodeSerialNo}
             coverNodeSerialNo={coverNodeSerialNo}
             activeChip={activeChip}
             chartWidth={12}
-            year={props.location.state.year}
+            year={location.state.year}
             loadingNodes={loadingNodes}
             setLoadingNodes={setLoadingNodes}
-          />
+          /> */}
         </Grid>
       </Grid>
     </div>
@@ -223,3 +222,8 @@ const WaterSensorByGateway = (props) => {
 };
 
 export default WaterSensorByGateway;
+
+WaterSensorByGateway.propTypes = {
+  location: PropTypes.object,
+  match: PropTypes.object,
+};
