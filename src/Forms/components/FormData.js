@@ -35,6 +35,8 @@ const timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
 const FormData = (props) => {
   const [data, setData] = useState([]);
+  const [validData, setValidData] = useState([]);
+  const [invalidData, setInvalidData] = useState([]);
   const [originalData, setOriginalData] = useState([]);
   const [fetching, setFetching] = useState(false);
   const [state] = useContext(Context);
@@ -56,6 +58,8 @@ const FormData = (props) => {
   });
   const [newIssueData, setNewIssueData] = useState({});
   const [activeIssueIndex, setActiveIssueIndex] = useState(null);
+
+  const [currentlyValid, setCurrentlyValid] = useState(true);
 
   const fetchData = async (assetName) => {
     const token = await getTokenSilently({
@@ -90,29 +94,39 @@ const FormData = (props) => {
   };
 
   useEffect(() => {
+    console.log("fetching");
     setFetching(true);
     const records = fetchData("psa gps")
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         if (response === null) throw new Error(response.statusText);
-        let records = response.valid_data || [];
+        let validRecords = response.valid_data || [];
+        let invalidRecords = response.invalid_data || [];
 
-        if (records.length > 0) {
-          records = records.sort(
+        if (validRecords.length > 0) {
+          validRecords = validRecords.sort(
             (a, b) =>
               new Date(b._submission_time) - new Date(a._submission_time)
           );
-          return records;
-        } else {
-          return [];
+        } 
+        if (invalidRecords.length > 0) {
+          invalidRecords = invalidRecords.sort(
+            (a, b) =>
+              new Date(b._submission_time) - new Date(a._submission_time)
+          );
+        }
+
+        return {
+          validRecords: validRecords,
+          invalidRecords: invalidRecords
         }
       })
-      .then((records) => {
-        return records;
-      });
+      // .then((validRecords) => {
+      //   return validRecords;
+      // });
 
     records.then((recs) => {
-      console.log(recs);
+      // console.log(recs);
       if (state.userInfo.state) {
         fetchKoboPasswords({
           showAllStates: "true",
@@ -139,9 +153,9 @@ const FormData = (props) => {
             });
 
             setAllowedAccounts(allowedKoboAccounts);
-            console.log(recs, allowedKoboAccounts);
+            // console.log(recs, allowedKoboAccounts);
 
-            let json_recs = recs.map(rec => {
+            let validJsonRecs = recs.validRecords.map(rec => {
               // return JSON.parse(rec)
               let json_rec = JSON.parse(rec)
               return Object.keys(json_rec).sort().reduce(
@@ -150,18 +164,39 @@ const FormData = (props) => {
                   return obj;
                 }, 
                 {}
-              )
-            }
+              )}
+            )
+
+            let invalidJsonRecs = recs.invalidRecords.map(rec => {
+              // return JSON.parse(rec)
+              let json_rec = JSON.parse(rec)
+              return Object.keys(json_rec).sort().reduce(
+                (obj, key) => { 
+                  obj[key] = json_rec[key]; 
+                  return obj;
+                }, 
+                {}
+              )}
             )
             
-            console.log(json_recs);
+            // console.log(validJsonRecs, invalidJsonRecs);
 
-            const filteredRecords = json_recs.filter((rec) =>
+            const validFilteredRecords = validJsonRecs.filter((rec) =>
               allowedKoboAccounts.includes(rec._submitted_by)
             );
-            console.log(filteredRecords);
-            setData(filteredRecords);
-            setOriginalData(filteredRecords);
+
+            const invalidFilteredRecords = invalidJsonRecs.filter((rec) =>
+              allowedKoboAccounts.includes(rec._submitted_by)
+            );
+
+            // console.log(validFilteredRecords, invalidFilteredRecords);
+            setData(validFilteredRecords);
+            // setCurrentlyValid(true);
+            setInvalidData(invalidFilteredRecords);
+            setValidData(validFilteredRecords);
+            setOriginalData({validRecords: validFilteredRecords, invalidRecords: invalidFilteredRecords});
+
+            // console.log(validData, invalidData);
           })
           .then(() => setFetching(false));
       }
@@ -169,14 +204,22 @@ const FormData = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formId, state.userInfo.state]);
 
-
   useEffect(() => {
+    // console.log(currentlyValid)
     const recalculate = async () => {
       return new Promise((resolve) => {
-        if (originalData.length > 0) {
-          if (activeAccount === "all") resolve(originalData);
-          else {
-            const filteredActive = originalData.filter(
+        if (originalData) {
+          if (currentlyValid){
+            // console.log("if")
+            if (activeAccount === "all") resolve(originalData.validRecords);
+            const filteredActive = originalData.validRecords.filter(
+              (data) => data._submitted_by === activeAccount
+            );
+            resolve(filteredActive);
+          } else {
+            // console.log("else");
+            if (activeAccount === "all") resolve(originalData.invalidRecords);
+            const filteredActive = originalData.invalidRecords.filter(
               (data) => data._submitted_by === activeAccount
             );
             resolve(filteredActive);
@@ -186,9 +229,22 @@ const FormData = (props) => {
     };
 
     recalculate().then((data) => {
+      // console.log("done");
+      // console.log(data);
       setData(data);
     });
-  }, [activeAccount, originalData]);
+  }, [activeAccount, originalData, currentlyValid]);
+
+  const toggleData = () => {
+    // console.log(currentlyValid);
+
+    if(currentlyValid)
+      setData(invalidData)
+    else
+      setData(validData)
+
+    setCurrentlyValid(!currentlyValid)
+  }
 
   const CreateNewIssue = ({ issueData, index }) => {
     return (
@@ -243,7 +299,7 @@ const FormData = (props) => {
   };
 
   const RenderFormsData = () => {
-    console.log(data);
+    // console.log(data);
     return fetching ? (
       <Grid item xs={12}>
         <Typography variant="h5">Fetching Data...</Typography>
@@ -336,11 +392,11 @@ const FormData = (props) => {
           )}
         </Grid>
         <Grid item>Valid Forms</Grid>
-            <CustomSwitch
-              // checked={units === "lbs/ac"}
-              // onChange={changeSwitchUnits}
-            />
-            <Grid item>Invalid Forms</Grid>
+          <CustomSwitch
+            // checked={units === "lbs/ac"}
+            onChange={toggleData}
+          />
+        <Grid item>Invalid Forms</Grid>
         {state.loadingUser ? (
           <Grid item xs={12}>
             <Typography variant="h5">Fetching Data...</Typography>
