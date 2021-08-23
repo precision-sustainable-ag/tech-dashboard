@@ -61,7 +61,9 @@ const FormData = (props) => {
 
   const [currentlyValid, setCurrentlyValid] = useState(true);
 
-  const fetchData = async (assetName) => {
+  const fetchData = async () => {
+    let assetName = props.assetId.location.state.name.split("_").join(" ")
+    console.log(assetName)
     const token = await getTokenSilently({
       audience: `https://precision-sustaibale-ag/tech-dashboard`,
     });
