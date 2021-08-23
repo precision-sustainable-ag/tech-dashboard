@@ -86,7 +86,7 @@ const FormData = (props) => {
   
     try {
       return await fetch(
-        `https://premiumpythonapi.azurewebsites.us/api/Kobo?`,
+        `http://localhost:7071/api/Kobo`,
         options
       ).then(res => res.json());
     } catch (err) {
@@ -98,7 +98,7 @@ const FormData = (props) => {
   useEffect(() => {
     console.log("fetching");
     setFetching(true);
-    const records = fetchData("psa gps")
+    const records = fetchData()
       .then((response) => {
         // console.log(response);
         if (response === null) throw new Error(response.statusText);
@@ -108,13 +108,13 @@ const FormData = (props) => {
         if (validRecords.length > 0) {
           validRecords = validRecords.sort(
             (a, b) =>
-              new Date(b._submission_time) - new Date(a._submission_time)
+              new Date(b.data._submission_time) - new Date(a.data._submission_time)
           );
         } 
         if (invalidRecords.length > 0) {
           invalidRecords = invalidRecords.sort(
             (a, b) =>
-              new Date(b._submission_time) - new Date(a._submission_time)
+              new Date(b.data._submission_time) - new Date(a.data._submission_time)
           );
         }
 
@@ -159,36 +159,44 @@ const FormData = (props) => {
 
             let validJsonRecs = recs.validRecords.map(rec => {
               // return JSON.parse(rec)
-              let json_rec = JSON.parse(rec)
-              return Object.keys(json_rec).sort().reduce(
+              let json_rec = JSON.parse(rec.data)
+              const sorted_json_rec = Object.keys(json_rec).sort().reduce(
                 (obj, key) => { 
                   obj[key] = json_rec[key]; 
                   return obj;
                 }, 
                 {}
-              )}
-            )
+              )
+              return {
+                data: sorted_json_rec,
+                err: rec.err
+              }
+            })
 
             let invalidJsonRecs = recs.invalidRecords.map(rec => {
               // return JSON.parse(rec)
-              let json_rec = JSON.parse(rec)
-              return Object.keys(json_rec).sort().reduce(
+              let json_rec = JSON.parse(rec.data)
+              const sorted_json_rec = Object.keys(json_rec).sort().reduce(
                 (obj, key) => { 
                   obj[key] = json_rec[key]; 
                   return obj;
                 }, 
                 {}
-              )}
-            )
+              )
+              return {
+                data: sorted_json_rec,
+                err: rec.err
+              }
+            })
             
             // console.log(validJsonRecs, invalidJsonRecs);
 
             const validFilteredRecords = validJsonRecs.filter((rec) =>
-              allowedKoboAccounts.includes(rec._submitted_by)
+              allowedKoboAccounts.includes(rec.data._submitted_by)
             );
 
             const invalidFilteredRecords = invalidJsonRecs.filter((rec) =>
-              allowedKoboAccounts.includes(rec._submitted_by)
+              allowedKoboAccounts.includes(rec.data._submitted_by)
             );
 
             // console.log(validFilteredRecords, invalidFilteredRecords);
@@ -215,14 +223,14 @@ const FormData = (props) => {
             // console.log("if")
             if (activeAccount === "all") resolve(originalData.validRecords);
             const filteredActive = originalData.validRecords.filter(
-              (data) => data._submitted_by === activeAccount
+              (data) => data.data._submitted_by === activeAccount
             );
             resolve(filteredActive);
           } else {
             // console.log("else");
             if (activeAccount === "all") resolve(originalData.invalidRecords);
             const filteredActive = originalData.invalidRecords.filter(
-              (data) => data._submitted_by === activeAccount
+              (data) => data.data._submitted_by === activeAccount
             );
             resolve(filteredActive);
           }
@@ -283,7 +291,7 @@ const FormData = (props) => {
             closeDialogue={setShowNewIssueDialog}
             labels={[
               newIssueData._id.toString(),
-              affiliationLookup[newIssueData._submitted_by],
+              affiliationLookup[newIssueData.data._submitted_by],
               props.assetId.history.location.state.name,
               "kobo-forms",
             ]}

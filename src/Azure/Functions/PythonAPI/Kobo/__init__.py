@@ -50,8 +50,8 @@ class KoboAPI:
         print("connected to mysql live")
 
     def fetch_bad_uids_data(self, asset_name):
-        invalid_uids = pd.DataFrame(pd.read_sql("SELECT DISTINCT uid FROM invalid_row_table_pairs WHERE asset_name = '{}'".format(asset_name), self.shadow_engine))
-        return invalid_uids.uid.tolist()
+        invalid_rows = pd.DataFrame(pd.read_sql("SELECT DISTINCT uid, err, data FROM invalid_row_table_pairs WHERE asset_name = '{}'".format(asset_name), self.shadow_engine))
+        return invalid_rows
 
     def fetch_all_data(self, asset_name):
         all_rows = pd.DataFrame(pd.read_sql("SELECT data, uid FROM kobo WHERE asset_name = '{}'".format(asset_name), self.mysql_engine))
@@ -73,7 +73,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             return func.HttpResponse(json.dumps(response), headers={'content-type': 'application/json'}, status_code=400)
 
         kobo = KoboAPI()
-        invalid_uids = kobo.fetch_bad_uids_data(asset_name)
+        invalid_rows = kobo.fetch_bad_uids_data(asset_name)
         all_rows = kobo.fetch_all_data(asset_name)
 
         data = {
@@ -81,12 +81,22 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             "invalid_data": []
         }
 
+        print(invalid_rows)
+
+        # invalid_uids = []
+
+        # for index, invalid_row in invalid_rows.iterrows():
+        #     invalid_uids.append(invalid_row.get("uid"))
+
         for index, row_entry in all_rows.iterrows():
-            if row_entry.get("uid") in invalid_uids:
+            if row_entry.get("uid") not in invalid_rows.uid.tolist():
                 # print(row_entry.get("uid"))
-                data["invalid_data"].append(row_entry.get("data"))
-            else:
-                data["valid_data"].append(row_entry.get("data"))
+                data["valid_data"].append({"data": row_entry.get("data"), "err": row_entry.get("err")})
+            # else:
+            #     data["valid_data"].append(row_entry.get("data"))
+
+        for index, row_entry in invalid_rows.iterrows():
+            data["invalid_data"].append({"data": row_entry.get("data"), "err": row_entry.get("err")})
 
         return func.HttpResponse(body=json.dumps(data), headers={'content-type': 'application/json'}, status_code=200)
     except Exception:

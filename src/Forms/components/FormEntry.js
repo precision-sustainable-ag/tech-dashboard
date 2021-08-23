@@ -15,9 +15,9 @@ const FormEntry = ({
   CreateNewIssue,
   timezoneOffset,
 }) => {
-  let slimRecord = record;
+  let slimRecord = record.data;
   let localTime = new Date(
-    Date.parse(record._submission_time) - timezoneOffset
+    Date.parse(record.data._submission_time) - timezoneOffset
   );
   const submittedDate = localTime;
 
@@ -41,7 +41,16 @@ const FormEntry = ({
           {JSON.stringify(slimRecord, undefined, 2)}
         </SyntaxHighlighter>
       </Grid>
-      <CreateNewIssue issueData={record} index={index} />
+      <Grid container spacing={2} direction="column">
+        {record.err ? 
+          <Grid item>
+            <Typography>{`Error: ${record.err}`}</Typography>
+          </Grid> : null
+        }
+        <Grid item>
+          <CreateNewIssue issueData={record} index={index} />
+        </Grid>
+      </Grid>
     </Grid>
   );
 };
