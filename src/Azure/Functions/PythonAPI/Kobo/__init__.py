@@ -14,9 +14,17 @@ from ..SharedFunctions import authenticator
 import azure.functions as func
 
 class KoboAPI:
-    def __init__(self):
+    def __init__(self, req):
         self.connect_to_shadow_live()
         self.connect_to_mysql_live()
+
+        try:
+            req_body = req.get_json()
+        except ValueError:
+            pass
+        else:
+            self.token = req_body.get('token')
+            self.asset_name = req_body.get('asset_name')
 
     def connect_to_shadow_live(self):
         postgres_host = os.environ.get('LIVE_SHADOW_HOST')
@@ -49,6 +57,13 @@ class KoboAPI:
 
         print("connected to mysql live")
 
+    def authenticate(self):
+        authenticated, response = authenticator.authenticate(self.token)
+        if not authenticated:
+            return False, response
+        else:
+            return True, response
+
     def fetch_bad_uids_data(self, asset_name):
         invalid_rows = pd.DataFrame(pd.read_sql("SELECT DISTINCT uid, err, data FROM invalid_row_table_pairs WHERE asset_name = '{}'".format(asset_name), self.shadow_engine))
         return invalid_rows
@@ -57,24 +72,9 @@ class KoboAPI:
         all_rows = pd.DataFrame(pd.read_sql("SELECT data, uid FROM kobo WHERE asset_name = '{}'".format(asset_name), self.mysql_engine))
         return all_rows
 
-def main(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Python HTTP trigger function processed a request.')
-    try:
-        req_body = req.get_json()
-    except ValueError:
-        pass
-    else:
-        token = req_body.get('token')
-        asset_name = req_body.get('asset_name')
-
-    try:
-        authenticated, response = authenticator.authenticate(token)
-        if not authenticated:
-            return func.HttpResponse(json.dumps(response), headers={'content-type': 'application/json'}, status_code=400)
-
-        kobo = KoboAPI()
-        invalid_rows = kobo.fetch_bad_uids_data(asset_name)
-        all_rows = kobo.fetch_all_data(asset_name)
+    def create_row_object(self):
+        invalid_rows = self.fetch_bad_uids_data(self.asset_name)
+        all_rows = self.fetch_all_data(self.asset_name)
 
         data = {
             "valid_data": [],
@@ -97,6 +97,22 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
         for index, row_entry in invalid_rows.iterrows():
             data["invalid_data"].append({"data": row_entry.get("data"), "err": row_entry.get("err")})
+
+        return data
+
+def main(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Python HTTP trigger function processed a request.')
+
+    try:
+        kobo = KoboAPI(req)
+
+        authenticated, response = kobo.authenticate()
+        if not authenticated:
+            return func.HttpResponse(json.dumps(response), headers={'content-type': 'application/json'}, status_code=400)
+
+        data = kobo.create_row_object()
+        if not data.get("valid_data") and not data.get("invalid_data"):
+            return func.HttpResponse(json.dumps({"message": "no asset_name in dbs"}), headers={'content-type': 'application/json'}, status_code=400)
 
         return func.HttpResponse(body=json.dumps(data), headers={'content-type': 'application/json'}, status_code=200)
     except Exception:
