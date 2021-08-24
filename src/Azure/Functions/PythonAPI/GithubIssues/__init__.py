@@ -22,7 +22,7 @@ class GithubIssues:
         self.RESPONSE_STRING = 'Response:'	
         self.GITHUB_REPO_OWNER = 'precision-sustainable-ag'	
         self.GITHUB_REPO_NAME = 'data_corrections'	
-        self.HEADER = { 'content-type': 'application/json' }
+        self.HEADER = {'content-type': 'application/json'}
 
         # get the body as a json object
         req_body = req.get_json()	
@@ -293,6 +293,7 @@ class GithubIssues:
 def main(req: func.HttpRequest) -> func.HttpResponse:	
     # log that the function is called
     logging.info('Python HTTP trigger function processed a request.')	
+    HEADER = {'content-type': 'application/json'}
 
     # in a try catch because if the payload is not json it causes exception
     try:	
@@ -302,7 +303,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         # authenticate user based on token
         authenticated, response = ghi.authenticate()
         if not authenticated:
-            return func.HttpResponse(json.dumps(response), headers={'content-type': 'application/json'}, status_code=400)	
+            return func.HttpResponse(json.dumps(response), headers=HEADER, status_code=400)	
         else:
             return ghi.logic_parser()
 
