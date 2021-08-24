@@ -291,7 +291,7 @@ const FormData = (props) => {
             closeDialogue={setShowNewIssueDialog}
             labels={[
               newIssueData._id.toString(),
-              affiliationLookup[newIssueData.data._submitted_by],
+              affiliationLookup[newIssueData._submitted_by],
               props.assetId.history.location.state.name,
               "kobo-forms",
             ]}

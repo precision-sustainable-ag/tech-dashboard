@@ -6,6 +6,8 @@ import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
 import PropTypes from "prop-types";
 
+import FormEditor from "./FormEditor/FormEditor"
+
 SyntaxHighlighter.registerLanguage("json", json);
 
 const FormEntry = ({
@@ -47,9 +49,17 @@ const FormEntry = ({
             <Typography>{`Error: ${record.err}`}</Typography>
           </Grid> : null
         }
-        <Grid item>
-          <CreateNewIssue issueData={record} index={index} />
+        <Grid container direction="row" spacing={2}>
+          <Grid item>
+            <CreateNewIssue issueData={record.data} index={index} />
+          </Grid>
+          {record.err ? 
+            <Grid item>
+              <FormEditor isDarkTheme slimRecord={slimRecord}/>
+            </Grid> : null
+          }
         </Grid>
+        
       </Grid>
     </Grid>
   );

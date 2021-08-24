@@ -128,8 +128,8 @@ const Issue = (props) => {
       setNewCommentAdded(!newCommentAdded);
       setNewComment("");
       setButtonDisabled(false);
-      if (res) {
-        if (res.status === 201) {
+      if (res.response) {
+        if (res.response.status === 201) {
           setSnackbarData({
             open: true,
             text: `New comment has been created`,
