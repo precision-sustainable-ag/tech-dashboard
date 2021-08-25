@@ -37,7 +37,6 @@ const FormEditorModal = ( props ) => {
                                 </SyntaxHighlighter>
                             </Grid>
                         </Grid>
-
                         <Grid item container direction="column" lg={6} spacing={2}>
                             <Grid item>
                                 <Typography variant="h6">Editable Entries</Typography>
