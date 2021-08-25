@@ -55,7 +55,7 @@ const FormEntry = ({
           </Grid>
           {record.err ? 
             <Grid item>
-              <FormEditor isDarkTheme slimRecord={slimRecord}/>
+              <FormEditor isDarkTheme slimRecord={slimRecord} />
             </Grid> : null
           }
         </Grid>

@@ -23,7 +23,7 @@ const FormEditorModal = ( props ) => {
                 maxWidth="lg"
             >
                 <DialogTitle id="form-dialog-title">
-                    <Typography variant="h4">Editing form</Typography>
+                    <Typography variant="h4" align="center">Editing form</Typography>
                 </DialogTitle>
                 <DialogContent>
                     <Grid container direction="row" spacing={2}>
