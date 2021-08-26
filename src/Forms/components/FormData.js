@@ -5,8 +5,6 @@ import {
   Grid,
   Typography,
   Snackbar,
-  Switch, 
-  withStyles
 } from "@material-ui/core";
 // import axios from "axios";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -24,6 +22,7 @@ import { fetchKoboPasswords } from "../../utils/constants";
 import PropTypes from "prop-types";
 
 import RenderFormsData from "./FormEditor/RenderFormsData"
+import { CustomSwitch } from "../../utils/CustomComponents"
 
 SyntaxHighlighter.registerLanguage("json", json);
 
@@ -389,28 +388,6 @@ const FormData = (props) => {
     </div>
   );
 };
-
-const CustomSwitch = withStyles((theme) => ({
-  switchBase: {
-    "&$checked": {
-      color: theme.palette.common.white,
-      "& + $track": {
-        opacity: 1,
-        backgroundColor: theme.palette.grey[500],
-        borderColor: theme.palette.primary.main,
-      },
-    },
-  },
-  thumb: {
-    backgroundColor: theme.palette.primary.main,
-    boxShadow: "none",
-  },
-  track: {
-    opacity: 1,
-    backgroundColor: theme.palette.grey[500],
-  },
-  checked: {},
-}))(Switch);
 
 export default React.memo(FormData);
 // export default FormData;
