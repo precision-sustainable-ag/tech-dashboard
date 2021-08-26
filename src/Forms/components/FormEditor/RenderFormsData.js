@@ -23,7 +23,7 @@ const RenderFormsData = (props) => {
     if (fetching)
         return (
             <Grid item xs={12}>
-            <Typography variant="h5">Fetching Data...</Typography>
+                <Typography variant="h5">Fetching Data...</Typography>
             </Grid>
         );
     else if (data.length === 0 && originalData.length === 0) 

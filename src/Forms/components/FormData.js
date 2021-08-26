@@ -62,45 +62,26 @@ const FormData = (props) => {
 
   const [formName, setFormName] = useState("");
 
-  // useEffect(() => {
-  //   console.log(history);
-  //   if (history.location.state && history.location.state.name) {
-  //     console.log("set")
-  //     setFormName(history.location.state.name);
-  //   } else {
-  //     console.log("cant set")
-  //     setFormName("");
-  //   }
-  //   console.log(formName)
-  // }, [history.location]);
-
   const getHistory = async () => {
-    console.log(history);
     let name;
     if (history.location.state && history.location.state.name) {
-      console.log("set");
-      console.log(history.location.state.name);
       name = history.location.state.name;
     } else {
-      console.log("cant set");
       name = "";
     }
-    console.log(name);
     return name;
   };
 
   const fetchData = async () => {
     let name = await getHistory();
     setFormName(name);
-    console.log("fetch func");
-    let assetName = formName.split("_").join(" ");
     const token = await getTokenSilently({
       audience: `https://precision-sustaibale-ag/tech-dashboard`,
     });
 
     let body = {
       token: token,
-      asset_name: assetName
+      asset_name: name.split("_").join(" "),
     };
 
     const options = {
@@ -124,7 +105,8 @@ const FormData = (props) => {
   };
 
   useEffect(() => {
-    console.log("fetching", formName);
+    // if(!formName)
+    //   return;
     setFetching(true);
     const records = fetchData()
         .then((response) => {
@@ -230,10 +212,9 @@ const FormData = (props) => {
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formName]);
+  }, []);
 
   useEffect(() => {
-    console.log("recalc");
     const recalculate = async () => {
       return new Promise((resolve) => {
         if (originalData) {
