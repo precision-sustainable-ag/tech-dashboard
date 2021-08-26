@@ -59,17 +59,33 @@ const FormData = (props) => {
 
   const [formName, setFormName] = useState("")
 
-  useEffect(() => {
-    if (history.location.state) {
-      if (history.location.state.name) {
-        setFormName(history.location.state.name);
-      }
+  // useEffect(() => {
+  //   console.log(history);
+  //   if (history.location.state && history.location.state.name) {
+  //     console.log("set")
+  //     setFormName(history.location.state.name);
+  //   } else {
+  //     console.log("cant set")
+  //     setFormName("");
+  //   }
+  //   console.log(formName)
+  // }, [history.location]);
+
+  const getHistory = async () => {
+    console.log(history);
+    if (history.location.state && history.location.state.name) {
+      console.log("set")
+      console.log(history.location.state.name)
+      setFormName(history.location.state.name);
     } else {
+      console.log("cant set")
       setFormName("");
     }
-  }, [history.location]);
+    console.log(formName);
+  }
 
   const fetchData = async () => {
+    console.log(formName);
     let assetName = formName.split("_").join(" ")
     const token = await getTokenSilently({
       audience: `https://precision-sustaibale-ag/tech-dashboard`,
@@ -103,33 +119,33 @@ const FormData = (props) => {
   useEffect(() => {
     console.log("fetching");
     setFetching(true);
-    const records = fetchData()
-      .then((response) => {
-        if (response === null) throw new Error(response.statusText);
-        let validRecords = response.valid_data || [];
-        let invalidRecords = response.invalid_data || [];
+    const records = getHistory().then(() => {
+      return fetchData()
+        .then((response) => {
+          if (response === null) throw new Error(response.statusText);
+          let validRecords = response.valid_data || [];
+          let invalidRecords = response.invalid_data || [];
 
-        if (validRecords.length > 0) {
-          validRecords = validRecords.sort(
-            (a, b) =>
-              new Date(b.data._submission_time) - new Date(a.data._submission_time)
-          );
-        } 
-        if (invalidRecords.length > 0) {
-          invalidRecords = invalidRecords.sort(
-            (a, b) =>
-              new Date(b.data._submission_time) - new Date(a.data._submission_time)
-          );
-        }
+          if (validRecords.length > 0) {
+            validRecords = validRecords.sort(
+              (a, b) =>
+                new Date(b.data._submission_time) - new Date(a.data._submission_time)
+            );
+          } 
+          if (invalidRecords.length > 0) {
+            invalidRecords = invalidRecords.sort(
+              (a, b) =>
+                new Date(b.data._submission_time) - new Date(a.data._submission_time)
+            );
+          }
 
-        return {
-          validRecords: validRecords,
-          invalidRecords: invalidRecords
+          return {
+            validRecords: validRecords,
+            invalidRecords: invalidRecords
+          }
         }
-      })
-      // .then((validRecords) => {
-      //   return validRecords;
-      // });
+      )
+    })
 
     records.then((recs) => {
       if (state.userInfo.state) {

@@ -65,11 +65,11 @@ const RenderFormsData = (props) => {
 };
 
 RenderFormsData.propTypes = {
-    data: PropTypes.object, 
+    data: PropTypes.array, 
     fetching: PropTypes.bool,
     isDarkTheme: PropTypes.bool,
     timezoneOffset: PropTypes.number,
-    originalData: PropTypes.object,
+    originalData: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     allowedAccounts: PropTypes.array,
 };
 export default RenderFormsData;

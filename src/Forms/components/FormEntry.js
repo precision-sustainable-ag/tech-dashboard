@@ -11,35 +11,18 @@ import CreateNewIssue from "./FormEditor/CreateNewIssue"
 
 SyntaxHighlighter.registerLanguage("json", json);
 
-// const areEqual = (oldProps, newProps) => {
-//   console.log("testing");
-//   return (
-//     oldProps.record === newProps.record &&
-//     oldProps.index === newProps.index &&
-//     oldProps.isDarkTheme === newProps.isDarkTheme &&
-//     oldProps.CreateNewIssue === newProps.CreateNewIssue &&
-//     oldProps.timezoneOffset === newProps.timezoneOffset &&
-//     oldProps.modalOpen === newProps.modalOpen &&
-//     oldProps.toggleModalOpen === newProps.toggleModalOpen
-//   )
-// }
-
 const FormEntry = ( props ) => {
   let {
     record,
     index,
     isDarkTheme,
     timezoneOffset,
-    modalOpen,
-    toggleModalOpen,
     user,
     affiliationLookup,
     setSnackbarData,
     formName,
   } = props
   let slimRecord = record.data;
-  // console.log("entry render")
-  // console.log(slimRecord)
   let localTime = new Date(
     Date.parse(record.data._submission_time) - timezoneOffset
   );
@@ -85,7 +68,7 @@ const FormEntry = ( props ) => {
           </Grid>
           {record.err ? 
             <Grid item>
-              <FormEditor isDarkTheme slimRecord={slimRecord} modalOpen={modalOpen} toggleModalOpen={toggleModalOpen} />
+              <FormEditor isDarkTheme slimRecord={slimRecord} />
             </Grid> : null
           }
         </Grid>
@@ -101,11 +84,9 @@ FormEntry.propTypes = {
   isDarkTheme: PropTypes.bool,
   CreateNewIssue: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
   timezoneOffset: PropTypes.number,
-  modalOpen: PropTypes.bool,
-  toggleModalOpen: PropTypes.function,
   user: PropTypes.any,
   affiliationLookup: PropTypes.object,
-  setSnackbarData: PropTypes.function,
+  setSnackbarData: PropTypes.func,
   formName: PropTypes.string,
 };
 export default FormEntry;

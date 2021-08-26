@@ -64,7 +64,7 @@ CreateNewIssue.propTypes = {
     index: PropTypes.number,
     user: PropTypes.any, 
     affiliationLookup: PropTypes.object, 
-    setSnackbarData: PropTypes.function, 
+    setSnackbarData: PropTypes.func, 
     formName: PropTypes.any,
 };
 export default CreateNewIssue;

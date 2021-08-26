@@ -79,8 +79,8 @@ const FormEditorModal = ( props ) => {
 FormEditorModal.propTypes = {
     isDarkTheme: PropTypes.bool, 
     modalOpen: PropTypes.bool, 
-    toggleModalOpen: PropTypes.function,
-    editableList: PropTypes.object,
+    toggleModalOpen: PropTypes.func,
+    editableList: PropTypes.array,
     slimRecord: PropTypes.object,
 }
 

@@ -6,54 +6,30 @@ import { PropTypes } from 'prop-types';
 import { useAuth0 } from "../../../Auth/react-auth0-spa";
 
 import { callAzureFunction } from "../../../utils/SharedFunctions" 
-// import { useAuth0 } from "../../../Auth/react-auth0-spa";
-
-
-// import { callAzureFunction } from "../../../utils/SharedFunctions" 
-// import { json } from 'react-syntax-highlighter/dist/esm/languages/hljs/json';
 
 const FormEditor = ( props ) => {
     let { isDarkTheme, slimRecord } = props
-    
-    // const [editableList, setEditableList] = useState("")
-    // const { getTokenSilently } = useAuth0();
-    // // console.log(modalOpen)
 
-    // const fetchEditableList = async () => {
-    //     const data = { version: slimRecord.__version__};
-    //     const res = await callAzureFunction(data, "EditableList", getTokenSilently);
-    //     console.log(res.jsonResponse);
-    //     setEditableList("hi");
-    //     console.log(editableList);
     const [modalOpen, setModalOpen] = useState(false)
+    const [editableList, setEditableList] = useState([])
+    const { getTokenSilently } = useAuth0();
 
     const toggleModalOpen = () => {
         console.log("toggling modal");
         setModalOpen(!modalOpen)
-      }
-
-    const [editableList, setEditableList] = useState([])
-    // const [loading, setLoading] = useState(true)
-    const { getTokenSilently } = useAuth0();
-    // console.log(modalOpen)
+    }
 
     const fetchEditableList = async () => {
         const data = { version: slimRecord.__version__};
         const res = await callAzureFunction(data, "EditableList", getTokenSilently);
         setEditableList(JSON.parse(res.jsonResponse));
-        // setLoading(false)
     }
-    // }
 
     const handleEdit = async () => {
         console.log("handling edit");
         await fetchEditableList()
-        // console.log(editableList);
         toggleModalOpen()
-        // setModalOpen(true)
     }
-
-    // console.log(modalOpen);
 
     return (
         modalOpen ? 
@@ -61,9 +37,7 @@ const FormEditor = ( props ) => {
                 isDarkTheme={isDarkTheme} 
                 modalOpen={modalOpen} 
                 toggleModalOpen={toggleModalOpen} 
-                // editableList={editableList} 
                 slimRecord={slimRecord} 
-                // loading={loading}
                 editableList={editableList}
             /> :
             <Button 
@@ -84,8 +58,6 @@ const FormEditor = ( props ) => {
 FormEditor.propTypes = {
     isDarkTheme: PropTypes.bool, 
     slimRecord: PropTypes.any,
-    modalOpen: PropTypes.bool,
-    toggleModalOpen: PropTypes.function,
 }
 
 // export default React.memo(FormEditor)
