@@ -17,12 +17,14 @@ import MuiAlert from "@material-ui/lab/Alert";
 
 import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
 import { useParams } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { Context } from "../../Store/Store";
 import { fetchKoboPasswords } from "../../utils/constants";
 import IssueDialogue from "../../Comments/IssueDialogue";
-import FormEntry from "./FormEntry";
+// import FormEntry from "./FormEntry";
 import PropTypes from "prop-types";
+
+import RenderFormsData from "./FormEditor/RenderFormsData"
 
 SyntaxHighlighter.registerLanguage("json", json);
 
@@ -31,9 +33,30 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
+// const areEqual = (prevProps, nextProps) => {
+//   if(prevProps.isDarkTheme !== nextProps.isDarkTheme || prevProps.title !== nextProps.title)
+//     {
+//       console.log("dark");
+//       return false
+//     }
+//   // else if (prevProps.assetId.location.state.name !== nextProps.assetId.location.state.name)
+//   //   {
+//   //     console.log("props");
+//   //     return false
+//   //   }
+//   else  
+//     {
+//       console.log("else");
+//       return true
+//     }
+//   // return true
+// }
+
 const timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
 const FormData = (props) => {
+  console.log(props);
+  let { isDarkTheme } = props
   const [data, setData] = useState([]);
   const [validData, setValidData] = useState([]);
   const [invalidData, setInvalidData] = useState([]);
@@ -46,6 +69,8 @@ const FormData = (props) => {
 
   const { formId } = useParams();
   const { user } = useAuth0();
+
+  const history = useHistory();
 
   const [showNewIssueDialog, setShowNewIssueDialog] = useState(false);
 
@@ -61,8 +86,24 @@ const FormData = (props) => {
 
   const [currentlyValid, setCurrentlyValid] = useState(true);
 
+  const [modalOpen, setModalOpen] = useState(false)
+
+  const [formName, setFormName] = useState("")
+
+  useEffect(() => {
+    console.log(history);
+    if (history.location.state) {
+      if (history.location.state.name) {
+        setFormName(history.location.state.name);
+      }
+    } else {
+      setFormName("");
+    }
+    console.log(formName);
+  }, [history.location]);
+
   const fetchData = async () => {
-    let assetName = props.assetId.location.state.name.split("_").join(" ")
+    let assetName = formName.split("_").join(" ")
     console.log(assetName)
     const token = await getTokenSilently({
       audience: `https://precision-sustaibale-ag/tech-dashboard`,
@@ -215,7 +256,7 @@ const FormData = (props) => {
   }, [formId, state.userInfo.state]);
 
   useEffect(() => {
-    // console.log(currentlyValid)
+    console.log(currentlyValid)
     const recalculate = async () => {
       return new Promise((resolve) => {
         if (originalData) {
@@ -246,7 +287,7 @@ const FormData = (props) => {
   }, [activeAccount, originalData, currentlyValid]);
 
   const toggleData = () => {
-    // console.log(currentlyValid);
+    console.log(currentlyValid);
 
     if(currentlyValid)
       setData(invalidData)
@@ -256,7 +297,13 @@ const FormData = (props) => {
     setCurrentlyValid(!currentlyValid)
   }
 
+  const toggleModalOpen = () => {
+    console.log("toggling modal");
+    setModalOpen(true)
+  }
+
   const CreateNewIssue = ({ issueData, index }) => {
+    console.log("creating new issue");
     return (
       <div>
         {showNewIssueDialog ? (
@@ -268,7 +315,7 @@ const FormData = (props) => {
               size="small"
               variant="contained"
               color="primary"
-              // color={props.props.isDarkTheme ? "primary" : "default"}
+              // color={isDarkTheme ? "primary" : "default"}
               onClick={() => {
                 setShowNewIssueDialog(true);
                 setNewIssueData(issueData);
@@ -286,13 +333,13 @@ const FormData = (props) => {
             rowData={JSON.stringify(newIssueData, null, "\t")}
             dataType="json"
             setSnackbarData={setSnackbarData}
-            formName={props.assetId.history.location.state.name}
+            formName={formName}
             affiliationLookup={affiliationLookup}
             closeDialogue={setShowNewIssueDialog}
             labels={[
               newIssueData._id.toString(),
               affiliationLookup[newIssueData._submitted_by],
-              props.assetId.history.location.state.name,
+              formName,
               "kobo-forms",
             ]}
             setShowNewIssueDialog={setShowNewIssueDialog}
@@ -308,43 +355,7 @@ const FormData = (props) => {
     index: PropTypes.number,
   };
 
-  const RenderFormsData = () => {
-    // console.log(data);
-    return fetching ? (
-      <Grid item xs={12}>
-        <Typography variant="h5">Fetching Data...</Typography>
-      </Grid>
-    ) : data.length === 0 && originalData.length === 0 ? (
-      <Grid item xs={12}>
-        <Typography variant="h5">
-          {" "}
-          {allowedAccounts.length !== 0
-            ? `No submissions on this form via account${
-                allowedAccounts.length > 1 ? `s` : ""
-              } ${allowedAccounts.join(", ")}`
-            : "No Data"}
-        </Typography>
-      </Grid>
-    ) : (
-      <>
-        <Grid item xs={12}>
-          <Typography variant="body1">{data.length} submissions</Typography>
-        </Grid>
-        {data.map((record = {}, index) => {
-          return (
-            <FormEntry
-              record={record}
-              index={index}
-              key={`record${index}`}
-              isDarkTheme={props.isDarkTheme}
-              CreateNewIssue={CreateNewIssue}
-              timezoneOffset={timezoneOffset}
-            />
-          );
-        })}
-      </>
-    );
-  };
+  
 
   return (
     <div>
@@ -365,7 +376,7 @@ const FormData = (props) => {
         <Grid item>
           <Button
             variant="contained"
-            color={props.isDarkTheme ? "primary" : "default"}
+            color={isDarkTheme ? "primary" : "default"}
             aria-label={`All Forms`}
             component={Link}
             tooltip="All Forms"
@@ -416,9 +427,13 @@ const FormData = (props) => {
             fetching={fetching}
             data={data}
             originalData={originalData}
-            isDarkTheme={props.isDarkTheme}
+            isDarkTheme={isDarkTheme}
             allowedAccounts={allowedAccounts}
             user={user}
+            CreateNewIssue={CreateNewIssue}
+            timezoneOffset={timezoneOffset}
+            modalOpen={modalOpen}
+            toggleModalOpen={toggleModalOpen}
           />
         )}
       </Grid>
@@ -448,9 +463,10 @@ const CustomSwitch = withStyles((theme) => ({
   checked: {},
 }))(Switch);
 
+// export default React.memo(FormData, areEqual);
 export default FormData;
 
 FormData.propTypes = {
   isDarkTheme: PropTypes.bool,
-  assetId: PropTypes.object,
+  // assetId: PropTypes.object,
 };
