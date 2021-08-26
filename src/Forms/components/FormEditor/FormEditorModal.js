@@ -2,13 +2,19 @@ import React from "react";
 import { Button, Dialog, DialogContent, Grid, Typography } from "@material-ui/core";
 import { PropTypes } from 'prop-types';
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
-import docco from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light"
+import docco from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light";
 import dark from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-dark";
 
 import EditableField from "./EditableField";
 
 const FormEditorModal = ( props ) => {
-    let { isDarkTheme, modalOpen, toggleModalOpen, slimRecord, editableList } = props
+    let { 
+        isDarkTheme, 
+        modalOpen, 
+        toggleModalOpen, 
+        slimRecord, 
+        editableList 
+    } = props;
     
     return (
         typeof(modalOpen) === "boolean" && modalOpen ? 
@@ -36,7 +42,7 @@ const FormEditorModal = ( props ) => {
                             </Grid>
                             <Grid item>
                                 {editableList.map((entry, index) => {
-                                    return <EditableField field={entry} data={slimRecord[entry]} key={index} />
+                                    return <EditableField field={entry} data={slimRecord[entry]} key={index} />;
                                 })}
                             </Grid>                            
                         </Grid>
@@ -71,7 +77,7 @@ const FormEditorModal = ( props ) => {
             </Dialog> :
             ""
     );
-}
+};
 
 FormEditorModal.propTypes = {
     isDarkTheme: PropTypes.bool, 
@@ -79,6 +85,6 @@ FormEditorModal.propTypes = {
     toggleModalOpen: PropTypes.func,
     editableList: PropTypes.array,
     slimRecord: PropTypes.object,
-}
+};
 
-export default FormEditorModal
+export default FormEditorModal;

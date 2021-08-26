@@ -18,14 +18,14 @@ const RenderFormsData = (props) => {
         affiliationLookup, 
         setSnackbarData, 
         formName 
-    } = props
+    } = props;
 
     if (fetching)
         return (
             <Grid item xs={12}>
             <Typography variant="h5">Fetching Data...</Typography>
             </Grid>
-        ) 
+        );
     else if (data.length === 0 && originalData.length === 0) 
         return (
             <Grid item xs={12}>
@@ -38,7 +38,7 @@ const RenderFormsData = (props) => {
                 : "No Data"}
             </Typography>
             </Grid>
-        ) 
+        );
     else
         return (
             <>

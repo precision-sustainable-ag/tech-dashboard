@@ -12,14 +12,14 @@ import { ArrowBackIosOutlined } from "@material-ui/icons";
 import MuiAlert from "@material-ui/lab/Alert";
 
 import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
-import { useParams } from "react-router";
+// import { useParams } from "react-router";
 import { Link, useHistory } from "react-router-dom";
 import { Context } from "../../Store/Store";
 import { fetchKoboPasswords } from "../../utils/constants";
 import PropTypes from "prop-types";
 
-import RenderFormsData from "./FormEditor/RenderFormsData"
-import { CustomSwitch } from "../../utils/CustomComponents"
+import RenderFormsData from "./FormEditor/RenderFormsData";
+import { CustomSwitch } from "../../utils/CustomComponents";
 
 SyntaxHighlighter.registerLanguage("json", json);
 
@@ -31,7 +31,10 @@ function Alert(props) {
 const timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
 const FormData = (props) => {
-  let { isDarkTheme } = props
+  let { 
+    isDarkTheme 
+  } = props;
+
   const [data, setData] = useState([]);
   const [validData, setValidData] = useState([]);
   const [invalidData, setInvalidData] = useState([]);
@@ -42,7 +45,7 @@ const FormData = (props) => {
   const [activeAccount, setActiveAccount] = useState("all");
   const { getTokenSilently } = useAuth0();
 
-  const { formId } = useParams();
+  // const { formId } = useParams();
   const { user } = useAuth0();
 
   const history = useHistory();
@@ -57,7 +60,7 @@ const FormData = (props) => {
 
   const [currentlyValid, setCurrentlyValid] = useState(true);
 
-  const [formName, setFormName] = useState("")
+  const [formName, setFormName] = useState("");
 
   // useEffect(() => {
   //   console.log(history);
@@ -73,20 +76,24 @@ const FormData = (props) => {
 
   const getHistory = async () => {
     console.log(history);
+    let name;
     if (history.location.state && history.location.state.name) {
-      console.log("set")
-      console.log(history.location.state.name)
-      setFormName(history.location.state.name);
+      console.log("set");
+      console.log(history.location.state.name);
+      name = history.location.state.name;
     } else {
-      console.log("cant set")
-      setFormName("");
+      console.log("cant set");
+      name = "";
     }
-    console.log(formName);
-  }
+    console.log(name);
+    return name;
+  };
 
   const fetchData = async () => {
-    console.log(formName);
-    let assetName = formName.split("_").join(" ")
+    let name = await getHistory();
+    setFormName(name);
+    console.log("fetch func");
+    let assetName = formName.split("_").join(" ");
     const token = await getTokenSilently({
       audience: `https://precision-sustaibale-ag/tech-dashboard`,
     });
@@ -94,7 +101,7 @@ const FormData = (props) => {
     let body = {
       token: token,
       asset_name: assetName
-    }
+    };
 
     const options = {
       method: "POST",
@@ -117,10 +124,9 @@ const FormData = (props) => {
   };
 
   useEffect(() => {
-    console.log("fetching");
+    console.log("fetching", formName);
     setFetching(true);
-    const records = getHistory().then(() => {
-      return fetchData()
+    const records = fetchData()
         .then((response) => {
           if (response === null) throw new Error(response.statusText);
           let validRecords = response.valid_data || [];
@@ -142,10 +148,9 @@ const FormData = (props) => {
           return {
             validRecords: validRecords,
             invalidRecords: invalidRecords
-          }
+          };
         }
-      )
-    })
+      );
 
     records.then((recs) => {
       if (state.userInfo.state) {
@@ -177,35 +182,35 @@ const FormData = (props) => {
 
             let validJsonRecs = recs.validRecords.map(rec => {
               // return JSON.parse(rec)
-              let json_rec = JSON.parse(rec.data)
+              let json_rec = JSON.parse(rec.data);
               const sorted_json_rec = Object.keys(json_rec).sort().reduce(
                 (obj, key) => { 
                   obj[key] = json_rec[key]; 
                   return obj;
                 }, 
                 {}
-              )
+              );
               return {
                 data: sorted_json_rec,
                 err: rec.err
-              }
-            })
+              };
+            });
 
             let invalidJsonRecs = recs.invalidRecords.map(rec => {
               // return JSON.parse(rec)
-              let json_rec = JSON.parse(rec.data)
+              let json_rec = JSON.parse(rec.data);
               const sorted_json_rec = Object.keys(json_rec).sort().reduce(
                 (obj, key) => { 
                   obj[key] = json_rec[key]; 
                   return obj;
                 }, 
                 {}
-              )
+              );
               return {
                 data: sorted_json_rec,
                 err: rec.err
-              }
-            })
+              };
+            });
             
             const validFilteredRecords = validJsonRecs.filter((rec) =>
               allowedKoboAccounts.includes(rec.data._submitted_by)
@@ -225,9 +230,10 @@ const FormData = (props) => {
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formId, state.userInfo.state]);
+  }, [formName]);
 
   useEffect(() => {
+    console.log("recalc");
     const recalculate = async () => {
       return new Promise((resolve) => {
         if (originalData) {
@@ -255,12 +261,12 @@ const FormData = (props) => {
 
   const toggleData = () => {
     if(currentlyValid)
-      setData(invalidData)
+      setData(invalidData);
     else
-      setData(validData)
+      setData(validData);
 
-    setCurrentlyValid(!currentlyValid)
-  }
+    setCurrentlyValid(!currentlyValid);
+  };
 
   return (
     <div>
@@ -323,7 +329,7 @@ const FormData = (props) => {
             onChange={toggleData}
           />
         <Grid item>Invalid Forms</Grid>
-        {state.loadingUser ? (
+        {state.loadingUser || fetching ? (
           <Grid item xs={12}>
             <Typography variant="h5">Fetching Data...</Typography>
           </Grid>
@@ -335,7 +341,6 @@ const FormData = (props) => {
             isDarkTheme={isDarkTheme}
             allowedAccounts={allowedAccounts}
             user={user}
-            // CreateNewIssue={CreateNewIssue}
             timezoneOffset={timezoneOffset}
             affiliationLookup={affiliationLookup} 
             setSnackbarData={setSnackbarData} 

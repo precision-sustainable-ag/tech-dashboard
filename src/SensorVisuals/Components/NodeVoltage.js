@@ -8,7 +8,7 @@ import HighchartsReact from "highcharts-react-official";
 import Highcharts from "highcharts";
 import { CustomLoader } from "../../utils/CustomComponents";
 
-const timezoneOffset = new Date().getTimezoneOffset() * 2
+const timezoneOffset = new Date().getTimezoneOffset() * 2;
 
 const chartOptions = {
   time: {
@@ -147,14 +147,14 @@ const NodeVoltage = () => {
           data: sigStr,
           tooltip: {
             pointFormatter: function() {
-              const xDate = new Date(this.x)
-              xDate.setTime(xDate.getTime() - (timezoneOffset*60*1000))
-              const xDateString = xDate.toISOString()
-              const xDateSplit = xDateString.split("T")
-              const xYear = xDateSplit[0]
-              const xTime = xDateSplit[1].split(":").slice(0,2).join(":")
-              const dateString = `${xYear} ${xTime}`
-              return `Date: <b>${dateString}</b><br/>Strength: <b>${this.y * 20}</b><br/>`
+              const xDate = new Date(this.x);
+              xDate.setTime(xDate.getTime() - (timezoneOffset*60*1000));
+              const xDateString = xDate.toISOString();
+              const xDateSplit = xDateString.split("T");
+              const xYear = xDateSplit[0];
+              const xTime = xDateSplit[1].split(":").slice(0,2).join(":");
+              const dateString = `${xYear} ${xTime}`;
+              return `Date: <b>${dateString}</b><br/>Strength: <b>${this.y * 20}</b><br/>`;
             }
           },
         },
@@ -211,14 +211,14 @@ const NodeVoltage = () => {
           data: sigStr,
           tooltip: {
             pointFormatter: function() {
-              const xDate = new Date(this.x)
-              xDate.setTime(xDate.getTime() - (timezoneOffset*60*1000))
-              const xDateString = xDate.toISOString()
-              const xDateSplit = xDateString.split("T")
-              const xYear = xDateSplit[0]
-              const xTime = xDateSplit[1].split(":").slice(0,2).join(":")
-              const dateString = `${xYear} ${xTime}`
-              return `Date: <b>${dateString}</b><br/>Strength: <b>${this.y * 20}</b><br/>`
+              const xDate = new Date(this.x);
+              xDate.setTime(xDate.getTime() - (timezoneOffset*60*1000));
+              const xDateString = xDate.toISOString();
+              const xDateSplit = xDateString.split("T");
+              const xYear = xDateSplit[0];
+              const xTime = xDateSplit[1].split(":").slice(0,2).join(":");
+              const dateString = `${xYear} ${xTime}`;
+              return `Date: <b>${dateString}</b><br/>Strength: <b>${this.y * 20}</b><br/>`;
             }
           },
         },
@@ -275,14 +275,14 @@ const NodeVoltage = () => {
           data: sigStr,
           tooltip: {
             pointFormatter: function() {
-              const xDate = new Date(this.x)
-              xDate.setTime(xDate.getTime() - (timezoneOffset*60*1000))
-              const xDateString = xDate.toISOString()
-              const xDateSplit = xDateString.split("T")
-              const xYear = xDateSplit[0]
-              const xTime = xDateSplit[1].split(":").slice(0,2).join(":")
-              const dateString = `${xYear} ${xTime}`
-              return `Date: <b>${dateString}</b><br/>Strength: <b>${this.y * 20}</b><br/>`
+              const xDate = new Date(this.x);
+              xDate.setTime(xDate.getTime() - (timezoneOffset*60*1000));
+              const xDateString = xDate.toISOString();
+              const xDateSplit = xDateString.split("T");
+              const xYear = xDateSplit[0];
+              const xTime = xDateSplit[1].split(":").slice(0,2).join(":");
+              const dateString = `${xYear} ${xTime}`;
+              return `Date: <b>${dateString}</b><br/>Strength: <b>${this.y * 20}</b><br/>`;
             }
           },
         },
@@ -340,14 +340,14 @@ const NodeVoltage = () => {
           data: sigStr,
           tooltip: {
             pointFormatter: function() {
-              const xDate = new Date(this.x)
-              xDate.setTime(xDate.getTime() - (timezoneOffset*60*1000))
-              const xDateString = xDate.toISOString()
-              const xDateSplit = xDateString.split("T")
-              const xYear = xDateSplit[0]
-              const xTime = xDateSplit[1].split(":").slice(0,2).join(":")
-              const dateString = `${xYear} ${xTime}`
-              return `Date: <b>${dateString}</b><br/>Strength: <b>${this.y * 20}</b><br/>`
+              const xDate = new Date(this.x);
+              xDate.setTime(xDate.getTime() - (timezoneOffset*60*1000));
+              const xDateString = xDate.toISOString();
+              const xDateSplit = xDateString.split("T");
+              const xYear = xDateSplit[0];
+              const xTime = xDateSplit[1].split(":").slice(0,2).join(":");
+              const dateString = `${xYear} ${xTime}`;
+              return `Date: <b>${dateString}</b><br/>Strength: <b>${this.y * 20}</b><br/>`;
             }
           },
         },

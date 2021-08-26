@@ -6,8 +6,8 @@ import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
 import PropTypes from "prop-types";
 
-import FormEditor from "./FormEditor/FormEditor"
-import CreateNewIssue from "./FormEditor/CreateNewIssue"
+import FormEditor from "./FormEditor/FormEditor";
+import CreateNewIssue from "./FormEditor/CreateNewIssue";
 
 SyntaxHighlighter.registerLanguage("json", json);
 
@@ -21,7 +21,7 @@ const FormEntry = ( props ) => {
     affiliationLookup,
     setSnackbarData,
     formName,
-  } = props
+  } = props;
   let slimRecord = record.data;
   let localTime = new Date(
     Date.parse(record.data._submission_time) - timezoneOffset
