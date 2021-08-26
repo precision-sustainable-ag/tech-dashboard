@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Dialog, DialogContent, DialogTitle, Grid, Typography } from "@material-ui/core";
+import { Button, Dialog, DialogContent, Grid, Typography } from "@material-ui/core";
 import { PropTypes } from 'prop-types';
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import docco from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light"
@@ -16,11 +16,8 @@ const FormEditorModal = ( props ) => {
                 open={modalOpen}
                 aria-labelledby="form-dialog-title"
                 fullWidth={true}
-                maxWidth="lg"
+                maxWidth="xl"
             >
-                <DialogTitle id="form-dialog-title">
-                    <Typography variant="h4" align="center">Editing form</Typography>
-                </DialogTitle>
                 <DialogContent>
                     <Grid container direction="row" spacing={2}>
                         <Grid item container direction="column" lg={6}>
