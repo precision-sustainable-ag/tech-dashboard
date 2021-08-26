@@ -12,7 +12,7 @@ const CreateNewIssue = ( props ) => {
     const [showNewIssueDialog, setShowNewIssueDialog] = useState(false);
     const [newIssueData, setNewIssueData] = useState({});
     const [activeIssueIndex, setActiveIssueIndex] = useState(null);
-    console.log(affiliationLookup);
+    // console.log("cne");
     return (
     <div>
     {showNewIssueDialog ? (
@@ -69,4 +69,5 @@ CreateNewIssue.propTypes = {
     formName: PropTypes.any,
 };
 
-export default React.memo(CreateNewIssue);
+// export default React.memo(CreateNewIssue);
+export default CreateNewIssue;

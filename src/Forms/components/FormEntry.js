@@ -46,7 +46,7 @@ const FormEntry = ( props ) => {
   const submittedDate = localTime;
   
 
-  console.log(affiliationLookup)
+  // console.log("fe")
 
   return (
     <Grid item container xs={12} spacing={2}>
@@ -109,4 +109,5 @@ FormEntry.propTypes = {
   formName: PropTypes.string,
 };
 
-export default React.memo(FormEntry);
+// export default React.memo(FormEntry);
+export default FormEntry;

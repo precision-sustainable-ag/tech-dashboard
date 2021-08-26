@@ -22,7 +22,7 @@ const RenderFormsData = (props) => {
         formName 
     } = props
 
-    console.log(affiliationLookup)
+    // console.log("rfd")
 
     if (fetching)
         return (
@@ -82,4 +82,5 @@ RenderFormsData.propTypes = {
     // assetId: PropTypes.object,
 };
 
-export default React.memo(RenderFormsData);
+// export default React.memo(RenderFormsData);
+export default RenderFormsData;

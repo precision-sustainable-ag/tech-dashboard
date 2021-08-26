@@ -53,7 +53,7 @@ function Alert(props) {
 const timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
 const FormData = (props) => {
-  console.log(props);
+  console.log("fd");
   let { isDarkTheme } = props
   const [data, setData] = useState([]);
   const [validData, setValidData] = useState([]);
@@ -89,7 +89,7 @@ const FormData = (props) => {
   const [formName, setFormName] = useState("")
 
   useEffect(() => {
-    console.log(history);
+    console.log("history change");
     if (history.location.state) {
       if (history.location.state.name) {
         setFormName(history.location.state.name);
@@ -101,6 +101,7 @@ const FormData = (props) => {
   }, [history.location]);
 
   const fetchData = async () => {
+    console.log("fetch data");
     let assetName = formName.split("_").join(" ")
     console.log(assetName)
     const token = await getTokenSilently({
@@ -256,7 +257,7 @@ const FormData = (props) => {
   }, [formId, state.userInfo.state]);
 
   useEffect(() => {
-    console.log(currentlyValid)
+    console.log("recalc")
     const recalculate = async () => {
       return new Promise((resolve) => {
         if (originalData) {
@@ -287,6 +288,7 @@ const FormData = (props) => {
   }, [activeAccount, originalData, currentlyValid]);
 
   const toggleData = () => {
+    console.log("toggle");
     console.log(currentlyValid);
 
     if(currentlyValid)
@@ -389,8 +391,8 @@ const FormData = (props) => {
   );
 };
 
-export default React.memo(FormData);
-// export default FormData;
+// export default React.memo(FormData);
+export default FormData;
 
 FormData.propTypes = {
   isDarkTheme: PropTypes.bool,

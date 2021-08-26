@@ -1,18 +1,44 @@
-import React from "react";
+import React, { useState, useEffect} from "react";
 import { Button, Dialog, DialogContent, DialogTitle, Grid, Typography } from "@material-ui/core";
 // import { Edit } from "@material-ui/icons";
 import { PropTypes } from 'prop-types';
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
-import docco from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light";
+import docco from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light"
+import { useAuth0 } from "../../../Auth/react-auth0-spa";
 import dark from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-dark";
+import { callAzureFunction } from "../../../utils/SharedFunctions" 
 
 import EditableField from "./EditableField";
 
 const FormEditorModal = ( props ) => {
-    let { isDarkTheme, modalOpen,  editableList, slimRecord } = props
-    let jsonList = JSON.parse(editableList.jsonResponse)
+    let { isDarkTheme, modalOpen, toggleModalOpen, slimRecord } = props
 
-    console.log(isDarkTheme);
+    const [editableList, setEditableList] = useState("")
+    const [loading, setLoading] = useState(true)
+    const { getTokenSilently } = useAuth0();
+    // console.log(modalOpen)
+
+    const fetchEditableList = async () => {
+        const data = { version: slimRecord.__version__};
+        const res = await callAzureFunction(data, "EditableList", getTokenSilently);
+        console.log(res.jsonResponse);
+        setEditableList(JSON.parse(res.jsonResponse));
+        setLoading(false)
+        console.log(editableList);
+    }
+
+    useEffect(() => {
+        fetchEditableList()
+    }, [])
+    
+
+    console.log(props);
+    
+    // console.log(editableList)
+    // let jsonList = JSON.parse(editableList.jsonResponse)
+    // let jsonList = []
+
+    
 
     return (
         typeof(modalOpen) === "boolean" && modalOpen ? 
@@ -42,7 +68,7 @@ const FormEditorModal = ( props ) => {
                                 <Typography variant="h6">Editable Entries</Typography>
                             </Grid>
                             <Grid item>
-                                {jsonList.map((entry, index) => {
+                                {!loading && editableList.map((entry, index) => {
                                     // console.log(entry);
                                     return <EditableField field={entry} data={slimRecord[entry]} key={index} />
                                 })}
@@ -56,7 +82,7 @@ const FormEditorModal = ( props ) => {
                                     aria-label={`All Forms`}
                                     tooltip="All Forms"
                                     size="small"
-                                    // onClick={toggleModalOpen}
+                                    onClick={toggleModalOpen}
                                 >
                                     Cancel
                                 </Button>
@@ -68,7 +94,7 @@ const FormEditorModal = ( props ) => {
                                     aria-label={`All Forms`}
                                     tooltip="All Forms"
                                     size="small"
-                                    // onClick={toggleModalOpen}
+                                    onClick={toggleModalOpen}
                                 >
                                     Submit
                                 </Button>
@@ -84,7 +110,7 @@ const FormEditorModal = ( props ) => {
 FormEditorModal.propTypes = {
     isDarkTheme: PropTypes.bool, 
     modalOpen: PropTypes.bool, 
-    // toggleModalOpen: PropTypes.function,
+    toggleModalOpen: PropTypes.function,
     editableList: PropTypes.object,
     slimRecord: PropTypes.object
 }
