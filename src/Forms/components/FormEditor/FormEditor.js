@@ -10,9 +10,12 @@ import { callAzureFunction } from "../../../utils/SharedFunctions" ;
 const FormEditor = ( props ) => {
     let { isDarkTheme, slimRecord } = props;
 
+    const { getTokenSilently } = useAuth0();
+
     const [modalOpen, setModalOpen] = useState(false);
     const [editableList, setEditableList] = useState([]);
-    const { getTokenSilently } = useAuth0();
+    const [buttonText, setButtonText] = useState("Edit Form");
+    
 
     const toggleModalOpen = () => {
         console.log("toggling modal");
@@ -27,6 +30,7 @@ const FormEditor = ( props ) => {
 
     const handleEdit = async () => {
         console.log("handling edit");
+        setButtonText("Loading");
         await fetchEditableList();
         toggleModalOpen();
     };
@@ -39,6 +43,7 @@ const FormEditor = ( props ) => {
                 toggleModalOpen={toggleModalOpen} 
                 slimRecord={slimRecord} 
                 editableList={editableList}
+                setButtonText={setButtonText}
             /> :
             <Button 
                 variant="contained"
@@ -49,7 +54,7 @@ const FormEditor = ( props ) => {
                 startIcon={<Edit />}
                 onClick={handleEdit}
             >
-                Edit Form
+                {buttonText}
             </Button>
     );
 };
@@ -59,5 +64,4 @@ FormEditor.propTypes = {
     slimRecord: PropTypes.any,
 };
 
-// export default React.memo(FormEditor)
 export default FormEditor;

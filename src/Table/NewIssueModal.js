@@ -248,7 +248,6 @@ const NewIssueModal = (props) => {
       aria-labelledby="form-dialog-title"
       fullWidth={true}
       maxWidth={maxWidth}
-      disableBackdropClick
     >
       <DialogTitle id="form-dialog-title">
         <Grid container justifyContent="space-between">

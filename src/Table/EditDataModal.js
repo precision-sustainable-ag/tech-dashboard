@@ -224,7 +224,6 @@ const EditDataModal = (props) => {
       aria-labelledby="form-dialog-title"
       fullWidth={fullWidth}
       maxWidth={maxWidth}
-      disableBackdropClick
       disableEscapeKeyDown
     >
       <DialogTitle id="form-dialog-title">

@@ -13,8 +13,14 @@ const FormEditorModal = ( props ) => {
         modalOpen, 
         toggleModalOpen, 
         slimRecord, 
-        editableList 
+        editableList,
+        setButtonText,
     } = props;
+
+    const handleCancel = () => {
+        setButtonText("Edit Form");
+        toggleModalOpen();
+    };
     
     return (
         typeof(modalOpen) === "boolean" && modalOpen ? 
@@ -54,7 +60,7 @@ const FormEditorModal = ( props ) => {
                                     aria-label={`All Forms`}
                                     tooltip="All Forms"
                                     size="small"
-                                    onClick={toggleModalOpen}
+                                    onClick={handleCancel}
                                 >
                                     Cancel
                                 </Button>
@@ -66,7 +72,7 @@ const FormEditorModal = ( props ) => {
                                     aria-label={`All Forms`}
                                     tooltip="All Forms"
                                     size="small"
-                                    onClick={toggleModalOpen}
+                                    onClick={handleCancel}
                                 >
                                     Submit
                                 </Button>
@@ -85,6 +91,7 @@ FormEditorModal.propTypes = {
     toggleModalOpen: PropTypes.func,
     editableList: PropTypes.array,
     slimRecord: PropTypes.object,
+    setButtonText: PropTypes.func
 };
 
 export default FormEditorModal;
