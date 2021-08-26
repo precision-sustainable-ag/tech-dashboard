@@ -4,7 +4,6 @@ import {
   Chip,
   Grid,
   Typography,
-  Tooltip,
   Snackbar,
   Switch, 
   withStyles
@@ -12,7 +11,7 @@ import {
 // import axios from "axios";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import { useAuth0 } from "../../Auth/react-auth0-spa";
-import { QuestionAnswer, ArrowBackIosOutlined } from "@material-ui/icons";
+import { ArrowBackIosOutlined } from "@material-ui/icons";
 import MuiAlert from "@material-ui/lab/Alert";
 
 import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
@@ -20,7 +19,7 @@ import { useParams } from "react-router";
 import { Link, useHistory } from "react-router-dom";
 import { Context } from "../../Store/Store";
 import { fetchKoboPasswords } from "../../utils/constants";
-import IssueDialogue from "../../Comments/IssueDialogue";
+// import IssueDialogue from "../../Comments/IssueDialogue";
 // import FormEntry from "./FormEntry";
 import PropTypes from "prop-types";
 
@@ -72,7 +71,7 @@ const FormData = (props) => {
 
   const history = useHistory();
 
-  const [showNewIssueDialog, setShowNewIssueDialog] = useState(false);
+  // const [showNewIssueDialog, setShowNewIssueDialog] = useState(false);
 
   const [affiliationLookup, setAffiliationLookup] = useState({});
 
@@ -81,8 +80,8 @@ const FormData = (props) => {
     text: "",
     severity: "success",
   });
-  const [newIssueData, setNewIssueData] = useState({});
-  const [activeIssueIndex, setActiveIssueIndex] = useState(null);
+  // const [newIssueData, setNewIssueData] = useState({});
+  // const [activeIssueIndex, setActiveIssueIndex] = useState(null);
 
   const [currentlyValid, setCurrentlyValid] = useState(true);
 
@@ -195,6 +194,8 @@ const FormData = (props) => {
               setAffiliationLookup(newLookup);
             });
 
+            console.log(affiliationLookup);
+
             setAllowedAccounts(allowedKoboAccounts);
             // console.log(recs, allowedKoboAccounts);
 
@@ -302,61 +303,6 @@ const FormData = (props) => {
     setModalOpen(true)
   }
 
-  const CreateNewIssue = ({ issueData, index }) => {
-    console.log("creating new issue");
-    return (
-      <div>
-        {showNewIssueDialog ? (
-          ""
-        ) : (
-          <Tooltip title="Submit a new issue">
-            <Button
-              startIcon={<QuestionAnswer />}
-              size="small"
-              variant="contained"
-              color="primary"
-              // color={isDarkTheme ? "primary" : "default"}
-              onClick={() => {
-                setShowNewIssueDialog(true);
-                setNewIssueData(issueData);
-                setActiveIssueIndex(index);
-              }}
-            >
-              Add Comment
-            </Button>
-          </Tooltip>
-        )}
-
-        {showNewIssueDialog && index === activeIssueIndex ? (
-          <IssueDialogue
-            nickname={user.nickname}
-            rowData={JSON.stringify(newIssueData, null, "\t")}
-            dataType="json"
-            setSnackbarData={setSnackbarData}
-            formName={formName}
-            affiliationLookup={affiliationLookup}
-            closeDialogue={setShowNewIssueDialog}
-            labels={[
-              newIssueData._id.toString(),
-              affiliationLookup[newIssueData._submitted_by],
-              formName,
-              "kobo-forms",
-            ]}
-            setShowNewIssueDialog={setShowNewIssueDialog}
-          />
-        ) : (
-          ""
-        )}
-      </div>
-    );
-  };
-  CreateNewIssue.propTypes = {
-    issueData: PropTypes.any,
-    index: PropTypes.number,
-  };
-
-  
-
   return (
     <div>
       <Snackbar
@@ -430,10 +376,13 @@ const FormData = (props) => {
             isDarkTheme={isDarkTheme}
             allowedAccounts={allowedAccounts}
             user={user}
-            CreateNewIssue={CreateNewIssue}
+            // CreateNewIssue={CreateNewIssue}
             timezoneOffset={timezoneOffset}
             modalOpen={modalOpen}
             toggleModalOpen={toggleModalOpen}
+            affiliationLookup={affiliationLookup} 
+            setSnackbarData={setSnackbarData} 
+            formName={formName}
           />
         )}
       </Grid>
@@ -463,8 +412,8 @@ const CustomSwitch = withStyles((theme) => ({
   checked: {},
 }))(Switch);
 
-// export default React.memo(FormData, areEqual);
-export default FormData;
+export default React.memo(FormData);
+// export default FormData;
 
 FormData.propTypes = {
   isDarkTheme: PropTypes.bool,

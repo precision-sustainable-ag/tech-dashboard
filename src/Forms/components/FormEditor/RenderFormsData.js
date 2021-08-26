@@ -7,8 +7,23 @@ import FormEntry from "../FormEntry";
 import PropTypes from "prop-types";
 
 const RenderFormsData = (props) => {
-    let { data, fetching, isDarkTheme, CreateNewIssue, timezoneOffset, modalOpen, toggleModalOpen, originalData, allowedAccounts } = props
-    console.log(data);
+    let { 
+        data, 
+        fetching, 
+        isDarkTheme, 
+        timezoneOffset, 
+        modalOpen, 
+        toggleModalOpen, 
+        originalData, 
+        allowedAccounts, 
+        user, 
+        affiliationLookup, 
+        setSnackbarData, 
+        formName 
+    } = props
+
+    console.log(affiliationLookup)
+
     if (fetching)
         return (
             <Grid item xs={12}>
@@ -41,10 +56,13 @@ const RenderFormsData = (props) => {
                         index={index}
                         key={`record${index}`}
                         isDarkTheme={isDarkTheme}
-                        CreateNewIssue={CreateNewIssue}
                         timezoneOffset={timezoneOffset}
                         modalOpen={modalOpen} 
                         toggleModalOpen={toggleModalOpen}
+                        user={user}
+                        affiliationLookup={affiliationLookup} 
+                        setSnackbarData={setSnackbarData} 
+                        formName={formName}
                     />
                     );
                 })}
@@ -56,7 +74,6 @@ RenderFormsData.propTypes = {
     data: PropTypes.object, 
     fetching: PropTypes.bool,
     isDarkTheme: PropTypes.bool,
-    CreateNewIssue: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
     timezoneOffset: PropTypes.number,
     modalOpen: PropTypes.bool,
     toggleModalOpen: PropTypes.function,
@@ -65,4 +82,4 @@ RenderFormsData.propTypes = {
     // assetId: PropTypes.object,
 };
 
-export default RenderFormsData;
+export default React.memo(RenderFormsData);

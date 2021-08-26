@@ -7,23 +7,46 @@ import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
 import PropTypes from "prop-types";
 
 import FormEditor from "./FormEditor/FormEditor"
+import CreateNewIssue from "./FormEditor/CreateNewIssue"
 
 SyntaxHighlighter.registerLanguage("json", json);
 
-const FormEntry = ({
-  record,
-  index,
-  isDarkTheme,
-  CreateNewIssue,
-  timezoneOffset,
-}) => {
+// const areEqual = (oldProps, newProps) => {
+//   console.log("testing");
+//   return (
+//     oldProps.record === newProps.record &&
+//     oldProps.index === newProps.index &&
+//     oldProps.isDarkTheme === newProps.isDarkTheme &&
+//     oldProps.CreateNewIssue === newProps.CreateNewIssue &&
+//     oldProps.timezoneOffset === newProps.timezoneOffset &&
+//     oldProps.modalOpen === newProps.modalOpen &&
+//     oldProps.toggleModalOpen === newProps.toggleModalOpen
+//   )
+// }
+
+const FormEntry = ( props ) => {
+  let {
+    record,
+    index,
+    isDarkTheme,
+    timezoneOffset,
+    modalOpen,
+    toggleModalOpen,
+    user,
+    affiliationLookup,
+    setSnackbarData,
+    formName,
+  } = props
   let slimRecord = record.data;
+  // console.log("entry render")
+  // console.log(slimRecord)
   let localTime = new Date(
     Date.parse(record.data._submission_time) - timezoneOffset
   );
   const submittedDate = localTime;
+  
 
-  // console.log(index)
+  console.log(affiliationLookup)
 
   return (
     <Grid item container xs={12} spacing={2}>
@@ -51,11 +74,18 @@ const FormEntry = ({
         }
         <Grid container direction="row" spacing={2}>
           <Grid item>
-            <CreateNewIssue issueData={record.data} index={index} />
+            <CreateNewIssue 
+              issueData={record.data} 
+              index={index} 
+              user={user} 
+              affiliationLookup={affiliationLookup} 
+              setSnackbarData={setSnackbarData} 
+              formName={formName}
+            />
           </Grid>
           {record.err ? 
             <Grid item>
-              <FormEditor isDarkTheme slimRecord={slimRecord} />
+              <FormEditor isDarkTheme slimRecord={slimRecord} modalOpen={modalOpen} toggleModalOpen={toggleModalOpen} />
             </Grid> : null
           }
         </Grid>
@@ -65,12 +95,18 @@ const FormEntry = ({
   );
 };
 
-export default FormEntry;
-
 FormEntry.propTypes = {
   record: PropTypes.object,
   index: PropTypes.number,
   isDarkTheme: PropTypes.bool,
   CreateNewIssue: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
   timezoneOffset: PropTypes.number,
+  modalOpen: PropTypes.bool,
+  toggleModalOpen: PropTypes.function,
+  user: PropTypes.any,
+  affiliationLookup: PropTypes.object,
+  setSnackbarData: PropTypes.function,
+  formName: PropTypes.string,
 };
+
+export default React.memo(FormEntry);
