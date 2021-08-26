@@ -108,6 +108,4 @@ FormEntry.propTypes = {
   setSnackbarData: PropTypes.function,
   formName: PropTypes.string,
 };
-
-// export default React.memo(FormEntry);
 export default FormEntry;

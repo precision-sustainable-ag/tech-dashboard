@@ -12,52 +12,51 @@ const CreateNewIssue = ( props ) => {
     const [showNewIssueDialog, setShowNewIssueDialog] = useState(false);
     const [newIssueData, setNewIssueData] = useState({});
     const [activeIssueIndex, setActiveIssueIndex] = useState(null);
-    // console.log("cne");
+    
     return (
-    <div>
-    {showNewIssueDialog ? (
-        ""
-    ) : (
-        <Tooltip title="Submit a new issue">
-        <Button
-            startIcon={<QuestionAnswer />}
-            size="small"
-            variant="contained"
-            color="primary"
-            // color={isDarkTheme ? "primary" : "default"}
-            onClick={() => {
-            setShowNewIssueDialog(true);
-            setNewIssueData(issueData);
-            setActiveIssueIndex(index);
-            }}
-        >
-            Add Comment
-        </Button>
-        </Tooltip>
-    )}
+        <div>
+            {showNewIssueDialog ? (
+                ""
+            ) : (
+                <Tooltip title="Submit a new issue">
+                <Button
+                    startIcon={<QuestionAnswer />}
+                    size="small"
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                    setShowNewIssueDialog(true);
+                    setNewIssueData(issueData);
+                    setActiveIssueIndex(index);
+                    }}
+                >
+                    Add Comment
+                </Button>
+                </Tooltip>
+            )}
 
-    {showNewIssueDialog && index === activeIssueIndex ? (
-        <IssueDialogue
-            nickname={user.nickname}
-            rowData={JSON.stringify(newIssueData, null, "\t")}
-            dataType="json"
-            setSnackbarData={setSnackbarData}
-            formName={formName}
-            affiliationLookup={affiliationLookup}
-            closeDialogue={setShowNewIssueDialog}
-            labels={[
-                newIssueData._id.toString(),
-                affiliationLookup[newIssueData._submitted_by],
-                formName,
-                "kobo-forms",
-            ]}
-            setShowNewIssueDialog={setShowNewIssueDialog}
-        />
-    ) : (
-        ""
-    )}
-    </div>
-);
+            {showNewIssueDialog && index === activeIssueIndex ? (
+                <IssueDialogue
+                    nickname={user.nickname}
+                    rowData={JSON.stringify(newIssueData, null, "\t")}
+                    dataType="json"
+                    setSnackbarData={setSnackbarData}
+                    formName={formName}
+                    affiliationLookup={affiliationLookup}
+                    closeDialogue={setShowNewIssueDialog}
+                    labels={[
+                        newIssueData._id.toString(),
+                        affiliationLookup[newIssueData._submitted_by],
+                        formName,
+                        "kobo-forms",
+                    ]}
+                    setShowNewIssueDialog={setShowNewIssueDialog}
+                />
+            ) : (
+                ""
+            )}
+        </div>
+    );
 };
 
 CreateNewIssue.propTypes = {
@@ -68,6 +67,4 @@ CreateNewIssue.propTypes = {
     setSnackbarData: PropTypes.function, 
     formName: PropTypes.any,
 };
-
-// export default React.memo(CreateNewIssue);
 export default CreateNewIssue;

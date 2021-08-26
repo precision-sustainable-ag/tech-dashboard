@@ -12,8 +12,6 @@ const RenderFormsData = (props) => {
         fetching, 
         isDarkTheme, 
         timezoneOffset, 
-        modalOpen, 
-        toggleModalOpen, 
         originalData, 
         allowedAccounts, 
         user, 
@@ -21,8 +19,6 @@ const RenderFormsData = (props) => {
         setSnackbarData, 
         formName 
     } = props
-
-    // console.log("rfd")
 
     if (fetching)
         return (
@@ -57,8 +53,6 @@ const RenderFormsData = (props) => {
                         key={`record${index}`}
                         isDarkTheme={isDarkTheme}
                         timezoneOffset={timezoneOffset}
-                        modalOpen={modalOpen} 
-                        toggleModalOpen={toggleModalOpen}
                         user={user}
                         affiliationLookup={affiliationLookup} 
                         setSnackbarData={setSnackbarData} 
@@ -75,12 +69,7 @@ RenderFormsData.propTypes = {
     fetching: PropTypes.bool,
     isDarkTheme: PropTypes.bool,
     timezoneOffset: PropTypes.number,
-    modalOpen: PropTypes.bool,
-    toggleModalOpen: PropTypes.function,
     originalData: PropTypes.object,
     allowedAccounts: PropTypes.array,
-    // assetId: PropTypes.object,
 };
-
-// export default React.memo(RenderFormsData);
 export default RenderFormsData;

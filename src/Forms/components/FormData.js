@@ -6,7 +6,6 @@ import {
   Typography,
   Snackbar,
 } from "@material-ui/core";
-// import axios from "axios";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import { useAuth0 } from "../../Auth/react-auth0-spa";
 import { ArrowBackIosOutlined } from "@material-ui/icons";
@@ -17,8 +16,6 @@ import { useParams } from "react-router";
 import { Link, useHistory } from "react-router-dom";
 import { Context } from "../../Store/Store";
 import { fetchKoboPasswords } from "../../utils/constants";
-// import IssueDialogue from "../../Comments/IssueDialogue";
-// import FormEntry from "./FormEntry";
 import PropTypes from "prop-types";
 
 import RenderFormsData from "./FormEditor/RenderFormsData"
@@ -31,29 +28,9 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-// const areEqual = (prevProps, nextProps) => {
-//   if(prevProps.isDarkTheme !== nextProps.isDarkTheme || prevProps.title !== nextProps.title)
-//     {
-//       console.log("dark");
-//       return false
-//     }
-//   // else if (prevProps.assetId.location.state.name !== nextProps.assetId.location.state.name)
-//   //   {
-//   //     console.log("props");
-//   //     return false
-//   //   }
-//   else  
-//     {
-//       console.log("else");
-//       return true
-//     }
-//   // return true
-// }
-
 const timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
 const FormData = (props) => {
-  console.log("fd");
   let { isDarkTheme } = props
   const [data, setData] = useState([]);
   const [validData, setValidData] = useState([]);
@@ -70,8 +47,6 @@ const FormData = (props) => {
 
   const history = useHistory();
 
-  // const [showNewIssueDialog, setShowNewIssueDialog] = useState(false);
-
   const [affiliationLookup, setAffiliationLookup] = useState({});
 
   const [snackbarData, setSnackbarData] = useState({
@@ -79,17 +54,12 @@ const FormData = (props) => {
     text: "",
     severity: "success",
   });
-  // const [newIssueData, setNewIssueData] = useState({});
-  // const [activeIssueIndex, setActiveIssueIndex] = useState(null);
 
   const [currentlyValid, setCurrentlyValid] = useState(true);
-
-  const [modalOpen, setModalOpen] = useState(false)
 
   const [formName, setFormName] = useState("")
 
   useEffect(() => {
-    console.log("history change");
     if (history.location.state) {
       if (history.location.state.name) {
         setFormName(history.location.state.name);
@@ -97,13 +67,10 @@ const FormData = (props) => {
     } else {
       setFormName("");
     }
-    console.log(formName);
   }, [history.location]);
 
   const fetchData = async () => {
-    console.log("fetch data");
     let assetName = formName.split("_").join(" ")
-    console.log(assetName)
     const token = await getTokenSilently({
       audience: `https://precision-sustaibale-ag/tech-dashboard`,
     });
@@ -121,9 +88,7 @@ const FormData = (props) => {
       body: JSON.stringify(body),
       mode: "cors", // no-cors, *cors, same-origin
     };
-  
-    // let koboResponse;
-  
+    
     try {
       return await fetch(
         `http://localhost:7071/api/Kobo`,
@@ -140,7 +105,6 @@ const FormData = (props) => {
     setFetching(true);
     const records = fetchData()
       .then((response) => {
-        // console.log(response);
         if (response === null) throw new Error(response.statusText);
         let validRecords = response.valid_data || [];
         let invalidRecords = response.invalid_data || [];
@@ -168,7 +132,6 @@ const FormData = (props) => {
       // });
 
     records.then((recs) => {
-      // console.log(recs);
       if (state.userInfo.state) {
         fetchKoboPasswords({
           showAllStates: "true",
@@ -194,10 +157,7 @@ const FormData = (props) => {
               setAffiliationLookup(newLookup);
             });
 
-            console.log(affiliationLookup);
-
             setAllowedAccounts(allowedKoboAccounts);
-            // console.log(recs, allowedKoboAccounts);
 
             let validJsonRecs = recs.validRecords.map(rec => {
               // return JSON.parse(rec)
@@ -231,8 +191,6 @@ const FormData = (props) => {
               }
             })
             
-            // console.log(validJsonRecs, invalidJsonRecs);
-
             const validFilteredRecords = validJsonRecs.filter((rec) =>
               allowedKoboAccounts.includes(rec.data._submitted_by)
             );
@@ -241,14 +199,11 @@ const FormData = (props) => {
               allowedKoboAccounts.includes(rec.data._submitted_by)
             );
 
-            // console.log(validFilteredRecords, invalidFilteredRecords);
             setData(validFilteredRecords);
             // setCurrentlyValid(true);
             setInvalidData(invalidFilteredRecords);
             setValidData(validFilteredRecords);
             setOriginalData({validRecords: validFilteredRecords, invalidRecords: invalidFilteredRecords});
-
-            // console.log(validData, invalidData);
           })
           .then(() => setFetching(false));
       }
@@ -257,19 +212,16 @@ const FormData = (props) => {
   }, [formId, state.userInfo.state]);
 
   useEffect(() => {
-    console.log("recalc")
     const recalculate = async () => {
       return new Promise((resolve) => {
         if (originalData) {
           if (currentlyValid){
-            // console.log("if")
             if (activeAccount === "all") resolve(originalData.validRecords);
             const filteredActive = originalData.validRecords.filter(
               (data) => data.data._submitted_by === activeAccount
             );
             resolve(filteredActive);
           } else {
-            // console.log("else");
             if (activeAccount === "all") resolve(originalData.invalidRecords);
             const filteredActive = originalData.invalidRecords.filter(
               (data) => data.data._submitted_by === activeAccount
@@ -281,27 +233,17 @@ const FormData = (props) => {
     };
 
     recalculate().then((data) => {
-      // console.log("done");
-      // console.log(data);
       setData(data);
     });
   }, [activeAccount, originalData, currentlyValid]);
 
   const toggleData = () => {
-    console.log("toggle");
-    console.log(currentlyValid);
-
     if(currentlyValid)
       setData(invalidData)
     else
       setData(validData)
 
     setCurrentlyValid(!currentlyValid)
-  }
-
-  const toggleModalOpen = () => {
-    console.log("toggling modal");
-    setModalOpen(true)
   }
 
   return (
@@ -379,8 +321,6 @@ const FormData = (props) => {
             user={user}
             // CreateNewIssue={CreateNewIssue}
             timezoneOffset={timezoneOffset}
-            modalOpen={modalOpen}
-            toggleModalOpen={toggleModalOpen}
             affiliationLookup={affiliationLookup} 
             setSnackbarData={setSnackbarData} 
             formName={formName}
@@ -391,10 +331,8 @@ const FormData = (props) => {
   );
 };
 
-// export default React.memo(FormData);
 export default FormData;
 
 FormData.propTypes = {
   isDarkTheme: PropTypes.bool,
-  // assetId: PropTypes.object,
 };

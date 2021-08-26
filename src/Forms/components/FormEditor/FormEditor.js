@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
 import FormEditorModal from "./FormEditorModal";
 import { PropTypes } from 'prop-types';
+import { useAuth0 } from "../../../Auth/react-auth0-spa";
+
+import { callAzureFunction } from "../../../utils/SharedFunctions" 
 // import { useAuth0 } from "../../../Auth/react-auth0-spa";
 
 
@@ -10,7 +13,7 @@ import { PropTypes } from 'prop-types';
 // import { json } from 'react-syntax-highlighter/dist/esm/languages/hljs/json';
 
 const FormEditor = ( props ) => {
-    let { isDarkTheme, slimRecord, modalOpen, toggleModalOpen } = props
+    let { isDarkTheme, slimRecord } = props
     
     // const [editableList, setEditableList] = useState("")
     // const { getTokenSilently } = useAuth0();
@@ -22,15 +25,32 @@ const FormEditor = ( props ) => {
     //     console.log(res.jsonResponse);
     //     setEditableList("hi");
     //     console.log(editableList);
+    const [modalOpen, setModalOpen] = useState(false)
+
+    const toggleModalOpen = () => {
+        console.log("toggling modal");
+        setModalOpen(!modalOpen)
+      }
+
+    const [editableList, setEditableList] = useState([])
+    // const [loading, setLoading] = useState(true)
+    const { getTokenSilently } = useAuth0();
+    // console.log(modalOpen)
+
+    const fetchEditableList = async () => {
+        const data = { version: slimRecord.__version__};
+        const res = await callAzureFunction(data, "EditableList", getTokenSilently);
+        setEditableList(JSON.parse(res.jsonResponse));
+        // setLoading(false)
+    }
     // }
 
     const handleEdit = async () => {
         console.log("handling edit");
-        // await fetchEditableList()
+        await fetchEditableList()
         // console.log(editableList);
         toggleModalOpen()
         // setModalOpen(true)
-        
     }
 
     // console.log(modalOpen);
@@ -43,6 +63,8 @@ const FormEditor = ( props ) => {
                 toggleModalOpen={toggleModalOpen} 
                 // editableList={editableList} 
                 slimRecord={slimRecord} 
+                // loading={loading}
+                editableList={editableList}
             /> :
             <Button 
                 variant="contained"
