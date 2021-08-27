@@ -102,13 +102,13 @@ const FormData = (props) => {
           if (validRecords.length > 0) {
             validRecords = validRecords.sort(
               (a, b) =>
-                new Date(b.data._submission_time) - new Date(a.data._submission_time)
+                new Date(JSON.parse(b.data)._submission_time) - new Date(JSON.parse(a.data)._submission_time)
             );
           } 
           if (invalidRecords.length > 0) {
             invalidRecords = invalidRecords.sort(
               (a, b) =>
-                new Date(b.data._submission_time) - new Date(a.data._submission_time)
+                new Date(JSON.parse(b.data)._submission_time) - new Date(JSON.parse(a.data)._submission_time)
             );
           }
 
