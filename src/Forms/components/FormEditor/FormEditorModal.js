@@ -15,6 +15,7 @@ const FormEditorModal = ( props ) => {
         slimRecord, 
         editableList,
         setButtonText,
+        error,
     } = props;
 
     const handleCancel = () => {
@@ -34,7 +35,7 @@ const FormEditorModal = ( props ) => {
                     <Grid container direction="row" spacing={2}>
                         <Grid item container direction="column" lg={6}>
                             <Grid item>
-                                <Typography variant="h6">Original Form</Typography>
+                                <Typography variant="h5">Original Form</Typography>
                             </Grid>
                             <Grid item>
                                 <SyntaxHighlighter language="json" style={isDarkTheme ? dark : docco}>
@@ -43,14 +44,18 @@ const FormEditorModal = ( props ) => {
                             </Grid>
                         </Grid>
                         <Grid item container direction="column" lg={6} spacing={2}>
+                            
                             <Grid item>
-                                <Typography variant="h6">Editable Entries</Typography>
+                                <Typography variant="h5">Editable Entries</Typography>
                             </Grid>
                             <Grid item>
                                 {editableList.map((entry, index) => {
                                     return <EditableField field={entry} data={slimRecord[entry]} key={index} />;
                                 })}
-                            </Grid>                            
+                            </Grid>     
+                            <Grid item>
+                                <Typography>Error Code: {error}</Typography>
+                            </Grid>                       
                         </Grid>
                         <Grid item container spacing={2}>
                             <Grid item>
@@ -91,7 +96,8 @@ FormEditorModal.propTypes = {
     toggleModalOpen: PropTypes.func,
     editableList: PropTypes.array,
     slimRecord: PropTypes.object,
-    setButtonText: PropTypes.func
+    setButtonText: PropTypes.func,
+    error: PropTypes.string,
 };
 
 export default FormEditorModal;

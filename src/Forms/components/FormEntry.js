@@ -68,7 +68,7 @@ const FormEntry = ( props ) => {
           </Grid>
           {record.err ? 
             <Grid item>
-              <FormEditor isDarkTheme slimRecord={slimRecord} />
+              <FormEditor isDarkTheme slimRecord={slimRecord} error={record.err} />
             </Grid> : null
           }
         </Grid>
