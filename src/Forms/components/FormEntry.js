@@ -32,7 +32,7 @@ const FormEntry = ( props ) => {
   // console.log("fe")
 
   return (
-    <Grid item container xs={12} spacing={2}>
+    <Grid item container xs={12} spacing={1}>
       <Grid item xs={12}>
         <Typography variant="h6">
           {submittedDate.toLocaleString("en-US", {
@@ -49,13 +49,13 @@ const FormEntry = ( props ) => {
           {JSON.stringify(slimRecord, undefined, 2)}
         </SyntaxHighlighter>
       </Grid>
-      <Grid container spacing={2} direction="column">
+      <Grid item container spacing={2} direction="column">
         {record.err ? 
           <Grid item>
             <Typography>{`Error: ${record.err}`}</Typography>
           </Grid> : null
         }
-        <Grid container direction="row" spacing={2}>
+        <Grid item container direction="row" spacing={2}>
           <Grid item>
             <CreateNewIssue 
               issueData={record.data} 
