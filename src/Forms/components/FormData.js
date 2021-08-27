@@ -105,8 +105,7 @@ const FormData = (props) => {
   };
 
   useEffect(() => {
-    // if(!formName)
-    //   return;
+    console.log("fetching true");
     setFetching(true);
     const records = fetchData()
         .then((response) => {
@@ -135,81 +134,80 @@ const FormData = (props) => {
       );
 
     records.then((recs) => {
-      if (state.userInfo.state) {
-        fetchKoboPasswords({
-          showAllStates: "true",
-          state: state.userInfo.state,
+      fetchKoboPasswords({
+        showAllStates: "true",
+        state: state.userInfo && state.userInfo.state ? state.userInfo.state : "all",
+      })
+        .then(({ data }) => {
+          const allowedKoboAccounts = data
+            .reduce(
+              (acc, curr) =>
+                !acc.includes(curr.kobo_account)
+                  ? [...acc, curr.kobo_account]
+                  : acc,
+              []
+            )
+            .sort();
+          setAffiliationLookup({});
+          data.forEach(function (item) {
+            const kobo_account = item.kobo_account;
+            const affiliation = item.state;
+
+            let newLookup = affiliationLookup;
+            newLookup[kobo_account] = affiliation;
+            setAffiliationLookup(newLookup);
+          });
+
+          setAllowedAccounts(allowedKoboAccounts);
+
+          let validJsonRecs = recs.validRecords.map(rec => {
+            // return JSON.parse(rec)
+            let json_rec = JSON.parse(rec.data);
+            const sorted_json_rec = Object.keys(json_rec).sort().reduce(
+              (obj, key) => { 
+                obj[key] = json_rec[key]; 
+                return obj;
+              }, 
+              {}
+            );
+            return {
+              data: sorted_json_rec,
+              err: rec.err
+            };
+          });
+
+          let invalidJsonRecs = recs.invalidRecords.map(rec => {
+            // return JSON.parse(rec)
+            let json_rec = JSON.parse(rec.data);
+            const sorted_json_rec = Object.keys(json_rec).sort().reduce(
+              (obj, key) => { 
+                obj[key] = json_rec[key]; 
+                return obj;
+              }, 
+              {}
+            );
+            return {
+              data: sorted_json_rec,
+              err: rec.err
+            };
+          });
+          
+          const validFilteredRecords = validJsonRecs.filter((rec) =>
+            allowedKoboAccounts.includes(rec.data._submitted_by)
+          );
+
+          const invalidFilteredRecords = invalidJsonRecs.filter((rec) =>
+            allowedKoboAccounts.includes(rec.data._submitted_by)
+          );
+
+          setData(validFilteredRecords);
+          // setCurrentlyValid(true);
+          setInvalidData(invalidFilteredRecords);
+          setValidData(validFilteredRecords);
+          setOriginalData({validRecords: validFilteredRecords, invalidRecords: invalidFilteredRecords});
+          console.log("done w func");
         })
-          .then(({ data }) => {
-            const allowedKoboAccounts = data
-              .reduce(
-                (acc, curr) =>
-                  !acc.includes(curr.kobo_account)
-                    ? [...acc, curr.kobo_account]
-                    : acc,
-                []
-              )
-              .sort();
-            setAffiliationLookup({});
-            data.forEach(function (item) {
-              const kobo_account = item.kobo_account;
-              const affiliation = item.state;
-
-              let newLookup = affiliationLookup;
-              newLookup[kobo_account] = affiliation;
-              setAffiliationLookup(newLookup);
-            });
-
-            setAllowedAccounts(allowedKoboAccounts);
-
-            let validJsonRecs = recs.validRecords.map(rec => {
-              // return JSON.parse(rec)
-              let json_rec = JSON.parse(rec.data);
-              const sorted_json_rec = Object.keys(json_rec).sort().reduce(
-                (obj, key) => { 
-                  obj[key] = json_rec[key]; 
-                  return obj;
-                }, 
-                {}
-              );
-              return {
-                data: sorted_json_rec,
-                err: rec.err
-              };
-            });
-
-            let invalidJsonRecs = recs.invalidRecords.map(rec => {
-              // return JSON.parse(rec)
-              let json_rec = JSON.parse(rec.data);
-              const sorted_json_rec = Object.keys(json_rec).sort().reduce(
-                (obj, key) => { 
-                  obj[key] = json_rec[key]; 
-                  return obj;
-                }, 
-                {}
-              );
-              return {
-                data: sorted_json_rec,
-                err: rec.err
-              };
-            });
-            
-            const validFilteredRecords = validJsonRecs.filter((rec) =>
-              allowedKoboAccounts.includes(rec.data._submitted_by)
-            );
-
-            const invalidFilteredRecords = invalidJsonRecs.filter((rec) =>
-              allowedKoboAccounts.includes(rec.data._submitted_by)
-            );
-
-            setData(validFilteredRecords);
-            // setCurrentlyValid(true);
-            setInvalidData(invalidFilteredRecords);
-            setValidData(validFilteredRecords);
-            setOriginalData({validRecords: validFilteredRecords, invalidRecords: invalidFilteredRecords});
-          })
-          .then(() => setFetching(false));
-      }
+        .then(() => {setFetching(false); console.log("fetching false");});
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -310,7 +308,7 @@ const FormData = (props) => {
             onChange={toggleData}
           />
         <Grid item>Invalid Forms</Grid>
-        {state.loadingUser || fetching ? (
+        {state.loadingUser && fetching ? (
           <Grid item xs={12}>
             <Typography variant="h5">Fetching Data...</Typography>
           </Grid>
