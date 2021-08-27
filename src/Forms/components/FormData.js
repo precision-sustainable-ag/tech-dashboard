@@ -20,6 +20,7 @@ import PropTypes from "prop-types";
 
 import RenderFormsData from "./FormEditor/RenderFormsData";
 import { CustomSwitch } from "../../utils/CustomComponents";
+import { callAzureFunction } from './../../utils/SharedFunctions';
 
 SyntaxHighlighter.registerLanguage("json", json);
 
@@ -75,33 +76,17 @@ const FormData = (props) => {
   const fetchData = async () => {
     let name = await getHistory();
     setFormName(name);
+
     const token = await getTokenSilently({
       audience: `https://precision-sustaibale-ag/tech-dashboard`,
     });
 
-    let body = {
+    let data = {
       token: token,
       asset_name: name.split("_").join(" "),
     };
 
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-      mode: "cors", // no-cors, *cors, same-origin
-    };
-    
-    try {
-      return await fetch(
-        `http://localhost:7071/api/Kobo`,
-        options
-      ).then(res => res.json());
-    } catch (err) {
-      console.log(err);
-      return null;
-    }
+    return callAzureFunction(data, "Kobo", getTokenSilently).then(res => res.jsonResponse);
   };
 
   useEffect(() => {
@@ -109,6 +94,7 @@ const FormData = (props) => {
     setFetching(true);
     const records = fetchData()
         .then((response) => {
+          console.log(response);
           if (response === null) throw new Error(response.statusText);
           let validRecords = response.valid_data || [];
           let invalidRecords = response.invalid_data || [];
