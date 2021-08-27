@@ -12,7 +12,6 @@ import { ArrowBackIosOutlined } from "@material-ui/icons";
 import MuiAlert from "@material-ui/lab/Alert";
 
 import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
-// import { useParams } from "react-router";
 import { Link, useHistory } from "react-router-dom";
 import { Context } from "../../Store/Store";
 import { fetchKoboPasswords } from "../../utils/constants";
@@ -46,7 +45,6 @@ const FormData = (props) => {
   const [activeAccount, setActiveAccount] = useState("all");
   const { getTokenSilently } = useAuth0();
 
-  // const { formId } = useParams();
   const { user } = useAuth0();
 
   const history = useHistory();
@@ -90,11 +88,9 @@ const FormData = (props) => {
   };
 
   useEffect(() => {
-    console.log("fetching true");
     setFetching(true);
     const records = fetchData()
         .then((response) => {
-          console.log(response);
           if (response === null) throw new Error(response.statusText);
           let validRecords = response.valid_data || [];
           let invalidRecords = response.invalid_data || [];
@@ -146,37 +142,25 @@ const FormData = (props) => {
 
           setAllowedAccounts(allowedKoboAccounts);
 
-          let validJsonRecs = recs.validRecords.map(rec => {
-            // return JSON.parse(rec)
-            let json_rec = JSON.parse(rec.data);
-            const sorted_json_rec = Object.keys(json_rec).sort().reduce(
-              (obj, key) => { 
-                obj[key] = json_rec[key]; 
-                return obj;
-              }, 
-              {}
-            );
-            return {
-              data: sorted_json_rec,
-              err: rec.err
-            };
-          });
+          const sortAndParse = (objs) => {
+            return objs.map(rec => {
+              let json_rec = JSON.parse(rec.data);
+              const sorted_json_rec = Object.keys(json_rec).sort().reduce(
+                (obj, key) => { 
+                  obj[key] = json_rec[key]; 
+                  return obj;
+                }, 
+                {}
+              );
+              return {
+                data: sorted_json_rec,
+                err: rec.err
+              };
+            });
+          };
 
-          let invalidJsonRecs = recs.invalidRecords.map(rec => {
-            // return JSON.parse(rec)
-            let json_rec = JSON.parse(rec.data);
-            const sorted_json_rec = Object.keys(json_rec).sort().reduce(
-              (obj, key) => { 
-                obj[key] = json_rec[key]; 
-                return obj;
-              }, 
-              {}
-            );
-            return {
-              data: sorted_json_rec,
-              err: rec.err
-            };
-          });
+          let validJsonRecs = sortAndParse(recs.validRecords);
+          let invalidJsonRecs = sortAndParse(recs.invalidRecords);
           
           const validFilteredRecords = validJsonRecs.filter((rec) =>
             allowedKoboAccounts.includes(rec.data._submitted_by)
@@ -187,13 +171,11 @@ const FormData = (props) => {
           );
 
           setData(validFilteredRecords);
-          // setCurrentlyValid(true);
           setInvalidData(invalidFilteredRecords);
           setValidData(validFilteredRecords);
           setOriginalData({validRecords: validFilteredRecords, invalidRecords: invalidFilteredRecords});
-          console.log("done w func");
         })
-        .then(() => {setFetching(false); console.log("fetching false");});
+        .then(() => setFetching(false));
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
