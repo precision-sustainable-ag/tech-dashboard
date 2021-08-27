@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Dialog, DialogContent, Grid, Typography } from "@material-ui/core";
 import { PropTypes } from 'prop-types';
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -22,6 +22,14 @@ const FormEditorModal = ( props ) => {
         setButtonText("Edit Form");
         toggleModalOpen();
     };
+
+    const handleSubmit = () => {
+        setButtonText("Edit Form");
+        console.log(editedForm);
+        toggleModalOpen();
+    };
+
+    const [editedForm, setEditedForm] = useState(slimRecord);
     
     return (
         typeof(modalOpen) === "boolean" && modalOpen ? 
@@ -44,13 +52,12 @@ const FormEditorModal = ( props ) => {
                             </Grid>
                         </Grid>
                         <Grid item container direction="column" lg={6} spacing={2}>
-                            
                             <Grid item>
                                 <Typography variant="h5">Editable Entries</Typography>
                             </Grid>
                             <Grid item>
                                 {editableList.map((entry, index) => {
-                                    return <EditableField field={entry} data={slimRecord[entry]} key={index} />;
+                                    return <EditableField entry={entry} editedForm={editedForm} setEditedForm={setEditedForm} key={index} />;
                                 })}
                             </Grid>     
                             <Grid item>
@@ -77,7 +84,7 @@ const FormEditorModal = ( props ) => {
                                     aria-label={`All Forms`}
                                     tooltip="All Forms"
                                     size="small"
-                                    onClick={handleCancel}
+                                    onClick={handleSubmit}
                                 >
                                     Submit
                                 </Button>

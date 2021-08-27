@@ -4,26 +4,33 @@ import { Grid, Typography, TextField } from "@material-ui/core";
 
 const EditableField = ( props ) => {
     let { 
-        field, 
-        data 
+        entry,
+        editedForm, 
+        setEditedForm,
     } = props;
 
-    console.log(field, data);
+    const handleEntryEdit = (e) => {
+        let newObj = editedForm;
+        editedForm[entry] = e.target.value;
+        setEditedForm({...newObj});
+    };
+
     return (
-        <Grid container spacing={3}>
+        <Grid container spacing={3} >
             <Grid item>
-                <Typography>{field}:</Typography>
+                <Typography>{entry}:</Typography>
             </Grid>
             <Grid item>
-                <TextField defaultValue={data} variant="filled" size="small"></TextField>
+                <TextField value={editedForm[entry]} variant="filled" size="small" onChange={handleEntryEdit}></TextField>
             </Grid>
         </Grid>
     );
 };
 
 EditableField.propTypes = {
-    field: PropTypes.string,
-    data: PropTypes.string
+    entry: PropTypes.string,
+    editedForm: PropTypes.object,
+    setEditedForm: PropTypes.func,
 };
 
 export default EditableField;
