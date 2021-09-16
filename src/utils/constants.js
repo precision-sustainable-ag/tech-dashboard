@@ -16,9 +16,14 @@ export const bannedRoles = ["default", "Default", "none", ""];
  */
 export const fetchKoboPasswords = async ({ state, showAllStates }) => {
   let response = await fetch(`${apiURL}/api/kobo/passwords/${state}`, {
-    headers: new Headers({
-      Authorization: `Basic ${btoa(`${apiUsername}:${apiPassword}`)}`,
-    }),
+    headers: {
+      Authorization:
+        "Basic " +
+        Buffer.from(apiUsername + ":" + apiPassword, "binary").toString(
+          "base64"
+        ),
+      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+    },
   });
 
   let payload = await response.json();
