@@ -119,8 +119,10 @@ const FarmValuesTable = ({
         percent_lignin: rec.percent_lignin || "N/A",
       }))
       .sort(
-        (a, b) =>
-          new Date(b.cc_termination_date) - new Date(a.cc_termination_date)
+        (a, b) =>{
+          return b.cc_termination_date && a.cc_termination_date ?
+            (new Date(b.cc_termination_date) - new Date(a.cc_termination_date)) : 0;
+        }
       );
   }, [year, data, affiliation]);
   const [open, setOpen] = useState(false);
@@ -177,10 +179,10 @@ const FarmValuesTable = ({
                   )}
 
                   <TableCell align="center">
-                    {format(
-                      parseISO(record.cc_termination_date) || new Date(),
+                    {record.cc_termination_date ? format(
+                      parseISO(record.cc_termination_date),
                       "PP"
-                    )}
+                    ) : "N/A"}
                   </TableCell>
                   <TableCell align="center">
                     {record.cc_species || "No Data"}
