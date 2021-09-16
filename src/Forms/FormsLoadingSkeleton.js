@@ -1,5 +1,5 @@
 // Dependency Imports
-import React from 'react'
+import React from 'react';
 import Skeleton from '@material-ui/lab/Skeleton';
 
 // Local Imports

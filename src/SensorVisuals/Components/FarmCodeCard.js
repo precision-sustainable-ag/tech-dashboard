@@ -15,7 +15,7 @@ const FarmCodeCard = (props) => {
   const theme = useTheme();
 
   if(color === "default")
-    color = isDarkTheme ? grey[700] : "white"
+    color = isDarkTheme ? grey[700] : "white";
 
   return (
     <Card
