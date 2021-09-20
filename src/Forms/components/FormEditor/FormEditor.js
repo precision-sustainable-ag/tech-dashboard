@@ -8,7 +8,7 @@ import { useAuth0 } from "../../../Auth/react-auth0-spa";
 import { callAzureFunction } from "../../../utils/SharedFunctions" ;
 
 const FormEditor = ( props ) => {
-    let { isDarkTheme, slimRecord, error } = props;
+    let { isDarkTheme, slimRecord, error, formName } = props;
 
     const { getTokenSilently } = useAuth0();
 
@@ -45,6 +45,7 @@ const FormEditor = ( props ) => {
                 editableList={editableList}
                 setButtonText={setButtonText}
                 error={error}
+                formName={formName}
             /> :
             <Button 
                 variant="contained"
@@ -64,6 +65,7 @@ FormEditor.propTypes = {
     isDarkTheme: PropTypes.bool, 
     slimRecord: PropTypes.any,
     error: PropTypes.string,
+    formName: PropTypes.string,
 };
 
 export default FormEditor;

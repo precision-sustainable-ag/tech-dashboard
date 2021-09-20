@@ -4,8 +4,10 @@ import { PropTypes } from 'prop-types';
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import docco from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light";
 import dark from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-dark";
+import { useAuth0 } from "../../../Auth/react-auth0-spa";
 
 import EditableField from "./EditableField";
+import { callAzureFunction } from './../../../utils/SharedFunctions';
 
 const FormEditorModal = ( props ) => {
     let { 
@@ -16,7 +18,10 @@ const FormEditorModal = ( props ) => {
         editableList,
         setButtonText,
         error,
+        formName
     } = props;
+
+    const { getTokenSilently } = useAuth0();
 
     const handleCancel = () => {
         setButtonText("Edit Form");
@@ -25,6 +30,12 @@ const FormEditorModal = ( props ) => {
 
     const handleSubmit = () => {
         setButtonText("Edit Form");
+        let data = {
+            "data": JSON.stringify(editedForm),
+            "asset_name": formName.split("_").join(" "),
+            "id": editedForm._id
+        };
+        callAzureFunction(data, "SubmitNewEntry", getTokenSilently);
         console.log(editedForm);
         toggleModalOpen();
     };
@@ -105,6 +116,7 @@ FormEditorModal.propTypes = {
     slimRecord: PropTypes.object,
     setButtonText: PropTypes.func,
     error: PropTypes.string,
+    formName: PropTypes.string,
 };
 
 export default FormEditorModal;
