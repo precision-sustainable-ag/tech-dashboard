@@ -68,20 +68,18 @@ const FormData = (props) => {
     } else {
       name = "";
     }
-    return name;
+    setFormName(name);
   };
 
   const fetchData = async () => {
-    let name = await getHistory();
-    setFormName(name);
-
+    await getHistory();
     const token = await getTokenSilently({
       audience: `https://precision-sustaibale-ag/tech-dashboard`,
     });
 
     let data = {
       token: token,
-      asset_name: name.split("_").join(" "),
+      xform_id_string: window.location.pathname.split("/")[2],
     };
 
     return callAzureFunction(data, "Kobo", getTokenSilently).then(res => res.jsonResponse);
@@ -269,6 +267,9 @@ const FormData = (props) => {
               ))}
             </>
           )}
+        </Grid>
+        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+          <Typography variant="h5">Form name: {formName}</Typography>
         </Grid>
         <Grid item>Valid Forms</Grid>
           <CustomSwitch

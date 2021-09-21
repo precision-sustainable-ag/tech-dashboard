@@ -24,7 +24,7 @@ class KoboAPI:
             pass
         else:
             self.token = req_body.get('token')
-            self.asset_name = req_body.get('asset_name')
+            self.xform_id_string = req_body.get('xform_id_string')
 
     def connect_to_shadow_live(self):
         postgres_host = os.environ.get('LIVE_SHADOW_HOST')
@@ -64,17 +64,17 @@ class KoboAPI:
         else:
             return True, response
 
-    def fetch_bad_uids_data(self, asset_name):
-        invalid_rows = pd.DataFrame(pd.read_sql("SELECT DISTINCT uid, err, data FROM invalid_row_table_pairs WHERE asset_name = '{}'".format(asset_name), self.shadow_engine))
+    def fetch_bad_uids_data(self, xform_id_string):
+        invalid_rows = pd.DataFrame(pd.read_sql("SELECT DISTINCT uid, err, data FROM invalid_row_table_pairs WHERE xform_id_string = '{}'".format(xform_id_string), self.shadow_engine))
         return invalid_rows
 
-    def fetch_all_data(self, asset_name):
-        all_rows = pd.DataFrame(pd.read_sql("SELECT data, uid FROM kobo WHERE asset_name = '{}'".format(asset_name), self.mysql_engine))
+    def fetch_all_data(self, xform_id_string):
+        all_rows = pd.DataFrame(pd.read_sql("SELECT data, uid FROM kobo WHERE xform_id_string = '{}'".format(xform_id_string), self.mysql_engine))
         return all_rows
 
     def create_row_object(self):
-        invalid_rows = self.fetch_bad_uids_data(self.asset_name)
-        all_rows = self.fetch_all_data(self.asset_name)
+        invalid_rows = self.fetch_bad_uids_data(self.xform_id_string)
+        all_rows = self.fetch_all_data(self.xform_id_string)
 
         data = {
             "valid_data": [],
@@ -112,7 +112,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
         data = kobo.create_row_object()
         if not data.get("valid_data") and not data.get("invalid_data"):
-            return func.HttpResponse(json.dumps({"message": "no asset_name in dbs"}), headers={'content-type': 'application/json'}, status_code=400)
+            return func.HttpResponse(json.dumps({"message": "no xform_id_string in dbs"}), headers={'content-type': 'application/json'}, status_code=400)
 
         return func.HttpResponse(body=json.dumps(data), headers={'content-type': 'application/json'}, status_code=200)
     except Exception:
