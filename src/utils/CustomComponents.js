@@ -57,6 +57,28 @@ export const AntSwitch = withStyles((theme) => ({
   checked: {},
 }))(Switch);
 
+export const CustomSwitch = withStyles((theme) => ({
+  switchBase: {
+    "&$checked": {
+      color: theme.palette.common.white,
+      "& + $track": {
+        opacity: 1,
+        backgroundColor: theme.palette.grey[500],
+        borderColor: theme.palette.primary.main,
+      },
+    },
+  },
+  thumb: {
+    backgroundColor: theme.palette.primary.main,
+    boxShadow: "none",
+  },
+  track: {
+    opacity: 1,
+    backgroundColor: theme.palette.grey[500],
+  },
+  checked: {},
+}))(Switch);
+
 // Helper functions
 export const BannedRoleMessage = ({ title }) => {
   const [state] = useContext(Context);

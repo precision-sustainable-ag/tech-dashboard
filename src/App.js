@@ -430,9 +430,9 @@ function App() {
                 />
                 <PrivateRoute
                   path={`/kobo-forms/:formId`}
-                  render={(props) => (
+                  render={() => (
                     <FormData
-                      assetId={props}
+                      // assetId={props}
                       isDarkTheme={
                         theme.palette.type === "light" ? false : true
                       }

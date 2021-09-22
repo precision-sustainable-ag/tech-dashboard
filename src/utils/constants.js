@@ -14,7 +14,7 @@ export const bannedRoles = ["default", "Default", "none", ""];
  * @param {{state: string, showAllStates: boolean}} User  - User
  * @returns {Promise} A promise object
  */
-export const fetchKoboPasswords = async ({ state, showAllStates }) => {
+ export const fetchKoboPasswords = async ({ state, showAllStates }) => {
   let response = await fetch(`${apiURL}/api/kobo/passwords/${state}`, {
     headers: {
       Authorization:

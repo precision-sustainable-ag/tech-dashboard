@@ -189,7 +189,6 @@ const Comments = (props) => {
         open={showUsersDialog}
         onClose={() => setShowUsersDialog(false)}
         aria-labelledby="form-dialog-title"
-        disableBackdropClick
         fullWidth
         maxWidth="lg"
       >

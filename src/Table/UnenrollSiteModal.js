@@ -66,7 +66,6 @@ const UnenrollSiteModal = (props) => {
   };
   return (
     <Dialog
-      disableBackdropClick
       disableEscapeKeyDown
       open={open}
       onClose={closeModal}

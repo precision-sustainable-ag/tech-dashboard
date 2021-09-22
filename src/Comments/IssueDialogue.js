@@ -50,8 +50,8 @@ const IssueDialogue = (props) => {
         setButtonDisabled(false);
         setIssueTitle("");
         setRemoveCommentText(true);
-        if (res) {
-          if (res.status === 201) {
+        if (res.response) {
+          if (res.response.status === 201) {
             setSnackbarData({
               open: true,
               text: `New Issue has been created`,
