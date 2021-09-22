@@ -56,7 +56,6 @@ class SubmitNewEntry:
         response = self.mysql_cur.execute(sql_string, (self.id, self.asset_name, self.data))
         self.mysql_cur
         self.mysql_con.commit()
-        return response
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
@@ -69,10 +68,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             return func.HttpResponse(json.dumps(response), headers={'content-type': 'application/json'}, status_code=400)
             
         response = sne.insert_new_form()
-        if not response:
-            return func.HttpResponse(json.dumps({"message": "no version in shadow db"}), headers={'content-type': 'application/json'}, status_code=400)
                 
-        return func.HttpResponse(body=json.dumps(response), headers={'content-type': 'application/json'}, status_code=200)
+        return func.HttpResponse(body="Successfully inserted new entry", headers={'content-type': 'application/json'}, status_code=200)
 
     except Exception:
         error = traceback.format_exc()
