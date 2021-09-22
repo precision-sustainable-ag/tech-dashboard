@@ -87,11 +87,12 @@ const FarmValues = () => {
       fetchData(state.userInfo.apikey)
         .then((response) => {
           setFarmValues(response);
+          
           let allYears = response.map((record) => record.year);
-
           setFarmYears(uniqueYears(allYears));
 
           const affiliations = response
+            .filter(record => record.affiliation !== undefined)
             .reduce(
               (prev, curr) =>
                 !prev.includes(curr.affiliation)

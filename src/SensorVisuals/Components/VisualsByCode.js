@@ -331,7 +331,7 @@ const VisualsByCode = () => {
         <Grid item xs={12}>
           {loading ? (
             <CustomLoader />
-          ) : gatewayData.length === 0 ? (
+          ) : gatewayData.length === 0 && nodeData.length === 0 ? (
             <Grid container style={{ minHeight: "20vh" }}>
               <Grid item xs={12}>
                 <Typography variant="h6">

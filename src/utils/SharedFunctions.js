@@ -312,6 +312,7 @@ export const tableOptions = (tableDataLength) => ({
 //   get unique years, sort by highest to lowest and activate highest year
 export const uniqueYears = (allYears) =>
   allYears
+    .filter((year) => year !== undefined)
     .filter((val, index, arr) => arr.indexOf(val) === index)
     .sort((a, b) => b - a)
     .map((year, index) => {
