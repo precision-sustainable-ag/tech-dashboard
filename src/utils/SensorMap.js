@@ -4,6 +4,7 @@ import GoogleMapsReact from "google-map-react";
 import { googleApiKey } from "./api_secret";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 
 // import NodeCharts from "./NodeCharts";
 
@@ -103,24 +104,31 @@ const SensorMap = (props) => {
 
 const Marker = (props) => {
   const latLngStr = props.data.lat + "," + props.data.lon;
-  return (
-    <StyledMarker>
-      <Typography align="center" variant="body1">
-        Rep: {props.data.rep},{" "}
-        {props.data.treatment.toLowerCase() === "b" ? `Bare` : `Cover`}
-      </Typography>
-      {/* <p>ProducerID: {props.data.producer_id}</p> */}
-      <Typography align="center" variant="body1">
-        <a
-          href={`https://www.google.com/maps?saddr=My+Location&daddr=${latLngStr}&z=19&om=0`}
-          target="_blank"
-          rel="noreferrer"
-        >
-          Directions
-        </a>
-      </Typography>
-    </StyledMarker>
-  );
+  if(props.data.type !== "corner"){
+    return (
+      <StyledMarker>
+        <Typography align="center" variant="body1">
+          Rep: {props.data.rep},{" "}
+          {props.data.treatment.toLowerCase() === "b" ? `Bare` : `Cover`}
+        </Typography>
+        {/* <p>ProducerID: {props.data.producer_id}</p> */}
+        <Typography align="center" variant="body1">
+          <a
+            href={`https://www.google.com/maps?saddr=My+Location&daddr=${latLngStr}&z=19&om=0`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Directions
+          </a>
+        </Typography>
+      </StyledMarker>
+    );
+  } else {
+    return (
+      <FiberManualRecordIcon>
+      </FiberManualRecordIcon>
+    );
+  }
 };
 
 SensorMap.propTypes = {
