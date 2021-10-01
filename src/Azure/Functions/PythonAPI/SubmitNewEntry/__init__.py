@@ -26,6 +26,7 @@ class SubmitNewEntry:
             self.data = req_body.get('data')
             self.asset_name = req_body.get('asset_name')
             self.id = req_body.get('id')
+            self.xform_id_string = req_body.get('xform_id_string')
 
     def authenticate(self):
         authenticated, response = authenticator.authenticate(self.token)
@@ -52,8 +53,8 @@ class SubmitNewEntry:
         print("connected to mysql live")
 
     def insert_new_form(self):
-        sql_string = "INSERT INTO kobo (id, asset_name, data) VALUES (%s, %s, %s)"
-        response = self.mysql_cur.execute(sql_string, (self.id, self.asset_name, self.data))
+        sql_string = "INSERT INTO kobo (id, asset_name, data, xform_id_string) VALUES (%s, %s, %s, %s)"
+        response = self.mysql_cur.execute(sql_string, (self.id, self.asset_name, self.data, self.xform_id_string))
         self.mysql_cur
         self.mysql_con.commit()
 
@@ -69,9 +70,9 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             
         response = sne.insert_new_form()
                 
-        return func.HttpResponse(body="Successfully inserted new entry", headers={'content-type': 'application/json'}, status_code=200)
+        return func.HttpResponse(body="Successfully inserted new entry", headers={'content-type': 'application/json'}, status_code=201)
 
     except Exception:
         error = traceback.format_exc()
         logging.error(error)
-        return func.HttpResponse(error, status_code=200)
+        return func.HttpResponse(error, status_code=400)

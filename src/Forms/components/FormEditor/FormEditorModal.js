@@ -18,10 +18,13 @@ const FormEditorModal = ( props ) => {
         editableList,
         setButtonText,
         error,
-        formName
+        formName,
+        setSnackbarData,
     } = props;
 
     const { getTokenSilently } = useAuth0();
+    const [editedForm, setEditedForm] = useState({...slimRecord});
+    const [submitText, setSubmitText] = useState("Submit");
 
     const handleCancel = () => {
         setButtonText("Edit Form");
@@ -30,17 +33,43 @@ const FormEditorModal = ( props ) => {
 
     const handleSubmit = () => {
         setButtonText("Edit Form");
+        setSubmitText("Submitting form...");
         let data = {
             "data": JSON.stringify(editedForm),
             "asset_name": formName.split("_").join(" "),
-            "id": editedForm._id
+            "id": editedForm._id,
+            "xform_id_string": editedForm._xform_id_string
         };
-        callAzureFunction(data, "SubmitNewEntry", getTokenSilently);
-        console.log(editedForm);
-        toggleModalOpen();
+        callAzureFunction(data, "SubmitNewEntry", getTokenSilently).then((res) => {
+            toggleModalOpen();
+            setSubmitText("Submit");
+            setEditedForm(slimRecord);
+            
+            if (res.response) {
+                if (res.response.status === 201) {
+                  setSnackbarData({
+                    open: true,
+                    text: `Successfully submitted form edit`,
+                    severity: "success",
+                  });
+                } else {
+                  console.log("Function could not submit form edit");
+                  setSnackbarData({
+                    open: true,
+                    text: `Could not edit form (error code 0)`,
+                    severity: "error",
+                  });
+                }
+              } else {
+                console.log("No response from function, likely cors");
+                setSnackbarData({
+                  open: true,
+                  text: `Could not edit form (error code 1)`,
+                  severity: "error",
+                });
+              }
+        });
     };
-
-    const [editedForm, setEditedForm] = useState(slimRecord);
     
     return (
         typeof(modalOpen) === "boolean" && modalOpen ? 
@@ -97,7 +126,7 @@ const FormEditorModal = ( props ) => {
                                     size="small"
                                     onClick={handleSubmit}
                                 >
-                                    Submit
+                                    {submitText}
                                 </Button>
                             </Grid>
                         </Grid>
@@ -117,6 +146,7 @@ FormEditorModal.propTypes = {
     setButtonText: PropTypes.func,
     error: PropTypes.string,
     formName: PropTypes.string,
+    setSnackbarData: PropTypes.func,
 };
 
 export default FormEditorModal;
