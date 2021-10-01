@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button, Dialog, DialogContent, Grid, Typography } from "@material-ui/core";
 import { PropTypes } from 'prop-types';
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -23,12 +23,8 @@ const FormEditorModal = ( props ) => {
     } = props;
 
     const { getTokenSilently } = useAuth0();
-    const [editedForm, setEditedForm] = useState(slimRecord);
+    const [editedForm, setEditedForm] = useState({...slimRecord});
     const [submitText, setSubmitText] = useState("Submit");
-
-    useEffect(() => {
-        setEditedForm(slimRecord);
-    }, [slimRecord]);
 
     const handleCancel = () => {
         setButtonText("Edit Form");
