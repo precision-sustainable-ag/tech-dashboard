@@ -1,11 +1,17 @@
 import React, { useState } from "react";
-import { Button } from "@material-ui/core";
+import { Button, Snackbar } from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
 import FormEditorModal from "./FormEditorModal";
 import { PropTypes } from 'prop-types';
 import { useAuth0 } from "../../../Auth/react-auth0-spa";
+import MuiAlert from "@material-ui/lab/Alert";
 
 import { callAzureFunction } from "../../../utils/SharedFunctions" ;
+
+// Helper function
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const FormEditor = ( props ) => {
     let { isDarkTheme, slimRecord, error, formName } = props;
@@ -15,6 +21,11 @@ const FormEditor = ( props ) => {
     const [modalOpen, setModalOpen] = useState(false);
     const [editableList, setEditableList] = useState([]);
     const [buttonText, setButtonText] = useState("Edit Form");
+    const [snackbarData, setSnackbarData] = useState({
+        open: false,
+        text: "",
+        severity: "success",
+    });
     
 
     const toggleModalOpen = () => {
@@ -36,28 +47,46 @@ const FormEditor = ( props ) => {
     };
 
     return (
-        modalOpen ? 
-            <FormEditorModal 
-                isDarkTheme={isDarkTheme} 
-                modalOpen={modalOpen} 
-                toggleModalOpen={toggleModalOpen} 
-                slimRecord={slimRecord} 
-                editableList={editableList}
-                setButtonText={setButtonText}
-                error={error}
-                formName={formName}
-            /> :
-            <Button 
-                variant="contained"
-                color={isDarkTheme ? "primary" : "default"}
-                aria-label={`All Forms`}
-                tooltip="All Forms"
-                size="small"
-                startIcon={<Edit />}
-                onClick={handleEdit}
+        <React.Fragment>
+            <Snackbar
+                anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+                }}
+                open={snackbarData.open}
+                autoHideDuration={10000}
+                onClose={() =>
+                setSnackbarData({ ...snackbarData, open: !snackbarData.open })
+                }
             >
-                {buttonText}
-            </Button>
+                <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
+            </Snackbar>
+            {modalOpen ? 
+                <FormEditorModal 
+                    isDarkTheme={isDarkTheme} 
+                    modalOpen={modalOpen} 
+                    toggleModalOpen={toggleModalOpen} 
+                    slimRecord={slimRecord} 
+                    editableList={editableList}
+                    setButtonText={setButtonText}
+                    error={error}
+                    formName={formName}
+                    setSnackbarData={setSnackbarData} 
+                /> :
+                <Button 
+                    variant="contained"
+                    color={isDarkTheme ? "primary" : "default"}
+                    aria-label={`All Forms`}
+                    tooltip="All Forms"
+                    size="small"
+                    startIcon={<Edit />}
+                    onClick={handleEdit}
+                >
+                    {buttonText}
+                </Button>
+            }
+        </React.Fragment>
+        
     );
 };
 
