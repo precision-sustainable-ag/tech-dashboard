@@ -5,6 +5,7 @@ import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import docco from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light";
 import dark from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-dark";
 import { useAuth0 } from "../../../Auth/react-auth0-spa";
+import { Error } from "@material-ui/icons/";
 
 import EditableField from "./EditableField";
 import { callAzureFunction } from './../../../utils/SharedFunctions';
@@ -81,28 +82,37 @@ const FormEditorModal = ( props ) => {
             >
                 <DialogContent>
                     <Grid container direction="row" spacing={2}>
-                        <Grid item container direction="column" lg={6}>
-                            <Grid item>
-                                <Typography variant="h5">Original Form</Typography>
-                            </Grid>
-                            <Grid item>
-                                <SyntaxHighlighter language="json" style={isDarkTheme ? dark : docco}>
-                                    {JSON.stringify(slimRecord, undefined, 2)}
-                                </SyntaxHighlighter>
+                        <Grid item>
+                            <Grid container direction="column" xs={12} sm={12} md={12} lg={12} xl={12}>
+                                <Grid item>
+                                    <Typography variant="h5">Original Form</Typography>
+                                </Grid>
+                                <Grid item>
+                                    <SyntaxHighlighter language="json" style={isDarkTheme ? dark : docco}>
+                                        {JSON.stringify(slimRecord, undefined, 2)}
+                                    </SyntaxHighlighter>
+                                </Grid>
                             </Grid>
                         </Grid>
-                        <Grid item container direction="column" lg={6} spacing={2}>
+                        <Grid item>
+                            <Grid container direction="column" xs={12} sm={12} md={12} lg={12} xl={12} spacing={2}>
+                                <Grid item>
+                                    <Typography variant="h5">Editable Entries</Typography>
+                                </Grid>
+                                <Grid item>
+                                    {editableList.map((entry, index) => {
+                                        return <EditableField entry={entry} editedForm={editedForm} setEditedForm={setEditedForm} key={index} />;
+                                    })}
+                                </Grid>     
+                            </Grid>                   
+                        </Grid> 
+                        <Grid item container spacing={2}>
                             <Grid item>
-                                <Typography variant="h5">Editable Entries</Typography>
+                                <Error color="error" />
                             </Grid>
                             <Grid item>
-                                {editableList.map((entry, index) => {
-                                    return <EditableField entry={entry} editedForm={editedForm} setEditedForm={setEditedForm} key={index} />;
-                                })}
-                            </Grid>     
-                            <Grid item>
                                 <Typography>Error Code: {error}</Typography>
-                            </Grid>                       
+                            </Grid>
                         </Grid>
                         <Grid item container spacing={2}>
                             <Grid item>
