@@ -4,24 +4,22 @@ import {
   Chip,
   Grid,
   Typography,
-  Tooltip,
   Snackbar,
 } from "@material-ui/core";
-import axios from "axios";
-import { apiPassword, apiURL, apiUsername } from "../../utils/api_secret";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import { useAuth0 } from "../../Auth/react-auth0-spa";
-import { QuestionAnswer, ArrowBackIosOutlined } from "@material-ui/icons";
+import { ArrowBackIosOutlined } from "@material-ui/icons";
 import MuiAlert from "@material-ui/lab/Alert";
 
 import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
-import { useParams } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { Context } from "../../Store/Store";
 import { fetchKoboPasswords } from "../../utils/constants";
-import IssueDialogue from "../../Comments/IssueDialogue";
-import FormEntry from "./FormEntry";
 import PropTypes from "prop-types";
+
+import RenderFormsData from "./FormEditor/RenderFormsData";
+import { CustomSwitch } from "../../utils/CustomComponents";
+import { callAzureFunction } from './../../utils/SharedFunctions';
 
 SyntaxHighlighter.registerLanguage("json", json);
 
@@ -33,17 +31,23 @@ function Alert(props) {
 const timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
 const FormData = (props) => {
+  let { 
+    isDarkTheme 
+  } = props;
+
   const [data, setData] = useState([]);
+  const [validData, setValidData] = useState([]);
+  const [invalidData, setInvalidData] = useState([]);
   const [originalData, setOriginalData] = useState([]);
   const [fetching, setFetching] = useState(false);
   const [state] = useContext(Context);
   const [allowedAccounts, setAllowedAccounts] = useState([]);
   const [activeAccount, setActiveAccount] = useState("all");
+  const { getTokenSilently } = useAuth0();
 
-  const { formId } = useParams();
   const { user } = useAuth0();
 
-  const [showNewIssueDialog, setShowNewIssueDialog] = useState(false);
+  const history = useHistory();
 
   const [affiliationLookup, setAffiliationLookup] = useState({});
 
@@ -52,85 +56,142 @@ const FormData = (props) => {
     text: "",
     severity: "success",
   });
-  const [newIssueData, setNewIssueData] = useState({});
-  const [activeIssueIndex, setActiveIssueIndex] = useState(null);
 
-  const fetchData = async (assetId, userType = "psa") => {
-    return await axios.get(`${apiURL}/api/kobo/${userType}/data/${assetId}`, {
-      auth: {
-        username: apiUsername,
-        password: apiPassword,
-      },
+  const [currentlyValid, setCurrentlyValid] = useState(true);
+
+  const [formName, setFormName] = useState("");
+
+  const getHistory = async () => {
+    let name;
+    if (history.location.state && history.location.state.name) {
+      name = history.location.state.name;
+    } else {
+      name = "";
+    }
+    setFormName(name);
+  };
+
+  const fetchData = async () => {
+    await getHistory();
+    const token = await getTokenSilently({
+      audience: `https://precision-sustaibale-ag/tech-dashboard`,
     });
+
+    let data = {
+      token: token,
+      xform_id_string: window.location.pathname.split("/")[2],
+    };
+
+    return callAzureFunction(data, "Kobo", getTokenSilently).then(res => res.jsonResponse);
   };
 
   useEffect(() => {
     setFetching(true);
-    const records = fetchData(formId, "psa")
-      .then((response) => {
-        if (response.status !== 200) throw new Error(response.statusText);
-        let records = response.data.data.results || [];
-        if (records.length > 0) {
-          records = records.sort(
-            (a, b) =>
-              new Date(b._submission_time) - new Date(a._submission_time)
-          );
-          return records;
-        } else {
-          return [];
+    const records = fetchData()
+        .then((response) => {
+          if (response === null) throw new Error(response.statusText);
+          let validRecords = response.valid_data || [];
+          let invalidRecords = response.invalid_data || [];
+
+          if (validRecords.length > 0) {
+            validRecords = validRecords.sort(
+              (a, b) =>
+                new Date(JSON.parse(b.data)._submission_time) - new Date(JSON.parse(a.data)._submission_time)
+            );
+          } 
+          if (invalidRecords.length > 0) {
+            invalidRecords = invalidRecords.sort(
+              (a, b) =>
+                new Date(JSON.parse(b.data)._submission_time) - new Date(JSON.parse(a.data)._submission_time)
+            );
+          }
+
+          return {
+            validRecords: validRecords,
+            invalidRecords: invalidRecords
+          };
         }
-      })
-      .then((records) => {
-        return records;
-      });
+      );
 
     records.then((recs) => {
-      if (state.userInfo.state) {
-        fetchKoboPasswords({
-          showAllStates: "true",
-          state: state.userInfo.state,
-        })
-          .then(({ data }) => {
-            const allowedKoboAccounts = data
-              .reduce(
-                (acc, curr) =>
-                  !acc.includes(curr.kobo_account)
-                    ? [...acc, curr.kobo_account]
-                    : acc,
-                []
-              )
-              .sort();
-            setAffiliationLookup({});
-            data.forEach(function (item) {
-              const kobo_account = item.kobo_account;
-              const affiliation = item.state;
+      fetchKoboPasswords({
+        showAllStates: "true",
+        state: state.userInfo && state.userInfo.state ? state.userInfo.state : "all",
+      })
+        .then(({ data }) => {
+          const allowedKoboAccounts = data
+            .reduce(
+              (acc, curr) =>
+                !acc.includes(curr.kobo_account)
+                  ? [...acc, curr.kobo_account]
+                  : acc,
+              []
+            )
+            .sort();
+          setAffiliationLookup({});
+          data.forEach(function (item) {
+            const kobo_account = item.kobo_account;
+            const affiliation = item.state;
 
-              let newLookup = affiliationLookup;
-              newLookup[kobo_account] = affiliation;
-              setAffiliationLookup(newLookup);
+            let newLookup = affiliationLookup;
+            newLookup[kobo_account] = affiliation;
+            setAffiliationLookup(newLookup);
+          });
+
+          setAllowedAccounts(allowedKoboAccounts);
+
+          const sortAndParse = (objs) => {
+            return objs.map(rec => {
+              let json_rec = JSON.parse(rec.data);
+              const sorted_json_rec = Object.keys(json_rec).sort().reduce(
+                (obj, key) => { 
+                  obj[key] = json_rec[key]; 
+                  return obj;
+                }, 
+                {}
+              );
+              return {
+                data: sorted_json_rec,
+                err: rec.err
+              };
             });
+          };
 
-            setAllowedAccounts(allowedKoboAccounts);
-            const filteredRecords = recs.filter((rec) =>
-              allowedKoboAccounts.includes(rec._submitted_by)
-            );
-            setData(filteredRecords);
-            setOriginalData(filteredRecords);
-          })
-          .then(() => setFetching(false));
-      }
+          let validJsonRecs = sortAndParse(recs.validRecords);
+          let invalidJsonRecs = sortAndParse(recs.invalidRecords);
+          
+          const validFilteredRecords = validJsonRecs.filter((rec) =>
+            allowedKoboAccounts.includes(rec.data._submitted_by)
+          );
+
+          const invalidFilteredRecords = invalidJsonRecs.filter((rec) =>
+            allowedKoboAccounts.includes(rec.data._submitted_by)
+          );
+
+          setData(validFilteredRecords);
+          setInvalidData(invalidFilteredRecords);
+          setValidData(validFilteredRecords);
+          setOriginalData({validRecords: validFilteredRecords, invalidRecords: invalidFilteredRecords});
+        })
+        .then(() => setFetching(false));
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formId, state.userInfo.state]);
+  }, []);
 
   useEffect(() => {
     const recalculate = async () => {
-      return await new Promise((resolve) => {
-        if (originalData.length > 0) {
-          if (activeAccount === "all") resolve(originalData);
-          else {
-            const filteredActive = originalData.filter(
-              (data) => data._submitted_by === activeAccount
+      return new Promise((resolve) => {
+        if (originalData) {
+          if (currentlyValid){
+            if (activeAccount === "all") resolve(originalData.validRecords);
+            const filteredActive = originalData.validRecords.filter(
+              (data) => data.data._submitted_by === activeAccount
+            );
+            resolve(filteredActive);
+          } else {
+            if (activeAccount === "all") resolve(originalData.invalidRecords);
+            const filteredActive = originalData.invalidRecords.filter(
+              (data) => data.data._submitted_by === activeAccount
             );
             resolve(filteredActive);
           }
@@ -141,95 +202,15 @@ const FormData = (props) => {
     recalculate().then((data) => {
       setData(data);
     });
-  }, [activeAccount, originalData]);
+  }, [activeAccount, originalData, currentlyValid]);
 
-  const CreateNewIssue = ({ issueData, index }) => {
-    return (
-      <div>
-        {showNewIssueDialog ? (
-          ""
-        ) : (
-          <Tooltip title="Submit a new issue">
-            <Button
-              startIcon={<QuestionAnswer />}
-              size="small"
-              variant="contained"
-              color="primary"
-              // color={props.props.isDarkTheme ? "primary" : "default"}
-              onClick={() => {
-                setShowNewIssueDialog(true);
-                setNewIssueData(issueData);
-                setActiveIssueIndex(index);
-              }}
-            >
-              Add Comment
-            </Button>
-          </Tooltip>
-        )}
+  const toggleData = () => {
+    if(currentlyValid)
+      setData(invalidData);
+    else
+      setData(validData);
 
-        {showNewIssueDialog && index === activeIssueIndex ? (
-          <IssueDialogue
-            nickname={user.nickname}
-            rowData={JSON.stringify(newIssueData, null, "\t")}
-            dataType="json"
-            setSnackbarData={setSnackbarData}
-            formName={props.assetId.history.location.state.name}
-            affiliationLookup={affiliationLookup}
-            closeDialogue={setShowNewIssueDialog}
-            labels={[
-              newIssueData._id.toString(),
-              affiliationLookup[newIssueData._submitted_by],
-              props.assetId.history.location.state.name,
-              "kobo-forms",
-            ]}
-            setShowNewIssueDialog={setShowNewIssueDialog}
-          />
-        ) : (
-          ""
-        )}
-      </div>
-    );
-  };
-  CreateNewIssue.propTypes = {
-    issueData: PropTypes.any,
-    index: PropTypes.number,
-  };
-
-  const RenderFormsData = () => {
-    return fetching ? (
-      <Grid item xs={12}>
-        <Typography variant="h5">Fetching Data...</Typography>
-      </Grid>
-    ) : data.length === 0 && originalData.length === 0 ? (
-      <Grid item xs={12}>
-        <Typography variant="h5">
-          {" "}
-          {allowedAccounts.length !== 0
-            ? `No submissions on this form via account${
-                allowedAccounts.length > 1 ? `s` : ""
-              } ${allowedAccounts.join(", ")}`
-            : "No Data"}
-        </Typography>
-      </Grid>
-    ) : (
-      <>
-        <Grid item xs={12}>
-          <Typography variant="body1">{data.length} submissions</Typography>
-        </Grid>
-        {data.map((record = {}, index) => {
-          return (
-            <FormEntry
-              record={record}
-              index={index}
-              key={`record${index}`}
-              isDarkTheme={props.isDarkTheme}
-              CreateNewIssue={CreateNewIssue}
-              timezoneOffset={timezoneOffset}
-            />
-          );
-        })}
-      </>
-    );
+    setCurrentlyValid(!currentlyValid);
   };
 
   return (
@@ -251,7 +232,7 @@ const FormData = (props) => {
         <Grid item>
           <Button
             variant="contained"
-            color={props.isDarkTheme ? "primary" : "default"}
+            color={isDarkTheme ? "primary" : "default"}
             aria-label={`All Forms`}
             component={Link}
             tooltip="All Forms"
@@ -287,7 +268,16 @@ const FormData = (props) => {
             </>
           )}
         </Grid>
-        {state.loadingUser ? (
+        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+          <Typography variant="h5">Form name: {formName}</Typography>
+        </Grid>
+        <Grid item>Valid Forms</Grid>
+          <CustomSwitch
+            // checked={units === "lbs/ac"}
+            onChange={toggleData}
+          />
+        <Grid item>Invalid Forms</Grid>
+        {state.loadingUser && fetching ? (
           <Grid item xs={12}>
             <Typography variant="h5">Fetching Data...</Typography>
           </Grid>
@@ -296,9 +286,13 @@ const FormData = (props) => {
             fetching={fetching}
             data={data}
             originalData={originalData}
-            isDarkTheme={props.isDarkTheme}
+            isDarkTheme={isDarkTheme}
             allowedAccounts={allowedAccounts}
             user={user}
+            timezoneOffset={timezoneOffset}
+            affiliationLookup={affiliationLookup} 
+            setSnackbarData={setSnackbarData} 
+            formName={formName}
           />
         )}
       </Grid>
@@ -310,5 +304,4 @@ export default FormData;
 
 FormData.propTypes = {
   isDarkTheme: PropTypes.bool,
-  assetId: PropTypes.object,
 };

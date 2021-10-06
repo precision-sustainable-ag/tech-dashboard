@@ -1,4 +1,4 @@
-import { Grid, Snackbar, Switch, withStyles } from "@material-ui/core";
+import { Grid, Snackbar } from "@material-ui/core";
 import React, { useState, useEffect, useContext, Fragment } from "react";
 import { Context } from "../Store/Store";
 import { onfarmAPI } from "../utils/api_secret";
@@ -6,6 +6,7 @@ import {
   BannedRoleMessage,
   CustomLoader,
   YearsAndAffiliations,
+  CustomSwitch,
 } from "../utils/CustomComponents";
 import { uniqueYears } from "../utils/SharedFunctions";
 import MuiAlert from "@material-ui/lab/Alert";
@@ -202,24 +203,3 @@ const FarmValues = () => {
 
 export default FarmValues;
 
-const CustomSwitch = withStyles((theme) => ({
-  switchBase: {
-    "&$checked": {
-      color: theme.palette.common.white,
-      "& + $track": {
-        opacity: 1,
-        backgroundColor: theme.palette.grey[500],
-        borderColor: theme.palette.primary.main,
-      },
-    },
-  },
-  thumb: {
-    backgroundColor: theme.palette.primary.main,
-    boxShadow: "none",
-  },
-  track: {
-    opacity: 1,
-    backgroundColor: theme.palette.grey[500],
-  },
-  checked: {},
-}))(Switch);

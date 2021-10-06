@@ -35,6 +35,7 @@ module.exports = {
         extensions: [".js", ".jsx"],
       },
     ],
+    "semi": "error",
   },
   settings: {
     react: {

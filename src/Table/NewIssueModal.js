@@ -116,8 +116,8 @@ const NewIssueModal = (props) => {
         setIssueTitle("");
         setButtonDisabled(false);
         props.handleNewIssueDialogClose();
-        if (res) {
-          if (res.status === 201) {
+        if (res.response) {
+          if (res.response.status === 201) {
             props.setSnackbarData({
               open: true,
               text: `New Issue has been created for ${props.data.code}`,
@@ -248,7 +248,6 @@ const NewIssueModal = (props) => {
       aria-labelledby="form-dialog-title"
       fullWidth={true}
       maxWidth={maxWidth}
-      disableBackdropClick
     >
       <DialogTitle id="form-dialog-title">
         <Grid container justifyContent="space-between">

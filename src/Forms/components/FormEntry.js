@@ -6,25 +6,33 @@ import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
 import PropTypes from "prop-types";
 
+import FormEditor from "./FormEditor/FormEditor";
+import CreateNewIssue from "./FormEditor/CreateNewIssue";
+
 SyntaxHighlighter.registerLanguage("json", json);
 
-const FormEntry = ({
-  record,
-  index,
-  isDarkTheme,
-  CreateNewIssue,
-  timezoneOffset,
-}) => {
-  let slimRecord = record;
+const FormEntry = ( props ) => {
+  let {
+    record,
+    index,
+    isDarkTheme,
+    timezoneOffset,
+    user,
+    affiliationLookup,
+    setSnackbarData,
+    formName,
+  } = props;
+  let slimRecord = record.data;
   let localTime = new Date(
-    Date.parse(record._submission_time) - timezoneOffset
+    Date.parse(record.data._submission_time) - timezoneOffset
   );
   const submittedDate = localTime;
+  
 
-  // console.log(index)
+  // console.log("fe")
 
   return (
-    <Grid item container xs={12} spacing={2}>
+    <Grid item container xs={12} spacing={1}>
       <Grid item xs={12}>
         <Typography variant="h6">
           {submittedDate.toLocaleString("en-US", {
@@ -41,12 +49,34 @@ const FormEntry = ({
           {JSON.stringify(slimRecord, undefined, 2)}
         </SyntaxHighlighter>
       </Grid>
-      <CreateNewIssue issueData={record} index={index} />
+      <Grid item container spacing={2} direction="column">
+        {record.err ? 
+          <Grid item>
+            <Typography>{`Error: ${record.err}`}</Typography>
+          </Grid> : null
+        }
+        <Grid item container direction="row" spacing={2}>
+          <Grid item>
+            <CreateNewIssue 
+              issueData={record.data} 
+              index={index} 
+              user={user} 
+              affiliationLookup={affiliationLookup} 
+              setSnackbarData={setSnackbarData} 
+              formName={formName}
+            />
+          </Grid>
+          {record.err ? 
+            <Grid item>
+              <FormEditor isDarkTheme={isDarkTheme} slimRecord={slimRecord} error={record.err} formName={formName} />
+            </Grid> : null
+          }
+        </Grid>
+        
+      </Grid>
     </Grid>
   );
 };
-
-export default FormEntry;
 
 FormEntry.propTypes = {
   record: PropTypes.object,
@@ -54,4 +84,9 @@ FormEntry.propTypes = {
   isDarkTheme: PropTypes.bool,
   CreateNewIssue: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
   timezoneOffset: PropTypes.number,
+  user: PropTypes.any,
+  affiliationLookup: PropTypes.object,
+  setSnackbarData: PropTypes.func,
+  formName: PropTypes.string,
 };
+export default FormEntry;

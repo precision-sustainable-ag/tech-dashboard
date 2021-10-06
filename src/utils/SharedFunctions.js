@@ -99,7 +99,7 @@ export const createGithubIssue = async (
     body: body,
   };
 
-  return callAzureFunction(data, getTokenSilently);
+  return callAzureFunction(data, "GithubIssues", getTokenSilently);
 };
 export const createGithubComment = async (
   nickname,
@@ -114,7 +114,7 @@ export const createGithubComment = async (
     number: number,
   };
 
-  return callAzureFunction(data, getTokenSilently);
+  return callAzureFunction(data, "GithubIssues", getTokenSilently);
 };
 
 export const addToTechnicians = async (nickname, getTokenSilently) => {
@@ -123,10 +123,10 @@ export const addToTechnicians = async (nickname, getTokenSilently) => {
     user: nickname,
   };
 
-  return callAzureFunction(data, getTokenSilently);
+  return callAzureFunction(data, "GithubIssues", getTokenSilently);
 };
 
-const callAzureFunction = async (data, getTokenSilently) => {
+export const callAzureFunction = async (data, endpoint, getTokenSilently) => {
   let token = await getTokenSilently({
     audience: `https://precision-sustaibale-ag/tech-dashboard`,
   });
@@ -146,7 +146,7 @@ const callAzureFunction = async (data, getTokenSilently) => {
 
   try {
     githubIssuesResponse = await fetch(
-      `https://premiumpythonapi.azurewebsites.net/api/GithubIssues`,
+      `https://premiumpythonapi.azurewebsites.net/api/${endpoint}`,
       options
     );
   } catch (err) {
@@ -192,7 +192,10 @@ const callAzureFunction = async (data, getTokenSilently) => {
     console.error(e);
   });
 
-  return githubIssuesResponse;
+  return {
+    jsonResponse: githubIssuesResponseJSON,
+    response: githubIssuesResponse
+  };
 };
 
 export const sendCommandToHologram = async (
