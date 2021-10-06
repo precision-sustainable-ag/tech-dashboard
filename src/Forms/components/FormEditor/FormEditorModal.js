@@ -49,7 +49,7 @@ const FormEditorModal = ( props ) => {
                 if (res.response.status === 201) {
                   setSnackbarData({
                     open: true,
-                    text: `Successfully submitted form edit`,
+                    text: `Successfully submitted form edit, check back in 5 minutes`,
                     severity: "success",
                   });
                 } else {
