@@ -27,10 +27,8 @@ const FormEntry = ( props ) => {
     Date.parse(record.data._submission_time) - timezoneOffset
   );
   const submittedDate = localTime;
+  const uid = record.uid;
   
-
-  // console.log("fe")
-
   return (
     <Grid item container xs={12} spacing={1}>
       <Grid item xs={12}>
@@ -50,9 +48,9 @@ const FormEntry = ( props ) => {
         </SyntaxHighlighter>
       </Grid>
       <Grid item container spacing={2} direction="column">
-        {record.err ? 
+        {record.errs ? 
           <Grid item>
-            <Typography>{`Error: ${record.err}`}</Typography>
+            <Typography>{`Error: ${JSON.stringify(record.errs)}`}</Typography>
           </Grid> : null
         }
         <Grid item container direction="row" spacing={2}>
@@ -66,9 +64,15 @@ const FormEntry = ( props ) => {
               formName={formName}
             />
           </Grid>
-          {record.err ? 
+          {record.errs ? 
             <Grid item>
-              <FormEditor isDarkTheme={isDarkTheme} slimRecord={slimRecord} error={record.err} formName={formName} />
+              <FormEditor 
+                isDarkTheme={isDarkTheme} 
+                slimRecord={slimRecord} 
+                error={record.errs} 
+                formName={formName} 
+                uid={uid}
+              />
             </Grid> : null
           }
         </Grid>

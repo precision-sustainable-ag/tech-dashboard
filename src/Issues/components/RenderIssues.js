@@ -348,4 +348,6 @@ RenderIssues.propTypes = {
   /** User's role from the RAW database */
   userRole: PropTypes.string.isRequired,
   filter: PropTypes.any,
+  username: PropTypes.string,
+  show: PropTypes.bool,
 };

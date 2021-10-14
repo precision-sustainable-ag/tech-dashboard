@@ -21,6 +21,7 @@ const FormEditorModal = ( props ) => {
         error,
         formName,
         setSnackbarData,
+        uid,
     } = props;
 
     const { getTokenSilently } = useAuth0();
@@ -39,7 +40,8 @@ const FormEditorModal = ( props ) => {
             "data": JSON.stringify(editedForm),
             "asset_name": formName.split("_").join(" "),
             "id": editedForm._id,
-            "xform_id_string": editedForm._xform_id_string
+            "xform_id_string": editedForm._xform_id_string,
+            "uid": uid,
         };
         callAzureFunction(data, "SubmitNewEntry", getTokenSilently).then((res) => {
             toggleModalOpen();
@@ -111,7 +113,7 @@ const FormEditorModal = ( props ) => {
                                 <Error color="error" />
                             </Grid>
                             <Grid item>
-                                <Typography>Error Code: {error}</Typography>
+                                <Typography>Error Code: {JSON.stringify(error)}</Typography>
                             </Grid>
                         </Grid>
                         <Grid item container spacing={2}>
@@ -157,6 +159,7 @@ FormEditorModal.propTypes = {
     error: PropTypes.string,
     formName: PropTypes.string,
     setSnackbarData: PropTypes.func,
+    uid: PropTypes.any,
 };
 
 export default FormEditorModal;

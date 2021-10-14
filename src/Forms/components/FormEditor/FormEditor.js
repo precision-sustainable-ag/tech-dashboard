@@ -14,7 +14,13 @@ function Alert(props) {
 }
 
 const FormEditor = ( props ) => {
-    let { isDarkTheme, slimRecord, error, formName } = props;
+    let { 
+        isDarkTheme, 
+        slimRecord, 
+        error, 
+        formName,
+        uid,
+    } = props;
 
     const { getTokenSilently } = useAuth0();
 
@@ -72,6 +78,7 @@ const FormEditor = ( props ) => {
                     error={error}
                     formName={formName}
                     setSnackbarData={setSnackbarData} 
+                    uid={uid}
                 /> :
                 <Button 
                     variant="contained"
@@ -93,8 +100,9 @@ const FormEditor = ( props ) => {
 FormEditor.propTypes = {
     isDarkTheme: PropTypes.bool, 
     slimRecord: PropTypes.any,
-    error: PropTypes.string,
+    error: PropTypes.any,
     formName: PropTypes.string,
+    uid: PropTypes.any,
 };
 
 export default FormEditor;
