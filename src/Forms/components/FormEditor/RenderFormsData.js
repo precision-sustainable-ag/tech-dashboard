@@ -71,5 +71,9 @@ RenderFormsData.propTypes = {
     timezoneOffset: PropTypes.number,
     originalData: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     allowedAccounts: PropTypes.array,
+    user: PropTypes.object,
+    affiliationLookup: PropTypes.object,
+    setSnackbarData: PropTypes.func,
+    formName: PropTypes.any
 };
 export default RenderFormsData;

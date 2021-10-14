@@ -152,7 +152,8 @@ const FormData = (props) => {
               );
               return {
                 data: sorted_json_rec,
-                err: rec.err
+                errs: rec.errs,
+                uid: rec.uid,
               };
             });
           };

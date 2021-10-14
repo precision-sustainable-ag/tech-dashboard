@@ -542,3 +542,10 @@ GrowerInformation.propTypes = {
   enrollmentData: PropTypes.object,
   setEnrollmentData: PropTypes.func,
 };
+
+ExistingGrowersGrid.propTypes = {
+  allGrowers: PropTypes.array,
+  growerLastName: PropTypes.string,
+  enrollmentData: PropTypes.object,
+  setEnrollmentData: PropTypes.func,
+};

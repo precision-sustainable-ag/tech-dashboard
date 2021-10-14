@@ -65,38 +65,77 @@ class KoboAPI:
             return True, response
 
     def fetch_bad_uids_data(self, xform_id_string):
-        invalid_rows = pd.DataFrame(pd.read_sql("SELECT DISTINCT uid, err, data FROM invalid_row_table_pairs WHERE xform_id_string = '{}'".format(xform_id_string), self.shadow_engine))
+        invalid_rows = pd.DataFrame(pd.read_sql("SELECT DISTINCT uid, err, data FROM invalid_row_table_pairs WHERE xform_id_string = '{}' AND resolved = 0".format(xform_id_string), self.shadow_engine))
         return invalid_rows
+
+    # def fetch_uid_history(self, xform_id_string):
+    #     uid_history = pd.DataFrame(pd.read_sql("SELECT DISTINCT uid, err, data FROM invalid_row_table_pairs WHERE xform_id_string = '{}' AND resolved = 1".format(xform_id_string), self.shadow_engine))
+    #     return uid_history
 
     def fetch_all_data(self, xform_id_string):
         all_rows = pd.DataFrame(pd.read_sql("SELECT data, uid FROM kobo WHERE xform_id_string = '{}'".format(xform_id_string), self.mysql_engine))
         return all_rows
 
-    def create_row_object(self):
+    def fetch_distinct_uids(self, xform_id_string, resolved):
+        distinct_uids = pd.DataFrame(pd.read_sql("SELECT DISTINCT uid, data FROM invalid_row_table_pairs WHERE xform_id_string = '{}' and resolved = '{}'".format(xform_id_string, resolved), self.shadow_engine))
+        return distinct_uids
+
+    # def generate_uid_history(self):
+    #     uid_history = self.fetch_uid_history(self.xform_id_string)
+    #     valid_list = []
+
+    #     for index, row_entry in uid_history.iterrows():
+    #         if row_entry.get("uid") not in invalid_rows.uid.tolist():
+    #             # print(row_entry.get("uid"))
+    #             valid_list.append({"data": row_entry.get("data"), "errs": row_entry.get("err")})
+
+    def generate_invalid_rows(self, xform_id_string, history=False):
+        # all_rows = pd.DataFrame(pd.read_sql("SELECT data, uid FROM kobo WHERE xform_id_string = '{}'".format(xform_id_string), self.mysql_engine))
+        if history:
+            distinct_uids = self.fetch_distinct_uids(xform_id_string, 1)
+        else:
+            distinct_uids = self.fetch_distinct_uids(xform_id_string, 0)
+        invalid_data = []
+        for index, row_entry in distinct_uids.iterrows():
+            uid = row_entry.get("uid")
+            data = row_entry.get("data")
+            print(data)
+            errs = pd.DataFrame(pd.read_sql("SELECT DISTINCT err FROM invalid_row_table_pairs WHERE uid = '{}'".format(uid), self.shadow_engine))
+            print(errs.get("err"), uid)
+            errs_list = []
+            for index, row_entry in errs.iterrows():
+                errs_list.append(row_entry.get("err"))
+
+            invalid_data.append({"data": data, "errs": errs_list, "uid": uid})
+
+        print(invalid_data)
+
+
+        return invalid_data
+
+    def generate_valid_rows(self):
         invalid_rows = self.fetch_bad_uids_data(self.xform_id_string)
         all_rows = self.fetch_all_data(self.xform_id_string)
-
-        data = {
-            "valid_data": [],
-            "invalid_data": []
-        }
-
-        print(invalid_rows)
-
-        # invalid_uids = []
-
-        # for index, invalid_row in invalid_rows.iterrows():
-        #     invalid_uids.append(invalid_row.get("uid"))
+        valid_list = []
 
         for index, row_entry in all_rows.iterrows():
-            if row_entry.get("uid") not in invalid_rows.uid.tolist():
+            uid = row_entry.get("uid")
+            if uid not in invalid_rows.uid.tolist():
                 # print(row_entry.get("uid"))
-                data["valid_data"].append({"data": row_entry.get("data"), "err": row_entry.get("err")})
-            # else:
-            #     data["valid_data"].append(row_entry.get("data"))
+                valid_list.append({"data": row_entry.get("data"), "errs": row_entry.get("err"), "uid": uid})
 
-        for index, row_entry in invalid_rows.iterrows():
-            data["invalid_data"].append({"data": row_entry.get("data"), "err": row_entry.get("err")})
+        return valid_list
+
+    def create_row_object(self):
+        uid_history = self.generate_invalid_rows(self.xform_id_string, True)
+        valid_data = self.generate_valid_rows()
+        invalid_data = self.generate_invalid_rows(self.xform_id_string)
+
+        data = {
+            "valid_data": valid_data,
+            "invalid_data": invalid_data,
+            "uid_history": uid_history,
+        }
 
         return data
 
