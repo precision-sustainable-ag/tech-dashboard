@@ -29,9 +29,6 @@ const FormEntry = ( props ) => {
   const submittedDate = localTime;
   const uid = record.uid;
   
-
-  console.log(record);
-
   return (
     <Grid item container xs={12} spacing={1}>
       <Grid item xs={12}>
