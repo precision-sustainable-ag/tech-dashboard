@@ -224,8 +224,11 @@ export default function Header(props) {
           //add to data corrections
           addUser(user.nickname).then((res) => console.log(res));
           // accept invite
-          addToTechnicians(user.nickname, getTokenSilently);
         } else {
+          if(data.data.state !== "default"){
+            console.log("adding to technicians");
+            addToTechnicians(user.nickname, getTokenSilently);
+          }
           dispatch({
             type: "UPDATE_ROLE",
             data: {
