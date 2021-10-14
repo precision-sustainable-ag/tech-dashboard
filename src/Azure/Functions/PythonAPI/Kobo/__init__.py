@@ -99,17 +99,16 @@ class KoboAPI:
         for index, row_entry in distinct_uids.iterrows():
             uid = row_entry.get("uid")
             data = row_entry.get("data")
-            print(data)
+            # print(data)
             errs = pd.DataFrame(pd.read_sql("SELECT DISTINCT err FROM invalid_row_table_pairs WHERE uid = '{}'".format(uid), self.shadow_engine))
-            print(errs.get("err"), uid)
+            # print(errs.get("err"), uid)
             errs_list = []
             for index, row_entry in errs.iterrows():
                 errs_list.append(row_entry.get("err"))
 
             invalid_data.append({"data": data, "errs": errs_list, "uid": uid})
 
-        print(invalid_data)
-
+        # print(invalid_data)
 
         return invalid_data
 

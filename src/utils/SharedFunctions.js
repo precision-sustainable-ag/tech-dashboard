@@ -146,7 +146,7 @@ export const callAzureFunction = async (data, endpoint, getTokenSilently) => {
 
   try {
     githubIssuesResponse = await fetch(
-      `http://localhost:7071/api/${endpoint}`,
+      `https://premiumpythonapi.azurewebsites.net/api/${endpoint}`,
       options
     );
   } catch (err) {

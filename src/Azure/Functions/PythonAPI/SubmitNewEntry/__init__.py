@@ -29,7 +29,7 @@ class SubmitNewEntry:
             self.id = req_body.get('id')
             self.xform_id_string = req_body.get('xform_id_string')
             self.uid = req_body.get('uid')
-            print(self.uid)
+            # print(self.uid)
 
     def authenticate(self):
         authenticated, response = authenticator.authenticate(self.token)
