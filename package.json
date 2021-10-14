@@ -11,7 +11,7 @@
     "@octokit/rest": "^18.10.0",
     "@uiw/react-md-editor": "^3.6.3",
     "autosuggest-highlight": "^3.1.1",
-    "axios": "^0.21.4",
+    "axios": "^0.23.0",
     "clsx": "^1.1.1",
     "date-fns": "^2.23.0",
     "google-map-react": "^2.1.10",
