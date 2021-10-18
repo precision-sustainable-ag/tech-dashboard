@@ -7,7 +7,7 @@ import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
 import PropTypes from "prop-types";
 
 import FormEditor from "./FormEditor/FormEditor";
-import CreateNewIssue from "./FormEditor/CreateNewIssue";
+import CreateNewIssue from "./CreateNewIssue";
 
 SyntaxHighlighter.registerLanguage("json", json);
 
@@ -21,6 +21,7 @@ const FormEntry = ( props ) => {
     affiliationLookup,
     setSnackbarData,
     formName,
+    formType,
   } = props;
   let slimRecord = record.data;
   let localTime = new Date(
@@ -62,6 +63,7 @@ const FormEntry = ( props ) => {
               affiliationLookup={affiliationLookup} 
               setSnackbarData={setSnackbarData} 
               formName={formName}
+              formType={formType}
             />
           </Grid>
           {record.errs ? 
@@ -92,5 +94,6 @@ FormEntry.propTypes = {
   affiliationLookup: PropTypes.object,
   setSnackbarData: PropTypes.func,
   formName: PropTypes.string,
+  formType: PropTypes.string,
 };
 export default FormEntry;

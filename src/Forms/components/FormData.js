@@ -20,7 +20,7 @@ import { Context } from "../../Store/Store";
 import { fetchKoboPasswords } from "../../utils/constants";
 import PropTypes from "prop-types";
 
-import RenderFormsData from "./FormEditor/RenderFormsData";
+import RenderFormsData from "./RenderFormsData";
 import { callAzureFunction } from './../../utils/SharedFunctions';
 
 SyntaxHighlighter.registerLanguage("json", json);
@@ -329,6 +329,7 @@ const FormData = (props) => {
             affiliationLookup={affiliationLookup} 
             setSnackbarData={setSnackbarData} 
             formName={formName}
+            formType={formType}
           />
         )}
       </Grid>

@@ -3,7 +3,7 @@ import {
   Grid,
   Typography,
 } from "@material-ui/core";
-import FormEntry from "../FormEntry";
+import FormEntry from "./FormEntry";
 import PropTypes from "prop-types";
 
 const RenderFormsData = (props) => {
@@ -17,7 +17,8 @@ const RenderFormsData = (props) => {
         user, 
         affiliationLookup, 
         setSnackbarData, 
-        formName 
+        formName, 
+        formType
     } = props;
 
     if (fetching)
@@ -57,6 +58,7 @@ const RenderFormsData = (props) => {
                         affiliationLookup={affiliationLookup} 
                         setSnackbarData={setSnackbarData} 
                         formName={formName}
+                        formType={formType}
                     />
                     );
                 })}
@@ -74,6 +76,7 @@ RenderFormsData.propTypes = {
     user: PropTypes.object,
     affiliationLookup: PropTypes.object,
     setSnackbarData: PropTypes.func,
-    formName: PropTypes.any
+    formName: PropTypes.any,
+    formType: PropTypes.string,
 };
 export default RenderFormsData;
