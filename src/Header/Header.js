@@ -37,14 +37,12 @@ import {
   Person,
 } from "@material-ui/icons";
 import Axios from "axios";
-import { Octokit } from "@octokit/rest";
 import PropTypes from "prop-types";
 
 // Local Imports
 import { apiPassword, apiUsername, apiURL } from "../utils/api_secret";
 import { Context } from "../Store/Store";
 import { useAuth0 } from "../Auth/react-auth0-spa";
-import { githubToken } from "../utils/api_secret";
 import { addToTechnicians } from "../utils/SharedFunctions";
 import { debugAdmins } from "../utils/constants";
 
@@ -161,19 +159,6 @@ export default function Header(props) {
     props.setDarkTheme();
   };
 
-  async function addUser(username) {
-    const octokit = new Octokit({ auth: githubToken });
-    return await octokit.request(
-      "PUT /repos/{owner}/{repo}/collaborators/{username}",
-      {
-        owner: "precision-sustainable-ag",
-        repo: "data_corrections",
-        username: username,
-        permission: "push",
-      }
-    );
-  }
-
   useEffect(() => {
     const addUserToDatabase = async (dataString) => {
       try {
@@ -221,11 +206,11 @@ export default function Header(props) {
           };
 
           addUserToDatabase(qs.stringify(obj));
-          //add to data corrections
-          addUser(user.nickname).then((res) => console.log(res));
-          // accept invite
-          addToTechnicians(user.nickname, getTokenSilently);
         } else {
+          if(data.data.state !== "default"){
+            console.log("adding to technicians");
+            addToTechnicians(user.nickname, getTokenSilently);
+          }
           dispatch({
             type: "UPDATE_ROLE",
             data: {

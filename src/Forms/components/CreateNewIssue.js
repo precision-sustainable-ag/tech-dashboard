@@ -4,11 +4,20 @@ import {
   Tooltip,
 } from "@material-ui/core";
 import { QuestionAnswer } from "@material-ui/icons";
-import IssueDialogue from "../../../Comments/IssueDialogue";
+import IssueDialogue from "../../Comments/IssueDialogue";
 import PropTypes from "prop-types";
 
 const CreateNewIssue = ( props ) => {
-    let { issueData, index, user, affiliationLookup, setSnackbarData, formName } = props;
+    let { 
+        issueData, 
+        index, 
+        user, 
+        affiliationLookup, 
+        setSnackbarData, 
+        formName, 
+        formType,
+    } = props;
+
     const [showNewIssueDialog, setShowNewIssueDialog] = useState(false);
     const [newIssueData, setNewIssueData] = useState({});
     const [activeIssueIndex, setActiveIssueIndex] = useState(null);
@@ -49,6 +58,7 @@ const CreateNewIssue = ( props ) => {
                         affiliationLookup[newIssueData._submitted_by],
                         formName,
                         "kobo-forms",
+                        formType,
                     ]}
                     setShowNewIssueDialog={setShowNewIssueDialog}
                 />
@@ -66,5 +76,6 @@ CreateNewIssue.propTypes = {
     affiliationLookup: PropTypes.object, 
     setSnackbarData: PropTypes.func, 
     formName: PropTypes.any,
+    formType: PropTypes.string,
 };
 export default CreateNewIssue;

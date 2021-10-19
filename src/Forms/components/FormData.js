@@ -5,7 +5,10 @@ import {
   Grid,
   Typography,
   Snackbar,
+  Box,
+  Tab
 } from "@material-ui/core";
+import { TabList, TabContext } from "@material-ui/lab";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import { useAuth0 } from "../../Auth/react-auth0-spa";
 import { ArrowBackIosOutlined } from "@material-ui/icons";
@@ -17,8 +20,7 @@ import { Context } from "../../Store/Store";
 import { fetchKoboPasswords } from "../../utils/constants";
 import PropTypes from "prop-types";
 
-import RenderFormsData from "./FormEditor/RenderFormsData";
-import { CustomSwitch } from "../../utils/CustomComponents";
+import RenderFormsData from "./RenderFormsData";
 import { callAzureFunction } from './../../utils/SharedFunctions';
 
 SyntaxHighlighter.registerLanguage("json", json);
@@ -35,31 +37,28 @@ const FormData = (props) => {
     isDarkTheme 
   } = props;
 
+  const { user } = useAuth0();
+  const history = useHistory();
+
   const [data, setData] = useState([]);
   const [validData, setValidData] = useState([]);
   const [invalidData, setInvalidData] = useState([]);
+  const [historyData, setHistoryData] = useState([]);
   const [originalData, setOriginalData] = useState([]);
   const [fetching, setFetching] = useState(false);
   const [state] = useContext(Context);
   const [allowedAccounts, setAllowedAccounts] = useState([]);
   const [activeAccount, setActiveAccount] = useState("all");
   const { getTokenSilently } = useAuth0();
-
-  const { user } = useAuth0();
-
-  const history = useHistory();
-
   const [affiliationLookup, setAffiliationLookup] = useState({});
-
   const [snackbarData, setSnackbarData] = useState({
     open: false,
     text: "",
     severity: "success",
   });
-
-  const [currentlyValid, setCurrentlyValid] = useState(true);
-
+  const [formType, setFormType] = useState("valid");
   const [formName, setFormName] = useState("");
+  const [value, setValue] = React.useState('1');
 
   const getHistory = async () => {
     let name;
@@ -92,6 +91,7 @@ const FormData = (props) => {
           if (response === null) throw new Error(response.statusText);
           let validRecords = response.valid_data || [];
           let invalidRecords = response.invalid_data || [];
+          let historyRecords = response.uid_history || [];
 
           if (validRecords.length > 0) {
             validRecords = validRecords.sort(
@@ -105,10 +105,17 @@ const FormData = (props) => {
                 new Date(JSON.parse(b.data)._submission_time) - new Date(JSON.parse(a.data)._submission_time)
             );
           }
+          if (historyRecords.length > 0) {
+            historyRecords = historyRecords.sort(
+              (a, b) =>
+                new Date(JSON.parse(b.data)._submission_time) - new Date(JSON.parse(a.data)._submission_time)
+            );
+          }
 
           return {
             validRecords: validRecords,
-            invalidRecords: invalidRecords
+            invalidRecords: invalidRecords,
+            historyRecords: historyRecords,
           };
         }
       );
@@ -152,13 +159,15 @@ const FormData = (props) => {
               );
               return {
                 data: sorted_json_rec,
-                err: rec.err
+                errs: rec.errs,
+                uid: rec.uid,
               };
             });
           };
 
           let validJsonRecs = sortAndParse(recs.validRecords);
           let invalidJsonRecs = sortAndParse(recs.invalidRecords);
+          let recordHistoryJsonRecs = sortAndParse(recs.historyRecords);
           
           const validFilteredRecords = validJsonRecs.filter((rec) =>
             allowedKoboAccounts.includes(rec.data._submitted_by)
@@ -168,10 +177,15 @@ const FormData = (props) => {
             allowedKoboAccounts.includes(rec.data._submitted_by)
           );
 
-          setData(validFilteredRecords);
-          setInvalidData(invalidFilteredRecords);
-          setValidData(validFilteredRecords);
-          setOriginalData({validRecords: validFilteredRecords, invalidRecords: invalidFilteredRecords});
+          const historyFilteredRecords = recordHistoryJsonRecs.filter((rec) =>
+            allowedKoboAccounts.includes(rec.data._submitted_by)
+          );
+
+          setData(validFilteredRecords || []);
+          setInvalidData(invalidFilteredRecords || []);
+          setValidData(validFilteredRecords || []);
+          setHistoryData(historyFilteredRecords || []);
+          setOriginalData({validRecords: validFilteredRecords, invalidRecords: invalidFilteredRecords, historyRecords: historyFilteredRecords});
         })
         .then(() => setFetching(false));
     });
@@ -182,18 +196,24 @@ const FormData = (props) => {
     const recalculate = async () => {
       return new Promise((resolve) => {
         if (originalData) {
-          if (currentlyValid){
+          if (formType === "valid"){
             if (activeAccount === "all") resolve(originalData.validRecords);
             const filteredActive = originalData.validRecords.filter(
               (data) => data.data._submitted_by === activeAccount
             );
-            resolve(filteredActive);
-          } else {
+            resolve(filteredActive || []);
+          } else if (formType === "invalid"){
             if (activeAccount === "all") resolve(originalData.invalidRecords);
             const filteredActive = originalData.invalidRecords.filter(
               (data) => data.data._submitted_by === activeAccount
             );
-            resolve(filteredActive);
+            resolve(filteredActive || []);
+          } else {
+            if (activeAccount === "all") resolve(originalData.historyRecords);
+            const filteredActive = originalData.historyRecords.filter(
+              (data) => data.data._submitted_by === activeAccount
+            );
+            resolve(filteredActive || []);
           }
         }
       });
@@ -202,15 +222,26 @@ const FormData = (props) => {
     recalculate().then((data) => {
       setData(data);
     });
-  }, [activeAccount, originalData, currentlyValid]);
+  }, [activeAccount, originalData, formType]);
 
-  const toggleData = () => {
-    if(currentlyValid)
-      setData(invalidData);
-    else
-      setData(validData);
-
-    setCurrentlyValid(!currentlyValid);
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+    switch(newValue){
+      case "1":
+        setData(validData);
+        setFormType("valid");
+        break;
+      case "2":
+        setData(invalidData);
+        setFormType("invalid");
+        break;
+      case "3":
+        setData(historyData);
+        setFormType("history");
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -271,12 +302,17 @@ const FormData = (props) => {
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
           <Typography variant="h5">Form name: {formName}</Typography>
         </Grid>
-        <Grid item>Valid Forms</Grid>
-          <CustomSwitch
-            // checked={units === "lbs/ac"}
-            onChange={toggleData}
-          />
-        <Grid item>Invalid Forms</Grid>
+        <Box sx={{ width: '100%', typography: 'body1' }}>
+          <TabContext value={value}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <TabList onChange={handleChange} aria-label="lab API tabs example">
+                <Tab label="Valid Forms" value="1" />
+                <Tab label="Please Fix" value="2" />
+                <Tab label="Submission History" value="3" />
+              </TabList>
+            </Box>
+          </TabContext>
+        </Box>
         {state.loadingUser && fetching ? (
           <Grid item xs={12}>
             <Typography variant="h5">Fetching Data...</Typography>
@@ -293,6 +329,7 @@ const FormData = (props) => {
             affiliationLookup={affiliationLookup} 
             setSnackbarData={setSnackbarData} 
             formName={formName}
+            formType={formType}
           />
         )}
       </Grid>
