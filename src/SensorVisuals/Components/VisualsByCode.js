@@ -1,5 +1,6 @@
 import React from "react";
-import { Button, Grid, Typography, Snackbar } from "@material-ui/core";
+import { Button, Grid, Typography, Snackbar, Box, Tab} from "@material-ui/core";
+import { TabList, TabContext } from "@material-ui/lab";
 import {
   apiPassword,
   apiURL,
@@ -8,19 +9,21 @@ import {
 } from "../../utils/api_secret";
 import { ArrowBackIos } from "@material-ui/icons";
 import { Link, useHistory, useParams, useLocation } from "react-router-dom";
-import { lazy, useContext, useEffect, useState, Fragment } from "react";
+import { useContext, useEffect, useState, Fragment } from "react";
 import { Context } from "../../Store/Store";
 import { CustomLoader } from "../../utils/CustomComponents";
-import GatewayChart from "./GatewayChart";
+// import GatewayChart from "./GatewayChart";
 import SensorMap from "../../utils/SensorMap";
 import MuiAlert from "@material-ui/lab/Alert";
 import { useAuth0 } from "../../Auth/react-auth0-spa";
-import IssueDialogue from "../../Comments/IssueDialogue";
 
-const NodeVoltage = lazy(() => import("./NodeVoltage"));
-const SoilTemp = lazy(() => import("./SoilTemp"));
-const TempByLbs = lazy(() => import("./LitterbagTemp"));
-const VolumetricWater = lazy(() => import("./VolumetricWater"));
+import IssueDialogue from "../../Comments/IssueDialogue";
+import TabCharts from "./TabCharts";
+
+// const NodeVoltage = lazy(() => import("./NodeVoltage"));
+// const SoilTemp = lazy(() => import("./SoilTemp"));
+// const TempByLbs = lazy(() => import("./LitterbagTemp"));
+// const VolumetricWater = lazy(() => import("./VolumetricWater"));
 
 // Helper function
 function Alert(props) {
@@ -41,7 +44,10 @@ const VisualsByCode = () => {
     locationData: [],
     zoom: 20,
   });
+
   const [tdrData, setTdrData] = useState([]);
+  const [value, setValue] = useState('1');
+  const [activeCharts, setActiveCharts] = useState("gateway");
 
   const { getTokenSilently } = useAuth0();
 
@@ -110,6 +116,7 @@ const VisualsByCode = () => {
 
   useEffect(() => {
     const fetchData = async (apiKey) => {
+      console.log("fetching data");
       const setAllData = (response, type) => {
         // const uniqueSerials = response;
         // .reduce((acc, curr) => {
@@ -235,6 +242,29 @@ const VisualsByCode = () => {
     waterSensorDataEndpoint,
   ]);
 
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+    switch(newValue){
+      case "1":
+        // setData(validData);
+        // setFormType("valid");
+        setActiveCharts("gateway");
+        break;
+      case "2":
+        // setData(invalidData);
+        // setFormType("invalid");
+        setActiveCharts("vwc");
+        break;
+      case "3":
+        // setData(historyData);
+        // setFormType("history");
+        setActiveCharts("temp");
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <Fragment>
       <Snackbar
@@ -353,58 +383,27 @@ const VisualsByCode = () => {
             </Grid>
           ) : (
             <Grid container spacing={3}>
-              {gatewayData.length > 0 && (
-                <Grid item xs={12}>
-                  <GatewayChart data={gatewayData} />
-                </Grid>
-              )}
-              {nodeData.length > 0 ? (
-                <Grid item container spacing={4}>
-                  <Grid item container spacing={3}>
-                    <Grid item xs={12}>
-                      <Typography variant="h5" align="center">
-                        Node Health
-                      </Typography>
-                    </Grid>
-                    <NodeVoltage />
-                  </Grid>
-                  <Grid item container spacing={3}>
-                    <Grid item xs={12}>
-                      <Typography variant="h5" align="center">
-                        VWC
-                      </Typography>
-                    </Grid>
-                    <VolumetricWater tdrData={tdrData} />
-                  </Grid>
-                  <Grid item container spacing={3}>
-                    <Grid item xs={12}>
-                      <Typography variant="h5" align="center">
-                        Soil Temperature
-                      </Typography>
-                    </Grid>
-                    <SoilTemp tdrData={tdrData} />
-                  </Grid>
-                  <Grid item container spacing={3}>
-                    <Grid item xs={12}>
-                      <Typography variant="h5" align="center">
-                        Litterbag Temperature
-                      </Typography>
-                    </Grid>
-                    <TempByLbs />
-                  </Grid>
-                </Grid>
-              ) : (
-                "Node data unavailable"
-              )}
-
-              <Grid item xs={12} container>
-                {/* <RenderNodeSerialChips
-                  serials={serials}
-                  activeSerial={activeSerial}
-                  setActiveSerial={setActiveSerial}
-                /> */}
+              <Grid item>
+                <Box sx={{ width: '100%', typography: 'body1' }}>
+                    <TabContext value={value}>
+                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                        <TabList onChange={handleChange} aria-label="lab API tabs example">
+                        <Tab label="Gateway and Node" value="1" />
+                        <Tab label="VWC" value="2" />
+                        <Tab label="Soil and Litterbag Temp" value="3" />
+                        </TabList>
+                    </Box>
+                    </TabContext>
+                </Box>
               </Grid>
-              <Grid item xs={12}></Grid>
+              <TabCharts 
+                value={value}
+                handleChange={handleChange}
+                gatewayData={gatewayData}
+                activeCharts={activeCharts}
+                nodeData={nodeData}
+                tdrData={tdrData}
+              />
             </Grid>
           )}
         </Grid>
