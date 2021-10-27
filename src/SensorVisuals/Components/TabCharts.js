@@ -57,7 +57,7 @@ const TabCharts = (props) => {
                         </Grid>
                     </Grid>
                 ) : (
-                    "Node data unavailable"
+                    "VWC data unavailable"
                 )}
             </Grid>
         );
@@ -85,7 +85,7 @@ const TabCharts = (props) => {
                         </Grid>
                     </Grid>
                 ) : (
-                    "Node data unavailable"
+                    "Temperature data unavailable"
                 )}
             </Grid>
         );

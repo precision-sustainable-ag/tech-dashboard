@@ -386,13 +386,13 @@ const VisualsByCode = () => {
               <Grid item>
                 <Box sx={{ width: '100%', typography: 'body1' }}>
                     <TabContext value={value}>
-                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                        <TabList onChange={handleChange} aria-label="lab API tabs example">
-                        <Tab label="Gateway and Node" value="1" />
-                        <Tab label="VWC" value="2" />
-                        <Tab label="Soil and Litterbag Temp" value="3" />
-                        </TabList>
-                    </Box>
+                      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                          <TabList onChange={handleChange} aria-label="lab API tabs example">
+                            <Tab label="Gateway and Node" value="1" />
+                            <Tab label="VWC" value="2" />
+                            <Tab label="Soil and Litterbag Temp" value="3" />
+                          </TabList>
+                      </Box>
                     </TabContext>
                 </Box>
               </Grid>
