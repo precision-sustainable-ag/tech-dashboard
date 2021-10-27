@@ -108,13 +108,18 @@ const FormEditorModal = ( props ) => {
                                 </Grid>     
                             </Grid>                   
                         </Grid> 
-                        <Grid item container spacing={2}>
+                        <Grid item container spacing={1}>
                             <Grid item>
                                 <Error color="error" />
                             </Grid>
                             <Grid item>
-                                <Typography>Error Code: {JSON.stringify(error)}</Typography>
+                                <Typography>See errors below</Typography>
                             </Grid>
+                        </Grid>
+                        <Grid item>
+                            {JSON.parse(error[0]).map((err, index) => {
+                                return <Typography key={index}>{`Error ${index}: ${err}`}</Typography>;
+                            })}
                         </Grid>
                         <Grid item container spacing={2}>
                             <Grid item>
