@@ -20,11 +20,6 @@ import { useAuth0 } from "../../Auth/react-auth0-spa";
 import IssueDialogue from "../../Comments/IssueDialogue";
 import TabCharts from "./TabCharts";
 
-// const NodeVoltage = lazy(() => import("./NodeVoltage"));
-// const SoilTemp = lazy(() => import("./SoilTemp"));
-// const TempByLbs = lazy(() => import("./LitterbagTemp"));
-// const VolumetricWater = lazy(() => import("./VolumetricWater"));
-
 // Helper function
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;

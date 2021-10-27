@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
 import { lazy } from "react";
 import { Grid, Typography} from "@material-ui/core";
-// import { TabList, TabContext } from "@material-ui/lab";
 import PropTypes from "prop-types";
 
 import GatewayChart from "./GatewayChart";
