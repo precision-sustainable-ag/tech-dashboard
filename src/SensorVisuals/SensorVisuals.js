@@ -186,10 +186,11 @@ const SensorVisuals = (props) => {
           }
 
           const recs = groupBy(response, "year");
+          const currentYear = new Date().getFullYear().toString();
 
           const uniqueYears = Object.keys(recs)
             .sort((a, b) => b - a)
-            .map((y, i) => {
+            .map((y) => {
               if (location.state) {
                 if (location.state.year)
                   return {
@@ -199,12 +200,12 @@ const SensorVisuals = (props) => {
                 else
                   return {
                     year: y,
-                    active: i === 0,
+                    active: currentYear === y,
                   };
               } else {
                 return {
                   year: y,
-                  active: i === 0,
+                  active: currentYear === y,
                 };
               }
             });
