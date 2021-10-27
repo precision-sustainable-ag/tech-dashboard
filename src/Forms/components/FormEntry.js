@@ -1,10 +1,11 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Grid, Typography } from "@material-ui/core";
 import docco from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light";
 import dark from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-dark";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
 import PropTypes from "prop-types";
+import { Error } from "@material-ui/icons/";
 
 import FormEditor from "./FormEditor/FormEditor";
 import CreateNewIssue from "./CreateNewIssue";
@@ -48,11 +49,23 @@ const FormEntry = ( props ) => {
           {JSON.stringify(slimRecord, undefined, 2)}
         </SyntaxHighlighter>
       </Grid>
-      <Grid item container spacing={2} direction="column">
+      <Grid item container spacing={1} direction="column">
         {record.errs ? 
-          <Grid item>
-            <Typography>{`Error: ${JSON.stringify(record.errs)}`}</Typography>
-          </Grid> : null
+          <Fragment>
+            <Grid item container spacing={1}>
+              <Grid item>
+                <Error color="error" />
+              </Grid>
+              <Grid item>
+                <Typography>See errors below</Typography>
+              </Grid>
+            </Grid>
+            <Grid item>
+              {JSON.parse(record.errs[0]).map((err, index) => {
+                  return <Typography key={index}>{`Error ${index}: ${err}`}</Typography>;
+              })}
+            </Grid>
+          </Fragment> : null
         }
         <Grid item container direction="row" spacing={2}>
           <Grid item>
