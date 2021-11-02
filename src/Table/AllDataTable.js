@@ -290,7 +290,8 @@ const AllDataTable = (props) => {
           data.address === "-999" ||
           data.latlng === "-999" ||
           data.notes === "-999" ||
-          data.state === "-999"
+          data.state === "-999" ||
+          data.protocols_enrolled === "-999"
         ) {
           return false;
         } else return true;
