@@ -118,6 +118,13 @@ const FarmValuesTable = ({
         percent_cellulose: rec.percent_cellulose || "N/A",
         percent_lignin: rec.percent_lignin || "N/A",
       }))
+      .filter((data) => {
+        if (
+          data.protocols_enrolled === "-999"
+        ) {
+          return false;
+        } else return true;
+      })
       .sort(
         (a, b) =>{
           return b.cc_termination_date && a.cc_termination_date ?
@@ -165,19 +172,8 @@ const FarmValuesTable = ({
                       {open ? <Comment /> : <Comment />}
                     </IconButton>
                   </TableCell>
-                  {(index + 1) % 2 === 0 ? (
-                    <>
-                      <TableCell colSpan={2} align="right">
-                        {record.subplot}
-                      </TableCell>
-                    </>
-                  ) : (
-                    <>
-                      <TableCell align="right">{record.code}</TableCell>
-                      <TableCell align="right">{record.subplot}</TableCell>
-                    </>
-                  )}
-
+                  <TableCell align="left">{record.code}</TableCell>
+                  <TableCell align="right">{record.subplot}</TableCell>
                   <TableCell align="center">
                     {record.cc_termination_date ? format(
                       parseISO(record.cc_termination_date),

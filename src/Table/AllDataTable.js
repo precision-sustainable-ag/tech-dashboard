@@ -284,13 +284,7 @@ const AllDataTable = (props) => {
 
       let finalData = modifiedData.filter((data) => {
         if (
-          data.additional_contact === "-999" ||
-          data.county === "-999" ||
-          data.email === "-999" ||
-          data.address === "-999" ||
-          data.latlng === "-999" ||
-          data.notes === "-999" ||
-          data.state === "-999"
+          data.protocols_enrolled === "-999"
         ) {
           return false;
         } else return true;

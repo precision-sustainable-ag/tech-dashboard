@@ -310,11 +310,13 @@ export const tableOptions = (tableDataLength) => ({
 });
 
 //   get unique years, sort by highest to lowest and activate highest year
-export const uniqueYears = (allYears) =>
-  allYears
+export const uniqueYears = (allYears) => {
+  const currentYear = new Date().getFullYear().toString();
+  return allYears
     .filter((year) => year !== undefined)
     .filter((val, index, arr) => arr.indexOf(val) === index)
     .sort((a, b) => b - a)
-    .map((year, index) => {
-      return { active: index === 0 ? true : false, year: year };
-    });
+    .map((year) => {
+      return { active: currentYear === year ? true : false, year: year };
+  });
+};
