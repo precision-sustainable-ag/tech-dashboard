@@ -250,7 +250,7 @@ export const NewSiteInfo = ({
                         variant="outlined"
                         onClick={() => handleDialogOpen(siteInfo)}
                       >
-                        Edit
+                        Open map to edit
                       </Button>
                     </CardActions>
                   </Card>
