@@ -544,6 +544,7 @@ const AllDataTable = (props) => {
               data={tableData}
               title="Contact and Location"
               options={{
+                defaultExpanded: true,
                 padding: "default",
                 exportButton: false,
                 exportFileName: "Contact and Location",
