@@ -34,7 +34,6 @@ const FormEntry = ( props ) => {
   const submittedDate = localTime;
   const uid = record.uid;
   const [modalOpen, setModalOpen] = useState(false);
-  // const [buttonText, setButtonText] = useState("This form cannot be fixed");
   const [removeText, setRemoveText] = useState("This form cannot be fixed");
   const { getTokenSilently } = useAuth0();
 
@@ -44,7 +43,6 @@ const FormEntry = ( props ) => {
   };
 
   const handleResolve = () => {
-    // setButtonText("Edit Form");
     setRemoveText("Removing form...");
     let data = {
         "uid": uid,
