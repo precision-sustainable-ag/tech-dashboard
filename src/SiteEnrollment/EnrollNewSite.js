@@ -1,5 +1,6 @@
 // Dependency Imports
 import React, { useState, useEffect, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import {
   Button,
   Grid,
@@ -48,6 +49,8 @@ const EnrollNewSite = (props) => {
       sites: [],
     },
   });
+  const history = useHistory();
+  
   useEffect(() => {
     setEnrollmentData({
       year: "none",
@@ -115,6 +118,8 @@ const EnrollNewSite = (props) => {
           console.error(e);
         });
     });
+
+    history.push(`/site-information/contact-enrollment`, {});
   };
   useEffect(() => {
     setLoading(true);
@@ -157,7 +162,7 @@ const EnrollNewSite = (props) => {
             error={enrollmentYearError}
             htmlFor="enroll-year"
           >
-            Year
+            Cash Crop Year
           </InputLabel>
           <Select
             fullWidth
