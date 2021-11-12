@@ -353,6 +353,7 @@ export const NewSiteInfo = ({
                 type="number"
                 InputLabelProps={{
                   shrink: true,
+                  pattern: `^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?)$`,
                 }}
                 fullWidth
                 label="Latitude"
@@ -370,6 +371,7 @@ export const NewSiteInfo = ({
                 type="number"
                 InputLabelProps={{
                   shrink: true,
+                  pattern: `^[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$`,
                 }}
                 fullWidth
                 label="Longitude"
