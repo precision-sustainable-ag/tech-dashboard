@@ -74,4 +74,4 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     except Exception:
         error = traceback.format_exc()
         logging.error(error)
-        return func.HttpResponse(error, status_code=200)
+        return func.HttpResponse(error, status_code=400)

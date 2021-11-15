@@ -7,11 +7,14 @@ import os
 import sqlalchemy
 import traceback
 import mysql.connector
+import pymysql
 import json
 
 from ..SharedFunctions import authenticator
 
 import azure.functions as func
+
+pymysql.install_as_MySQLdb()
 
 class SubmitNewEntry:
     def __init__(self, req):
@@ -69,7 +72,7 @@ class SubmitNewEntry:
         self.mysql_con.autocommit = True
         
         # Make mysql connections
-        mysql_engine_string = "mysql+mysqlconnector://{0}:{1}@{2}/{3}".format(mysql_user, mysql_password, mysql_host, mysql_dbname)
+        mysql_engine_string = "mysql://{0}:{1}@{2}/{3}".format(mysql_user, mysql_password, mysql_host, mysql_dbname)
         self.mysql_engine = sqlalchemy.create_engine(mysql_engine_string)
 
         print("connected to mysql live")
