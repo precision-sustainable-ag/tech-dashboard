@@ -7,11 +7,14 @@ import os
 import sqlalchemy
 import traceback
 import mysql.connector
+import pymysql
 import json
 
 from ..SharedFunctions import authenticator
 
 import azure.functions as func
+
+pymysql.install_as_MySQLdb()
 
 class KoboAPI:
     def __init__(self, req):
@@ -52,7 +55,7 @@ class KoboAPI:
         mysql_password = os.environ.get('MYSQL_PASSWORD')
         
         # Make mysql connections
-        mysql_engine_string = "mysql+mysqlconnector://{0}:{1}@{2}/{3}".format(mysql_user, mysql_password, mysql_host, mysql_dbname)
+        mysql_engine_string = "mysql://{0}:{1}@{2}/{3}".format(mysql_user, mysql_password, mysql_host, mysql_dbname)
         self.mysql_engine = sqlalchemy.create_engine(mysql_engine_string)
 
         print("connected to mysql live")
@@ -156,4 +159,4 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     except Exception:
         error = traceback.format_exc()
         logging.error(error)
-        return func.HttpResponse(error, status_code=200)
+        return func.HttpResponse(error, status_code=400)

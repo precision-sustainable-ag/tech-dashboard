@@ -364,6 +364,7 @@ const ExistingGrowersGrid = ({
   setEnrollmentData = () => {},
 }) => {
   const [siteCodesForAProducer, setSiteCodesForAProducer] = useState({});
+
   const fetchSiteCodesFor = (producerId) => {
     let siteCodesPromise = fetchSiteCodesForProducer(producerId);
 
@@ -373,98 +374,103 @@ const ExistingGrowersGrid = ({
       let codes = data.map((sites) => {
         return sites.code;
       });
+      
       setSiteCodesForAProducer({ producerId: producerId, sites: codes });
     });
   };
 
   return allGrowers.length > 0 ? (
-    allGrowers.map((grower, index) => (
-      <Grid item key={`existing-grower-${index}`} sm={6} md={3}>
-        <Card>
-          <CardHeader
-            avatar={<Avatar>{grower.last_name.charAt(0).toUpperCase()}</Avatar>}
-            title={ucFirst(grower.last_name)}
-          />
+    allGrowers.map((grower, index) => {
+      // fetchSiteCodesFor(grower.producer_id);
 
-          <CardContent>
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <Typography variant="body2">Producer ID</Typography>
+      return(
+        <Grid item key={`existing-grower-${index}`} sm={6} md={3}>
+          <Card>
+            <CardHeader
+              avatar={<Avatar>{grower.last_name.charAt(0).toUpperCase()}</Avatar>}
+              title={ucFirst(grower.last_name)}
+            />
+
+            <CardContent>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <Typography variant="body2">Producer ID</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body2">{grower.producer_id}</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body2">Email</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body2">{grower.email}</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body2">Phone</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body2">{grower.phone}</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={() => fetchSiteCodesFor(grower.producer_id)}
+                  >
+                    Show Sites
+                  </Button>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body2" noWrap>
+                    {siteCodesForAProducer.producerId === grower.producer_id
+                      ? siteCodesForAProducer.sites.length > 0
+                        ? siteCodesForAProducer.sites.toString()
+                        : "No Sites"
+                      : ""}
+                  </Typography>
+                </Grid>
               </Grid>
-              <Grid item xs={6}>
-                <Typography variant="body2">{grower.producer_id}</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="body2">Email</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="body2">{grower.email}</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="body2">Phone</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="body2">{grower.phone}</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  onClick={() => fetchSiteCodesFor(grower.producer_id)}
-                >
-                  Show Sites
-                </Button>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="body2" noWrap>
-                  {siteCodesForAProducer.producerId === grower.producer_id
-                    ? siteCodesForAProducer.sites.length > 0
-                      ? siteCodesForAProducer.sites.toString()
-                      : "No Sites"
-                    : ""}
-                </Typography>
-              </Grid>
-            </Grid>
-          </CardContent>
-          <CardActions>
-            <Button
-              size="small"
-              color={
-                enrollmentData.growerInfo.producerId === grower.producer_id
-                  ? "primary"
-                  : "default"
-              }
-              variant="contained"
-              onClick={() => {
-                setEnrollmentData({
-                  ...enrollmentData,
-                  growerInfo: {
-                    producerId: grower.producer_id,
-                    collaborationStatus: grower.collaboration_status
-                      ? grower.collaboration_status
-                      : "University",
-                    phone: grower.phone,
-                    lastName: grower.last_name,
-                    email: grower.email,
-                  },
-                });
-              }}
-              startIcon={
-                enrollmentData.growerInfo.producerId === grower.producer_id ? (
-                  <Check />
-                ) : (
-                  <Save />
-                )
-              }
-            >
-              {enrollmentData.growerInfo.producerId === grower.producer_id
-                ? "Selected"
-                : "Select"}
-            </Button>
-          </CardActions>
-        </Card>
-      </Grid>
-    ))
+            </CardContent>
+            <CardActions>
+              <Button
+                size="small"
+                color={
+                  enrollmentData.growerInfo.producerId === grower.producer_id
+                    ? "primary"
+                    : "default"
+                }
+                variant="contained"
+                onClick={() => {
+                  setEnrollmentData({
+                    ...enrollmentData,
+                    growerInfo: {
+                      producerId: grower.producer_id,
+                      collaborationStatus: grower.collaboration_status
+                        ? grower.collaboration_status
+                        : "University",
+                      phone: grower.phone,
+                      lastName: grower.last_name,
+                      email: grower.email,
+                    },
+                  });
+                }}
+                startIcon={
+                  enrollmentData.growerInfo.producerId === grower.producer_id ? (
+                    <Check />
+                  ) : (
+                    <Save />
+                  )
+                }
+              >
+                {enrollmentData.growerInfo.producerId === grower.producer_id
+                  ? "Selected"
+                  : "Select"}
+              </Button>
+            </CardActions>
+          </Card>
+        </Grid>
+      );
+    })
   ) : growerLastName.length === 0 ? (
     ""
   ) : (

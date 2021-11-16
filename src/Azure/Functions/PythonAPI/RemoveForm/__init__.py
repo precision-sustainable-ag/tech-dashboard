@@ -7,19 +7,15 @@ import os
 import sqlalchemy
 import traceback
 import mysql.connector
-import pymysql
 import json
 
 from ..SharedFunctions import authenticator
 
 import azure.functions as func
 
-pymysql.install_as_MySQLdb()
-
 class SubmitNewEntry:
     def __init__(self, req):
         self.connect_to_shadow_live()
-        self.connect_to_mysql_live()
 
         try:
             req_body = req.get_json()
@@ -27,10 +23,6 @@ class SubmitNewEntry:
             pass
         else:
             self.token = req_body.get('token')
-            self.data = req_body.get('data')
-            self.asset_name = req_body.get('asset_name')
-            self.id = req_body.get('id')
-            self.xform_id_string = req_body.get('xform_id_string')
             self.uid = req_body.get('uid')
             # print(self.uid)
 
@@ -60,34 +52,9 @@ class SubmitNewEntry:
 
         print("connected to shadow live")
 
-    def connect_to_mysql_live(self):
-        mysql_host = os.environ.get('MYSQL_HOST')
-        mysql_dbname = os.environ.get('MYSQL_DBNAME')
-        mysql_user = os.environ.get('MYSQL_USER')
-        mysql_password = os.environ.get('MYSQL_PASSWORD')
-        mysql_ssslmode = os.environ.get('MYSQL_SSLMODE')
-
-        self.mysql_con = mysql.connector.connect(user=mysql_user, database=mysql_dbname, host=mysql_host, password=mysql_password)
-        self.mysql_cur = self.mysql_con.cursor()
-        self.mysql_con.autocommit = True
-        
-        # Make mysql connections
-        mysql_engine_string = "mysql://{0}:{1}@{2}/{3}".format(mysql_user, mysql_password, mysql_host, mysql_dbname)
-        self.mysql_engine = sqlalchemy.create_engine(mysql_engine_string)
-
-        print("connected to mysql live")
-
-    def insert_new_form(self):
-        sql_string = "INSERT INTO kobo (id, asset_name, data, xform_id_string) VALUES (%s, %s, %s, %s)"
-        self.mysql_cur.execute(sql_string, (self.id, self.asset_name, self.data, self.xform_id_string))
-        # self.mysql_cur
-        # self.mysql_con.commit()
-
     def set_resolved(self):
         sql_string = "UPDATE invalid_row_table_pairs SET resolved = 1 WHERE uid = %s"
         self.shadow_cur.execute(sql_string, (self.uid,))
-        # self.mysql_cur
-        # self.mysql_con.commit()
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
@@ -99,7 +66,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         if not authenticated:
             return func.HttpResponse(json.dumps(response), headers={'content-type': 'application/json'}, status_code=400)
             
-        sne.insert_new_form()
         sne.set_resolved()
                 
         return func.HttpResponse(body="Successfully inserted new entry", headers={'content-type': 'application/json'}, status_code=201)

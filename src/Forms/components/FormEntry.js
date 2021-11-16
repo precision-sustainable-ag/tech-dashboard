@@ -1,14 +1,17 @@
-import React, { Fragment } from "react";
-import { Grid, Typography } from "@material-ui/core";
+import React, { Fragment, useState } from "react";
+import { Grid, Typography, Button, Dialog, DialogContent, } from "@material-ui/core";
 import docco from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light";
 import dark from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-dark";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
 import PropTypes from "prop-types";
 import { Error } from "@material-ui/icons/";
+import { useAuth0 } from "../../Auth/react-auth0-spa";
+import { Delete } from "@material-ui/icons";
 
 import FormEditor from "./FormEditor/FormEditor";
 import CreateNewIssue from "./CreateNewIssue";
+import { callAzureFunction } from "../../utils/SharedFunctions";
 
 SyntaxHighlighter.registerLanguage("json", json);
 
@@ -30,6 +33,51 @@ const FormEntry = ( props ) => {
   );
   const submittedDate = localTime;
   const uid = record.uid;
+  const [modalOpen, setModalOpen] = useState(false);
+  const [removeText, setRemoveText] = useState("This form cannot be fixed");
+  const { getTokenSilently } = useAuth0();
+
+  const toggleModalOpen = () => {
+    console.log("toggling modal");
+    setModalOpen(!modalOpen);
+  };
+
+  const handleResolve = () => {
+    setRemoveText("Removing form...");
+    let data = {
+        "uid": uid,
+    };
+    callAzureFunction(data, "RemoveForm", getTokenSilently).then((res) => {
+        toggleModalOpen();
+        setRemoveText("This form cannot be fixed");
+        
+        if (res.response) {
+            if (res.response.status === 201) {
+              setSnackbarData({
+                open: true,
+                text: `Successfully removed form, check back in 5 minutes`,
+                severity: "success",
+              });
+            } else {
+              console.log("Function could not remove form");
+              setSnackbarData({
+                open: true,
+                text: `Could not remove form (error code 0)`,
+                severity: "error",
+              });
+            }
+          } else {
+            console.log("No response from function, likely cors");
+            setSnackbarData({
+              open: true,
+              text: `Could not remove form (error code 1)`,
+              severity: "error",
+            }
+          );
+        }
+      }
+    );
+  };
   
   return (
     <Grid item container xs={12} spacing={1}>
@@ -80,17 +128,78 @@ const FormEntry = ( props ) => {
             />
           </Grid>
           {record.errs ? 
-            <Grid item>
-              <FormEditor 
-                isDarkTheme={isDarkTheme} 
-                slimRecord={slimRecord} 
-                error={record.errs} 
-                formName={formName} 
-                uid={uid}
-              />
-            </Grid> : null
+            <Fragment>
+              <Grid item>
+                <FormEditor 
+                  isDarkTheme={isDarkTheme} 
+                  slimRecord={slimRecord} 
+                  error={record.errs} 
+                  formName={formName} 
+                  uid={uid}
+                />
+              </Grid>
+              <Grid item>
+                <Button 
+                      variant="contained"
+                      color={isDarkTheme ? "primary" : "default"}
+                      aria-label={`All Forms`}
+                      tooltip="All Forms"
+                      size="small"
+                      startIcon={<Delete />}
+                      onClick={toggleModalOpen}
+                  >
+                      {removeText}
+                  </Button>
+              </Grid>
+            </Fragment> : null
           }
         </Grid>
+        {modalOpen &&
+          <Dialog 
+            open={modalOpen}
+            aria-labelledby="form-dialog-title"
+            // fullWidth={true}
+            maxWidth="xl"
+          >
+            <DialogContent>
+              <Grid container spacing={2}>
+                <Grid item>
+                  <Typography variant="h6">
+                    Are you sure you want to delete this form entry?
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <Button 
+                        variant="contained"
+                        color={isDarkTheme ? "primary" : "default"}
+                        aria-label={`All Forms`}
+                        tooltip="All Forms"
+                        size="small"
+                        onClick={handleResolve}
+                    >
+                        Yes
+                    </Button>
+                </Grid>
+                <Grid item>
+                  <Button 
+                      variant="contained"
+                      color={isDarkTheme ? "primary" : "default"}
+                      aria-label={`All Forms`}
+                      tooltip="All Forms"
+                      size="small"
+                      onClick={toggleModalOpen}
+                  >
+                      Cancel
+                  </Button>
+                </Grid>
+                
+                
+                  
+              </Grid>
+                
+            </DialogContent>
+          </Dialog>
+        }
         
       </Grid>
     </Grid>
