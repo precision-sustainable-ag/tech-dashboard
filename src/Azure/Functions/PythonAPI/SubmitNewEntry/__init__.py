@@ -70,10 +70,6 @@ class SubmitNewEntry:
         self.mysql_con = MySQLdb.connect(user=mysql_user, database=mysql_dbname, host=mysql_host, password=mysql_password)
         self.mysql_cur = self.mysql_con.cursor()
         self.mysql_con.autocommit = True
-        
-        # Make mysql connections
-        mysql_engine_string = "mysql://{0}:{1}@{2}/{3}".format(mysql_user, mysql_password, mysql_host, mysql_dbname)
-        self.mysql_engine = sqlalchemy.create_engine(mysql_engine_string)
 
         print("connected to mysql live")
 
