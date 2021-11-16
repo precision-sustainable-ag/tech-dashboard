@@ -67,7 +67,7 @@ class SubmitNewEntry:
         mysql_user = os.environ.get('MYSQL_USER')
         mysql_password = os.environ.get('MYSQL_PASSWORD')
 
-        self.mysql_con = MySQLdb.connect(user=mysql_user, database=mysql_dbname, host=mysql_host, password=mysql_password)
+        self.mysql_con = pymysql.connect(user=mysql_user, database=mysql_dbname, host=mysql_host, password=mysql_password, charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
         self.mysql_cur = self.mysql_con.cursor()
         self.mysql_con.autocommit = True
 
@@ -77,13 +77,13 @@ class SubmitNewEntry:
         sql_string = "INSERT INTO kobo (id, asset_name, data, xform_id_string) VALUES (%s, %s, %s, %s)"
         self.mysql_cur.execute(sql_string, (self.id, self.asset_name, self.data, self.xform_id_string))
         # self.mysql_cur
-        # self.mysql_con.commit()
+        self.mysql_con.commit()
 
     def set_resolved(self):
         sql_string = "UPDATE invalid_row_table_pairs SET resolved = 1 WHERE uid = %s"
         self.shadow_cur.execute(sql_string, (self.uid,))
         # self.mysql_cur
-        # self.mysql_con.commit()
+        self.mysql_con.commit()
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')

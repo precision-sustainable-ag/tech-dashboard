@@ -14,3 +14,4 @@ mysql-connector-python
 six
 python-jose
 pymysql
+mysqlclient
