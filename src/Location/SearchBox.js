@@ -106,15 +106,15 @@ const SearchBox = ({
       }
     },
     fetchGeocode: (results, county, main_text) => {
-      const state = results[0].address_components[4].short_name || "";
+      const stateDetails = results[0].address_components.find((a) => a.types[0] === "administrative_area_level_1");
 
       setSelectedToEditSite({
         ...selectedToEditSite,
-        latitude: results[0].geometry.location.lat(),
-        longitude: results[0].geometry.location.lng(),
-        county: county[0].long_name,
+        latitude: results[0]?.geometry.location.lat(),
+        longitude: results[0]?.geometry.location.lng(),
+        county: county[0]?.long_name,
         address: main_text,
-        state: state,
+        state: stateDetails?.short_name || "",
       });
     },
   };
