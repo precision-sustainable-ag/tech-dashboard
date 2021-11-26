@@ -20,24 +20,21 @@ const StyledMarker = styled.div.attrs((/* props */) => ({ tabIndex: 0 }))`
     padding: 2px;
     background-color: rgba(248, 208, 93, 0.5);
     margin: 0 auto;
-    position: relative;
-    transition: all 0.3s linear;
     box-shadow: 0 0 2px transparent;
     border-radius: 5px;
+    margin-top: -60px;
+    margin-left: -50px;
   }
   &:hover {
     background-color: rgba(248, 208, 93, 1);
     box-shadow: 0 0 2px black;
-
-    z-index: 999;
   }
   &:after {
     border-right: solid 15px transparent;
     border-left: solid 15px transparent;
     border-top: solid 15px #f8d05d;
-    transform: translateX(-50%);
     position: absolute;
-    z-index: -1;
+    transform: translate(-50%, -50%);
     content: "";
     top: 100%;
     left: 50%;
