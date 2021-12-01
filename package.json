@@ -16,7 +16,7 @@
     "axios": "^0.24.0",
     "browserslist": "^4.17.4",
     "clsx": "^1.1.1",
-    "date-fns": "^2.23.0",
+    "date-fns": "^2.27.0",
     "glob-parent": "^6.0.2",
     "google-map-react": "^2.1.10",
     "highcharts": "^9.3.0",
