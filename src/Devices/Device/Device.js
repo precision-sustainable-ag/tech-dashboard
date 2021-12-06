@@ -145,7 +145,6 @@ const DeviceComponent = (props) => {
 
   useEffect(() => {
     // fetch nickname for device
-
     checkIfDeviceHasNickname(deviceId)
       .then((res) => {
         if (res.data.status === "success") {
@@ -184,7 +183,6 @@ const DeviceComponent = (props) => {
   useEffect(() => {
     setUserTimezone(moment.tz.guess);
     if (props.location.state === undefined) {
-      // console.log("undefined !");
       // get data from api
       setDeviceData({ name: "Loading" });
       setIsFetching(true);
@@ -223,9 +221,8 @@ const DeviceComponent = (props) => {
         method: "post",
         url: apiCorsUrl + `/${props.location.state.for}`,
         data: qs.stringify({
-          url: `${APIURL()}/api/1/csr/rdm?deviceid=${
-            props.location.state.id
-          }&withlocation=true&timeend=${timeEnd}`,
+          url: `${APIURL()}/api/1/csr/rdm?deviceid=${props.location.state.id
+            }&withlocation=true&timeend=${timeEnd}`,
         }),
         headers: {
           "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
@@ -249,7 +246,10 @@ const DeviceComponent = (props) => {
           setIsFetching(false);
         });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => {
+      // clean up the previous state before next re-render
+      setMostRecentData({});
+    };
   }, [timeEnd, deviceId, props.location.state]);
 
   const RenderGridListMap = () => {
@@ -434,8 +434,8 @@ const DeviceComponent = (props) => {
       sensorType === "watersensors" && isBase64(jsonData.data)
         ? atob(jsonData.data)
         : isValidJson(jsonData.data)
-        ? JSON.stringify(JSON.parse(jsonData.data), null, 2)
-        : jsonData.data;
+          ? JSON.stringify(JSON.parse(jsonData.data), null, 2)
+          : jsonData.data;
     switch (type) {
       case "dataString":
         return dataStringParsed;
@@ -611,14 +611,12 @@ const DeviceComponent = (props) => {
   let fetchedCount = 0;
   const fetchMoreData = async () => {
     if (loadMoreDataURI) {
-      console.log("Fetching..");
       setFetchMessage("Fetching message " + (pagesLoaded + 1));
       await Axios({
         method: "post",
         url:
           apiCorsUrl +
-          `/${
-            props.location.state ? props.location.state.for : "watersensors"
+          `/${props.location.state ? props.location.state.for : "watersensors"
           }`,
         data: qs.stringify({
           url: `${APIURL()}${loadMoreDataURI}`,
@@ -648,7 +646,6 @@ const DeviceComponent = (props) => {
           setIsFetching(false);
         })
         .catch(() => {
-          console.log(fetchedCount);
           if (fetchedCount < 5) {
             fetchedCount++;
             setFetchMessage(

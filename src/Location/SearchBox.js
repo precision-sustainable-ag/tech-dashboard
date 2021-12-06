@@ -91,7 +91,7 @@ const SearchBox = ({
     setData: ({ results, status }, main_text) => {
       if (status === "OK") {
         // setAddress(results.formatted_address);
-        const county = results[0].address_components.filter(
+        const county = results[0].address_components.find(
           (e) => e.types[0] === "administrative_area_level_2"
         );
 
@@ -112,7 +112,7 @@ const SearchBox = ({
         ...selectedToEditSite,
         latitude: results[0]?.geometry.location.lat(),
         longitude: results[0]?.geometry.location.lng(),
-        county: county[0]?.long_name,
+        county: county?.long_name,
         address: main_text,
         state: stateDetails?.short_name || "",
       });
