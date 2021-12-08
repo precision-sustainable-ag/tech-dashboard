@@ -129,9 +129,7 @@ const DecompBag = () => {
         }
       };
 
-      const bagRecords = await fetchRecords(decompBag_url);
-
-      const allJoined = bagRecords;
+      const allJoined = await fetchRecords(decompBag_url);
 
       const uniq = _.uniqWith(allJoined, _.isEqual);
       console.log(uniq);
