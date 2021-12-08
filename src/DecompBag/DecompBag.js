@@ -32,6 +32,12 @@ const tableHeaderOptions = [
     align: "justify",
   },
   {
+    title: "Pickup #",
+    field: "time",
+    type: "string",
+    align: "justify",
+  },
+  {
     title: "Grower",
     field: "last_name",
     type: "string",
@@ -108,10 +114,7 @@ const DecompBag = () => {
   useEffect(() => {
     const fetchData = async (apiKey) => {
       setLoading(true);
-      const freshBiomass_url = onfarmAPI + `/raw?table=decomp_biomass_fresh`;
-      const dryBiomass_url = onfarmAPI + `/raw?table=decomp_biomass_dry`;
-      const cnBiomass_url = onfarmAPI + `/raw?table=decomp_biomass_cn`;
-      const ashBiomass_url = onfarmAPI + `/raw?table=decomp_biomass_ash`;
+      const decompBag_url = onfarmAPI + `/raw?table=decomp_bag`;
 
       const fetchRecords = async (url) => {
         try {
@@ -126,97 +129,8 @@ const DecompBag = () => {
         }
       };
 
-      const freshRecords = await fetchRecords(freshBiomass_url);
-      const dryRecords = await fetchRecords(dryBiomass_url);
-      const cnRecords = await fetchRecords(cnBiomass_url);
-      const ashRecords = await fetchRecords(ashBiomass_url);
+      const allJoined = await fetchRecords(decompBag_url);
 
-      const leftJoin = (objArr1, objArr2, key1, key2, key3) =>
-        objArr1.map((obj1) => ({
-          ...objArr2.find(
-            (obj2) =>
-              obj1[key1] === obj2[key1] &&
-              obj1[key2] === obj2[key2] &&
-              obj1[key3] === obj2[key3]
-          ),
-          ...obj1,
-        }));
-
-      const freshDryJoined = leftJoin(
-        freshRecords,
-        dryRecords,
-        "code",
-        "subplot",
-        "subsample"
-      );
-      const cnAshJoined = leftJoin(
-        cnRecords,
-        ashRecords,
-        "code",
-        "subplot",
-        "subsample"
-      );
-      const allJoined = leftJoin(
-        freshDryJoined,
-        cnAshJoined,
-        "code",
-        "subplot",
-        "subsample"
-      );
-
-      //   const freshDryJoined = freshRecords.map(function (e) {
-      //     return Object.assign(
-      //       {},
-      //       e,
-      //       dryRecords.reduce(function (acc, val) {
-      //         if (
-      //           val.code === e.code &&
-      //           val.subplot === e.subplot &&
-      //           val.subsample === e.subsample
-      //         ) {
-      //           return val;
-      //         } else {
-      //           return acc;
-      //         }
-      //       }, {})
-      //     );
-      //   });
-
-      //   const cnAshJoined = cnRecords.map(function (e) {
-      //     return Object.assign(
-      //       {},
-      //       e,
-      //       ashRecords.reduce(function (acc, val) {
-      //         if (
-      //           val.code === e.code &&
-      //           val.subplot === e.subplot &&
-      //           val.subsample === e.subsample
-      //         ) {
-      //           return val;
-      //         } else {
-      //           return acc;
-      //         }
-      //       }, {})
-      //     );
-      //   });
-
-      //   const allJoined = freshDryJoined.map(function (e) {
-      //     return Object.assign(
-      //       {},
-      //       e,
-      //       cnAshJoined.reduce(function (acc, val) {
-      //         if (
-      //           val.code === e.code &&
-      //           val.subplot === e.subplot &&
-      //           val.subsample === e.subsample
-      //         ) {
-      //           return val;
-      //         } else {
-      //           return acc;
-      //         }
-      //       }, {})
-      //     );
-      //   });
       const uniq = _.uniqWith(allJoined, _.isEqual);
       console.log(uniq);
       setData(uniq);
