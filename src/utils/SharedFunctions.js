@@ -321,6 +321,5 @@ export const uniqueYears = (allYears) => {
 };
 
 export const updateProducerInformation = async (data, getTokenSilently) => {
-  console.log(data);
   return callAzureFunction(data, "UpdateProducer", getTokenSilently);
 };
