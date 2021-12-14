@@ -130,7 +130,6 @@ export const callAzureFunction = async (data, endpoint, getTokenSilently) => {
   let token = await getTokenSilently({
     audience: `https://precision-sustaibale-ag/tech-dashboard`,
   });
-
   data = { ...data, token: token };
 
   const options = {
@@ -319,4 +318,9 @@ export const uniqueYears = (allYears) => {
     .map((year) => {
       return { active: currentYear === year ? true : false, year: year };
   });
+};
+
+export const updateProducerInformation = async (data, getTokenSilently) => {
+  console.log(data);
+  return callAzureFunction(data, "UpdateProducer", getTokenSilently);
 };

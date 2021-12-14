@@ -152,6 +152,7 @@ const EnrollNewSite = (props) => {
       {/* {mediumUpScreen ? ( */}
 
       <Grid container spacing={3} alignItems="center">
+        {!props.editSite && <>
         <Grid item xs={12}>
           <Typography variant="h4">Basic Information</Typography>
         </Grid>
@@ -238,7 +239,7 @@ const EnrollNewSite = (props) => {
         ) : (
           ""
         )}
-
+        </>}
         {/* Grower Information  */}
         {enrollmentData.affiliation === "none" ||
         enrollmentData.affiliation === "" ||
@@ -248,8 +249,25 @@ const EnrollNewSite = (props) => {
           <GrowerInformation
             enrollmentData={enrollmentData}
             setEnrollmentData={setEnrollmentData}
+            editSite={props.editSite}
+            code={props.code}
+            producerId={props.producerId}
+            year={props.year}
           />
         )}
+
+        {
+          props.editSite &&
+          <GrowerInformation
+            enrollmentData={enrollmentData}
+            setEnrollmentData={setEnrollmentData}
+            editSite={props.editSite}
+            code={props.code}
+            producerId={props.producerId}
+            year={props.year}
+            closeModal={props.closeModal}
+          />
+        }
 
         {enrollmentData.growerInfo.sites &&
         enrollmentData.growerInfo.sites.length > 0 ? (
@@ -279,6 +297,11 @@ EnrollNewSite.propTypes = {
   setEnrollNewSite: PropTypes.func,
   setSaveData: PropTypes.func,
   enrollNewSite: PropTypes.any,
+  editSite: PropTypes.bool,
+  code: PropTypes.string,
+  producerId: PropTypes.string,
+  year: PropTypes.any,
+  closeModal: PropTypes.func
 };
 
 // Helper functions

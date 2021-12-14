@@ -1,4 +1,3 @@
-// Dependency Imports
 import {
   Avatar,
   Button,
@@ -22,18 +21,21 @@ import PropTypes from "prop-types";
 import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
 import { fetchGrowerByLastName, ucFirst } from "../utils/constants";
 import { NewSiteInfo } from "./NewSiteInfo";
+import { updateProducerInformation } from "../utils/SharedFunctions";
+import { useAuth0 } from "../Auth/react-auth0-spa";
 
 //Global Vars
 const qs = require("qs");
 
 // Default function
-const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {
+const GrowerInformation = ({ enrollmentData, setEnrollmentData, editSite, code, producerId, year, closeModal }) => {
   const [growerType, setGrowerType] = useState("existing");
   const [growerLastNameSearch, setGrowerLastNameSearch] = useState("");
   const [allGrowers, setAllGrowers] = useState([]);
   const [, setSiteCodes] = useState([]);
   const [showSitesInfo, setShowSitesInfo] = useState(false);
   const [savingProducerId, setSavingProducerId] = useState(false);
+  const { getTokenSilently } = useAuth0();
 
   const handleNewGrowerInfo = () => {
     if (window.confirm("Are you sure you want to save this grower?")) {
@@ -303,7 +305,7 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {
                 <MenuItem value="Partner">Partner</MenuItem>
               </Select>
             </Grid> */}
-            <Grid item xs={12}>
+            {!editSite && <Grid item xs={12}>
               <Button
                 size="small"
                 variant="outlined"
@@ -312,7 +314,7 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {
                 <Save fontSize="small" />
                 &nbsp;Save
               </Button>
-            </Grid>
+            </Grid>}
           </Grid>
         )}
       </Grid>
@@ -320,7 +322,7 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {
         {/* <SiteSelection /> */}
         <Grid container justifyContent="center" alignItems="center">
           <Grid item>
-            <Button
+            {!editSite ? <Button
               variant="contained"
               color="primary"
               onClick={() => {
@@ -336,7 +338,11 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData }) => {
               }
             >
               {savingProducerId ? "Saving New Grower" : "Next Step"}
+            </Button> :
+            <Button onClick={() => {updateSite(enrollmentData, getTokenSilently, code, producerId, year); closeModal();}} color="primary" variant="contained">
+              Update
             </Button>
+            }
           </Grid>
         </Grid>
       </Grid>
@@ -544,9 +550,61 @@ const saveNewGrowerAndFetchProducerId = async (enrollmentData = {}) => {
   });
 };
 
+const updateGrowerInfo = async (enrollmentData = {}) => {
+  let dataObject = {
+    firstName: enrollmentData.growerInfo.firstName,
+    lastName: enrollmentData.growerInfo.lastName,
+    email: enrollmentData.growerInfo.email,
+    phone: enrollmentData.growerInfo.phone
+      .split("(")
+      .join("")
+      .split(")")
+      .join("")
+      .split(" ")
+      .join("")
+      .split("-")
+      .join(""),
+    year: enrollmentData.year,
+    affiliation: enrollmentData.affiliation,
+    collaborationStatus: enrollmentData.growerInfo.collaborationStatus,
+  };
+  let dataString = qs.stringify(dataObject);
+  return await Axios.post(`${apiURL}/api/growers/add`, dataString, {
+    auth: {
+      username: apiUsername,
+      password: apiPassword,
+    },
+    headers: {
+      "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+    },
+  });
+};
+
+  const updateSite = (enrollmentData = {}, getTokenSilently, code, producerId, year) => {
+          let newGrowerPromise = updateGrowerInfo({...enrollmentData, year: year, affiliation: code});
+          newGrowerPromise.then((resp) => {
+            let newProducerId = resp.data.producerId;
+            let data = {
+              code: code,
+              producer_id: newProducerId || producerId
+            };
+            let apiStatus = updateProducerInformation(data, getTokenSilently);
+            apiStatus.then(() => {
+              alert('Updated info successfully');
+            }).catch(() => {
+              alert('Oops! Could not update grower information.');
+            });
+          });
+  };
+
 GrowerInformation.propTypes = {
   enrollmentData: PropTypes.object,
   setEnrollmentData: PropTypes.func,
+  editSite: PropTypes.bool,
+  producerId: PropTypes.string,
+  code: PropTypes.string,
+  year: PropTypes.any,
+  closeModal: PropTypes.func
 };
 
 ExistingGrowersGrid.propTypes = {
