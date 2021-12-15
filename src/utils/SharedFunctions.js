@@ -319,7 +319,3 @@ export const uniqueYears = (allYears) => {
       return { active: currentYear === year ? true : false, year: year };
   });
 };
-
-export const updateProducerInformation = async (data, getTokenSilently) => {
-  return callAzureFunction(data, "UpdateProducer", getTokenSilently);
-};

@@ -10,6 +10,7 @@ import {
   Radio,
   TextField,
   Typography,
+  Snackbar
 } from "@material-ui/core";
 import { Check, Save } from "@material-ui/icons";
 import Axios from "axios";
@@ -21,8 +22,14 @@ import PropTypes from "prop-types";
 import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
 import { fetchGrowerByLastName, ucFirst } from "../utils/constants";
 import { NewSiteInfo } from "./NewSiteInfo";
-import { updateProducerInformation } from "../utils/SharedFunctions";
+import { callAzureFunction } from "../utils/SharedFunctions";
 import { useAuth0 } from "../Auth/react-auth0-spa";
+import MuiAlert from "@material-ui/lab/Alert";
+
+// Helper function
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 //Global Vars
 const qs = require("qs");
@@ -35,7 +42,14 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData, editSite, code, 
   const [, setSiteCodes] = useState([]);
   const [showSitesInfo, setShowSitesInfo] = useState(false);
   const [savingProducerId, setSavingProducerId] = useState(false);
+  const [snackbarData, setSnackbarData] = useState({
+    open: false,
+    text: "",
+    severity: "success",
+  });
   const { getTokenSilently } = useAuth0();
+
+  // console.log(snackbarData);
 
   const handleNewGrowerInfo = () => {
     if (window.confirm("Are you sure you want to save this grower?")) {
@@ -116,7 +130,19 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData, editSite, code, 
       <Grid item sm={12}>
         <Typography variant="h4">Grower Information</Typography>
       </Grid>
-
+      <Snackbar
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "center",
+            }}
+            open={snackbarData.open}
+            autoHideDuration={10000}
+            onClose={() =>
+              setSnackbarData({ ...snackbarData, open: !snackbarData.open })
+            }
+          >
+            <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
+          </Snackbar>
       <Grid item sm={12}>
         <Grid
           container
@@ -339,7 +365,27 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData, editSite, code, 
             >
               {savingProducerId ? "Saving New Grower" : "Next Step"}
             </Button> :
-            <Button onClick={() => {updateSite(enrollmentData, getTokenSilently, code, producerId, year); closeModal();}} color="primary" variant="contained">
+            <Button onClick={() => {
+                let id = growerType === "existing" ? enrollmentData.growerInfo.producerId : producerId;
+                let updateData = updateSite(enrollmentData, getTokenSilently, code, id, year, growerType); 
+                updateData.then(() => {
+                  setSnackbarData({
+                    open: true,
+                    text: `Updated grower successfully`,
+                    severity: "success",
+                  });
+                }).catch(() => {
+                  setSnackbarData({
+                    open: true,
+                    text: `Oops! Could not update grower information.`,
+                    severity: "error",
+                  });
+                }).finally(() => {
+                  setTimeout(() => closeModal(), 2500);
+                });
+              }} 
+              color="primary" 
+              variant="contained">
               Update
             </Button>
             }
@@ -580,21 +626,35 @@ const updateGrowerInfo = async (enrollmentData = {}) => {
   });
 };
 
-  const updateSite = (enrollmentData = {}, getTokenSilently, code, producerId, year) => {
-          let newGrowerPromise = updateGrowerInfo({...enrollmentData, year: year, affiliation: code});
-          newGrowerPromise.then((resp) => {
-            let newProducerId = resp.data.producerId;
-            let data = {
-              code: code,
-              producer_id: newProducerId || producerId
-            };
-            let apiStatus = updateProducerInformation(data, getTokenSilently);
-            apiStatus.then(() => {
-              alert('Updated info successfully');
-            }).catch(() => {
-              alert('Oops! Could not update grower information.');
-            });
-          });
+  const updateSite = async (enrollmentData = {}, getTokenSilently, code, producerId, year, growerType) => {
+    if (growerType !== "existing") {
+      let newGrowerPromise = updateGrowerInfo({...enrollmentData, year: year, affiliation: code});
+      newGrowerPromise.then((resp) => {
+        let newProducerId = resp.data.producerId;
+        let data = {
+          code: code,
+          producer_id: newProducerId
+        };
+        let apiStatus = callAzureFunction(data, "UpdateProducer", getTokenSilently);
+        apiStatus.then(() => {
+          return "success";
+        }).catch(() => {
+          return "error";
+        });
+      });
+    } else {
+      let data = {
+        code: code,
+        producer_id: producerId
+      };
+      let apiStatus = callAzureFunction(data, "UpdateProducer", getTokenSilently);
+      apiStatus.then(() => {
+        return "success";
+      }).catch(() => {
+        return "error";
+      });
+    }
+          
   };
 
 GrowerInformation.propTypes = {
