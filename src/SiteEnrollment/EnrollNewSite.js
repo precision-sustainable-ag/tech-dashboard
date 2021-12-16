@@ -265,6 +265,7 @@ const EnrollNewSite = (props) => {
             code={props.code}
             producerId={props.producerId}
             year={props.year}
+            affiliation={props.affiliation}
             closeModal={props.closeModal}
           />
         }
@@ -301,6 +302,7 @@ EnrollNewSite.propTypes = {
   code: PropTypes.string,
   producerId: PropTypes.string,
   year: PropTypes.any,
+  affiliation: PropTypes.string,
   closeModal: PropTypes.func
 };
 

@@ -59,7 +59,7 @@ const ReassignDataModal = (props) => {
         </Grid>
       </DialogTitle>
       <DialogContent>
-        <EnrollNewSite editSite={true} code={props.data.code} producerId={props.data.producer_id} year={props.data.year} closeModal={props.handleEditModalClose}/>
+        <EnrollNewSite editSite={true} code={props.data.code} producerId={props.data.producer_id} year={props.data.year} affiliation={props.data.affiliation} closeModal={props.handleEditModalClose}/>
       </DialogContent>
       <DialogActions>
         <Button

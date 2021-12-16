@@ -35,7 +35,7 @@ function Alert(props) {
 const qs = require("qs");
 
 // Default function
-const GrowerInformation = ({ enrollmentData, setEnrollmentData, editSite, code, producerId, year, closeModal }) => {
+const GrowerInformation = ({ enrollmentData, setEnrollmentData, editSite, code, producerId, year, affiliation, closeModal }) => {
   const [growerType, setGrowerType] = useState("existing");
   const [growerLastNameSearch, setGrowerLastNameSearch] = useState("");
   const [allGrowers, setAllGrowers] = useState([]);
@@ -48,8 +48,6 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData, editSite, code, 
     severity: "success",
   });
   const { getTokenSilently } = useAuth0();
-
-  // console.log(snackbarData);
 
   const handleNewGrowerInfo = () => {
     if (window.confirm("Are you sure you want to save this grower?")) {
@@ -367,7 +365,7 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData, editSite, code, 
             </Button> :
             <Button onClick={() => {
                 let id = growerType === "existing" ? enrollmentData.growerInfo.producerId : producerId;
-                let updateData = updateSite(enrollmentData, getTokenSilently, code, id, year, growerType); 
+                let updateData = updateSite(enrollmentData, getTokenSilently, code, id, year, affiliation, growerType); 
                 updateData.then(() => {
                   setSnackbarData({
                     open: true,
@@ -626,9 +624,9 @@ const updateGrowerInfo = async (enrollmentData = {}) => {
   });
 };
 
-  const updateSite = async (enrollmentData = {}, getTokenSilently, code, producerId, year, growerType) => {
+  const updateSite = async (enrollmentData = {}, getTokenSilently, code, producerId, year, affiliation, growerType) => {
     if (growerType !== "existing") {
-      let newGrowerPromise = updateGrowerInfo({...enrollmentData, year: year, affiliation: code});
+      let newGrowerPromise = updateGrowerInfo({...enrollmentData, year: year, affiliation: affiliation});
       newGrowerPromise.then((resp) => {
         let newProducerId = resp.data.producerId;
         let data = {
@@ -664,6 +662,7 @@ GrowerInformation.propTypes = {
   producerId: PropTypes.string,
   code: PropTypes.string,
   year: PropTypes.any,
+  affiliation: PropTypes.string,
   closeModal: PropTypes.func
 };
 
