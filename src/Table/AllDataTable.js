@@ -20,6 +20,7 @@ import { bannedRoles } from "../utils/constants";
 import EditDataModal from "./EditDataModal";
 import UnenrollSiteModal from "./UnenrollSiteModal";
 import NewIssueModal from "./NewIssueModal";
+import ReassignDataModal from './ReassignDataModal';
 import { BannedRoleMessage } from "../utils/CustomComponents";
 import { onfarmAPI } from "../utils/api_secret";
 import { UserIsEditor } from "../utils/SharedFunctions";
@@ -138,6 +139,9 @@ const AllDataTable = (props) => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editModalData, setEditModalData] = useState({});
 
+  const [reassignSiteModalOpen, setReassignSiteModalOpen] = useState(false);
+  const [reassignSiteModalData, setReassignSiteModalData] = useState({});
+
   const [unenrollRowData, setUnenrollRowData] = useState({});
   const [unenrollOpen, setUnenrollOpen] = useState(false);
 
@@ -151,6 +155,9 @@ const AllDataTable = (props) => {
   };
   const handleUnenrollClose = () => {
     setUnenrollOpen(!unenrollOpen);
+  };
+  const handleReassignSiteModalClose = () => {
+    setReassignSiteModalOpen(!reassignSiteModalOpen);
   };
 
   // fetch height from useWindowDimensions hook
@@ -332,6 +339,25 @@ const AllDataTable = (props) => {
               }}
             >
               Edit Data
+            </Button>
+          </Tooltip>
+        </Grid>
+        <Grid item>
+          <Tooltip title="Reassign a new site">
+            <Button
+              size="small"
+              variant="contained"
+              startIcon={<Edit />}
+              color={props.isDarkTheme ? "primary" : "default"}
+              disabled={disabled}
+              onClick={() => {
+                if (!disabled) {
+                  setReassignSiteModalOpen(true);
+                  setReassignSiteModalData(rowData);
+                }
+              }}
+            >
+              Reassign Site
             </Button>
           </Tooltip>
         </Grid>
@@ -583,6 +609,11 @@ const AllDataTable = (props) => {
           edit={setEditModalData}
           valuesEdited={valuesEdited}
           setValuesEdited={setValuesEdited}
+        />
+        <ReassignDataModal
+          open={reassignSiteModalOpen}
+          handleEditModalClose={handleReassignSiteModalClose}
+          data={reassignSiteModalData}
         />
         <UnenrollSiteModal
           open={unenrollOpen}
