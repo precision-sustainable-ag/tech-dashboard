@@ -4,6 +4,8 @@ import { onfarmAPI } from "../utils/api_secret";
 import { Context } from "../Store/Store";
 import { CustomLoader } from "../utils/CustomComponents";
 import MaterialTable from "material-table";
+import Typography from "@material-ui/core/Typography";
+
 const _ = require("lodash");
 
 const tableHeaderOptions = [
@@ -152,7 +154,32 @@ const DecompBag = () => {
           <MaterialTable
             columns={tableHeaderOptions}
             data={data}
-            title="Decomp Bags"
+            title={
+              <div>
+                <div>
+                  <Typography
+                    variant={"h6"}
+                    style={{
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis"
+                    }}
+                    >{"Decomp Bags"}
+                  </Typography>
+                </div>
+                <div>
+                  <Typography
+                    variant={"caption"}
+                    style={{
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis"
+                    }}
+                    >{"All weights in grams"}
+                  </Typography>
+                </div>
+              </div>
+            }
             options={{
               padding: "default",
               exportButton: false,
