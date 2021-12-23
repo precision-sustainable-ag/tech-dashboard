@@ -17,7 +17,9 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  Snackbar
 } from "@material-ui/core";
+import MuiAlert from "@material-ui/lab/Alert";
 // import { Close } from "@material-ui/icons";
 import Axios from "axios";
 import React, { useState, useEffect } from "react";
@@ -27,6 +29,11 @@ import PropTypes from "prop-types";
 import Location from "../Location/Location";
 import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
 import "./newSiteInfo.scss";
+
+// Helper function
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 // Default function
 export const NewSiteInfo = ({
@@ -96,6 +103,11 @@ export const NewSiteInfo = ({
     additionalContact: "",
     notes: "",
   });
+  const [snackbarData, setSnackbarData] = useState({
+    open: false,
+    text: "",
+    severity: "success",
+  });
   const handleDialogClose = () => {
     setModifyNewSiteDetailsModal(!modifyNewSiteDetailsModal);
   };
@@ -104,38 +116,73 @@ export const NewSiteInfo = ({
     setModifyNewSiteDetailsModal(true);
   };
 
+  const checkLatitude = (arg) => {
+    return (/^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,6})?))$/).test(arg) ? true : false;
+  };
+
+  const checkLongitude = (arg) => {
+    return (/^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,6})?))$/).test(arg) ? true : false;
+  };
+
+  const validateData = () => {
+    if (checkLatitude(selectedToEditSite.latitude) && checkLongitude(selectedToEditSite.longitude)) {
+      return true;
+    } else {
+      if (!checkLatitude(selectedToEditSite.latitude) && !checkLongitude(selectedToEditSite.longitude)) {
+        setSnackbarData({
+          open: true,
+          text: `Wrong value for latitude and longitude, should be between -90 to 90 and -180 to 180 respectively`,
+          severity: "error",
+        });
+      }
+      else if (!checkLatitude(selectedToEditSite.latitude)) {
+        setSnackbarData({
+          open: true,
+          text: `Wrong value for latitude, should be between -90 to 90`,
+          severity: "error",
+        });
+      } else if (!checkLongitude(selectedToEditSite.longitude)) {
+        setSnackbarData({
+          open: true,
+          text: `Wrong value for longitude, should be between -180 to 180`,
+          severity: "error",
+        });
+      } 
+      return false;
+    }
+  };
+
   const handleUpdateNewSite = () => {
-    // console.log(enrollmentData.growerInfo.sites);
-    // console.log(selectedToEditSite);
     // let editableSite = enrollmentData.growerInfo.sites.filter(
     //   (sites) => {
     //     return sites.code === selectedToEditSite.code;
     //   }
     // );
-    // console.log(editableSite);
     //   get site with code not relevant to the modal (selectedtoeditsite)
-    let allSitesExceptCurrent = enrollmentData.growerInfo.sites.filter(
-      (sites) => {
-        return sites.code !== selectedToEditSite.code;
-      }
-    );
-    //   append new data
-    allSitesExceptCurrent.push(selectedToEditSite);
+    if (selectedToEditSite?.latitude && selectedToEditSite?.longitude && validateData()) {
+      let allSitesExceptCurrent = enrollmentData.growerInfo.sites.filter(
+        (sites) => {
+          return sites.code !== selectedToEditSite.code;
+        }
+      );
+      //   append new data
+      allSitesExceptCurrent.push(selectedToEditSite);
 
-    //   sort Alphabetical
-    // const sortedAllSitesExceptCurrent = allSitesExceptCurrent.sort(
-    //   (a, b) => b.code < a.code
-    // );
-    setEnrollmentData({
-      ...enrollmentData,
-      growerInfo: {
-        ...enrollmentData.growerInfo,
-        sites: allSitesExceptCurrent,
-      },
-    });
+      //   sort Alphabetical
+      // const sortedAllSitesExceptCurrent = allSitesExceptCurrent.sort(
+      //   (a, b) => b.code < a.code
+      // );
+      setEnrollmentData({
+        ...enrollmentData,
+        growerInfo: {
+          ...enrollmentData.growerInfo,
+          sites: allSitesExceptCurrent,
+        },
+      });
 
-    //   close the modal
-    setModifyNewSiteDetailsModal(!modifyNewSiteDetailsModal);
+      //   close the modal
+      setModifyNewSiteDetailsModal(!modifyNewSiteDetailsModal);
+    }
   };
 
   return (
@@ -299,6 +346,19 @@ export const NewSiteInfo = ({
           </Grid>
         </DialogTitle>
         <DialogContent>
+          <Snackbar
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "center",
+            }}
+            open={snackbarData.open}
+            autoHideDuration={10000}
+            onClose={() =>
+              setSnackbarData({ ...snackbarData, open: !snackbarData.open })
+            }
+          >
+            <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
+          </Snackbar>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Location
@@ -352,36 +412,36 @@ export const NewSiteInfo = ({
             </Grid>
             <Grid item xs={12}>
               <TextField
-                type="number"
-                InputLabelProps={{
-                  shrink: true,
-                  pattern: `^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?)$`,
-                }}
+                type="text"
+                // InputLabelProps={{
+                //   shrink: true,
+                //   pattern: `^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?)$`,
+                // }}
                 fullWidth
                 label="Latitude"
-                value={selectedToEditSite.latitude}
+                defaultValue={selectedToEditSite.latitude || ""}
                 onChange={(e) =>
                   setSelectedToEditSite({
                     ...selectedToEditSite,
-                    latitude: e.target.valueAsNumber,
+                    latitude: parseFloat(e.target.value),
                   })
                 }
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                type="number"
-                InputLabelProps={{
-                  shrink: true,
-                  pattern: `^[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$`,
-                }}
+                type="text"
+                // InputLabelProps={{
+                //   shrink: true,
+                //   pattern: `^[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$`,
+                // }}
                 fullWidth
                 label="Longitude"
-                value={selectedToEditSite.longitude}
+                defaultValue={selectedToEditSite.longitude || ""}
                 onChange={(e) =>
                   setSelectedToEditSite({
                     ...selectedToEditSite,
-                    longitude: e.target.valueAsNumber,
+                    longitude: parseFloat(e.target.value),
                   })
                 }
               />

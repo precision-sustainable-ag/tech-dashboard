@@ -13,8 +13,10 @@ import {
   FormControl,
   FormControlLabel,
   Checkbox,
-  FormLabel,
+  Snackbar,
+  FormLabel
 } from "@material-ui/core";
+import MuiAlert from "@material-ui/lab/Alert";
 import Axios from "axios";
 
 // Local Imports
@@ -24,6 +26,11 @@ import PropTypes from "prop-types";
 
 //Global Vars
 const qs = require("qs");
+
+// Helper function
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 // Styles
 // County is not being passed on to the server as that would need API modification, and Rick is developing a new API
@@ -53,6 +60,11 @@ const EditDataModal = (props) => {
   const [locationMsg, setLocationMsg] = useState("");
   const [locationErr, setLocationErr] = useState(false);
   const [showMap, setShowMap] = useState(false);
+  const [snackbarData, setSnackbarData] = useState({
+    open: false,
+    text: "",
+    severity: "success",
+  });
   //   const [currentLatLng, setCurrentLatLng] = useState(null);
 
   useEffect(() => {
@@ -118,28 +130,52 @@ const EditDataModal = (props) => {
   //   setLocationErr(false);
   // };
 
-  const checkLatLng = () => {
-    // let testcase = new RegExp("^-?([1-8]?[1-9]|[1-9]0).{1}d{1,6}");
-    // TODO:Check LatLng pattern?
-    return true;
+  const checkLatitude = (arg) => {
+    return (/^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,6})?))$/).test(arg) ? true : false;
   };
+
+  const checkLongitude = (arg) => {
+    return (/^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,6})?))$/).test(arg) ? true : false;
+  };
+
   const validateData = () => {
-    if (checkLatLng) {
+    if (checkLatitude(newData.latitude) && checkLongitude(newData.longitude)) {
       //   call update api
       postModalUpdate(newData)
         .then(() => {
           props.handleEditModalClose();
           props.setValuesEdited(!props.valuesEdited);
           // console.log(res);
-        })
-        .then(() => {
-          setTimeout(window.location.reload(), 4000);
         });
+        // .then(() => {
+        //   setTimeout(window.location.reload(), 4000);
+        // });
     } else {
       setLocationErr(true);
-      setLocationMsg("Incorrect format");
+      if (!checkLatitude(newData.latitude) && !checkLongitude(newData.longitude)) {
+        setSnackbarData({
+          open: true,
+          text: `Wrong value for latitude and longitude, should be between -90 to 90 and -180 to 180 respectively`,
+          severity: "error",
+        });
+      }
+      else if (!checkLatitude(newData.latitude)) {
+        setSnackbarData({
+          open: true,
+          text: `Wrong value for latitude, should be between -90 to 90`,
+          severity: "error",
+        });
+      } else if (!checkLongitude(newData.longitude)) {
+        setSnackbarData({
+          open: true,
+          text: `Wrong value for longitude, should be between -180 to 180`,
+          severity: "error",
+        });
+      } 
+      setLocationMsg("Incorrect format of latitude or longitude");
     }
   };
+
   const handleMaxWidthChange = (event) => {
     setMaxWidth(event.target.value);
   };
@@ -254,6 +290,19 @@ const EditDataModal = (props) => {
       </DialogTitle>
       <DialogContent>
         <Grid container>
+          <Snackbar
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "center",
+            }}
+            open={snackbarData.open}
+            autoHideDuration={10000}
+            onClose={() =>
+              setSnackbarData({ ...snackbarData, open: !snackbarData.open })
+            }
+          >
+            <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
+          </Snackbar>
           <Grid item xs>
             <FormControl component="fieldset">
               <FormLabel component="legend">
@@ -308,7 +357,7 @@ const EditDataModal = (props) => {
               label="County"
               margin="dense"
               name="county"
-              value={
+              defaultValue={
                 newData.county
                   ? newData.county
                   : props.data.county
@@ -327,7 +376,7 @@ const EditDataModal = (props) => {
               label="State"
               margin="dense"
               name="state"
-              value={
+              defaultValue={
                 newData.state
                   ? newData.state
                   : props.data.state
@@ -347,15 +396,15 @@ const EditDataModal = (props) => {
               fullWidth
               id="editLat"
               margin="dense"
-              value={newData.latitude ?? ""}
-              type="number"
-              onChange={(e) =>
-                setNewData({
-                  ...newData,
-                  latitude: parseFloat(e.target.value),
-                })
+              defaultValue={newData.latitude ?? ""}
+              type="text"
+              onChange={(e) => 
+                    setNewData({
+                      ...newData,
+                      latitude: parseFloat(e.target.value),
+                    })
               }
-              inputProps={{ step: 0.0001 }}
+              // inputProps={{ step: 0.0001 }}
             />
           </Grid>
           <Grid item sm={12} lg={12}>
@@ -364,15 +413,15 @@ const EditDataModal = (props) => {
               fullWidth
               id="editLon"
               margin="dense"
-              value={newData.longitude ?? ""}
-              type="number"
-              onChange={(e) =>
+              defaultValue={newData.longitude ?? ""}
+              type="text"
+              onChange={(e) => 
                 setNewData({
                   ...newData,
                   longitude: parseFloat(e.target.value),
                 })
               }
-              inputProps={{ step: 0.0001 }}
+              // inputProps={{ step: 0.0001 }}
             />
           </Grid>
 
@@ -382,7 +431,7 @@ const EditDataModal = (props) => {
               label="Field Address"
               margin="dense"
               name="address"
-              value={
+              defaultValue={
                 newData.address
                   ? newData.address
                   : props.data.address
@@ -405,7 +454,7 @@ const EditDataModal = (props) => {
               multiline
               type="text"
               fullWidth
-              value={
+              defaultValue={
                 newData.notes
                   ? newData.notes
                   : props.data.notes
@@ -420,7 +469,7 @@ const EditDataModal = (props) => {
           <Grid item sm={12} lg={12}>
             <TextField
               id="editAdditionalContact"
-              value={
+              defaultValue={
                 newData.additional_contact
                   ? newData.additional_contact
                   : props.data.additional_contact
@@ -443,7 +492,7 @@ const EditDataModal = (props) => {
               id="editCode"
               margin="dense"
               name="code"
-              value={props.data.code}
+              defaultValue={props.data.code}
               disabled
               label="Code"
               type="text"
@@ -452,7 +501,7 @@ const EditDataModal = (props) => {
           </Grid>
           <Grid item sm={12} lg={12}>
             <TextField
-              value={props.data.year ? props.data.year : ""}
+              defaultValue={props.data.year ? props.data.year : ""}
               margin="dense"
               name="email"
               label="Year"
@@ -464,7 +513,7 @@ const EditDataModal = (props) => {
           <Grid item sm={12} lg={12}>
             <TextField
               id="editEmail"
-              value={props.data.email ? props.data.email : ""}
+              defaultValue={props.data.email ? props.data.email : ""}
               margin="dense"
               name="email"
               label="Email Address"
