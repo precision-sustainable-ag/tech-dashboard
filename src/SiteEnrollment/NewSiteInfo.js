@@ -125,23 +125,23 @@ export const NewSiteInfo = ({
   };
 
   const validateData = () => {
-    if (checkLatitude(selectedToEditSite.latitude) && checkLongitude(selectedToEditSite.longitude)) {
+    if (checkLatitude(Math.ceil(selectedToEditSite.latitude)) && checkLongitude(Math.ceil(selectedToEditSite.longitude))) {
       return true;
     } else {
-      if (!checkLatitude(selectedToEditSite.latitude) && !checkLongitude(selectedToEditSite.longitude)) {
+      if (!checkLatitude(Math.ceil(selectedToEditSite.latitude)) && !checkLongitude(Math.ceil(selectedToEditSite.longitude))) {
         setSnackbarData({
           open: true,
           text: `Wrong value for latitude and longitude, should be between -90 to 90 and -180 to 180 respectively`,
           severity: "error",
         });
       }
-      else if (!checkLatitude(selectedToEditSite.latitude)) {
+      else if (!checkLatitude(Math.ceil(selectedToEditSite.latitude))) {
         setSnackbarData({
           open: true,
           text: `Wrong value for latitude, should be between -90 to 90`,
           severity: "error",
         });
-      } else if (!checkLongitude(selectedToEditSite.longitude)) {
+      } else if (!checkLongitude(Math.ceil(selectedToEditSite.longitude))) {
         setSnackbarData({
           open: true,
           text: `Wrong value for longitude, should be between -180 to 180`,
@@ -505,7 +505,10 @@ export const NewSiteInfo = ({
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={handleUpdateNewSite}
+                    onClick={() => {
+                      console.log('yooooooooooooooooo');
+                      handleUpdateNewSite();
+                    }}
                   >
                     Update
                   </Button>

@@ -139,7 +139,7 @@ const EditDataModal = (props) => {
   };
 
   const validateData = () => {
-    if (checkLatitude(newData.latitude) && checkLongitude(newData.longitude)) {
+    if (checkLatitude(Math.ceil(newData.latitude)) && checkLongitude(Math.ceil(newData.longitude))) {
       //   call update api
       postModalUpdate(newData)
         .then(() => {
@@ -152,20 +152,20 @@ const EditDataModal = (props) => {
         // });
     } else {
       setLocationErr(true);
-      if (!checkLatitude(newData.latitude) && !checkLongitude(newData.longitude)) {
+      if (!checkLatitude(Math.ceil(newData.latitude)) && !checkLongitude(Math.ceil(newData.longitude))) {
         setSnackbarData({
           open: true,
           text: `Wrong value for latitude and longitude, should be between -90 to 90 and -180 to 180 respectively`,
           severity: "error",
         });
       }
-      else if (!checkLatitude(newData.latitude)) {
+      else if (!checkLatitude(Math.ceil(newData.latitude))) {
         setSnackbarData({
           open: true,
           text: `Wrong value for latitude, should be between -90 to 90`,
           severity: "error",
         });
-      } else if (!checkLongitude(newData.longitude)) {
+      } else if (!checkLongitude(Math.ceil(newData.longitude))) {
         setSnackbarData({
           open: true,
           text: `Wrong value for longitude, should be between -180 to 180`,
