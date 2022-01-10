@@ -41,7 +41,7 @@
     "react-router-dom": "^6.2.1",
     "react-scripts": "^4.0.3",
     "react-syntax-highlighter": "^15.4.5",
-    "sass": "^1.45.2",
+    "sass": "^1.47.0",
     "styled-components": "^5.3.3"
   },
   "scripts": {
