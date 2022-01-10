@@ -508,7 +508,6 @@ export const NewSiteInfo = ({
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                      console.log('yooooooooooooooooo');
                       handleUpdateNewSite();
                     }}
                   >
