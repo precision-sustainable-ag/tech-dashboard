@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Grid,
   Button,
@@ -8,16 +8,16 @@ import {
   DialogActions,
   Select,
   MenuItem,
-} from "@material-ui/core";
-import PropTypes from "prop-types";
-import EnrollNewSite from "../SiteEnrollment/EnrollNewSite";
+} from '@material-ui/core';
+import PropTypes from 'prop-types';
+import EnrollNewSite from '../SiteEnrollment/EnrollNewSite';
 
 const fullWidth = true;
 
 const ReassignDataModal = (props) => {
   const open = props.open;
 
-  const [maxWidth, setMaxWidth] = useState("md");
+  const [maxWidth, setMaxWidth] = useState('md');
 
   const handleMaxWidthChange = (event) => {
     setMaxWidth(event.target.value);
@@ -35,8 +35,8 @@ const ReassignDataModal = (props) => {
       <DialogTitle id="form-dialog-title">
         <Grid container justifyContent="space-between">
           <Grid item>
-            Site <mark>{props.data.code}</mark> of producer:{" "}
-            <strong>{props.data.last_name}</strong> [{props.data.producer_id}]
+            Site <mark>{props.data.code}</mark> of producer: <strong>{props.data.last_name}</strong>{' '}
+            [{props.data.producer_id}]
           </Grid>
           <Grid item>
             <Select
@@ -44,8 +44,8 @@ const ReassignDataModal = (props) => {
               value={maxWidth}
               onChange={handleMaxWidthChange}
               inputProps={{
-                name: "max-width",
-                id: "max-width",
+                name: 'max-width',
+                id: 'max-width',
               }}
             >
               <MenuItem value={false}>regular</MenuItem>
@@ -59,17 +59,20 @@ const ReassignDataModal = (props) => {
         </Grid>
       </DialogTitle>
       <DialogContent>
-        <EnrollNewSite editSite={true} code={props.data.code} producerId={props.data.producer_id} year={props.data.year} affiliation={props.data.affiliation} closeModal={props.handleEditModalClose}/>
+        <EnrollNewSite
+          editSite={true}
+          code={props.data.code}
+          producerId={props.data.producer_id}
+          year={props.data.year}
+          affiliation={props.data.affiliation}
+          closeModal={props.handleEditModalClose}
+        />
       </DialogContent>
       <DialogActions>
         <Button
           onClick={props.handleEditModalClose}
           color="primary"
-          variant={
-            window.localStorage.getItem("theme") === "dark"
-              ? "contained"
-              : "text"
-          }
+          variant={window.localStorage.getItem('theme') === 'dark' ? 'contained' : 'text'}
         >
           Cancel
         </Button>
