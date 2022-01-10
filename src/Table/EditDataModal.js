@@ -357,7 +357,7 @@ const EditDataModal = (props) => {
               label="County"
               margin="dense"
               name="county"
-              defaultValue={
+              value={
                 newData.county
                   ? newData.county
                   : props.data.county
@@ -376,7 +376,7 @@ const EditDataModal = (props) => {
               label="State"
               margin="dense"
               name="state"
-              defaultValue={
+              value={
                 newData.state
                   ? newData.state
                   : props.data.state
@@ -396,7 +396,8 @@ const EditDataModal = (props) => {
               fullWidth
               id="editLat"
               margin="dense"
-              defaultValue={newData.latitude ?? ""}
+              defaultValue={newData.latitude || ""}
+              value={newData.latitude || ""}
               type="text"
               onChange={(e) => 
                     setNewData({
@@ -413,7 +414,8 @@ const EditDataModal = (props) => {
               fullWidth
               id="editLon"
               margin="dense"
-              defaultValue={newData.longitude ?? ""}
+              defaultValue={newData.longitude || ""}
+              value={newData.longitude || ""}
               type="text"
               onChange={(e) => 
                 setNewData({
@@ -431,7 +433,7 @@ const EditDataModal = (props) => {
               label="Field Address"
               margin="dense"
               name="address"
-              defaultValue={
+              value={
                 newData.address
                   ? newData.address
                   : props.data.address
@@ -454,7 +456,7 @@ const EditDataModal = (props) => {
               multiline
               type="text"
               fullWidth
-              defaultValue={
+              value={
                 newData.notes
                   ? newData.notes
                   : props.data.notes
@@ -469,7 +471,7 @@ const EditDataModal = (props) => {
           <Grid item sm={12} lg={12}>
             <TextField
               id="editAdditionalContact"
-              defaultValue={
+              value={
                 newData.additional_contact
                   ? newData.additional_contact
                   : props.data.additional_contact
@@ -492,7 +494,7 @@ const EditDataModal = (props) => {
               id="editCode"
               margin="dense"
               name="code"
-              defaultValue={props.data.code}
+              value={props.data.code}
               disabled
               label="Code"
               type="text"
@@ -501,7 +503,7 @@ const EditDataModal = (props) => {
           </Grid>
           <Grid item sm={12} lg={12}>
             <TextField
-              defaultValue={props.data.year ? props.data.year : ""}
+              value={props.data.year ? props.data.year : ""}
               margin="dense"
               name="email"
               label="Year"
@@ -513,7 +515,7 @@ const EditDataModal = (props) => {
           <Grid item sm={12} lg={12}>
             <TextField
               id="editEmail"
-              defaultValue={props.data.email ? props.data.email : ""}
+              value={props.data.email ? props.data.email : ""}
               margin="dense"
               name="email"
               label="Email Address"

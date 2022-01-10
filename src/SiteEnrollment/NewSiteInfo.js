@@ -420,6 +420,7 @@ export const NewSiteInfo = ({
                 fullWidth
                 label="Latitude"
                 defaultValue={selectedToEditSite.latitude || ""}
+                value={selectedToEditSite.latitude || ""}
                 onChange={(e) =>
                   setSelectedToEditSite({
                     ...selectedToEditSite,
@@ -438,6 +439,7 @@ export const NewSiteInfo = ({
                 fullWidth
                 label="Longitude"
                 defaultValue={selectedToEditSite.longitude || ""}
+                value={selectedToEditSite.longitude || ""}
                 onChange={(e) =>
                   setSelectedToEditSite({
                     ...selectedToEditSite,
