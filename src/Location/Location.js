@@ -147,8 +147,8 @@ const Location = ({
                       latitude: e.lat,
                       longitude: e.lng,
                       address: address,
-                      state: state[0].short_name || "",
-                      county: county[0].long_name || "",
+                      state: state[0]?.short_name || "",
+                      county: county[0]?.long_name || "",
                     });
                   }
                 } else {
