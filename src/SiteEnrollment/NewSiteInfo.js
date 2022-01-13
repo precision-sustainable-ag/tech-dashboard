@@ -407,10 +407,9 @@ export const NewSiteInfo = ({ enrollmentData = {}, setEnrollmentData = () => {} 
                 defaultValue={selectedToEditSite.latitude || ''}
                 value={selectedToEditSite.latitude || ''}
                 onChange={(e) => {
-                  const newLat = e.target.value === '-' ? '-' : parseFloat(e.target.value);
                   setSelectedToEditSite({
                     ...selectedToEditSite,
-                    latitude: newLat,
+                    latitude: e.target.value,
                   });
                 }}
               />
@@ -427,10 +426,9 @@ export const NewSiteInfo = ({ enrollmentData = {}, setEnrollmentData = () => {} 
                 defaultValue={selectedToEditSite.longitude || ''}
                 value={selectedToEditSite.longitude || ''}
                 onChange={(e) => {
-                  const newLon = e.target.value === '-' ? '-' : parseFloat(e.target.value);
                   setSelectedToEditSite({
                     ...selectedToEditSite,
-                    longitude: newLon,
+                    longitude: e.target.value,
                   });
                 }}
               />

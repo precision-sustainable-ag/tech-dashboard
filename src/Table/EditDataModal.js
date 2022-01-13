@@ -398,11 +398,10 @@ const EditDataModal = (props) => {
               value={newData.latitude || ''}
               type="text"
               onChange={(e) => {
-                const newLat = e.target.value === '-' ? '-' : parseFloat(e.target.value);
                 setNewData({
                   ...newData,
-                  latitude: newLat,
-                  latlng: `${newLat}, ${parseFloat(newData.longitude)}`,
+                  latitude: e.target.value,
+                  latlng: `${e.target.value}, ${newData.longitude}`,
                 });
               }}
               // inputProps={{ step: 0.0001 }}
@@ -418,11 +417,10 @@ const EditDataModal = (props) => {
               value={newData.longitude || ''}
               type="text"
               onChange={(e) => {
-                const newLon = e.target.value === '-' ? '-' : parseFloat(e.target.value);
                 setNewData({
                   ...newData,
-                  longitude: newLon,
-                  latlng: `${parseFloat(newData.latitude)}, ${newLon}`,
+                  longitude: e.target.value,
+                  latlng: `${newData.latitude}, ${e.target.value}`,
                 });
               }}
               // inputProps={{ step: 0.0001 }}
