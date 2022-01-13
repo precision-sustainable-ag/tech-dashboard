@@ -1,7 +1,7 @@
 // Dependency Imports
-import React, { useState, useEffect } from "react";
-import { green, yellow, grey } from "@material-ui/core/colors";
-import { Redirect, useHistory } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { green, yellow, grey } from '@material-ui/core/colors';
+import { Redirect, useHistory } from 'react-router-dom';
 import {
   Button,
   CardContent,
@@ -11,13 +11,13 @@ import {
   TextField,
   Tooltip,
   Typography,
-} from "@material-ui/core";
-import moment from "moment-timezone";
-import { Cancel, Edit, Save } from "@material-ui/icons";
-import Axios from "axios";
-import qs from "qs";
-import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
-import PropTypes from "prop-types";
+} from '@material-ui/core';
+import moment from 'moment-timezone';
+import { Cancel, Edit, Save } from '@material-ui/icons';
+import Axios from 'axios';
+import qs from 'qs';
+import { apiPassword, apiURL, apiUsername } from '../utils/api_secret';
+import PropTypes from 'prop-types';
 
 // Styles
 const deviceColors = {
@@ -25,7 +25,7 @@ const deviceColors = {
   lastFourHours: green[400],
   lastThirtySixHours: yellow[400],
   lastMonth: grey[400],
-  default: "white",
+  default: 'white',
 };
 
 // Default function
@@ -33,10 +33,10 @@ const DataParser = (props) => {
   const history = useHistory();
   const [deviceId, setDeviceId] = useState(0);
   const [shouldRedirect] = useState(false);
-  const [deviceBGColor, setDeviceBGColor] = useState("white");
-  const [deviceDateStr, setDeviceDateStr] = useState("");
-  const [dateStatus, setDateStatus] = useState("");
-  const [dateStringFormatted, setDateStringFormatted] = useState("");
+  const [deviceBGColor, setDeviceBGColor] = useState('white');
+  const [deviceDateStr, setDeviceDateStr] = useState('');
+  const [dateStatus, setDateStatus] = useState('');
+  const [dateStringFormatted, setDateStringFormatted] = useState('');
   let device = props.deviceData;
   device.for = props.for;
   const { lastSession } = props;
@@ -68,11 +68,9 @@ const DataParser = (props) => {
 
       let deviceSessionBegin = device.links.cellular[0].last_connect_time;
       // get device session begin as user local time
-      let deviceDateLocal = moment
-        .tz(deviceSessionBegin, "Africa/Abidjan")
-        .tz(tz);
+      let deviceDateLocal = moment.tz(deviceSessionBegin, 'Africa/Abidjan').tz(tz);
 
-      setDateStringFormatted(deviceDateLocal.format("MM/DD/YYYY hh:mm A"));
+      setDateStringFormatted(deviceDateLocal.format('MM/DD/YYYY hh:mm A'));
 
       let deviceDateFormatted = deviceDateLocal.fromNow();
 
@@ -110,28 +108,26 @@ const DataParser = (props) => {
       //   dateStatus = "Not active this month";
       // }
       if (Math.round(dateDiff) <= 1) {
-        setDateStatus("Active within last hour");
+        setDateStatus('Active within last hour');
         setDeviceBGColor(deviceColors.withinLastHour);
       } else if (dateDiff > 1 && dateDiff <= 4) {
-        setDateStatus("Active within last 4 hours");
+        setDateStatus('Active within last 4 hours');
         setDeviceBGColor(deviceColors.lastFourHours);
       } else if (dateDiff > 4 && dateDiff <= 36) {
-        setDateStatus("Active within last 36 hours");
+        setDateStatus('Active within last 36 hours');
         setDeviceBGColor(deviceColors.lastThirtySixHours);
       } else if (dateDiff > 36 && dateDiff <= 730) {
-        setDateStatus("Active last month");
+        setDateStatus('Active last month');
         setDeviceBGColor(deviceColors.lastMonth);
       } else {
-        setDateStatus("Last active " + deviceDateLocal.format("MM/DD/Y"));
+        setDateStatus('Last active ' + deviceDateLocal.format('MM/DD/Y'));
         setDeviceBGColor(deviceColors.default);
       }
     }
   }, [device.lastsession, device.links]);
   const [showEditBtn, setShowEditBtn] = useState(false);
   const [isDeviceNameBeingEdited, setIsDeviceNameBeingEdited] = useState(false);
-  const [deviceActualName, setDeviceActualName] = useState(
-    device.nickname || device.name
-  );
+  const [deviceActualName, setDeviceActualName] = useState(device.nickname || device.name);
 
   const handleMouseEnter = (deviceName) => {
     setShowEditBtn(true);
@@ -147,9 +143,9 @@ const DataParser = (props) => {
   const publishDeviceNickname = () => {
     updateDeviceNickname()
       .then((r) => {
-        if (r.data.status === "success") {
+        if (r.data.status === 'success') {
           // setDeviceNickname(deviceActualName);
-          device["nickname"] = deviceActualName;
+          device['nickname'] = deviceActualName;
           setIsDeviceNameBeingEdited(false);
           setShowEditBtn(false);
         }
@@ -162,7 +158,7 @@ const DataParser = (props) => {
   const updateDeviceNickname = () => {
     // send a put/post request
     return Axios({
-      method: device.nickname ? "put" : "post",
+      method: device.nickname ? 'put' : 'post',
       url: `${apiURL}/api/hologram/device/nicknames`,
       auth: {
         username: apiUsername,
@@ -170,7 +166,7 @@ const DataParser = (props) => {
       },
       data: qs.stringify({ deviceId: device.id, nickname: deviceActualName }),
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
       },
     });
   };
@@ -188,29 +184,16 @@ const DataParser = (props) => {
       <CardContent
         onMouseEnter={() =>
           handleMouseEnter(
-            deviceActualName
-              ? deviceActualName
-              : device.nickname
-              ? device.nickname
-              : device.name
+            deviceActualName ? deviceActualName : device.nickname ? device.nickname : device.name,
           )
         }
         onMouseLeave={() =>
           handleMouseLeave(
-            deviceActualName
-              ? deviceActualName
-              : device.nickname
-              ? device.nickname
-              : device.name
+            deviceActualName ? deviceActualName : device.nickname ? device.nickname : device.name,
           )
         }
       >
-        <Typography
-          component="div"
-          align="center"
-          variant="body1"
-          className="cardTitle"
-        >
+        <Typography component="div" align="center" variant="body1" className="cardTitle">
           {isDeviceNameBeingEdited ? (
             <TextField
               type="text"
@@ -248,39 +231,36 @@ const DataParser = (props) => {
                 </Grid>
               </Grid>
             ) : (
-              <IconButton
-                size="small"
-                onClick={() => setIsDeviceNameBeingEdited(true)}
-              >
+              <IconButton size="small" onClick={() => setIsDeviceNameBeingEdited(true)}>
                 <Edit fontSize="small" />
               </IconButton>
             )
           ) : (
-            ""
+            ''
           )}
         </Typography>
       </CardContent>
       <Divider />
       <CardContent
         style={
-          deviceBGColor === "white"
+          deviceBGColor === 'white'
             ? {
-                backgroundColor: "white",
-                color: "black",
-                height: "100%",
-                cursor: "pointer",
+                backgroundColor: 'white',
+                color: 'black',
+                height: '100%',
+                cursor: 'pointer',
               }
-            : deviceBGColor === "#fdd835"
+            : deviceBGColor === '#fdd835'
             ? {
                 backgroundColor: deviceBGColor,
-                color: "black",
-                height: "100%",
-                cursor: "pointer",
+                color: 'black',
+                height: '100%',
+                cursor: 'pointer',
               }
             : {
                 backgroundColor: deviceBGColor,
-                height: "100%",
-                cursor: "pointer",
+                height: '100%',
+                cursor: 'pointer',
               }
         }
         onClick={() => {
@@ -288,20 +268,14 @@ const DataParser = (props) => {
         }}
       >
         <Tooltip
-          title={
-            lastSession
-              ? `Last Update: ${dateStringFormatted}`
-              : "Last session unavailable"
-          }
+          title={lastSession ? `Last Update: ${dateStringFormatted}` : 'Last session unavailable'}
           arrow
           placeholder="top-right"
         >
           <Grid
             container
             className={
-              !device.lastsession
-                ? "deviceActionArea deadDevice"
-                : "deviceActionArea aliveDevice"
+              !device.lastsession ? 'deviceActionArea deadDevice' : 'deviceActionArea aliveDevice'
             }
             // style={{ height: "100%" }}
             disabled={!device.lastsession ? true : false}
@@ -311,19 +285,15 @@ const DataParser = (props) => {
           >
             {device.lastsession ? (
               <Grid item xs={12}>
-                {device.nickname && (
-                  <Typography variant="body1">{device.name}</Typography>
-                )}
-                <Typography variant="body1">
-                  Last Session: {deviceDateStr}
-                </Typography>
-                <Typography variant="body2" style={{ fontWeight: "bold" }}>
+                {device.nickname && <Typography variant="body1">{device.name}</Typography>}
+                <Typography variant="body1">Last Session: {deviceDateStr}</Typography>
+                <Typography variant="body2" style={{ fontWeight: 'bold' }}>
                   {dateStatus}
                 </Typography>
               </Grid>
             ) : (
               <Grid item xs={12}>
-                <Typography variant="body2" style={{ fontWeight: "bold" }}>
+                <Typography variant="body2" style={{ fontWeight: 'bold' }}>
                   Last Session: Not Available
                 </Typography>
                 {/* <Typography variant="body2" style={{ fontWeight: "bold" }}>

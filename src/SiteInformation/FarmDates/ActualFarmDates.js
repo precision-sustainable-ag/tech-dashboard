@@ -28,7 +28,8 @@ const ActualFarmDates = ({ rowData, fetchFromApi }) => {
     ).then((res) => {
       // console.log(res)
       let dates = { hasData: false, s1sa: [], s1sb: [], s2sa: [], s2sb: [] };
-
+      res.sort((a, b) => a.subplot - b.subplot || a.subsample-b.subsample || a.time-b.time);
+      
       for (const r of res) {
         // verify if there is date data
         if (r.recovery_date) dates.hasData = true;

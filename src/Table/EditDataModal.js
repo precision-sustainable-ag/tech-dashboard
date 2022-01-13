@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Grid,
   Button,
@@ -13,17 +13,24 @@ import {
   FormControl,
   FormControlLabel,
   Checkbox,
+  Snackbar,
   FormLabel,
-} from "@material-ui/core";
-import Axios from "axios";
+} from '@material-ui/core';
+import MuiAlert from '@material-ui/lab/Alert';
+import Axios from 'axios';
 
 // Local Imports
-import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
-import Location from "../Location/Location";
-import PropTypes from "prop-types";
+import { apiURL, apiUsername, apiPassword } from '../utils/api_secret';
+import Location from '../Location/Location';
+import PropTypes from 'prop-types';
 
 //Global Vars
-const qs = require("qs");
+const qs = require('qs');
+
+// Helper function
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 // Styles
 // County is not being passed on to the server as that would need API modification, and Rick is developing a new API
@@ -49,10 +56,15 @@ const EditDataModal = (props) => {
   const open = props.open;
   // const classes = useStyles();
 
-  const [maxWidth, setMaxWidth] = useState("md");
-  const [locationMsg, setLocationMsg] = useState("");
+  const [maxWidth, setMaxWidth] = useState('md');
+  const [locationMsg, setLocationMsg] = useState('');
   const [locationErr, setLocationErr] = useState(false);
   const [showMap, setShowMap] = useState(false);
+  const [snackbarData, setSnackbarData] = useState({
+    open: false,
+    text: '',
+    severity: 'success',
+  });
   //   const [currentLatLng, setCurrentLatLng] = useState(null);
 
   useEffect(() => {
@@ -118,28 +130,66 @@ const EditDataModal = (props) => {
   //   setLocationErr(false);
   // };
 
-  const checkLatLng = () => {
-    // let testcase = new RegExp("^-?([1-8]?[1-9]|[1-9]0).{1}d{1,6}");
-    // TODO:Check LatLng pattern?
-    return true;
+  const checkLatitude = (arg) => {
+    console.log('lat: ', arg);
+    return /^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,6})?))$/.test(arg)
+      ? true
+      : false;
   };
+
+  const checkLongitude = (arg) => {
+    console.log('lon: ', arg);
+    return /^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,6})?))$/.test(
+      arg,
+    )
+      ? true
+      : false;
+  };
+
   const validateData = () => {
-    if (checkLatLng) {
+    if (
+      checkLatitude(Math.ceil(newData.latitude)) &&
+      checkLongitude(Math.ceil(newData.longitude))
+    ) {
       //   call update api
-      postModalUpdate(newData)
-        .then(() => {
-          props.handleEditModalClose();
-          props.setValuesEdited(!props.valuesEdited);
-          // console.log(res);
-        })
-        .then(() => {
-          setTimeout(window.location.reload(), 4000);
-        });
+      console.log('both');
+      postModalUpdate(newData).then(() => {
+        props.handleEditModalClose();
+        props.setValuesEdited(!props.valuesEdited);
+        // console.log(res);
+      });
+      // .then(() => {
+      //   setTimeout(window.location.reload(), 4000);
+      // });
     } else {
+      console.log('neither');
       setLocationErr(true);
-      setLocationMsg("Incorrect format");
+      if (
+        !checkLatitude(Math.ceil(newData.latitude)) &&
+        !checkLongitude(Math.ceil(newData.longitude))
+      ) {
+        setSnackbarData({
+          open: true,
+          text: `Wrong value for latitude and longitude, should be between -90 to 90 and -180 to 180 respectively`,
+          severity: 'error',
+        });
+      } else if (!checkLatitude(Math.ceil(newData.latitude))) {
+        setSnackbarData({
+          open: true,
+          text: `Wrong value for latitude, should be between -90 to 90`,
+          severity: 'error',
+        });
+      } else if (!checkLongitude(Math.ceil(newData.longitude))) {
+        setSnackbarData({
+          open: true,
+          text: `Wrong value for longitude, should be between -180 to 180`,
+          severity: 'error',
+        });
+      }
+      setLocationMsg('Incorrect format of latitude or longitude');
     }
   };
+
   const handleMaxWidthChange = (event) => {
     setMaxWidth(event.target.value);
   };
@@ -149,26 +199,24 @@ const EditDataModal = (props) => {
   // };
 
   const [selectedToEditSite, setSelectedToEditSite] = useState({
-    address: "",
-    state: "",
-    county: "",
-    latitude: "",
-    longitude: "",
+    address: '',
+    state: '',
+    county: '',
+    latitude: '',
+    longitude: '',
   });
   useEffect(() => {
     setNewData((newData) => ({
       ...newData,
-      address: selectedToEditSite.address ? selectedToEditSite.address : "",
-      latitude: selectedToEditSite.latitude ? selectedToEditSite.latitude : "",
-      longitude: selectedToEditSite.longitude
-        ? selectedToEditSite.longitude
-        : "",
-      county: selectedToEditSite.county ? selectedToEditSite.county : "",
-      state: selectedToEditSite.state ? selectedToEditSite.state : "",
+      address: selectedToEditSite.address ? selectedToEditSite.address : '',
+      latitude: selectedToEditSite.latitude ? selectedToEditSite.latitude : '',
+      longitude: selectedToEditSite.longitude ? selectedToEditSite.longitude : '',
+      county: selectedToEditSite.county ? selectedToEditSite.county : '',
+      state: selectedToEditSite.state ? selectedToEditSite.state : '',
       latlng:
         selectedToEditSite.latitude && selectedToEditSite.longitude
           ? `${selectedToEditSite.latitude},${selectedToEditSite.longitude}`
-          : "",
+          : '',
     }));
   }, [selectedToEditSite]);
   useEffect(() => {
@@ -195,22 +243,22 @@ const EditDataModal = (props) => {
     });
     return () => {
       setNewData({
-        cid: "",
-        code: "",
-        year: "",
-        affiliation: "",
-        county: "",
-        longitude: "",
-        latitude: "",
-        notes: "",
-        additional_contact: "",
-        producer_id: "",
-        address: "",
-        state: "",
-        last_name: "",
-        email: "",
-        phone: "",
-        latlng: "",
+        cid: '',
+        code: '',
+        year: '',
+        affiliation: '',
+        county: '',
+        longitude: '',
+        latitude: '',
+        notes: '',
+        additional_contact: '',
+        producer_id: '',
+        address: '',
+        state: '',
+        last_name: '',
+        email: '',
+        phone: '',
+        latlng: '',
         tableData: {
           id: null,
         },
@@ -229,8 +277,8 @@ const EditDataModal = (props) => {
       <DialogTitle id="form-dialog-title">
         <Grid container justifyContent="space-between">
           <Grid item>
-            Site <mark>{props.data.code}</mark> of producer:{" "}
-            <strong>{props.data.last_name}</strong> [{props.data.producer_id}]
+            Site <mark>{props.data.code}</mark> of producer: <strong>{props.data.last_name}</strong>{' '}
+            [{props.data.producer_id}]
           </Grid>
           <Grid item>
             <Select
@@ -238,8 +286,8 @@ const EditDataModal = (props) => {
               value={maxWidth}
               onChange={handleMaxWidthChange}
               inputProps={{
-                name: "max-width",
-                id: "max-width",
+                name: 'max-width',
+                id: 'max-width',
               }}
             >
               <MenuItem value={false}>regular</MenuItem>
@@ -254,6 +302,17 @@ const EditDataModal = (props) => {
       </DialogTitle>
       <DialogContent>
         <Grid container>
+          <Snackbar
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            open={snackbarData.open}
+            autoHideDuration={10000}
+            onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
+          >
+            <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
+          </Snackbar>
           <Grid item xs>
             <FormControl component="fieldset">
               <FormLabel component="legend">
@@ -308,13 +367,7 @@ const EditDataModal = (props) => {
               label="County"
               margin="dense"
               name="county"
-              value={
-                newData.county
-                  ? newData.county
-                  : props.data.county
-                  ? props.data.county
-                  : ""
-              }
+              value={newData.county ? newData.county : props.data.county ? props.data.county : ''}
               type="text"
               fullWidth
               onChange={(e) => {
@@ -327,13 +380,7 @@ const EditDataModal = (props) => {
               label="State"
               margin="dense"
               name="state"
-              value={
-                newData.state
-                  ? newData.state
-                  : props.data.state
-                  ? props.data.state
-                  : ""
-              }
+              value={newData.state ? newData.state : props.data.state ? props.data.state : ''}
               type="text"
               fullWidth
               onChange={(e) => {
@@ -347,15 +394,17 @@ const EditDataModal = (props) => {
               fullWidth
               id="editLat"
               margin="dense"
-              value={newData.latitude ?? ""}
-              type="number"
-              onChange={(e) =>
+              defaultValue={newData.latitude || ''}
+              value={newData.latitude || ''}
+              type="text"
+              onChange={(e) => {
                 setNewData({
                   ...newData,
-                  latitude: parseFloat(e.target.value),
-                })
-              }
-              inputProps={{ step: 0.0001 }}
+                  latitude: e.target.value,
+                  latlng: `${e.target.value}, ${newData.longitude}`,
+                });
+              }}
+              // inputProps={{ step: 0.0001 }}
             />
           </Grid>
           <Grid item sm={12} lg={12}>
@@ -364,15 +413,17 @@ const EditDataModal = (props) => {
               fullWidth
               id="editLon"
               margin="dense"
-              value={newData.longitude ?? ""}
-              type="number"
-              onChange={(e) =>
+              defaultValue={newData.longitude || ''}
+              value={newData.longitude || ''}
+              type="text"
+              onChange={(e) => {
                 setNewData({
                   ...newData,
-                  longitude: parseFloat(e.target.value),
-                })
-              }
-              inputProps={{ step: 0.0001 }}
+                  longitude: e.target.value,
+                  latlng: `${newData.latitude}, ${e.target.value}`,
+                });
+              }}
+              // inputProps={{ step: 0.0001 }}
             />
           </Grid>
 
@@ -383,11 +434,7 @@ const EditDataModal = (props) => {
               margin="dense"
               name="address"
               value={
-                newData.address
-                  ? newData.address
-                  : props.data.address
-                  ? props.data.address
-                  : ""
+                newData.address ? newData.address : props.data.address ? props.data.address : ''
               }
               type="text"
               fullWidth
@@ -405,13 +452,7 @@ const EditDataModal = (props) => {
               multiline
               type="text"
               fullWidth
-              value={
-                newData.notes
-                  ? newData.notes
-                  : props.data.notes
-                  ? props.data.notes
-                  : ""
-              }
+              value={newData.notes ? newData.notes : props.data.notes ? props.data.notes : ''}
               onChange={(e) => {
                 setNewData({ ...newData, notes: e.target.value });
               }}
@@ -425,7 +466,7 @@ const EditDataModal = (props) => {
                   ? newData.additional_contact
                   : props.data.additional_contact
                   ? props.data.additional_contact
-                  : ""
+                  : ''
               }
               margin="dense"
               label="Additional Contact"
@@ -452,7 +493,7 @@ const EditDataModal = (props) => {
           </Grid>
           <Grid item sm={12} lg={12}>
             <TextField
-              value={props.data.year ? props.data.year : ""}
+              value={props.data.year ? props.data.year : ''}
               margin="dense"
               name="email"
               label="Year"
@@ -464,7 +505,7 @@ const EditDataModal = (props) => {
           <Grid item sm={12} lg={12}>
             <TextField
               id="editEmail"
-              value={props.data.email ? props.data.email : ""}
+              value={props.data.email ? props.data.email : ''}
               margin="dense"
               name="email"
               label="Email Address"
@@ -479,11 +520,7 @@ const EditDataModal = (props) => {
         <Button
           onClick={props.handleEditModalClose}
           color="primary"
-          variant={
-            window.localStorage.getItem("theme") === "dark"
-              ? "contained"
-              : "text"
-          }
+          variant={window.localStorage.getItem('theme') === 'dark' ? 'contained' : 'text'}
         >
           Cancel
         </Button>
@@ -497,8 +534,9 @@ const EditDataModal = (props) => {
 
 const postModalUpdate = async (data) => {
   const dataString = qs.stringify(data);
+  console.log(data);
   let req = await Axios({
-    method: "POST",
+    method: 'POST',
     url: `${apiURL}/api/update/alldata`,
     data: dataString,
     auth: {
@@ -506,7 +544,7 @@ const postModalUpdate = async (data) => {
       password: apiPassword,
     },
     headers: {
-      "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+      'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
     },
   }).catch((e) => {
     console.error(e);
@@ -515,7 +553,7 @@ const postModalUpdate = async (data) => {
     if (req.status === 200) {
       return true;
     } else {
-      console.error("AJAX Error");
+      console.error('AJAX Error');
       return false;
     }
   } else {

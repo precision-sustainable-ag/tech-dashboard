@@ -130,7 +130,6 @@ export const callAzureFunction = async (data, endpoint, getTokenSilently) => {
   let token = await getTokenSilently({
     audience: `https://precision-sustaibale-ag/tech-dashboard`,
   });
-
   data = { ...data, token: token };
 
   const options = {
