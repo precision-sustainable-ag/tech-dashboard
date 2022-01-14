@@ -157,6 +157,12 @@ const DataParser = (props) => {
 
   const updateDeviceNickname = () => {
     // send a put/post request
+    let type = '';
+    if (props.for === 'watersensors') {
+      type = 'gateway';
+    } else if (props.for === 'stresscams') {
+      type = 'stresscam';
+    }
     return Axios({
       method: device.nickname ? 'put' : 'post',
       url: `${apiURL}/api/hologram/device/nicknames`,
@@ -164,7 +170,7 @@ const DataParser = (props) => {
         username: apiUsername,
         password: apiPassword,
       },
-      data: qs.stringify({ deviceId: device.id, nickname: deviceActualName }),
+      data: qs.stringify({ deviceId: device.id, nickname: deviceActualName, type: type }),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
       },
