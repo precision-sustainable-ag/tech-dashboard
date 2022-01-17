@@ -10,13 +10,15 @@ import {
   Radio,
   TextField,
   Typography,
-  Snackbar
+  Snackbar,
+  makeStyles
 } from "@material-ui/core";
 import { Check, Save } from "@material-ui/icons";
 import Axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import InputMask from "react-input-mask";
 import PropTypes from "prop-types";
+import { Context } from "../Store/Store";
 
 // Local Imports
 import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
@@ -30,6 +32,18 @@ import MuiAlert from "@material-ui/lab/Alert";
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
+
+const useStyles = makeStyles(() => ({
+  cardHeight: {
+    height: '100%',
+  },
+  cardContent: {
+    height: '60%',
+  },
+  cardHeaderFooter: {
+    height: '20%',
+  },
+}));
 
 //Global Vars
 const qs = require("qs");
@@ -47,6 +61,7 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData, editSite, code, 
     text: "",
     severity: "success",
   });
+  const [state] = useContext(Context);
   const { getTokenSilently } = useAuth0();
 
   const handleNewGrowerInfo = () => {
@@ -77,36 +92,17 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData, editSite, code, 
   };
 
   useEffect(() => {
-    // async function waitForSiteCodes(producerId) {
-    //   let siteCodesPromise = await fetchSiteCodesForProducer(producerId);
-
-    //   const sites = siteCodesPromise.data.data.map((data) => data.code);
-
-    //   return { producerId: producerId, siteCodes: sites };
-    // }
-
     if (growerType === "existing" && growerLastNameSearch !== "") {
-      let lastNamePromise = fetchGrowerByLastName(growerLastNameSearch);
+      let lastNamePromise = fetchGrowerByLastName(growerLastNameSearch, state.userInfo.apikey);
       lastNamePromise
         .then((resp) => {
-          let data = resp.data.data;
+          let data = resp;
           if (data.length > 0) {
             setAllGrowers(data);
           } else {
             setAllGrowers([]);
             setSiteCodes([]);
           }
-        })
-        .then(() => {
-          //   console.log(allGrowers.length);
-          //   let allSiteData = [];
-          //   allGrowers.forEach((grower) => {
-          //     let sitesData = waitForSiteCodes(grower.producer_id);
-          //     sitesData.then((resp) => {
-          //       allSiteData.push(resp);
-          //     });
-          //   });
-          //   console.log(allSiteData);
         });
     }
     setEnrollmentData((enroll) => ({
@@ -122,7 +118,7 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData, editSite, code, 
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [growerLastNameSearch, growerType]);
-  // const [maskedTel, setMaskedTel] = useState("");
+ 
   return (
     <>
       <Grid item sm={12}>
@@ -413,21 +409,7 @@ const ExistingGrowersGrid = ({
   enrollmentData = {},
   setEnrollmentData = () => {},
 }) => {
-  const [siteCodesForAProducer, setSiteCodesForAProducer] = useState({});
-
-  const fetchSiteCodesFor = (producerId) => {
-    let siteCodesPromise = fetchSiteCodesForProducer(producerId);
-
-    siteCodesPromise.then((resp) => {
-      let data = resp.data.data;
-      //   console.log(data);
-      let codes = data.map((sites) => {
-        return sites.code;
-      });
-      
-      setSiteCodesForAProducer({ producerId: producerId, sites: codes });
-    });
-  };
+  const classes = useStyles();
 
   return allGrowers.length > 0 ? (
     allGrowers.map((grower, index) => {
@@ -435,13 +417,14 @@ const ExistingGrowersGrid = ({
 
       return(
         <Grid item key={`existing-grower-${index}`} sm={6} md={3}>
-          <Card>
+          <Card className={classes.cardHeight}>
             <CardHeader
               avatar={<Avatar>{grower.last_name.charAt(0).toUpperCase()}</Avatar>}
               title={ucFirst(grower.last_name)}
+              className={classes.cardHeaderFooter}
             />
 
-            <CardContent>
+            <CardContent className={classes.cardContent}>
               <Grid container spacing={2}>
                 <Grid item xs={6}>
                   <Typography variant="body2">Producer ID</Typography>
@@ -462,26 +445,14 @@ const ExistingGrowersGrid = ({
                   <Typography variant="body2">{grower.phone}</Typography>
                 </Grid>
                 <Grid item xs={6}>
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    onClick={() => fetchSiteCodesFor(grower.producer_id)}
-                  >
-                    Show Sites
-                  </Button>
+                  <Typography variant="body2">Site Code</Typography>
                 </Grid>
                 <Grid item xs={6}>
-                  <Typography variant="body2" noWrap>
-                    {siteCodesForAProducer.producerId === grower.producer_id
-                      ? siteCodesForAProducer.sites.length > 0
-                        ? siteCodesForAProducer.sites.toString()
-                        : "No Sites"
-                      : ""}
-                  </Typography>
+                  <Typography variant="body2">{grower.codes.split(".").join(", ")}</Typography>
                 </Grid>
               </Grid>
             </CardContent>
-            <CardActions>
+            <CardActions className={classes.cardHeaderFooter}>
               <Button
                 size="small"
                 color={
@@ -526,42 +497,6 @@ const ExistingGrowersGrid = ({
   ) : (
     <Typography variant="body1">Grower Not Found</Typography>
   );
-};
-
-// const SiteSelection = ({ growerInfo, setGrowerInfo }) => {
-//   return (
-//     <>
-//       <Grid container></Grid>
-//     </>
-//   );
-// };
-
-// const getSiteCodesForProducer = async (producerId) => {
-//   let fetchSitesPromise = await fetchSiteCodesForProducer(producerId);
-//   let codes = [];
-//   let data = fetchSitesPromise.data.data;
-//   codes = data.map((r, i) => {
-//     return r.code;
-//   });
-
-//   let strId = `siteCodesFor-${producerId}`;
-
-//   if (codes.length === 0) {
-//     document.getElementById(strId).textContent = "No Sites";
-//   } else {
-//     document.getElementById(strId).textContent = [codes.toString()];
-//   }
-// };
-
-const fetchSiteCodesForProducer = async (producerId) => {
-  return await Axios({
-    url: `${apiURL}/api/retrieve/site/codes/by/producer/${producerId}`,
-    method: "get",
-    auth: {
-      username: apiUsername,
-      password: apiPassword,
-    },
-  });
 };
 
 const saveNewGrowerAndFetchProducerId = async (enrollmentData = {}) => {
