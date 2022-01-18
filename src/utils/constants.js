@@ -3,7 +3,7 @@ import Axios from "axios";
 import qs from "qs";
 
 // Local Imports
-import { apiUsername, apiPassword, apiURL } from "./api_secret";
+import { apiUsername, apiPassword, apiURL, onfarmAPI } from "./api_secret";
 import { apiCorsUrl } from "../Devices/hologramConstants";
 
 // anyone with these roles are not supposed to view anything !
@@ -139,15 +139,15 @@ export const statesHash = {
   WY: "Wyoming",
 };
 
-export const fetchGrowerByLastName = async (query) => {
-  return await Axios({
-    url: `${apiURL}/api/retrieve/grower/lastname/${query}`,
-    method: "get",
-    auth: {
-      username: apiUsername,
-      password: apiPassword,
+export const fetchGrowerByLastName = async (query, apiKey) => {
+  const response = await fetch(`${onfarmAPI}/producers?search=${query}`, {
+    headers: {
+      "x-api-key": apiKey,
     },
   });
+
+  const data = await response.json();
+  return data;
 };
 
 // export const ucFirst = (str = "") => {
