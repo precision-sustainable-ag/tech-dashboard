@@ -104,10 +104,12 @@ const Marker = (props) => {
   if(props.data.type !== "corner"){
     return (
       <StyledMarker>
-        <Typography align="center" variant="body1">
-          Rep: {props.data.rep},{" "}
-          {props.data.treatment.toLowerCase() === "b" ? `Bare` : `Cover`}
-        </Typography>
+        {props.data.treatment && 
+          <Typography align="center" variant="body1">
+            Rep: {props.data.rep},{" "}
+            {props.data.treatment.toLowerCase() === "b" ? `Bare` : `Cover`}
+          </Typography>
+        }
         {/* <p>ProducerID: {props.data.producer_id}</p> */}
         <Typography align="center" variant="body1">
           <a
