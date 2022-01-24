@@ -416,7 +416,7 @@ const ExistingGrowersGrid = ({
       // fetchSiteCodesFor(grower.producer_id);
 
       return(
-        <Grid item key={`existing-grower-${index}`} sm={6} md={3}>
+        <Grid item key={`existing-grower-${index}`} sm={6} md={3} className={classes.cardHeight}>
           <Card className={classes.cardHeight}>
             <CardHeader
               avatar={<Avatar>{grower.last_name.charAt(0).toUpperCase()}</Avatar>}
