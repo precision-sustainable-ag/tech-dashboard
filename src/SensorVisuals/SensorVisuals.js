@@ -16,7 +16,7 @@ import moment from "moment-timezone";
 
 const datesURL = onfarmAPI + `/raw?table=site_information`;
 
-const stressCamAPIEndpoint = ``;
+const stressCamAPIEndpoint = `https://weather.aesl.ces.uga.edu/onfarm/raw?table=stresscam_ratings&output=json`;
 
 const SensorVisuals = (props) => {
   const { isDarkTheme, type } = props;
@@ -66,6 +66,11 @@ const SensorVisuals = (props) => {
       headers: {
         "Content-Type": "application/json",
         "x-api-key": apiKey,
+        "Access-Control-Allow-Origin": "*",
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Credentials': true,
+        "Vary": "Origin",
       },
     }).then((res) => {
       res.json().then((resJson) => {
@@ -171,7 +176,7 @@ const SensorVisuals = (props) => {
               "x-api-key": apiKey,
             },
           });
-          const response = await records.json();
+          let response = await records.json();
 
           if (data.length === 0) {
             let newData = response.map((entry) => {
@@ -182,7 +187,17 @@ const SensorVisuals = (props) => {
               };
             });
 
-            getCameraStatus(newData, state.userInfo.apikey);
+            if (type === 'watersensors') {
+              getCameraStatus(newData, state.userInfo.apikey);
+            } else {
+              setLoading(false);
+              let resp = response.splice(10);
+              let responseWithFilter = response.filter((r) => {
+                return r.protocols_enrolled !== "-999";
+              });
+              setData(responseWithFilter);
+            }
+            
           }
 
           const recs = groupBy(response, "year");
@@ -224,7 +239,6 @@ const SensorVisuals = (props) => {
 
           setAffiliations(uniqueAffiliations);
         } catch (e) {
-          console.error("Error:" + e);
           setYears([]);
           setAffiliations([]);
         }
@@ -238,7 +252,6 @@ const SensorVisuals = (props) => {
   }, [state.userInfo.apikey, type, location.state, data.length]);
 
   const activeData = useMemo(() => {
-    // console.log(JSON.stringify(data))
     const activeYear = years.reduce((acc, curr) => {
       if (curr.active) {
         return curr.year;
@@ -311,6 +324,7 @@ const SensorVisuals = (props) => {
               lastUpdated={entry.lastUpdated}
               data={data}
               isDarkTheme={isDarkTheme}
+              type={type}
             />
             {/* <div>{data.code}</div> */}
           </Grid>

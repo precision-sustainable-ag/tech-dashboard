@@ -66,6 +66,7 @@ import axios from 'axios';
 import { apiPassword, apiUsername, onfarmAPI, onfarmStaticApiKey } from './utils/api_secret';
 import { apiCorsUrl, APIURL } from './Devices/hologramConstants';
 import QueryString from 'qs';
+import StressCamVisuals from './StressCamVisuals/StressCamVisuals';
 
 // Helper function
 
@@ -443,10 +444,31 @@ function App() {
                   exact
                 />
 
+                {/* Stress Cam visuals Page URLS */}
+
+                <PrivateRoute
+                  path={`/stress-cam-visuals`}
+                  render={(props) => (
+                    <SensorVisuals
+                      isDarkTheme={theme.palette.type === 'light' ? false : true}
+                      type="stresscams"
+                      {...props}
+                    />
+                  )}
+                  exact
+                />
+                <PrivateRoute
+                  path={`/stress-cam-visuals/:year/:code`}
+                  component={StressCamVisuals}
+                  exact
+                />
+
+                {/* Water sensor Page URLS */}
                 <PrivateRoute
                   path={`/water-sensors/:gatewayId`}
                   render={(props) => <WaterSensorByGateway {...props} />}
                 />
+
                 {/* Biomass URLS */}
                 <PrivateRoute
                   path={`/biomass/farm-values`}
