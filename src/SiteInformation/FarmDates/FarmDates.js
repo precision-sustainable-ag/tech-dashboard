@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import React, { useState, useEffect, useContext } from 'react';
-import { Grid, Typography, Snackbar, Button } from '@material-ui/core';
+import { Grid, Typography, Snackbar } from '@material-ui/core';
 import { Context } from '../../Store/Store';
 import MaterialTable from 'material-table';
 import { bannedRoles } from '../../utils/constants';
@@ -9,7 +9,6 @@ import { onfarmAPI } from '../../utils/api_secret';
 import { addDays } from 'date-fns';
 import { useAuth0 } from '../../Auth/react-auth0-spa';
 import MuiAlert from '@material-ui/lab/Alert';
-import { Link } from 'react-router-dom';
 import FarmDatesDropdown from './FarmDatesDropdown';
 
 const farmDatesURL = `${onfarmAPI}/dates`;
@@ -162,17 +161,6 @@ const FarmDates = () => {
 
   return !showBannedMessage ? (
     <Grid container spacing={2}>
-      <Grid item>
-        <Button
-          size="small"
-          color="primary"
-          variant="contained"
-          component={Link}
-          to="/site-information/farm-dates/calendar"
-        >
-          Calendar View
-        </Button>
-      </Grid>
       <Grid item xs={12}>
         {loading ? (
           <CustomLoader />
