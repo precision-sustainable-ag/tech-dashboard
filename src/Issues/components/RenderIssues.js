@@ -9,18 +9,18 @@ import {
   Grid,
   Paper,
   Typography,
-} from "@material-ui/core";
-import { BugReport, ExpandMore } from "@material-ui/icons";
-import { Octokit } from "@octokit/rest";
-import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
-import Loading from "react-loading";
-import { githubToken } from "../../utils/api_secret";
-import { ucFirst } from "../../utils/constants";
+} from '@material-ui/core';
+import { BugReport, ExpandMore } from '@material-ui/icons';
+import { Octokit } from '@octokit/rest';
+import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+import Loading from 'react-loading';
+import { githubToken } from '../../utils/api_secret';
+import { ucFirst } from '../../utils/constants';
 
-import MDEditor from "@uiw/react-md-editor";
-import { Link } from "react-router-dom";
-import "./RenderIssues.scss";
+import MDEditor from '@uiw/react-md-editor';
+import { Link } from 'react-router-dom';
+import './RenderIssues.scss';
 
 /**
  * A component to render issues based on a given state labels
@@ -127,18 +127,16 @@ export const RenderIssues = ({ stateLabel, filter }) => {
 
             let username;
 
-            if (res.body.includes("**") && res.body.includes("Created By:")) {
-              username = res.body.split("By: @");
-              username = username[1].split("**")[0].replace(/\s/g, "");
+            if (res.body.includes('**') && res.body.includes('Created By:')) {
+              username = res.body.split('By: @');
+              username = username[1].split('**')[0].replace(/\s/g, '');
             } else {
               // console.log("not includes" + JSON.stringify(res));
               username = res.user.login;
             }
             // console.log(username);
             try {
-              setUserNames((old) =>
-                !old.includes(username) ? [...old, username] : [...old]
-              );
+              setUserNames((old) => (!old.includes(username) ? [...old, username] : [...old]));
               // console.log(userNames);
             } catch (err) {
               setUserNames((old) => [...old, username]);
@@ -149,15 +147,13 @@ export const RenderIssues = ({ stateLabel, filter }) => {
               ...res,
               created_at: new Date(res.created_at),
               updated_at: new Date(res.updated_at),
-              body: res.body.split("** Issue Created By")[0],
+              body: res.body.split('** Issue Created By')[0],
               username: username,
             };
           });
 
           // sorting based on most recent updated first
-          const sortedIssues = data.sort(
-            (a, b) => Date(b.updated_at) - Date(a.updated_at)
-          );
+          const sortedIssues = data.sort((a, b) => Date(b.updated_at) - Date(a.updated_at));
           setIssues(sortedIssues);
         })
         .then(() => setDoneSettingUsernames(true))
@@ -177,25 +173,23 @@ export const RenderIssues = ({ stateLabel, filter }) => {
                 userNameData[username]
                   ? userNameData[username].avatar_url
                     ? userNameData[username].avatar_url
-                    : ""
-                  : ""
+                    : ''
+                  : ''
               }
               alt={
                 userNameData[username]
                   ? userNameData[username].name
                     ? userNameData[username].name
-                    : ""
-                  : ""
+                    : ''
+                  : ''
               }
             />
           </Grid>
           <Grid item>
             <Typography variant="body1">
-              Created By{" "}
+              Created By{' '}
               <Button
-                href={
-                  userNameData[username] ? userNameData[username].html_url : ""
-                }
+                href={userNameData[username] ? userNameData[username].html_url : ''}
                 rel="noreferrer"
                 target="_blank"
               >
@@ -208,7 +202,7 @@ export const RenderIssues = ({ stateLabel, filter }) => {
         </Grid>
       );
     } else {
-      return "";
+      return '';
     }
   };
   return loading ? (
@@ -222,10 +216,7 @@ export const RenderIssues = ({ stateLabel, filter }) => {
       {issues.length > 0 ? (
         issues.map((issue, index) => (
           <Grid item xs={12} key={index}>
-            <Accordion
-              expanded={expanded === index}
-              onChange={handleAccordionChange(index, issue)}
-            >
+            <Accordion expanded={expanded === index} onChange={handleAccordionChange(index, issue)}>
               <AccordionSummary expandIcon={<ExpandMore />}>
                 <Grid container alignItems="center" spacing={2}>
                   <Grid item>
@@ -234,9 +225,7 @@ export const RenderIssues = ({ stateLabel, filter }) => {
                     </Avatar>
                   </Grid>
                   <Grid item>
-                    <Typography variant="body1">
-                      {ucFirst(issue.title)}
-                    </Typography>
+                    <Typography variant="body1">{ucFirst(issue.title)}</Typography>
                   </Grid>
                   <Grid item xs={12}>
                     <Typography variant="caption">
@@ -251,14 +240,11 @@ export const RenderIssues = ({ stateLabel, filter }) => {
                     <MDEditor.Markdown source={issue.body} />
                   </Grid>
                   <Grid item xs={12}>
-                    <RenderUserCredits
-                      username={issue.username}
-                      show={doneSettingUsernames}
-                    />
+                    <RenderUserCredits username={issue.username} show={doneSettingUsernames} />
                   </Grid>
                 </Grid>
               </AccordionDetails>
-              <AccordionActions style={{ justifyContent: "flex-start" }}>
+              <AccordionActions style={{ justifyContent: 'flex-start' }}>
                 <Button
                   component={Link}
                   // component={
@@ -288,7 +274,7 @@ export const RenderIssues = ({ stateLabel, filter }) => {
     </Grid>
   ) : (
     <Box component={Paper} elevation={0}>
-      <Typography variant={"h6"} align="center">
+      <Typography variant={'h6'} align="center">
         Your access level does not permit this action.
       </Typography>
     </Box>
@@ -297,7 +283,7 @@ export const RenderIssues = ({ stateLabel, filter }) => {
 
 // Helper function
 const getUser = async (octokit, username) => {
-  return await octokit.request("GET /users/{username}", {
+  return await octokit.request('GET /users/{username}', {
     username: username,
   });
 };
@@ -305,33 +291,33 @@ const getUser = async (octokit, username) => {
 const getIssues = async (octokit, labels) => {
   // labels = [stateLabel, filter]
   // console.log(labels)
-  if (labels[0] === "all") {
-    if (labels[1] === "all") {
-      return await octokit.request("GET /repos/{owner}/{repo}/issues", {
-        owner: "precision-sustainable-ag",
-        repo: "data_corrections",
-        state: "open",
+  if (labels[0] === 'all') {
+    if (labels[1] === 'all') {
+      return await octokit.request('GET /repos/{owner}/{repo}/issues', {
+        owner: 'precision-sustainable-ag',
+        repo: 'data_corrections',
+        state: 'open',
       });
     } else {
-      return await octokit.request("GET /repos/{owner}/{repo}/issues", {
-        owner: "precision-sustainable-ag",
-        repo: "data_corrections",
-        state: "open",
+      return await octokit.request('GET /repos/{owner}/{repo}/issues', {
+        owner: 'precision-sustainable-ag',
+        repo: 'data_corrections',
+        state: 'open',
         labels: labels[1],
       });
     }
-  } else if (labels[1] === "all") {
-    return await octokit.request("GET /repos/{owner}/{repo}/issues", {
-      owner: "precision-sustainable-ag",
-      repo: "data_corrections",
-      state: "open",
+  } else if (labels[1] === 'all') {
+    return await octokit.request('GET /repos/{owner}/{repo}/issues', {
+      owner: 'precision-sustainable-ag',
+      repo: 'data_corrections',
+      state: 'open',
       labels: labels[0],
     });
   } else {
-    return await octokit.request("GET /repos/{owner}/{repo}/issues", {
-      owner: "precision-sustainable-ag",
-      repo: "data_corrections",
-      state: "open",
+    return await octokit.request('GET /repos/{owner}/{repo}/issues', {
+      owner: 'precision-sustainable-ag',
+      repo: 'data_corrections',
+      state: 'open',
       labels: labels,
     });
   }
@@ -339,8 +325,8 @@ const getIssues = async (octokit, labels) => {
 
 // Property typings
 RenderIssues.defaultProps = {
-  stateLabel: "NC",
-  userRole: "all",
+  stateLabel: 'NC',
+  userRole: 'all',
 };
 RenderIssues.propTypes = {
   /** State assigned to the user */

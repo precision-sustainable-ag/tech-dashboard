@@ -1,24 +1,19 @@
-import React from "react";
-import { Button, Grid, Typography, Snackbar, Box, Tab} from "@material-ui/core";
-import { TabList, TabContext } from "@material-ui/lab";
-import {
-  apiPassword,
-  apiURL,
-  apiUsername,
-  onfarmAPI,
-} from "../../utils/api_secret";
-import { ArrowBackIos } from "@material-ui/icons";
-import { Link, useHistory, useParams, useLocation } from "react-router-dom";
-import { useContext, useEffect, useState, Fragment } from "react";
-import { Context } from "../../Store/Store";
-import { CustomLoader } from "../../utils/CustomComponents";
+import React from 'react';
+import { Button, Grid, Typography, Snackbar, Box, Tab } from '@material-ui/core';
+import { TabList, TabContext } from '@material-ui/lab';
+import { apiPassword, apiURL, apiUsername, onfarmAPI } from '../../utils/api_secret';
+import { ArrowBackIos } from '@material-ui/icons';
+import { Link, useHistory, useParams, useLocation } from 'react-router-dom';
+import { useContext, useEffect, useState, Fragment } from 'react';
+import { Context } from '../../Store/Store';
+import { CustomLoader } from '../../utils/CustomComponents';
 // import GatewayChart from "./GatewayChart";
-import SensorMap from "../../utils/SensorMap";
-import MuiAlert from "@material-ui/lab/Alert";
-import { useAuth0 } from "../../Auth/react-auth0-spa";
+import SensorMap from '../../utils/SensorMap';
+import MuiAlert from '@material-ui/lab/Alert';
+import { useAuth0 } from '../../Auth/react-auth0-spa';
 
-import IssueDialogue from "../../Comments/IssueDialogue";
-import TabCharts from "./TabCharts";
+import IssueDialogue from '../../Comments/IssueDialogue';
+import TabCharts from './TabCharts';
 
 // Helper function
 function Alert(props) {
@@ -33,7 +28,7 @@ const VisualsByCode = () => {
   const { user } = useAuth0();
   const { code, year } = useParams();
   const [loading, setLoading] = useState(false);
-  const [deviceLink, setDeviceLink] = useState("");
+  const [deviceLink, setDeviceLink] = useState('');
   const [mapData, setMapData] = useState({
     open: false,
     locationData: [],
@@ -42,7 +37,7 @@ const VisualsByCode = () => {
 
   const [tdrData, setTdrData] = useState([]);
   const [value, setValue] = useState('1');
-  const [activeCharts, setActiveCharts] = useState("gateway");
+  const [activeCharts, setActiveCharts] = useState('gateway');
 
   const { getTokenSilently } = useAuth0();
 
@@ -65,8 +60,8 @@ const VisualsByCode = () => {
     `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,trt,center_depth,soil_temp&location=true`;
   const [snackbarData, setSnackbarData] = useState({
     open: false,
-    text: "",
-    severity: "success",
+    text: '',
+    severity: 'success',
   });
   const [showIssueDialog, setShowIssueDialog] = useState(false);
   const [issueBody, setIssueBody] = useState(null);
@@ -83,7 +78,7 @@ const VisualsByCode = () => {
     const checkDeviceNicknames = async (code) => {
       const response = await fetch(nicknameURL + `/${code.toUpperCase()}`, {
         headers: {
-          Authorization: "Basic " + btoa(`${apiUsername}:${apiPassword}`),
+          Authorization: 'Basic ' + btoa(`${apiUsername}:${apiPassword}`),
         },
       });
 
@@ -97,9 +92,9 @@ const VisualsByCode = () => {
 
   useEffect(() => {
     return () => {
-      if (history.action === "POP") {
+      if (history.action === 'POP') {
         history.push({
-          pathname: "/sensor-visuals",
+          pathname: '/sensor-visuals',
           state: {
             year: year,
             data: location.state ? location.state.data : null,
@@ -111,7 +106,7 @@ const VisualsByCode = () => {
 
   useEffect(() => {
     const fetchData = async (apiKey) => {
-      console.log("fetching data");
+      console.log('fetching data');
       const setAllData = (response, type) => {
         // const uniqueSerials = response;
         // .reduce((acc, curr) => {
@@ -125,23 +120,23 @@ const VisualsByCode = () => {
         // }, [])
         // .sort((a, b) => a - b);
         switch (type) {
-          case "sensor": {
+          case 'sensor': {
             // setSensorData(response);
             // setSerials((serial) => ({ ...serial, sensor: uniqueSerials }));
             break;
           }
-          case "node": {
+          case 'node': {
             setNodeData(response);
             // setSerials((serial) => ({ ...serial, node: uniqueSerials }));
             break;
           }
-          case "gateway": {
+          case 'gateway': {
             setGatewayData(response);
             // setSerials((serial) => ({ ...serial, gateway: uniqueSerials }));
             break;
           }
 
-          case "ambient": {
+          case 'ambient': {
             // setAmbientSensorData(response);
             // setSerials((serial) => ({ ...serial, ambient: uniqueSerials }));
             break;
@@ -157,20 +152,20 @@ const VisualsByCode = () => {
         try {
           const gatewayRecords = await fetch(waterGatewayDataEndpoint, {
             headers: {
-              "Content-Type": "application/json",
-              "x-api-key": apiKey,
+              'Content-Type': 'application/json',
+              'x-api-key': apiKey,
             },
           });
           const latLongData = await fetch(latLongEndpoint, {
             headers: {
-              "Content-Type": "application/json",
-              "x-api-key": apiKey,
+              'Content-Type': 'application/json',
+              'x-api-key': apiKey,
             },
           });
           const tdrDataFromApi = await fetch(waterSensorDataEndpoint, {
             headers: {
-              "Content-Type": "application/json",
-              "x-api-key": apiKey,
+              'Content-Type': 'application/json',
+              'x-api-key': apiKey,
             },
           });
           const latLongResponse = await latLongData.json();
@@ -189,12 +184,12 @@ const VisualsByCode = () => {
 
           setTdrData(sortedByTimestamp);
 
-          setAllData(gatewayResponse, "gateway");
+          setAllData(gatewayResponse, 'gateway');
           // if (gatewayResponse.length !== 0) {
           const nodeRecords = await fetch(waterNodeDataEndpoint, {
             headers: {
-              "Content-Type": "application/json",
-              "x-api-key": apiKey,
+              'Content-Type': 'application/json',
+              'x-api-key': apiKey,
             },
           });
           // const ambientRecords = await fetch(waterAmbientSensorDataEndpoint, {
@@ -212,7 +207,7 @@ const VisualsByCode = () => {
           const nodeResponse = await nodeRecords.json();
           // const ambientResponse = await ambientRecords.json();
           // const waterSensorResponse = await waterSensorRecords.json();
-          setAllData(nodeResponse, "node");
+          setAllData(nodeResponse, 'node');
           // setAllData(ambientResponse, "ambient");
           // setAllData(waterSensorResponse, "sensor");
           // }
@@ -239,21 +234,21 @@ const VisualsByCode = () => {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    switch(newValue){
-      case "1":
+    switch (newValue) {
+      case '1':
         // setData(validData);
         // setFormType("valid");
-        setActiveCharts("gateway");
+        setActiveCharts('gateway');
         break;
-      case "2":
+      case '2':
         // setData(invalidData);
         // setFormType("invalid");
-        setActiveCharts("vwc");
+        setActiveCharts('vwc');
         break;
-      case "3":
+      case '3':
         // setData(historyData);
         // setFormType("history");
-        setActiveCharts("temp");
+        setActiveCharts('temp');
         break;
       default:
         break;
@@ -264,14 +259,12 @@ const VisualsByCode = () => {
     <Fragment>
       <Snackbar
         anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
+          vertical: 'bottom',
+          horizontal: 'center',
         }}
         open={snackbarData.open}
         autoHideDuration={2000}
-        onClose={() =>
-          setSnackbarData({ ...snackbarData, open: !snackbarData.open })
-        }
+        onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
       >
         <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
       </Snackbar>
@@ -283,7 +276,7 @@ const VisualsByCode = () => {
             onClick={() => {
               // history.goBack();
               history.push({
-                pathname: "/sensor-visuals",
+                pathname: '/sensor-visuals',
                 state: {
                   year: year,
                   data: location.state ? location.state.data : null,
@@ -317,7 +310,7 @@ const VisualsByCode = () => {
                 color="primary"
                 onClick={() => setShowIssueDialog(!showIssueDialog)}
               >
-                {showIssueDialog ? "Cancel" : "Create comment"}
+                {showIssueDialog ? 'Cancel' : 'Create comment'}
               </Button>
             </Grid>
             {deviceLink && (
@@ -340,28 +333,25 @@ const VisualsByCode = () => {
             (issueBody ? (
               <IssueDialogue
                 nickname={user.nickname}
-                rowData={JSON.stringify(issueBody, null, "\t")}
+                rowData={JSON.stringify(issueBody, null, '\t')}
                 dataType="json"
                 setSnackbarData={setSnackbarData}
-                labels={[code, "tdr", "water-sensor-visuals"]}
+                labels={[code, 'tdr', 'water-sensor-visuals']}
                 getTokenSilently={getTokenSilently}
               />
             ) : (
               <Typography variant="h6">Waiting for data</Typography>
             ))}
         </Grid>
-        {mapData.locationData.length > 0 && mapData.open && (
-          <SensorMap mapData={mapData} />
-        )}
+        {mapData.locationData.length > 0 && mapData.open && <SensorMap mapData={mapData} />}
         <Grid item xs={12}>
           {loading ? (
             <CustomLoader />
           ) : gatewayData.length === 0 && nodeData.length === 0 ? (
-            <Grid container style={{ minHeight: "20vh" }}>
+            <Grid container style={{ minHeight: '20vh' }}>
               <Grid item xs={12}>
                 <Typography variant="h6">
-                  No data available yet, have you installed sensors and filled
-                  out a koboform?
+                  No data available yet, have you installed sensors and filled out a koboform?
                 </Typography>
               </Grid>
               <Grid item xs={12}>
@@ -380,18 +370,18 @@ const VisualsByCode = () => {
             <Grid container spacing={3}>
               <Grid item>
                 <Box sx={{ width: '100%', typography: 'body1' }}>
-                    <TabContext value={value}>
-                      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                          <TabList onChange={handleChange} aria-label="lab API tabs example">
-                            <Tab label="Gateway and Node" value="1" />
-                            <Tab label="VWC" value="2" />
-                            <Tab label="Soil and Litterbag Temp" value="3" />
-                          </TabList>
-                      </Box>
-                    </TabContext>
+                  <TabContext value={value}>
+                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                      <TabList onChange={handleChange} aria-label="lab API tabs example">
+                        <Tab label="Gateway and Node" value="1" />
+                        <Tab label="VWC" value="2" />
+                        <Tab label="Soil and Litterbag Temp" value="3" />
+                      </TabList>
+                    </Box>
+                  </TabContext>
                 </Box>
               </Grid>
-              <TabCharts 
+              <TabCharts
                 value={value}
                 handleChange={handleChange}
                 gatewayData={gatewayData}

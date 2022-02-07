@@ -1,19 +1,19 @@
 // Dependency Imports
-import { Grid } from "@material-ui/core";
-import React, { useState } from "react";
-import GoogleMapsReact from "google-map-react";
-import PropTypes from "prop-types";
+import { Grid } from '@material-ui/core';
+import React, { useState } from 'react';
+import GoogleMapsReact from 'google-map-react';
+import PropTypes from 'prop-types';
 // Local Imports
-import "./marker.scss";
-import { googleApiKey } from "../utils/api_secret";
-import SearchBox from "./SearchBox";
+import './marker.scss';
+import { googleApiKey } from '../utils/api_secret';
+import SearchBox from './SearchBox';
 
 // Default function
 const Location = ({
   center = { lat: 35.763197, lng: -78.700187 },
   mapHeight = 500,
   defaultZoom = 11,
-  searchLabel = "Add an Address",
+  searchLabel = 'Add an Address',
 
   markerLatLng = { lat: null, lng: null },
   setMarkerLatLng,
@@ -49,12 +49,12 @@ const Location = ({
     let placeService = new window.google.maps.Geocoder();
     const placeRequest = {
       location: { lat: lat, lng: lng },
-      region: "en-US",
+      region: 'en-US',
     };
     return await new Promise((resolve) =>
       placeService.geocode(placeRequest, (results, status) => {
         resolve({ results, status });
-      })
+      }),
     );
   };
   const [draggable, setDraggable] = useState(true);
@@ -76,19 +76,17 @@ const Location = ({
         )}
       </Grid>
       <Grid item xs={12}>
-        <div style={{ height: mapHeight, width: "100%" }}>
+        <div style={{ height: mapHeight, width: '100%' }}>
           <GoogleMapsReact
             draggable={draggable}
             bootstrapURLKeys={{
               key: googleApiKey,
-              libraries: ["places", "geometry"],
-              language: "EN",
-              region: "US",
+              libraries: ['places', 'geometry'],
+              language: 'EN',
+              region: 'US',
             }}
             defaultCenter={center}
-            center={
-              markerLatLng.lat && markerLatLng.lng ? markerLatLng : center
-            }
+            center={markerLatLng.lat && markerLatLng.lng ? markerLatLng : center}
             onChildMouseUp={() => {
               setDraggable(true);
             }}
@@ -98,16 +96,16 @@ const Location = ({
             onChildMouseMove={(e) => {
               setDraggable(true);
               addressLookup(e.lat, e.lng).then((res) => {
-                if (res.status === "OK") {
+                if (res.status === 'OK') {
                   if (res.results.length > 0) {
                     let address = res.results[0].formatted_address
                       ? res.results[0].formatted_address
-                      : "";
+                      : '';
                     let county = res.results[0].address_components.filter(
-                      (e) => e.types[0] === "administrative_area_level_2"
+                      (e) => e.types[0] === 'administrative_area_level_2',
                     );
                     let state = res.results[0].address_components.filter((e) =>
-                      e.types.includes("administrative_area_level_1")
+                      e.types.includes('administrative_area_level_1'),
                     );
 
                     setSelectedToEditSite({
@@ -115,8 +113,8 @@ const Location = ({
                       latitude: e.lat,
                       longitude: e.lng,
                       address: address,
-                      state: state[0].short_name || "",
-                      county: county[0].long_name || "",
+                      state: state[0].short_name || '',
+                      county: county[0].long_name || '',
                     });
                   }
                 } else {
@@ -131,24 +129,24 @@ const Location = ({
             onClick={(e) => {
               // setMarkerLatLng({ lat: e.center.lat, lng: e.center.lng });
               addressLookup(e.lat, e.lng).then((res) => {
-                if (res.status === "OK") {
+                if (res.status === 'OK') {
                   if (res.results.length > 0) {
                     let address = res.results[0].formatted_address
                       ? res.results[0].formatted_address
-                      : "";
+                      : '';
                     let county = res.results[0].address_components.filter(
-                      (e) => e.types[0] === "administrative_area_level_2"
+                      (e) => e.types[0] === 'administrative_area_level_2',
                     );
                     let state = res.results[0].address_components.filter((e) =>
-                      e.types.includes("administrative_area_level_1")
+                      e.types.includes('administrative_area_level_1'),
                     );
                     setSelectedToEditSite({
                       ...selectedToEditSite,
                       latitude: e.lat,
                       longitude: e.lng,
                       address: address,
-                      state: state[0]?.short_name || "",
-                      county: county[0]?.long_name || "",
+                      state: state[0]?.short_name || '',
+                      county: county[0]?.long_name || '',
                     });
                   }
                 } else {

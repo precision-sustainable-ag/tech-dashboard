@@ -1,7 +1,7 @@
 //Dependency Improts
-import React, { useEffect, useState } from "react";
-import Axios from "axios";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import Axios from 'axios';
+import { Link } from 'react-router-dom';
 import {
   Grid,
   GridList,
@@ -9,40 +9,40 @@ import {
   GridListTileBar,
   IconButton,
   makeStyles,
-} from "@material-ui/core";
-import { ArrowBackIosOutlined } from "@material-ui/icons";
+} from '@material-ui/core';
+import { ArrowBackIosOutlined } from '@material-ui/icons';
 
 // Local Imports
-import GatewayVisual from "./WaterSensorVisuals/GatewayVisual";
-import WaterSensorByGatewayTopbar from "./WaterSensorByGatewayTopbar";
+import GatewayVisual from './WaterSensorVisuals/GatewayVisual';
+import WaterSensorByGatewayTopbar from './WaterSensorByGatewayTopbar';
 // import NodeSensorVisuals from "./WaterSensorVisuals/NodeSensorVisuals";
-import { apiUsername, apiPassword, apiURL } from "../../utils/api_secret";
-import PropTypes from "prop-types";
+import { apiUsername, apiPassword, apiURL } from '../../utils/api_secret';
+import PropTypes from 'prop-types';
 
 // Styles
 const useStyles = makeStyles(() => ({
   gridList: {
-    width: "100%",
-    height: "50px",
+    width: '100%',
+    height: '50px',
     // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
-    transform: "translateZ(0)",
+    transform: 'translateZ(0)',
   },
   titleBar: {
     background:
-      "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, " +
-      "rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)",
-    borderTopLeftRadius: "10px",
-    borderTopRightRadius: "10px",
+      'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
+      'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
+    borderTopLeftRadius: '10px',
+    borderTopRightRadius: '10px',
   },
   icon: {
-    color: "white",
+    color: 'white',
   },
 }));
 
 // Helper functions
 const getNodeSerialNo = async (gatewayNo, year) => {
   return await Axios({
-    method: "get",
+    method: 'get',
     url: `${apiURL}/api/retrieve/nodes/by/gateway/${gatewayNo}/${year}`,
     auth: {
       username: apiUsername,
@@ -57,14 +57,12 @@ const WaterSensorByGateway = (props) => {
   const classes = useStyles();
   const gatewayNo = location.state.gatewaysno || match.params.gatewayId;
 
-  const [bareNodeSerialNo, setBareNodeSerialNo] = useState([
-    location.state.bareNodeSerialNo || "",
-  ]);
+  const [bareNodeSerialNo, setBareNodeSerialNo] = useState([location.state.bareNodeSerialNo || '']);
   const [coverNodeSerialNo, setCoverNodeSerialNo] = useState([
-    location.state.bareNodeSerialNo || "",
+    location.state.bareNodeSerialNo || '',
   ]);
   const [loading, setLoading] = useState(false);
-  const [activeChip, setActiveChip] = useState("");
+  const [activeChip, setActiveChip] = useState('');
   const [loadingNodes, setLoadingNodes] = useState(false);
 
   const [, setBareNodeObject] = useState({});
@@ -95,15 +93,13 @@ const WaterSensorByGateway = (props) => {
       for (let node in nodeData) {
         //   let i = 0;
         //   console.log(node);
-        if (nodeData[node]["bare_node_serial_no"] !== null)
-          if (!bareNodeArray.includes(nodeData[node]["bare_node_serial_no"])) {
-            bareNodeArray.push(nodeData[node]["bare_node_serial_no"]);
+        if (nodeData[node]['bare_node_serial_no'] !== null)
+          if (!bareNodeArray.includes(nodeData[node]['bare_node_serial_no'])) {
+            bareNodeArray.push(nodeData[node]['bare_node_serial_no']);
           }
-        if (nodeData[node]["cover_node_serial_no"] !== null)
-          if (
-            !coverNodeArray.includes(nodeData[node]["cover_node_serial_no"])
-          ) {
-            coverNodeArray.push(nodeData[node]["cover_node_serial_no"]);
+        if (nodeData[node]['cover_node_serial_no'] !== null)
+          if (!coverNodeArray.includes(nodeData[node]['cover_node_serial_no'])) {
+            coverNodeArray.push(nodeData[node]['cover_node_serial_no']);
           }
         //   i++;
       }
@@ -126,7 +122,7 @@ const WaterSensorByGateway = (props) => {
 
     innerPromise.then((val) => {
       //   set active chip to first bare/cover node serial number
-      console.log("bareNodeSerialNo.length", val);
+      console.log('bareNodeSerialNo.length', val);
       resolve(setActiveChip(val));
     });
   };
@@ -136,7 +132,7 @@ const WaterSensorByGateway = (props) => {
 
     nodeSerialNosPromise
       .then((nodesObject) => {
-        if (nodesObject.data.status === "success") {
+        if (nodesObject.data.status === 'success') {
           let nodeData = nodesObject.data.data;
           let promise = new Promise((resolve, reject) => {
             setNodeArrays(nodeData, resolve, reject);
@@ -161,11 +157,11 @@ const WaterSensorByGateway = (props) => {
   return !loading ? (
     <div>
       <GridList spacing={1} className={classes.gridList}>
-        <GridListTile key={gatewayNo} style={{ width: "100%", height: "50px" }}>
+        <GridListTile key={gatewayNo} style={{ width: '100%', height: '50px' }}>
           <GridListTileBar
-            title={"All Farm Codes"}
+            title={'All Farm Codes'}
             style={{
-              zIndex: "999",
+              zIndex: '999',
             }}
             titlePosition="top"
             actionIcon={
@@ -185,13 +181,13 @@ const WaterSensorByGateway = (props) => {
           />
         </GridListTile>
       </GridList>
-      <Grid container style={{ marginTop: "2em" }}>
+      <Grid container style={{ marginTop: '2em' }}>
         <Grid item xs={12}>
           <GatewayVisual gatewayNo={gatewayNo} year={year} />
         </Grid>
       </Grid>
 
-      <Grid container style={{ marginTop: "2em" }}>
+      <Grid container style={{ marginTop: '2em' }}>
         <Grid item md={12}>
           <WaterSensorByGatewayTopbar
             bareNodes={bareNodeSerialNo}
@@ -217,7 +213,7 @@ const WaterSensorByGateway = (props) => {
       </Grid>
     </div>
   ) : (
-    "Loading..."
+    'Loading...'
   );
 };
 

@@ -1,26 +1,26 @@
 // Dependency Imports
-import React, { useEffect, useState } from "react";
-import Axios from "axios";
-import Highcharts from "highcharts";
-import HighchartsReact from "highcharts-react-official";
-import { Grid } from "@material-ui/core";
-import moment from "moment";
-import PropTypes from "prop-types";
+import React, { useEffect, useState } from 'react';
+import Axios from 'axios';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
+import { Grid } from '@material-ui/core';
+import moment from 'moment';
+import PropTypes from 'prop-types';
 
 // Local Imports
-import { apiUsername, apiPassword, apiURL } from "../../../utils/api_secret";
+import { apiUsername, apiPassword, apiURL } from '../../../utils/api_secret';
 
 // Load Highcharts modules
-require("highcharts/modules/exporting")(Highcharts);
-require("highcharts/modules/offline-exporting")(Highcharts);
-require("highcharts/modules/export-data")(Highcharts);
+require('highcharts/modules/exporting')(Highcharts);
+require('highcharts/modules/offline-exporting')(Highcharts);
+require('highcharts/modules/export-data')(Highcharts);
 
 // Helper functions
 const getGatewayVisialData = async (gatewayNo, token, year) => {
   //   try {
   return await Axios({
     url: `${apiURL}/api/retrieve/table/water_gateway_data/by/serialno/${gatewayNo}/${year}`,
-    method: "get",
+    method: 'get',
     auth: {
       username: apiUsername,
       password: apiPassword,
@@ -37,67 +37,65 @@ const GatewayVisual = (props) => {
   const [loading, setLoading] = useState(false);
   const [volatageChartOptions, setVoltageChartOptions] = useState({
     chart: {
-      type: "scatter",
-      zoomType: "xy",
+      type: 'scatter',
+      zoomType: 'xy',
     },
     title: {
-      text: "Gateway Voltage",
+      text: 'Gateway Voltage',
     },
     xAxis: {
-      type: "datetime",
+      type: 'datetime',
     },
     yAxis: {
       title: {
-        text: "Voltage",
+        text: 'Voltage',
       },
     },
     legend: {
-      layout: "vertical",
-      align: "right",
-      verticalAlign: "middle",
+      layout: 'vertical',
+      align: 'right',
+      verticalAlign: 'middle',
       borderWidth: 0,
     },
     series: [
       {
-        name: "Battery Voltage",
+        name: 'Battery Voltage',
         data: [],
         tooltip: {
-          pointFormat:
-            "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
+          pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>',
         },
       },
     ],
   });
   const [currentChartOptions, setCurrentChartOptions] = useState({
     chart: {
-      type: "scatter",
-      zoomType: "xy",
+      type: 'scatter',
+      zoomType: 'xy',
     },
     title: {
-      text: "Gateway Solar Current",
+      text: 'Gateway Solar Current',
     },
     xAxis: {
-      type: "datetime",
+      type: 'datetime',
     },
     yAxis: {
       title: {
-        text: "Current",
+        text: 'Current',
       },
-      type: "logarithmic",
+      type: 'logarithmic',
     },
     legend: {
-      layout: "vertical",
-      align: "right",
-      verticalAlign: "middle",
+      layout: 'vertical',
+      align: 'right',
+      verticalAlign: 'middle',
       borderWidth: 0,
     },
     series: [
       {
-        name: "Solar Current",
+        name: 'Solar Current',
         data: [],
         tooltip: {
-          pointFormat:
-            "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
+          pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>',
         },
       },
     ],
@@ -118,18 +116,9 @@ const GatewayVisual = (props) => {
 
       // console.log("time", time);
 
-      gatewayBatteryVoltage.push([
-        time,
-        parseFloat(gatewayData[i].gw_batt_voltage),
-      ]);
-      gatewaySolarCurrent.push([
-        time,
-        parseFloat(gatewayData[i].gw_solar_current),
-      ]);
-      gatewaySolarVoltage.push([
-        time,
-        parseFloat(gatewayData[i].gw_solar_voltage),
-      ]);
+      gatewayBatteryVoltage.push([time, parseFloat(gatewayData[i].gw_batt_voltage)]);
+      gatewaySolarCurrent.push([time, parseFloat(gatewayData[i].gw_solar_current)]);
+      gatewaySolarVoltage.push([time, parseFloat(gatewayData[i].gw_solar_voltage)]);
     }
     return [gatewayBatteryVoltage, gatewaySolarCurrent, gatewaySolarVoltage];
 
@@ -147,9 +136,7 @@ const GatewayVisual = (props) => {
       getGatewayVisialData(gatewayNo, source.token, year)
         .then((gatewayDataObject) => {
           // console.log(gatewayDataObject);
-          let batteryVoltageArray = parseGatewayData(
-            gatewayDataObject.data.data
-          );
+          let batteryVoltageArray = parseGatewayData(gatewayDataObject.data.data);
 
           return batteryVoltageArray;
         })
@@ -158,19 +145,19 @@ const GatewayVisual = (props) => {
             ...volatageChartOptions,
             series: [
               {
-                name: "Battery Voltage",
+                name: 'Battery Voltage',
                 data: bvArr[0],
                 tooltip: {
                   pointFormat:
-                    "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
+                    'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>',
                 },
               },
               {
-                name: "Solar Voltage",
+                name: 'Solar Voltage',
                 data: bvArr[2],
                 tooltip: {
                   pointFormat:
-                    "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
+                    'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>',
                 },
               },
             ],
@@ -179,11 +166,11 @@ const GatewayVisual = (props) => {
             ...currentChartOptions,
             series: [
               {
-                name: "Solar Current",
+                name: 'Solar Current',
                 data: bvArr[1],
                 tooltip: {
                   pointFormat:
-                    "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
+                    'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>',
                 },
               },
             ],
@@ -194,7 +181,7 @@ const GatewayVisual = (props) => {
         })
         .catch((e) => {
           if (Axios.isCancel(e)) {
-            console.error("Request canceled,", e.message);
+            console.error('Request canceled,', e.message);
           } else {
             console.error(e);
           }
@@ -207,32 +194,32 @@ const GatewayVisual = (props) => {
     return () => {
       // console.log("unmounting");
       setLoading(true);
-      source.cancel("Unmounting Component");
+      source.cancel('Unmounting Component');
       //   source.cancel();
     };
   }, [currentChartOptions, gatewayNo, volatageChartOptions, year]);
 
   return !loading ? (
     <div>
-      <Grid container style={{ marginTop: "1em" }}>
+      <Grid container style={{ marginTop: '1em' }}>
         <Grid item md={6}>
           <HighchartsReact
             highcharts={Highcharts}
             options={volatageChartOptions}
-            containerProps={{ style: { height: "100%", width: "100%" } }}
+            containerProps={{ style: { height: '100%', width: '100%' } }}
           />
         </Grid>
         <Grid item md={6}>
           <HighchartsReact
             highcharts={Highcharts}
             options={currentChartOptions}
-            containerProps={{ style: { height: "100%", width: "100%" } }}
+            containerProps={{ style: { height: '100%', width: '100%' } }}
           />
         </Grid>
       </Grid>
     </div>
   ) : (
-    ""
+    ''
   );
 };
 

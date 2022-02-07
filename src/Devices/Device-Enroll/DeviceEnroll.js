@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Paper,
   Container,
@@ -24,29 +24,29 @@ import {
   Input,
   FormHelperText,
   FormGroup,
-} from "@material-ui/core";
-import Axios from "axios";
-import { CropFree, Check } from "@material-ui/icons";
+} from '@material-ui/core';
+import Axios from 'axios';
+import { CropFree, Check } from '@material-ui/icons';
 
 // Local Imports
-import { apiUsername, apiPassword } from "../../utils/api_secret";
+import { apiUsername, apiPassword } from '../../utils/api_secret';
 
 // Styles
 const useStyles = makeStyles((theme) => ({
   paper: {
     backgroundColor: theme.palette.background.paper,
-    border: "2px solid #000",
+    border: '2px solid #000',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
   root: {
-    transform: "translateZ(0px)",
+    transform: 'translateZ(0px)',
     flexGrow: 1,
   },
   modal: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   formControl: {
     margin: theme.spacing(1),
@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 650,
   },
   speedDial: {
-    position: "absolute",
+    position: 'absolute',
     bottom: theme.spacing(2),
     right: theme.spacing(2),
   },
@@ -75,44 +75,37 @@ const DeviceEnroll = () => {
 
   const [open, setOpen] = useState(false);
 
-  const [deviceIdInput, setDeviceIdInput] = useState("");
-  const [gatewaySerialNumberInput, setGatewaySerialNumberInput] = useState("");
+  const [deviceIdInput, setDeviceIdInput] = useState('');
+  const [gatewaySerialNumberInput, setGatewaySerialNumberInput] = useState('');
 
   const getDevices = async () => {
-    return await Axios.get(
-      "https://techdashboard.tk/api/hologram/devices/all",
-      {
-        withCredentials: true,
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        auth: {
-          username: apiUsername,
-          password: apiPassword,
-        },
-      }
-    );
+    return await Axios.get('https://techdashboard.tk/api/hologram/devices/all', {
+      withCredentials: true,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      auth: {
+        username: apiUsername,
+        password: apiPassword,
+      },
+    });
   };
 
   const pushGatewaySerialNo = async (deviceId, gatewaySerialNo) => {
     let formData = new FormData();
-    formData.append("deviceId", deviceId);
-    formData.append("gatewaySerialNo", gatewaySerialNo);
-    formData.append("isActive", true);
-    Axios.post(
-      "https://techdashboard.tk/api/hologram/relationships/watersensor",
-      formData,
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        },
-        auth: {
-          username: apiUsername,
-          password: apiPassword,
-        },
-      }
-    )
+    formData.append('deviceId', deviceId);
+    formData.append('gatewaySerialNo', gatewaySerialNo);
+    formData.append('isActive', true);
+    Axios.post('https://techdashboard.tk/api/hologram/relationships/watersensor', formData, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+      },
+      auth: {
+        username: apiUsername,
+        password: apiPassword,
+      },
+    })
       .then((response) => {
         console.log(response);
       })
@@ -121,26 +114,21 @@ const DeviceEnroll = () => {
       });
   };
   const getWsensorRelations = async () => {
-    return await Axios.get(
-      "https://techdashboard.tk/api/hologram/relationships/watersensor/all",
-      {
-        withCredentials: true,
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        auth: {
-          username: apiUsername,
-          password: apiPassword,
-        },
-      }
-    );
+    return await Axios.get('https://techdashboard.tk/api/hologram/relationships/watersensor/all', {
+      withCredentials: true,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      auth: {
+        username: apiUsername,
+        password: apiPassword,
+      },
+    });
   };
 
   const doesDeviceIdExistsInRelationship = (deviceId) => {
-    const found = deviceWsensorRelations.some(
-      (el) => el.device_id === deviceId
-    );
+    const found = deviceWsensorRelations.some((el) => el.device_id === deviceId);
 
     return found;
   };
@@ -148,7 +136,7 @@ const DeviceEnroll = () => {
   const showGatewaySerialNumber = (sno, deviceId) => {
     let isTextFieldFilled;
     if (sno === null) {
-      sno = "";
+      sno = '';
       console.log(deviceWsensorRelations);
       if (deviceWsensorRelations.length > 0) {
         for (const item of deviceWsensorRelations) {
@@ -166,7 +154,7 @@ const DeviceEnroll = () => {
         }
       } else {
         isTextFieldFilled = false;
-        console.log("device sensor relationship empty");
+        console.log('device sensor relationship empty');
       }
 
       return (
@@ -183,7 +171,7 @@ const DeviceEnroll = () => {
             endAdornment: !isTextFieldFilled ? (
               <InputAdornment position="end">
                 {doesDeviceIdExistsInRelationship(deviceId.toString()) ? (
-                  ""
+                  ''
                 ) : (
                   <IconButton
                     aria-label="update-serial-number"
@@ -194,7 +182,7 @@ const DeviceEnroll = () => {
                 )}
               </InputAdornment>
             ) : (
-              ""
+              ''
             ),
           }}
         />
@@ -205,7 +193,7 @@ const DeviceEnroll = () => {
   const confirmAddSerialDeviceRelation = (deviceId) => {
     const ele = document.getElementById(deviceId);
 
-    if (window.confirm("Are you sure?")) {
+    if (window.confirm('Are you sure?')) {
       //   console.log(deviceId, ele.value);
       if (ele.value.length > 0) {
         if (!isNaN(ele.value)) {
@@ -215,7 +203,7 @@ const DeviceEnroll = () => {
               // window.location.reload();
             })
             .catch((e) => {
-              console.error("axios error: ", e);
+              console.error('axios error: ', e);
             });
         }
       }
@@ -242,7 +230,7 @@ const DeviceEnroll = () => {
         const distinctDeviceIds = [];
         const map = new Map();
         for (const item of response.data.devices) {
-          if (!item.device_name.startsWith("Eve")) {
+          if (!item.device_name.startsWith('Eve')) {
             if (!map.has(item.device_id)) {
               map.set(item.device_id, true); // set any value to Map
               distinctDeviceIds.push({
@@ -290,9 +278,7 @@ const DeviceEnroll = () => {
           <Fade in={open}>
             <div className={classes.paper}>
               <h2 id="transition-modal-title">Add New Device Relation</h2>
-              <p id="transition-modal-description">
-                Enter device details below
-              </p>
+              <p id="transition-modal-description">Enter device details below</p>
               <div>
                 <FormGroup>
                   <FormControl>
@@ -300,26 +286,20 @@ const DeviceEnroll = () => {
                     <Input
                       id="deviceIdInput"
                       aria-describedby="device-id"
-                      value={deviceIdInput || ""}
+                      value={deviceIdInput || ''}
                       onChange={(e) => {
-                        e.target.value !== ""
+                        e.target.value !== ''
                           ? setDeviceIdInput(parseInt(e.target.value))
-                          : setDeviceIdInput("");
+                          : setDeviceIdInput('');
                       }}
                     />
                     <FormHelperText
                       id="device-id"
                       error={
-                        doesDeviceIdExistsInRelationship(
-                          deviceIdInput.toString()
-                        )
-                          ? true
-                          : false
+                        doesDeviceIdExistsInRelationship(deviceIdInput.toString()) ? true : false
                       }
                     >
-                      {
-                        " Make sure that this id has not already been used in the table"
-                      }
+                      {' Make sure that this id has not already been used in the table'}
                     </FormHelperText>
                   </FormControl>
                   <FormControl>
@@ -330,13 +310,11 @@ const DeviceEnroll = () => {
                       required="required"
                       id="gatewaySerialNumberInput"
                       aria-describedby="gateway-serial-number"
-                      value={gatewaySerialNumberInput || ""}
+                      value={gatewaySerialNumberInput || ''}
                       onChange={(e) => {
-                        e.target.value !== ""
-                          ? setGatewaySerialNumberInput(
-                              parseInt(e.target.value)
-                            )
-                          : setGatewaySerialNumberInput("");
+                        e.target.value !== ''
+                          ? setGatewaySerialNumberInput(parseInt(e.target.value))
+                          : setGatewaySerialNumberInput('');
                       }}
                     />
                     <FormHelperText id="gateway-serial-number"></FormHelperText>
@@ -347,16 +325,14 @@ const DeviceEnroll = () => {
                       variant="contained"
                       type="submit"
                       disabled={
-                        doesDeviceIdExistsInRelationship(
-                          deviceIdInput.toString()
-                        )
+                        doesDeviceIdExistsInRelationship(deviceIdInput.toString())
                           ? true
                           : deviceIdInput.toString().length > 0 &&
                             gatewaySerialNumberInput.toString().length > 0
                           ? false
                           : true
                       }
-                      style={{ marginTop: "3em" }}
+                      style={{ marginTop: '3em' }}
                       onClick={() => {
                         //   check if device id exists
                       }}
@@ -380,7 +356,7 @@ const DeviceEnroll = () => {
           </Grid>
         </Grid>
 
-        <div style={{ paddingTop: "2em" }}>
+        <div style={{ paddingTop: '2em' }}>
           <Grid container spacing={24}>
             <Grid item xs={12}>
               <TableContainer component={Paper}>
@@ -398,10 +374,7 @@ const DeviceEnroll = () => {
                         <TableCell>{device.device_id}</TableCell>
                         <TableCell>{device.device_name}</TableCell>
                         <TableCell>
-                          {showGatewaySerialNumber(
-                            device.gateway_serial_no,
-                            device.device_id
-                          )}
+                          {showGatewaySerialNumber(device.gateway_serial_no, device.device_id)}
                         </TableCell>
                       </TableRow>
                     ))}

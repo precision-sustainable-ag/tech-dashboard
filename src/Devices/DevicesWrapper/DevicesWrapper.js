@@ -1,6 +1,6 @@
-import React from "react";
-import { Button, Grid, Typography } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Button, Grid, Typography } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 
 const DevicesWrapper = () => {
   return (
@@ -9,20 +9,12 @@ const DevicesWrapper = () => {
         <Typography variant="h4">Devices</Typography>
       </Grid>
       <Grid item>
-        <Button
-          variant="contained"
-          component={Link}
-          to={"/devices/water-sensors"}
-        >
+        <Button variant="contained" component={Link} to={'/devices/water-sensors'}>
           Water Sensors
         </Button>
       </Grid>
       <Grid item>
-        <Button
-          variant="contained"
-          component={Link}
-          to={"/devices/stress-cams"}
-        >
+        <Button variant="contained" component={Link} to={'/devices/stress-cams'}>
           Stress Cams
         </Button>
       </Grid>
