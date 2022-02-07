@@ -1,4 +1,4 @@
-import { Button, Grid } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import React, { useState, useEffect, useContext } from 'react';
 import { Context } from '../../Store/Store';
 import { onfarmAPI } from '../../utils/api_secret';
@@ -6,7 +6,6 @@ import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { enUS } from 'date-fns/locale';
-import { Link } from 'react-router-dom';
 import { blue, green, yellow } from '@material-ui/core/colors';
 import { addDays, format, parse, startOfWeek, getDay } from 'date-fns';
 const locales = {
@@ -264,18 +263,6 @@ const FarmDatesCalendar = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item>
-        <Button
-          size="small"
-          color="primary"
-          variant="contained"
-          component={Link}
-          to="/site-information/farm-dates"
-        >
-          Table View
-        </Button>
-      </Grid>
-
       <Grid item xs={12}>
         <Calendar
           localizer={localizer}

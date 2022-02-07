@@ -395,7 +395,19 @@ export default function Header(props) {
                   handleOpenAllDataNav();
                 }}
               >
-                <ListItemText inset primary="Dates" />
+                <ListItemText inset primary="Dates - Table View" />
+              </ListItem>
+
+              <ListItem
+                button
+                to="/site-information/farm-dates/calendar"
+                component={Link}
+                onClick={() => {
+                  setOpen(false);
+                  handleOpenAllDataNav();
+                }}
+              >
+                <ListItemText inset primary="Dates - Calendar View" />
               </ListItem>
             </List>
           </Collapse>
