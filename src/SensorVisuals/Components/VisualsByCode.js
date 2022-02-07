@@ -44,6 +44,7 @@ const VisualsByCode = () => {
   // const [sensorData, setSensorData] = useState([]);
   const [gatewayData, setGatewayData] = useState([]);
   const [nodeData, setNodeData] = useState([]);
+  const [codeData, setCodeData] = useState({});
   // const [ambientSensorData, setAmbientSensorData] = useState([]);
   // const [serials, setSerials] = useState({
   //   sensor: [],
@@ -55,6 +56,7 @@ const VisualsByCode = () => {
   const location = useLocation();
 
   const latLongEndpoint = onfarmAPI + `/locations?code=${code}&year=${year}`;
+  const affiliationEndpoint = onfarmAPI + `/raw?table=site_information&code=${code}`;
   const waterSensorDataEndpoint =
     onfarmAPI +
     `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,trt,center_depth,soil_temp&location=true`;
@@ -168,6 +170,12 @@ const VisualsByCode = () => {
               'x-api-key': apiKey,
             },
           });
+          const codeDataFromApi = await fetch(affiliationEndpoint, {
+            headers: {
+              'Content-Type': 'application/json',
+              'x-api-key': apiKey,
+            },
+          });
           const latLongResponse = await latLongData.json();
 
           setMapData((d) => ({ ...d, locationData: latLongResponse }));
@@ -175,6 +183,10 @@ const VisualsByCode = () => {
           const gatewayResponse = await gatewayRecords.json();
 
           const tdrDataRecords = await tdrDataFromApi.json();
+
+          const codeDataRecords = await codeDataFromApi.json();
+
+          setCodeData(codeDataRecords[0]);
 
           setIssueBody(tdrDataRecords[tdrDataRecords.length - 1]);
 
@@ -336,7 +348,7 @@ const VisualsByCode = () => {
                 rowData={JSON.stringify(issueBody, null, '\t')}
                 dataType="json"
                 setSnackbarData={setSnackbarData}
-                labels={[code, 'tdr', 'water-sensor-visuals']}
+                labels={[code, 'tdr', 'water-sensor-visuals', codeData.affiliation]}
                 getTokenSilently={getTokenSilently}
               />
             ) : (
