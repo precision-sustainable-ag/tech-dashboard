@@ -11,22 +11,22 @@ import {
   TextField,
   Typography,
   Snackbar,
-  makeStyles
-} from "@material-ui/core";
-import { Check, Save } from "@material-ui/icons";
-import Axios from "axios";
-import React, { useState, useEffect, useContext } from "react";
-import InputMask from "react-input-mask";
-import PropTypes from "prop-types";
-import { Context } from "../Store/Store";
+  makeStyles,
+} from '@material-ui/core';
+import { Check, Save } from '@material-ui/icons';
+import Axios from 'axios';
+import React, { useState, useEffect, useContext } from 'react';
+import InputMask from 'react-input-mask';
+import PropTypes from 'prop-types';
+import { Context } from '../Store/Store';
 
 // Local Imports
-import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
-import { fetchGrowerByLastName, ucFirst } from "../utils/constants";
-import { NewSiteInfo } from "./NewSiteInfo";
-import { callAzureFunction } from "../utils/SharedFunctions";
-import { useAuth0 } from "../Auth/react-auth0-spa";
-import MuiAlert from "@material-ui/lab/Alert";
+import { apiPassword, apiURL, apiUsername } from '../utils/api_secret';
+import { fetchGrowerByLastName, ucFirst } from '../utils/constants';
+import { NewSiteInfo } from './NewSiteInfo';
+import { callAzureFunction } from '../utils/SharedFunctions';
+import { useAuth0 } from '../Auth/react-auth0-spa';
+import MuiAlert from '@material-ui/lab/Alert';
 
 // Helper function
 function Alert(props) {
@@ -46,31 +46,40 @@ const useStyles = makeStyles(() => ({
 }));
 
 //Global Vars
-const qs = require("qs");
+const qs = require('qs');
 
 // Default function
-const GrowerInformation = ({ enrollmentData, setEnrollmentData, editSite, code, producerId, year, affiliation, closeModal }) => {
-  const [growerType, setGrowerType] = useState("existing");
-  const [growerLastNameSearch, setGrowerLastNameSearch] = useState("");
+const GrowerInformation = ({
+  enrollmentData,
+  setEnrollmentData,
+  editSite,
+  code,
+  producerId,
+  year,
+  affiliation,
+  closeModal,
+}) => {
+  const [growerType, setGrowerType] = useState('existing');
+  const [growerLastNameSearch, setGrowerLastNameSearch] = useState('');
   const [allGrowers, setAllGrowers] = useState([]);
   const [, setSiteCodes] = useState([]);
   const [showSitesInfo, setShowSitesInfo] = useState(false);
   const [savingProducerId, setSavingProducerId] = useState(false);
   const [snackbarData, setSnackbarData] = useState({
     open: false,
-    text: "",
-    severity: "success",
+    text: '',
+    severity: 'success',
   });
   const [state] = useContext(Context);
   const { getTokenSilently } = useAuth0();
 
   const handleNewGrowerInfo = () => {
-    if (window.confirm("Are you sure you want to save this grower?")) {
+    if (window.confirm('Are you sure you want to save this grower?')) {
       if (
         Object.keys(enrollmentData.growerInfo).length === 0 ||
-        enrollmentData.growerInfo.lastName === ""
+        enrollmentData.growerInfo.lastName === ''
       ) {
-        alert("Please enter grower information: Last Name");
+        alert('Please enter grower information: Last Name');
       } else {
         setSavingProducerId(true);
         let newGrowerPromise = saveNewGrowerAndFetchProducerId(enrollmentData);
@@ -92,63 +101,55 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData, editSite, code, 
   };
 
   useEffect(() => {
-    if (growerType === "existing" && growerLastNameSearch !== "") {
+    if (growerType === 'existing' && growerLastNameSearch !== '') {
       let lastNamePromise = fetchGrowerByLastName(growerLastNameSearch, state.userInfo.apikey);
-      lastNamePromise
-        .then((resp) => {
-          let data = resp;
-          if (data.length > 0) {
-            setAllGrowers(data);
-          } else {
-            setAllGrowers([]);
-            setSiteCodes([]);
-          }
-        });
+      lastNamePromise.then((resp) => {
+        let data = resp;
+        if (data.length > 0) {
+          setAllGrowers(data);
+        } else {
+          setAllGrowers([]);
+          setSiteCodes([]);
+        }
+      });
     }
     setEnrollmentData((enroll) => ({
       ...enroll,
       growerInfo: {
-        collaborationStatus: "University",
-        producerId: "",
-        phone: "",
-        firstName: "",
-        lastName: "",
-        email: "",
+        collaborationStatus: 'University',
+        producerId: '',
+        phone: '',
+        firstName: '',
+        lastName: '',
+        email: '',
       },
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [growerLastNameSearch, growerType]);
- 
+
   return (
     <>
       <Grid item sm={12}>
         <Typography variant="h4">Grower Information</Typography>
       </Grid>
       <Snackbar
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "center",
-            }}
-            open={snackbarData.open}
-            autoHideDuration={10000}
-            onClose={() =>
-              setSnackbarData({ ...snackbarData, open: !snackbarData.open })
-            }
-          >
-            <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-          </Snackbar>
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        open={snackbarData.open}
+        autoHideDuration={10000}
+        onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
+      >
+        <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
+      </Snackbar>
       <Grid item sm={12}>
-        <Grid
-          container
-          alignContent="center"
-          justifyContent="center"
-          spacing={2}
-        >
+        <Grid container alignContent="center" justifyContent="center" spacing={2}>
           <Grid item>
             <FormControlLabel
               value="existing"
-              checked={growerType === "existing" ? true : false}
-              onChange={() => setGrowerType("existing")}
+              checked={growerType === 'existing' ? true : false}
+              onChange={() => setGrowerType('existing')}
               control={<Radio color="primary" />}
               label="Use Existing Grower"
               labelPlacement="top"
@@ -158,8 +159,8 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData, editSite, code, 
           <Grid item>
             <FormControlLabel
               value="new"
-              onChange={() => setGrowerType("new")}
-              checked={growerType === "new" ? true : false}
+              onChange={() => setGrowerType('new')}
+              checked={growerType === 'new' ? true : false}
               control={<Radio color="primary" />}
               label="Add New Grower"
               labelPlacement="top"
@@ -169,7 +170,7 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData, editSite, code, 
         </Grid>
       </Grid>
       <Grid item xs={12}>
-        {growerType === "existing" ? (
+        {growerType === 'existing' ? (
           <Grid container spacing={4}>
             <Grid item xs={12}>
               <Typography variant="h5">Existing Grower</Typography>
@@ -325,16 +326,14 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData, editSite, code, 
                 <MenuItem value="Partner">Partner</MenuItem>
               </Select>
             </Grid> */}
-            {!editSite && <Grid item xs={12}>
-              <Button
-                size="small"
-                variant="outlined"
-                onClick={handleNewGrowerInfo}
-              >
-                <Save fontSize="small" />
-                &nbsp;Save
-              </Button>
-            </Grid>}
+            {!editSite && (
+              <Grid item xs={12}>
+                <Button size="small" variant="outlined" onClick={handleNewGrowerInfo}>
+                  <Save fontSize="small" />
+                  &nbsp;Save
+                </Button>
+              </Grid>
+            )}
           </Grid>
         )}
       </Grid>
@@ -342,59 +341,72 @@ const GrowerInformation = ({ enrollmentData, setEnrollmentData, editSite, code, 
         {/* <SiteSelection /> */}
         <Grid container justifyContent="center" alignItems="center">
           <Grid item>
-            {!editSite ? <Button
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                setShowSitesInfo(true);
-                window.scrollTo(0, document.body.scrollHeight);
-              }}
-              disabled={
-                enrollmentData.growerInfo.producerId === "" ||
-                Object.keys(enrollmentData.growerInfo).length === 0 ||
-                showSitesInfo
-                  ? true
-                  : false
-              }
-            >
-              {savingProducerId ? "Saving New Grower" : "Next Step"}
-            </Button> :
-            <Button onClick={() => {
-                let id = growerType === "existing" ? enrollmentData.growerInfo.producerId : producerId;
-                let updateData = updateSite(enrollmentData, getTokenSilently, code, id, year, affiliation, growerType); 
-                updateData.then(() => {
-                  setSnackbarData({
-                    open: true,
-                    text: `Updated grower successfully`,
-                    severity: "success",
-                  });
-                }).catch(() => {
-                  setSnackbarData({
-                    open: true,
-                    text: `Oops! Could not update grower information.`,
-                    severity: "error",
-                  });
-                }).finally(() => {
-                  setTimeout(() => closeModal(), 2500);
-                });
-              }} 
-              color="primary" 
-              variant="contained">
-              Update
-            </Button>
-            }
+            {!editSite ? (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  setShowSitesInfo(true);
+                  window.scrollTo(0, document.body.scrollHeight);
+                }}
+                disabled={
+                  enrollmentData.growerInfo.producerId === '' ||
+                  Object.keys(enrollmentData.growerInfo).length === 0 ||
+                  showSitesInfo
+                    ? true
+                    : false
+                }
+              >
+                {savingProducerId ? 'Saving New Grower' : 'Next Step'}
+              </Button>
+            ) : (
+              <Button
+                onClick={() => {
+                  let id =
+                    growerType === 'existing' ? enrollmentData.growerInfo.producerId : producerId;
+                  let updateData = updateSite(
+                    enrollmentData,
+                    getTokenSilently,
+                    code,
+                    id,
+                    year,
+                    affiliation,
+                    growerType,
+                  );
+                  updateData
+                    .then(() => {
+                      setSnackbarData({
+                        open: true,
+                        text: `Updated grower successfully`,
+                        severity: 'success',
+                      });
+                    })
+                    .catch(() => {
+                      setSnackbarData({
+                        open: true,
+                        text: `Oops! Could not update grower information.`,
+                        severity: 'error',
+                      });
+                    })
+                    .finally(() => {
+                      setTimeout(() => closeModal(), 2500);
+                    });
+                }}
+                color="primary"
+                variant="contained"
+              >
+                Update
+              </Button>
+            )}
           </Grid>
         </Grid>
       </Grid>
       {showSitesInfo && enrollmentData.growerInfo.producerId ? (
         <Grid item xs={12}>
-          <NewSiteInfo
-            enrollmentData={enrollmentData}
-            setEnrollmentData={setEnrollmentData}
-          />
+          <NewSiteInfo enrollmentData={enrollmentData} setEnrollmentData={setEnrollmentData} />
         </Grid>
       ) : (
-        ""
+        ''
       )}
     </>
   );
@@ -405,7 +417,7 @@ export default GrowerInformation;
 // Helper functions
 const ExistingGrowersGrid = ({
   allGrowers = [],
-  growerLastName = "",
+  growerLastName = '',
   enrollmentData = {},
   setEnrollmentData = () => {},
 }) => {
@@ -415,7 +427,7 @@ const ExistingGrowersGrid = ({
     allGrowers.map((grower, index) => {
       // fetchSiteCodesFor(grower.producer_id);
 
-      return(
+      return (
         <Grid item key={`existing-grower-${index}`} sm={6} md={3} className={classes.cardHeight}>
           <Card className={classes.cardHeight}>
             <CardHeader
@@ -448,7 +460,7 @@ const ExistingGrowersGrid = ({
                   <Typography variant="body2">Site Code</Typography>
                 </Grid>
                 <Grid item xs={6}>
-                  <Typography variant="body2">{grower.codes.split(".").join(", ")}</Typography>
+                  <Typography variant="body2">{grower.codes.split('.').join(', ')}</Typography>
                 </Grid>
               </Grid>
             </CardContent>
@@ -457,8 +469,8 @@ const ExistingGrowersGrid = ({
                 size="small"
                 color={
                   enrollmentData.growerInfo.producerId === grower.producer_id
-                    ? "primary"
-                    : "default"
+                    ? 'primary'
+                    : 'default'
                 }
                 variant="contained"
                 onClick={() => {
@@ -468,7 +480,7 @@ const ExistingGrowersGrid = ({
                       producerId: grower.producer_id,
                       collaborationStatus: grower.collaboration_status
                         ? grower.collaboration_status
-                        : "University",
+                        : 'University',
                       phone: grower.phone,
                       lastName: grower.last_name,
                       email: grower.email,
@@ -476,16 +488,12 @@ const ExistingGrowersGrid = ({
                   });
                 }}
                 startIcon={
-                  enrollmentData.growerInfo.producerId === grower.producer_id ? (
-                    <Check />
-                  ) : (
-                    <Save />
-                  )
+                  enrollmentData.growerInfo.producerId === grower.producer_id ? <Check /> : <Save />
                 }
               >
                 {enrollmentData.growerInfo.producerId === grower.producer_id
-                  ? "Selected"
-                  : "Select"}
+                  ? 'Selected'
+                  : 'Select'}
               </Button>
             </CardActions>
           </Card>
@@ -493,7 +501,7 @@ const ExistingGrowersGrid = ({
       );
     })
   ) : growerLastName.length === 0 ? (
-    ""
+    ''
   ) : (
     <Typography variant="body1">Grower Not Found</Typography>
   );
@@ -505,14 +513,14 @@ const saveNewGrowerAndFetchProducerId = async (enrollmentData = {}) => {
     lastName: enrollmentData.growerInfo.lastName,
     email: enrollmentData.growerInfo.email,
     phone: enrollmentData.growerInfo.phone
-      .split("(")
-      .join("")
-      .split(")")
-      .join("")
-      .split(" ")
-      .join("")
-      .split("-")
-      .join(""),
+      .split('(')
+      .join('')
+      .split(')')
+      .join('')
+      .split(' ')
+      .join('')
+      .split('-')
+      .join(''),
     year: enrollmentData.year,
     affiliation: enrollmentData.affiliation,
     collaborationStatus: enrollmentData.growerInfo.collaborationStatus,
@@ -524,7 +532,7 @@ const saveNewGrowerAndFetchProducerId = async (enrollmentData = {}) => {
       password: apiPassword,
     },
     headers: {
-      "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+      'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
     },
   });
 };
@@ -535,14 +543,14 @@ const updateGrowerInfo = async (enrollmentData = {}) => {
     lastName: enrollmentData.growerInfo.lastName,
     email: enrollmentData.growerInfo.email,
     phone: enrollmentData.growerInfo.phone
-      .split("(")
-      .join("")
-      .split(")")
-      .join("")
-      .split(" ")
-      .join("")
-      .split("-")
-      .join(""),
+      .split('(')
+      .join('')
+      .split(')')
+      .join('')
+      .split(' ')
+      .join('')
+      .split('-')
+      .join(''),
     year: enrollmentData.year,
     affiliation: enrollmentData.affiliation,
     collaborationStatus: enrollmentData.growerInfo.collaborationStatus,
@@ -554,41 +562,56 @@ const updateGrowerInfo = async (enrollmentData = {}) => {
       password: apiPassword,
     },
     headers: {
-      "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+      'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
     },
   });
 };
 
-  const updateSite = async (enrollmentData = {}, getTokenSilently, code, producerId, year, affiliation, growerType) => {
-    if (growerType !== "existing") {
-      let newGrowerPromise = updateGrowerInfo({...enrollmentData, year: year, affiliation: affiliation});
-      newGrowerPromise.then((resp) => {
-        let newProducerId = resp.data.producerId;
-        let data = {
-          code: code,
-          producer_id: newProducerId
-        };
-        let apiStatus = callAzureFunction(data, "UpdateProducer", getTokenSilently);
-        apiStatus.then(() => {
-          return "success";
-        }).catch(() => {
-          return "error";
-        });
-      });
-    } else {
+const updateSite = async (
+  enrollmentData = {},
+  getTokenSilently,
+  code,
+  producerId,
+  year,
+  affiliation,
+  growerType,
+) => {
+  if (growerType !== 'existing') {
+    let newGrowerPromise = updateGrowerInfo({
+      ...enrollmentData,
+      year: year,
+      affiliation: affiliation,
+    });
+    newGrowerPromise.then((resp) => {
+      let newProducerId = resp.data.producerId;
       let data = {
         code: code,
-        producer_id: producerId
+        producer_id: newProducerId,
       };
-      let apiStatus = callAzureFunction(data, "UpdateProducer", getTokenSilently);
-      apiStatus.then(() => {
-        return "success";
-      }).catch(() => {
-        return "error";
+      let apiStatus = callAzureFunction(data, 'UpdateProducer', getTokenSilently);
+      apiStatus
+        .then(() => {
+          return 'success';
+        })
+        .catch(() => {
+          return 'error';
+        });
+    });
+  } else {
+    let data = {
+      code: code,
+      producer_id: producerId,
+    };
+    let apiStatus = callAzureFunction(data, 'UpdateProducer', getTokenSilently);
+    apiStatus
+      .then(() => {
+        return 'success';
+      })
+      .catch(() => {
+        return 'error';
       });
-    }
-          
-  };
+  }
+};
 
 GrowerInformation.propTypes = {
   enrollmentData: PropTypes.object,
@@ -598,7 +621,7 @@ GrowerInformation.propTypes = {
   code: PropTypes.string,
   year: PropTypes.any,
   affiliation: PropTypes.string,
-  closeModal: PropTypes.func
+  closeModal: PropTypes.func,
 };
 
 ExistingGrowersGrid.propTypes = {

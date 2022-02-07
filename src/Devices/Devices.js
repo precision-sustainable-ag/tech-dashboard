@@ -1,27 +1,19 @@
 // Dependency Imports
-import React, { useState, useEffect } from "react";
-import Loading from "react-loading";
-import {
-  Card,
-  Chip,
-  Grid,
-  Icon,
-  InputAdornment,
-  Typography,
-  TextField,
-} from "@material-ui/core";
+import React, { useState, useEffect } from 'react';
+import Loading from 'react-loading';
+import { Card, Chip, Grid, Icon, InputAdornment, Typography, TextField } from '@material-ui/core';
 
 // Local Imports
-import DataParser from "./DataParser";
-import { BannedRoleMessage } from "../utils/CustomComponents";
+import DataParser from './DataParser';
+import { BannedRoleMessage } from '../utils/CustomComponents';
 // import "./Devices.scss";
-import PropTypes from "prop-types";
-import { useHistory } from "react-router-dom";
-import { Search } from "@material-ui/icons";
-import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
+import PropTypes from 'prop-types';
+import { useHistory } from 'react-router-dom';
+import { Search } from '@material-ui/icons';
+import { apiPassword, apiURL, apiUsername } from '../utils/api_secret';
 
 const deviceCardStyle = {
-  height: "210px",
+  height: '210px',
 };
 
 // Default function
@@ -38,8 +30,8 @@ const DevicesComponent = ({
   const [devicesWithNicknames, setDevicesWithNicknames] = useState([]);
   const [searchedDevices, setSearchedDevices] = useState([]);
   const [deviceTags, setDeviceTags] = useState([]);
-  const [deviceSearchText, setDeviceSearchText] = useState("");
-  const [activeTag, setActiveTag] = useState("All");
+  const [deviceSearchText, setDeviceSearchText] = useState('');
+  const [activeTag, setActiveTag] = useState('All');
   const history = useHistory();
 
   useEffect(() => {
@@ -68,14 +60,11 @@ const DevicesComponent = ({
       // });
 
       const response = await fetch(fetchNicknamesURL, {
-        method: "post",
+        method: 'post',
         headers: {
           Authorization:
-            "Basic " +
-            Buffer.from(apiUsername + ":" + apiPassword, "binary").toString(
-              "base64"
-            ),
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+            'Basic ' + Buffer.from(apiUsername + ':' + apiPassword, 'binary').toString('base64'),
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
         },
         body: `q=${deviceIds.toString()}`,
       });
@@ -101,13 +90,10 @@ const DevicesComponent = ({
 
   useEffect(() => {
     if (deviceSearchText) {
-      const likeExp = deviceSearchText.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
-      const regex = new RegExp(`w*${likeExp}w*`, "gi");
+      const likeExp = deviceSearchText.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+      const regex = new RegExp(`w*${likeExp}w*`, 'gi');
       const filtered = devicesWithNicknames.filter(
-        (device) =>
-          regex.test(device.nickname) ||
-          regex.test(device.name) ||
-          regex.test(device.id)
+        (device) => regex.test(device.nickname) || regex.test(device.name) || regex.test(device.id),
       );
 
       setSearchedDevices(filtered);
@@ -124,13 +110,13 @@ const DevicesComponent = ({
     } else if (activeTg) {
       setActiveTag(activeTg);
     } else {
-      setActiveTag("All");
+      setActiveTag('All');
     }
   }, [history.location, activeTg]);
 
   useEffect(() => {
-    if (activeTag === "All" && devices.length > 0) {
-      if (from === "watersensors") {
+    if (activeTag === 'All' && devices.length > 0) {
+      if (from === 'watersensors') {
         const devicesWithTags = filterAllDevices(devices);
         setValidDevices(devicesWithTags);
       } else {
@@ -138,14 +124,14 @@ const DevicesComponent = ({
       }
     } else {
       if (devices.length > 0) {
-        if (activeTag === "All") {
-          if (from === "watersensors") {
+        if (activeTag === 'All') {
+          if (from === 'watersensors') {
             const devicesWithTags = filterAllDevices(devices);
             setValidDevices(devicesWithTags);
           } else {
             setValidDevices(devices);
           }
-        } else if (activeTag === "Untagged") {
+        } else if (activeTag === 'Untagged') {
           const devicesWithoutTags = filterAllDevicesWithoutTags(devices);
           setValidDevices(devicesWithoutTags);
         } else {
@@ -174,9 +160,9 @@ const DevicesComponent = ({
           <Grid container item xs={12} spacing={3}>
             <Grid item>
               <Chip
-                color={activeTag === "All" ? "primary" : "default"}
-                label={"All"}
-                onClick={() => setActiveTag("All")}
+                color={activeTag === 'All' ? 'primary' : 'default'}
+                label={'All'}
+                onClick={() => setActiveTag('All')}
               />
             </Grid>
 
@@ -184,23 +170,23 @@ const DevicesComponent = ({
               ? deviceTags.map((tag) => (
                   <Grid item key={`tag-${tag}`}>
                     <Chip
-                      color={activeTag === tag ? "primary" : "default"}
+                      color={activeTag === tag ? 'primary' : 'default'}
                       label={tag}
                       onClick={() => setActiveTag(tag)}
                     />
                   </Grid>
                 ))
-              : ""}
-            {userInfo.state === "all" || userInfo.state === "All" ? (
+              : ''}
+            {userInfo.state === 'all' || userInfo.state === 'All' ? (
               <Grid item>
                 <Chip
-                  color={activeTag === "Untagged" ? "primary" : "default"}
-                  label={"Untagged"}
-                  onClick={() => setActiveTag("Untagged")}
+                  color={activeTag === 'Untagged' ? 'primary' : 'default'}
+                  label={'Untagged'}
+                  onClick={() => setActiveTag('Untagged')}
                 />
               </Grid>
             ) : (
-              ""
+              ''
             )}
           </Grid>
           <Grid item xs={12}>
@@ -256,12 +242,12 @@ const DevicesComponent = ({
                     />
                   </Card>
                 </Grid>
-              )
+              ),
             )
           ) : (
             <Grid item xs={12}>
               <Typography variant="h6">
-                No Devices Found{" "}
+                No Devices Found{' '}
                 {deviceSearchText &&
                   `with nickname | device id | device name  "${deviceSearchText.toUpperCase()}"`}
               </Typography>
@@ -278,7 +264,7 @@ const DevicesComponent = ({
 const getAllTags = (devices) => {
   const uniqueTags = [];
   const devicesWithTags = devices.filter(
-    (device) => device.tags.length > 0 && device.tags.filter((tag) => tag.name)
+    (device) => device.tags.length > 0 && device.tags.filter((tag) => tag.name),
   );
   const tags = devicesWithTags.map((device) => {
     return [...device.tags];
@@ -287,7 +273,7 @@ const getAllTags = (devices) => {
   const tagsArray = tags.flat();
 
   tagsArray.forEach((tag) => {
-    if (!(uniqueTags.includes(tag.name) || tag.name === "PSA_GLOBAL")) {
+    if (!(uniqueTags.includes(tag.name) || tag.name === 'PSA_GLOBAL')) {
       uniqueTags.push(tag.name);
     }
   });
@@ -316,7 +302,7 @@ const filterAllDevicesWithoutTags = (devices) => {
     if (device.tags.length === 0) return true;
     else if (
       device.tags.length === 1 &&
-      device.tags.filter((tag) => tag.name === "PSA_GLOBAL").length !== 0
+      device.tags.filter((tag) => tag.name === 'PSA_GLOBAL').length !== 0
     ) {
       return true;
     } else return false;
@@ -329,7 +315,7 @@ const filterAllDevicesWithoutTags = (devices) => {
 const filterAllDevices = (devices) => {
   const devicesWithTags = devices.filter((device) => {
     if (device.tags.length > 0) {
-      let globalTag = device.tags.filter((tag) => tag.name === "PSA_GLOBAL");
+      let globalTag = device.tags.filter((tag) => tag.name === 'PSA_GLOBAL');
 
       if (globalTag.length > 0) {
         return true;

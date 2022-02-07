@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useContext, useState } from "react";
+import React, { useContext, useState } from 'react';
 import {
   Typography,
   TableRow,
@@ -8,9 +8,9 @@ import {
   TableBody,
   TableContainer,
   TableHead,
-} from "@material-ui/core";
-import { onfarmAPI } from "../../utils/api_secret";
-import { Context } from "../../Store/Store";
+} from '@material-ui/core';
+import { onfarmAPI } from '../../utils/api_secret';
+import { Context } from '../../Store/Store';
 
 const dryBiomass_url = onfarmAPI + `/raw?table=decomp_biomass_dry`;
 
@@ -22,23 +22,20 @@ const ActualFarmDates = ({ rowData, fetchFromApi }) => {
   const [oldRowData, setOldRowData] = useState({});
 
   const parseDates = async (rowData) => {
-    fetchFromApi(
-      `${dryBiomass_url}&code=${rowData.code}`,
-      state.userInfo.apikey
-    ).then((res) => {
+    fetchFromApi(`${dryBiomass_url}&code=${rowData.code}`, state.userInfo.apikey).then((res) => {
       // console.log(res)
       let dates = { hasData: false, s1sa: [], s1sb: [], s2sa: [], s2sb: [] };
-      res.sort((a, b) => a.subplot - b.subplot || a.subsample-b.subsample || a.time-b.time);
-      
+      res.sort((a, b) => a.subplot - b.subplot || a.subsample - b.subsample || a.time - b.time);
+
       for (const r of res) {
         // verify if there is date data
         if (r.recovery_date) dates.hasData = true;
 
         // make hash map with each combination of subplot, subsample
-        if (r.subplot === 1 && r.subsample === "A") dates.s1sa.push(r);
-        else if (r.subplot === 1 && r.subsample === "B") dates.s1sb.push(r);
-        else if (r.subplot === 2 && r.subsample === "A") dates.s2sa.push(r);
-        else if (r.subplot === 2 && r.subsample === "B") dates.s2sb.push(r);
+        if (r.subplot === 1 && r.subsample === 'A') dates.s1sa.push(r);
+        else if (r.subplot === 1 && r.subsample === 'B') dates.s1sb.push(r);
+        else if (r.subplot === 2 && r.subsample === 'A') dates.s2sa.push(r);
+        else if (r.subplot === 2 && r.subsample === 'B') dates.s2sb.push(r);
       }
 
       setOldRowData(rowData);
@@ -66,10 +63,10 @@ const ActualFarmDates = ({ rowData, fetchFromApi }) => {
             <TableCell key={index}>
               <Typography variant="subtitle2">
                 {date.recovery_date
-                  ? new Date(date.recovery_date).toLocaleDateString("en-US", {
-                      timeZone: "UTC",
+                  ? new Date(date.recovery_date).toLocaleDateString('en-US', {
+                      timeZone: 'UTC',
                     })
-                  : ""}
+                  : ''}
               </Typography>
             </TableCell>
           );
@@ -116,10 +113,10 @@ const ActualFarmDates = ({ rowData, fetchFromApi }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {generateRow(datesObject.s1sa, 1, "A")}
-          {generateRow(datesObject.s1sb, 1, "B")}
-          {generateRow(datesObject.s2sa, 2, "A")}
-          {generateRow(datesObject.s2sb, 2, "B")}
+          {generateRow(datesObject.s1sa, 1, 'A')}
+          {generateRow(datesObject.s1sb, 1, 'B')}
+          {generateRow(datesObject.s2sa, 2, 'A')}
+          {generateRow(datesObject.s2sb, 2, 'B')}
         </TableBody>
       </Table>
     </TableContainer>

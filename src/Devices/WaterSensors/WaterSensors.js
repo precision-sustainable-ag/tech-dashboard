@@ -1,18 +1,18 @@
 // Dependency Imports
-import React, { useContext, useState, useEffect } from "react";
-import Axios from "axios";
-import qs from "qs";
-import { useHistory } from "react-router-dom";
+import React, { useContext, useState, useEffect } from 'react';
+import Axios from 'axios';
+import qs from 'qs';
+import { useHistory } from 'react-router-dom';
 
 // Local Imports
 
-import * as Constants from "../hologramConstants";
-import { bannedRoles, apiCall, compareStrings } from "../../utils/constants";
-import { apiUsername, apiPassword } from "../../utils/api_secret";
+import * as Constants from '../hologramConstants';
+import { bannedRoles, apiCall, compareStrings } from '../../utils/constants';
+import { apiUsername, apiPassword } from '../../utils/api_secret';
 
-import "../Devices.scss";
-import { Context } from "../../Store/Store";
-import DevicesComponent from "../Devices";
+import '../Devices.scss';
+import { Context } from '../../Store/Store';
+import DevicesComponent from '../Devices';
 
 // Default function
 const WaterSensors = () => {
@@ -23,7 +23,7 @@ const WaterSensors = () => {
   const { location } = useHistory();
 
   let devicesData = [];
-  let finalAPIURL = "";
+  let finalAPIURL = '';
   useEffect(() => {
     if (Reflect.ownKeys(state.userInfo).length > 0) {
       if (bannedRoles.includes(state.userInfo.role)) {
@@ -38,42 +38,40 @@ const WaterSensors = () => {
         // check if the string has commas and split it into an array
         if (state.userInfo) {
           let deviceState = state.userInfo.state;
-          deviceState = deviceState.split(",");
+          deviceState = deviceState.split(',');
 
-          if (deviceState[0] === "all") {
-            apiParams = "";
-            fetchRecords(
-              `${finalAPIURL}/api/1/devices?withlocation=true${apiParams}`
-            ).then(() => {
+          if (deviceState[0] === 'all') {
+            apiParams = '';
+            fetchRecords(`${finalAPIURL}/api/1/devices?withlocation=true${apiParams}`).then(() => {
               setDevicesLoadingState(false);
             });
           } else {
-            getTags(
-              `${finalAPIURL}/api/1/devices/tags?limit=1000&withlocation=true`
-            ).then((tagsObject) => {
-              // console.log("Tags Object: ", tagsObject);
-              let tags = tagsObject.data.tags;
-              let matchedResult = tags.filter((obj) => {
-                if (deviceState.includes(obj.name)) return obj;
-              });
-              // console.log(matchedResult);
-
-              let tagsId = matchedResult.map((val) => {
-                // console.log(val);
-                // console.log(val.id);
-                // let tagId = val.id;
-                return val.id;
-              });
-              // console.log(tagsId);
-              tagsId.forEach((tagId) => {
-                fetchRecords(
-                  `${finalAPIURL}/api/1/devices?tagid=${tagId}&withlocation=true`
-                ).then(() => {
-                  setDevicesLoadingState(false);
+            getTags(`${finalAPIURL}/api/1/devices/tags?limit=1000&withlocation=true`).then(
+              (tagsObject) => {
+                // console.log("Tags Object: ", tagsObject);
+                let tags = tagsObject.data.tags;
+                let matchedResult = tags.filter((obj) => {
+                  if (deviceState.includes(obj.name)) return obj;
                 });
-              });
-              // get tag ids from matched objects
-            });
+                // console.log(matchedResult);
+
+                let tagsId = matchedResult.map((val) => {
+                  // console.log(val);
+                  // console.log(val.id);
+                  // let tagId = val.id;
+                  return val.id;
+                });
+                // console.log(tagsId);
+                tagsId.forEach((tagId) => {
+                  fetchRecords(
+                    `${finalAPIURL}/api/1/devices?tagid=${tagId}&withlocation=true`,
+                  ).then(() => {
+                    setDevicesLoadingState(false);
+                  });
+                });
+                // get tag ids from matched objects
+              },
+            );
           }
 
           // var result = jsObjects.filter(obj => {
@@ -106,7 +104,7 @@ const WaterSensors = () => {
   const fetchRecords = async (apiURL) => {
     let options = Constants.APICreds();
 
-    await apiCall(apiURL, options, "watersensors")
+    await apiCall(apiURL, options, 'watersensors')
       .then((response) => {
         // save whatever we get for a specific state or "all"
         // console.log(response.data.data);
@@ -138,19 +136,19 @@ const WaterSensors = () => {
     let tagsData = [];
 
     await Axios({
-      method: "post",
-      url: Constants.apiCorsUrl + "/watersensors",
+      method: 'post',
+      url: Constants.apiCorsUrl + '/watersensors',
       data: qs.stringify({
         url: url,
       }),
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
       },
       auth: {
         username: apiUsername,
         password: apiPassword,
       },
-      responseType: "json",
+      responseType: 'json',
     }).then((response) => {
       // console.log(response.data);
       tagsData = response.data;
@@ -162,7 +160,7 @@ const WaterSensors = () => {
       showDevices={showDevices}
       devices={devices}
       loading={devicesLoadingState}
-      for={"watersensors"}
+      for={'watersensors'}
       userInfo={state.userInfo}
       activeTag={location.state ? location.state.activeTag : null}
     />

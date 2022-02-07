@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -10,34 +10,34 @@ import {
   TextField,
   Grid,
   Typography,
-} from "@material-ui/core";
-import Axios from "axios";
-import PropTypes from "prop-types";
+} from '@material-ui/core';
+import Axios from 'axios';
+import PropTypes from 'prop-types';
 // Local Imports
-import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
+import { apiURL, apiUsername, apiPassword } from '../utils/api_secret';
 
 //Global Vars
-const qs = require("qs");
+const qs = require('qs');
 
 // Default function
 const UnenrollSiteModal = (props) => {
   const open = props.open;
-  const [confirmText, setConfirmText] = useState("");
-  const [confirmBtnStatus, setConfirmBtnStatus] = useState("Confirm");
+  const [confirmText, setConfirmText] = useState('');
+  const [confirmBtnStatus, setConfirmBtnStatus] = useState('Confirm');
 
   const handleUnenroll = () => {
     // disenroll and close
-    setConfirmBtnStatus("Please Wait..");
+    setConfirmBtnStatus('Please Wait..');
     const site = new SiteEnrollment(props.data);
     site.unenrollSite();
     const dataString = qs.stringify(site);
 
     Axios({
       url: `${apiURL}/api/sites/disenroll`,
-      method: "post",
+      method: 'post',
       data: dataString,
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
       auth: {
         username: apiUsername,
@@ -61,7 +61,7 @@ const UnenrollSiteModal = (props) => {
   };
 
   const closeModal = () => {
-    setConfirmText("");
+    setConfirmText('');
     props.handleUnenrollClose();
   };
   return (
@@ -75,15 +75,15 @@ const UnenrollSiteModal = (props) => {
       <DialogTitle id="alert-dialog-title">{`Disenroll site`}</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          You are about to{" "}
-          {`Disenroll site '${props.data.code}' for producer '${props.data.last_name}'`}
-          . Please note that this action can not be undone.
+          You are about to{' '}
+          {`Disenroll site '${props.data.code}' for producer '${props.data.last_name}'`}. Please
+          note that this action can not be undone.
         </DialogContentText>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Typography variant="body1">
-              To disenroll this site please type the site code{" "}
-              <strong>{props.data.code}</strong> below.
+              To disenroll this site please type the site code <strong>{props.data.code}</strong>{' '}
+              below.
             </Typography>
           </Grid>
           <Grid item xs={12}>
@@ -103,11 +103,7 @@ const UnenrollSiteModal = (props) => {
           onClick={closeModal}
           color="primary"
           autoFocus
-          variant={
-            window.localStorage.getItem("theme") === "dark"
-              ? "contained"
-              : "text"
-          }
+          variant={window.localStorage.getItem('theme') === 'dark' ? 'contained' : 'text'}
         >
           Cancel
         </Button>
@@ -115,11 +111,7 @@ const UnenrollSiteModal = (props) => {
           onClick={handleUnenroll}
           color="primary"
           disabled={props.data.code === confirmText ? false : true}
-          variant={
-            window.localStorage.getItem("theme") === "dark"
-              ? "contained"
-              : "text"
-          }
+          variant={window.localStorage.getItem('theme') === 'dark' ? 'contained' : 'text'}
         >
           {confirmBtnStatus}
         </Button>
@@ -158,6 +150,6 @@ class SiteEnrollment {
   }
 
   unenrollSite() {
-    this.protocols_enrolled = "-999";
+    this.protocols_enrolled = '-999';
   }
 }

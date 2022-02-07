@@ -7,19 +7,19 @@ import {
   makeStyles,
   Typography,
   useTheme,
-} from "@material-ui/core";
+} from '@material-ui/core';
 
-import React, { useState } from "react";
-import { apiPassword, apiUsername } from "../utils/api_secret";
-import { azureDebugURL, githubWebhookDebugURL } from "../utils/constants";
-import docco from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light";
-import dark from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-dark";
-import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
-import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
-import PropTypes from "prop-types";
-import { CustomLoader } from "../utils/CustomComponents";
+import React, { useState } from 'react';
+import { apiPassword, apiUsername } from '../utils/api_secret';
+import { azureDebugURL, githubWebhookDebugURL } from '../utils/constants';
+import docco from 'react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light';
+import dark from 'react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-dark';
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+import json from 'react-syntax-highlighter/dist/esm/languages/hljs/json';
+import PropTypes from 'prop-types';
+import { CustomLoader } from '../utils/CustomComponents';
 
-SyntaxHighlighter.registerLanguage("json", json);
+SyntaxHighlighter.registerLanguage('json', json);
 
 const Debug = () => {
   const [data, setData] = useState({
@@ -41,10 +41,7 @@ const Debug = () => {
         const response = await fetch(githubWebhookDebugURL, {
           headers: {
             Authorization:
-              `Basic ` +
-              Buffer.from(apiUsername + ":" + apiPassword, "binary").toString(
-                "base64"
-              ),
+              `Basic ` + Buffer.from(apiUsername + ':' + apiPassword, 'binary').toString('base64'),
           },
         });
         const records = await response.json();
@@ -63,10 +60,7 @@ const Debug = () => {
         const response = await fetch(azureDebugURL, {
           headers: {
             Authorization:
-              `Basic ` +
-              Buffer.from(apiUsername + ":" + apiPassword, "binary").toString(
-                "base64"
-              ),
+              `Basic ` + Buffer.from(apiUsername + ':' + apiPassword, 'binary').toString('base64'),
           },
         });
 
@@ -131,19 +125,11 @@ const Debug = () => {
 
       <Grid item xs={12}>
         {currentSelection === 0 &&
-          (loading.azure ? (
-            <CustomLoader />
-          ) : (
-            <RenderCardData type="azure" data={data.azure} />
-          ))}
+          (loading.azure ? <CustomLoader /> : <RenderCardData type="azure" data={data.azure} />)}
       </Grid>
       <Grid item xs={12}>
         {currentSelection === 1 &&
-          (loading.github ? (
-            <CustomLoader />
-          ) : (
-            <RenderCardData type="github" data={data.github} />
-          ))}
+          (loading.github ? <CustomLoader /> : <RenderCardData type="github" data={data.github} />)}
       </Grid>
     </Grid>
   );
@@ -159,25 +145,18 @@ const useStyles = makeStyles({
     fontSize: 14,
   },
 });
-const RenderCardData = ({ data = [], type = "azure" }) => {
+const RenderCardData = ({ data = [], type = 'azure' }) => {
   const classes = useStyles();
   const { palette } = useTheme();
   return data.length > 0 ? (
     data.map((val, index) => (
       <Card key={`${type}-${index}`}>
         <CardContent>
-          <Typography
-            className={classes.title}
-            color="textSecondary"
-            gutterBottom
-          >
+          <Typography className={classes.title} color="textSecondary" gutterBottom>
             {new Date(val.timestamp).toLocaleString()}
           </Typography>
           <Divider />
-          <SyntaxHighlighter
-            language="json"
-            style={palette.type === "dark" ? dark : docco}
-          >
+          <SyntaxHighlighter language="json" style={palette.type === 'dark' ? dark : docco}>
             {JSON.stringify(val.data, undefined, 2)}
           </SyntaxHighlighter>
         </CardContent>
@@ -186,11 +165,7 @@ const RenderCardData = ({ data = [], type = "azure" }) => {
   ) : (
     <Card>
       <CardContent>
-        <Typography
-          className={classes.title}
-          color="textSecondary"
-          gutterBottom
-        >
+        <Typography className={classes.title} color="textSecondary" gutterBottom>
           No Data
         </Typography>
         <Divider />
@@ -202,5 +177,5 @@ const RenderCardData = ({ data = [], type = "azure" }) => {
 RenderCardData.propTypes = {
   data: PropTypes.array,
 
-  type: PropTypes.oneOf(["azure", "github"]),
+  type: PropTypes.oneOf(['azure', 'github']),
 };

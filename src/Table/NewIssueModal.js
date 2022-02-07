@@ -10,16 +10,16 @@ import {
   Select,
   TextField,
   Typography,
-} from "@material-ui/core";
-import React, { useState, useEffect } from "react";
-import { Octokit } from "@octokit/rest";
-import MDEditor from "@uiw/react-md-editor";
+} from '@material-ui/core';
+import React, { useState, useEffect } from 'react';
+import { Octokit } from '@octokit/rest';
+import MDEditor from '@uiw/react-md-editor';
 
 // Local Imports
-import { githubToken } from "../utils/api_secret";
-import { useAuth0 } from "../Auth/react-auth0-spa";
-import PropTypes from "prop-types";
-import { createGithubIssue } from "../utils/SharedFunctions";
+import { githubToken } from '../utils/api_secret';
+import { useAuth0 } from '../Auth/react-auth0-spa';
+import PropTypes from 'prop-types';
+import { createGithubIssue } from '../utils/SharedFunctions';
 
 /**
  *  A component to allow users to create "New Issue" in a modal
@@ -29,10 +29,10 @@ import { createGithubIssue } from "../utils/SharedFunctions";
 const NewIssueModal = (props) => {
   const { getTokenSilently } = useAuth0();
 
-  const [maxWidth, setMaxWidth] = useState("lg");
-  const alwaysTaggedPeople = ["brianwdavis", "saseehav", props.nickname];
-  const [newComment, setNewComment] = useState("");
-  const [issueTitle, setIssueTitle] = useState("");
+  const [maxWidth, setMaxWidth] = useState('lg');
+  const alwaysTaggedPeople = ['brianwdavis', 'saseehav', props.nickname];
+  const [newComment, setNewComment] = useState('');
+  const [issueTitle, setIssueTitle] = useState('');
   const [checkValidation, setCheckValidation] = useState({
     title: false,
     comment: false,
@@ -50,14 +50,9 @@ const NewIssueModal = (props) => {
 
       setCheckValidation({ title: false, comment: false });
 
-      const labels = [
-        `${props.data.code}`,
-        `${props.data.affiliation}`,
-        "site-information",
-      ];
+      const labels = [`${props.data.code}`, `${props.data.affiliation}`, 'site-information'];
 
-      const assignedPeople =
-        personName.length > 0 ? personName : [`${props.nickname}`];
+      const assignedPeople = personName.length > 0 ? personName : [`${props.nickname}`];
 
       const tableData = `<table>
         <tbody>
@@ -100,7 +95,7 @@ const NewIssueModal = (props) => {
         </tbody>
       </table>`;
 
-      const body = tableData + " <br/> " + newComment;
+      const body = tableData + ' <br/> ' + newComment;
 
       const issueSet = createGithubIssue(
         issueTitle,
@@ -108,12 +103,12 @@ const NewIssueModal = (props) => {
         labels,
         assignedPeople,
         props.nickname,
-        getTokenSilently
+        getTokenSilently,
       );
 
       issueSet.then((res) => {
-        setNewComment("");
-        setIssueTitle("");
+        setNewComment('');
+        setIssueTitle('');
         setButtonDisabled(false);
         props.handleNewIssueDialogClose();
         if (res.response) {
@@ -121,22 +116,22 @@ const NewIssueModal = (props) => {
             props.setSnackbarData({
               open: true,
               text: `New Issue has been created for ${props.data.code}`,
-              severity: "success",
+              severity: 'success',
             });
           } else {
-            console.log("Function could not create issue");
+            console.log('Function could not create issue');
             props.setSnackbarData({
               open: true,
               text: `Could not create issue (error code 0)`,
-              severity: "error",
+              severity: 'error',
             });
           }
         } else {
-          console.log("No response from function, likely cors");
+          console.log('No response from function, likely cors');
           props.setSnackbarData({
             open: true,
             text: `Could not create issue (error code 1)`,
-            severity: "error",
+            severity: 'error',
           });
         }
       });
@@ -157,35 +152,29 @@ const NewIssueModal = (props) => {
   useEffect(() => {
     const octokit = new Octokit({ auth: githubToken });
     const getGithubResourceLimit = async () => {
-      return await octokit.request("GET /rate_limit");
+      return await octokit.request('GET /rate_limit');
     };
     const fetchCollabs = async () => {
-      return await octokit.request("GET /repos/{owner}/{repo}/collaborators", {
-        owner: "precision-sustainable-ag",
-        repo: "data_corrections",
+      return await octokit.request('GET /repos/{owner}/{repo}/collaborators', {
+        owner: 'precision-sustainable-ag',
+        repo: 'data_corrections',
       });
     };
     const checkIfUserIsCollaborator = async (username) => {
-      return await octokit.request(
-        "GET /repos/{owner}/{repo}/collaborators/{username}",
-        {
-          owner: "precision-sustainable-ag",
-          repo: "data_corrections",
-          username: username,
-        }
-      );
+      return await octokit.request('GET /repos/{owner}/{repo}/collaborators/{username}', {
+        owner: 'precision-sustainable-ag',
+        repo: 'data_corrections',
+        username: username,
+      });
     };
     //   check if a user is a collaborator to repo, else add the user to repo
     const addNewCollaboratorToRepo = async (username) => {
-      return await octokit.request(
-        "PUT /repos/{owner}/{repo}/collaborators/{username}",
-        {
-          owner: "precision-sustainable-ag",
-          repo: "data_corrections",
-          username: username,
-          permission: "push",
-        }
-      );
+      return await octokit.request('PUT /repos/{owner}/{repo}/collaborators/{username}', {
+        owner: 'precision-sustainable-ag',
+        repo: 'data_corrections',
+        username: username,
+        permission: 'push',
+      });
     };
 
     fetchCollabs()
@@ -228,12 +217,12 @@ const NewIssueModal = (props) => {
         console.error(e);
         getGithubResourceLimit().then((response) => {
           console.log(
-            "%cRequest Limit: " +
+            '%cRequest Limit: ' +
               response.data.rate.limit +
-              "%c Used: " +
+              '%c Used: ' +
               response.data.rate.remaining,
-            "color: green;font-family:system-ui;font-size:0.6rem;",
-            "color: red;font-family:system-ui;font-size:0.6rem;"
+            'color: green;font-family:system-ui;font-size:0.6rem;',
+            'color: red;font-family:system-ui;font-size:0.6rem;',
           );
         });
       });
@@ -258,8 +247,8 @@ const NewIssueModal = (props) => {
               value={maxWidth}
               onChange={handleMaxWidthChange}
               inputProps={{
-                name: "max-width",
-                id: "max-width",
+                name: 'max-width',
+                id: 'max-width',
               }}
             >
               <MenuItem value={false}>regular</MenuItem>
@@ -320,44 +309,28 @@ const NewIssueModal = (props) => {
                       <Typography variant="body1">{props.data.year}</Typography>
                     </td>
                     <td>
-                      <Typography variant="body1">
-                        {props.data.last_name}
-                      </Typography>
+                      <Typography variant="body1">{props.data.last_name}</Typography>
                     </td>
                     <td>
-                      <Typography variant="body1">
-                        {props.data.email}
-                      </Typography>
+                      <Typography variant="body1">{props.data.email}</Typography>
                     </td>
                     <td>
-                      <Typography variant="body1">
-                        {props.data.phone}
-                      </Typography>
+                      <Typography variant="body1">{props.data.phone}</Typography>
                     </td>
                     <td>
-                      <Typography variant="body1">
-                        {props.data.affiliation}
-                      </Typography>
+                      <Typography variant="body1">{props.data.affiliation}</Typography>
                     </td>
                     <td>
-                      <Typography variant="body1">
-                        {props.data.county}
-                      </Typography>
+                      <Typography variant="body1">{props.data.county}</Typography>
                     </td>
                     <td>
-                      <Typography variant="body1">
-                        {props.data.address}
-                      </Typography>
+                      <Typography variant="body1">{props.data.address}</Typography>
                     </td>
                     <td>
-                      <Typography variant="body1">
-                        {props.data.latlng}
-                      </Typography>
+                      <Typography variant="body1">{props.data.latlng}</Typography>
                     </td>
                     <td>
-                      <Typography variant="body1">
-                        {props.data.notes}
-                      </Typography>
+                      <Typography variant="body1">{props.data.notes}</Typography>
                     </td>
                   </tr>
                 </tbody>
@@ -382,20 +355,13 @@ const NewIssueModal = (props) => {
           </Grid>
           <Grid item xs={12}>
             {checkValidation.comment || newComment.length === 0 ? (
-              <Typography
-                variant="caption"
-                color={checkValidation.comment ? "error" : "initial"}
-              >
+              <Typography variant="caption" color={checkValidation.comment ? 'error' : 'initial'}>
                 Please describe the issue below
               </Typography>
             ) : (
-              ""
+              ''
             )}
-            <MDEditor
-              preview="edit"
-              value={newComment}
-              onChange={setNewComment}
-            />
+            <MDEditor preview="edit" value={newComment} onChange={setNewComment} />
           </Grid>
         </Grid>
         <DialogActions>
@@ -406,7 +372,7 @@ const NewIssueModal = (props) => {
             variant="contained"
             disabled={buttonDisabled}
           >
-            {buttonDisabled ? "Creating Issue" : "Submit"}
+            {buttonDisabled ? 'Creating Issue' : 'Submit'}
           </Button>
         </DialogActions>
       </DialogContent>
@@ -416,16 +382,16 @@ const NewIssueModal = (props) => {
 
 NewIssueModal.defaultProps = {
   data: {
-    code: "XYZ",
+    code: 'XYZ',
     year: 2020,
-    last_name: "Default Name",
-    affiliation: "NC",
+    last_name: 'Default Name',
+    affiliation: 'NC',
   },
   open: false,
-  nickname: "rbandooni",
+  nickname: 'rbandooni',
   snackbarData: {
     open: false,
-    text: "",
+    text: '',
   },
   setSnackbarData: () => this.setSnackbarData(),
   handleNewIssueDialogClose: () => {},

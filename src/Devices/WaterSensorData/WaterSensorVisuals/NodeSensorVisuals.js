@@ -6,17 +6,17 @@ NodeSensorVisual.js replaces this file
 */
 
 // Dependency Imports
-import React, { useState, useEffect, Fragment } from "react";
-import Axios from "axios";
-import { Grid, Typography } from "@material-ui/core";
-import Highcharts from "highcharts";
-import HighchartsReact from "highcharts-react-official";
+import React, { useState, useEffect, Fragment } from 'react';
+import Axios from 'axios';
+import { Grid, Typography } from '@material-ui/core';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 
 // Local Imports
-import { apiUsername, apiURL, apiPassword } from "../../../utils/api_secret";
-import { BarsLoader } from "../../../utils/CustomComponents";
-import PropTypes from "prop-types";
-const qs = require("qs");
+import { apiUsername, apiURL, apiPassword } from '../../../utils/api_secret';
+import { BarsLoader } from '../../../utils/CustomComponents';
+import PropTypes from 'prop-types';
+const qs = require('qs');
 
 // Default Function
 const NodeSensorVisuals = (props) => {
@@ -24,69 +24,69 @@ const NodeSensorVisuals = (props) => {
   const year = props.year;
   const [loading, setLoading] = useState(false);
   const NodeType = () => {
-    if (props.bareNodeSerialNo.includes(props.activeChip)) return "Bare Node";
-    else return "Cover Node";
+    if (props.bareNodeSerialNo.includes(props.activeChip)) return 'Bare Node';
+    else return 'Cover Node';
   };
   const [volatageChartOptions, setVoltageChartOptions] = useState({
     chart: {
-      zoomType: "x",
+      zoomType: 'x',
     },
     credits: {
       enabled: false,
     },
     title: {
-      text: "Node Voltage",
+      text: 'Node Voltage',
     },
     xAxis: {
-      type: "datetime",
+      type: 'datetime',
     },
     yAxis: {
       title: {
-        text: "Voltage",
+        text: 'Voltage',
       },
-      type: "logarithmic",
+      type: 'logarithmic',
     },
     legend: {
-      layout: "vertical",
-      align: "right",
-      verticalAlign: "middle",
+      layout: 'vertical',
+      align: 'right',
+      verticalAlign: 'middle',
       borderWidth: 0,
     },
     series: [
       {
-        name: "Battery Voltage",
+        name: 'Battery Voltage',
         data: [],
       },
     ],
   });
   const [currentChartOptions, setCurrentChartOptions] = useState({
     chart: {
-      zoomType: "x",
+      zoomType: 'x',
     },
     credits: {
       enabled: false,
     },
     title: {
-      text: "Node Solar Current",
+      text: 'Node Solar Current',
     },
     xAxis: {
-      type: "datetime",
+      type: 'datetime',
     },
     yAxis: {
       title: {
-        text: "Current",
+        text: 'Current',
       },
-      type: "logarithmic",
+      type: 'logarithmic',
     },
     legend: {
-      layout: "vertical",
-      align: "right",
-      verticalAlign: "middle",
+      layout: 'vertical',
+      align: 'right',
+      verticalAlign: 'middle',
       borderWidth: 0,
     },
     series: [
       {
-        name: "Solar Current",
+        name: 'Solar Current',
         data: [],
       },
     ],
@@ -94,31 +94,31 @@ const NodeSensorVisuals = (props) => {
 
   const [signalStrengthChartOptions, setSignalStrengthChartOptions] = useState({
     chart: {
-      zoomType: "x",
+      zoomType: 'x',
     },
     credits: {
       enabled: false,
     },
     title: {
-      text: "Node Signal Strength",
+      text: 'Node Signal Strength',
     },
     xAxis: {
-      type: "datetime",
+      type: 'datetime',
     },
     yAxis: {
       title: {
-        text: "Strength",
+        text: 'Strength',
       },
     },
     legend: {
-      layout: "vertical",
-      align: "right",
-      verticalAlign: "middle",
+      layout: 'vertical',
+      align: 'right',
+      verticalAlign: 'middle',
       borderWidth: 0,
     },
     series: [
       {
-        name: "Signal Strength",
+        name: 'Signal Strength',
         data: [],
       },
     ],
@@ -126,32 +126,32 @@ const NodeSensorVisuals = (props) => {
 
   const [centerDepthChartOptions, setCenterDepthChartOptions] = useState({
     chart: {
-      zoomType: "x",
+      zoomType: 'x',
     },
     credits: {
       enabled: false,
     },
     title: {
-      text: "Sensor Center Depth",
+      text: 'Sensor Center Depth',
     },
     xAxis: {
-      type: "datetime",
+      type: 'datetime',
     },
     yAxis: {
       title: {
-        text: "Depth",
+        text: 'Depth',
       },
-      type: "logarithmic",
+      type: 'logarithmic',
     },
     legend: {
-      layout: "vertical",
-      align: "right",
-      verticalAlign: "middle",
+      layout: 'vertical',
+      align: 'right',
+      verticalAlign: 'middle',
       borderWidth: 0,
     },
     series: [
       {
-        name: "Sensor Depth",
+        name: 'Sensor Depth',
         data: [],
       },
     ],
@@ -159,32 +159,32 @@ const NodeSensorVisuals = (props) => {
 
   const [soilTempChartOptions, setSoilTempChartOptions] = useState({
     chart: {
-      zoomType: "x",
+      zoomType: 'x',
     },
     credits: {
       enabled: false,
     },
     title: {
-      text: "Sensor Soil Temperature",
+      text: 'Sensor Soil Temperature',
     },
     xAxis: {
-      type: "datetime",
+      type: 'datetime',
     },
     yAxis: {
       title: {
-        text: "Temperature",
+        text: 'Temperature',
       },
-      type: "logarithmic",
+      type: 'logarithmic',
     },
     legend: {
-      layout: "vertical",
-      align: "right",
-      verticalAlign: "middle",
+      layout: 'vertical',
+      align: 'right',
+      verticalAlign: 'middle',
       borderWidth: 0,
     },
     series: [
       {
-        name: "Soil Temperature",
+        name: 'Soil Temperature',
         data: [],
       },
     ],
@@ -192,32 +192,32 @@ const NodeSensorVisuals = (props) => {
 
   const [vwcChartOptions, setVwcChartOptions] = useState({
     chart: {
-      zoomType: "x",
+      zoomType: 'x',
     },
     credits: {
       enabled: false,
     },
     title: {
-      text: "Volumetric Water Content",
+      text: 'Volumetric Water Content',
     },
     xAxis: {
-      type: "datetime",
+      type: 'datetime',
     },
     yAxis: {
       title: {
-        text: "VWC (%)",
+        text: 'VWC (%)',
       },
-      type: "logarithmic",
+      type: 'logarithmic',
     },
     legend: {
-      layout: "vertical",
-      align: "right",
-      verticalAlign: "middle",
+      layout: 'vertical',
+      align: 'right',
+      verticalAlign: 'middle',
       borderWidth: 0,
     },
     series: [
       {
-        name: "VWC",
+        name: 'VWC',
         data: [],
       },
     ],
@@ -225,32 +225,32 @@ const NodeSensorVisuals = (props) => {
 
   const [permittivityChartOptions, setPermittivityChartOptions] = useState({
     chart: {
-      zoomType: "x",
+      zoomType: 'x',
     },
     credits: {
       enabled: false,
     },
     title: {
-      text: "Permittivity",
+      text: 'Permittivity',
     },
     xAxis: {
-      type: "datetime",
+      type: 'datetime',
     },
     yAxis: {
       title: {
-        text: "Permittivity",
+        text: 'Permittivity',
       },
-      type: "logarithmic",
+      type: 'logarithmic',
     },
     legend: {
-      layout: "vertical",
-      align: "right",
-      verticalAlign: "middle",
+      layout: 'vertical',
+      align: 'right',
+      verticalAlign: 'middle',
       borderWidth: 0,
     },
     series: [
       {
-        name: "Permittivity",
+        name: 'Permittivity',
         data: [],
       },
     ],
@@ -258,32 +258,32 @@ const NodeSensorVisuals = (props) => {
 
   const [ecBulkChartOptions, setEcBulkChartOptions] = useState({
     chart: {
-      zoomType: "x",
+      zoomType: 'x',
     },
     credits: {
       enabled: false,
     },
     title: {
-      text: "EC Bulk",
+      text: 'EC Bulk',
     },
     xAxis: {
-      type: "datetime",
+      type: 'datetime',
     },
     yAxis: {
       title: {
-        text: "EC",
+        text: 'EC',
       },
-      type: "logarithmic",
+      type: 'logarithmic',
     },
     legend: {
-      layout: "vertical",
-      align: "right",
-      verticalAlign: "middle",
+      layout: 'vertical',
+      align: 'right',
+      verticalAlign: 'middle',
       borderWidth: 0,
     },
     series: [
       {
-        name: "EC Bulk",
+        name: 'EC Bulk',
         data: [],
       },
     ],
@@ -291,32 +291,32 @@ const NodeSensorVisuals = (props) => {
 
   const [ecPoreWaterChartOptions, setEcPoreWaterChartOptions] = useState({
     chart: {
-      zoomType: "x",
+      zoomType: 'x',
     },
     credits: {
       enabled: false,
     },
     title: {
-      text: "EC Pore Water",
+      text: 'EC Pore Water',
     },
     xAxis: {
-      type: "datetime",
+      type: 'datetime',
     },
     yAxis: {
       title: {
-        text: "EC Pore Water",
+        text: 'EC Pore Water',
       },
-      type: "logarithmic",
+      type: 'logarithmic',
     },
     legend: {
-      layout: "vertical",
-      align: "right",
-      verticalAlign: "middle",
+      layout: 'vertical',
+      align: 'right',
+      verticalAlign: 'middle',
       borderWidth: 0,
     },
     series: [
       {
-        name: "EC Pore Water",
+        name: 'EC Pore Water',
         data: [],
       },
     ],
@@ -327,24 +327,22 @@ const NodeSensorVisuals = (props) => {
     setVoltageChartOptions({
       ...volatageChartOptions,
       chart: {
-        type: "scatter",
-        zoomType: "xy",
+        type: 'scatter',
+        zoomType: 'xy',
       },
       series: [
         {
-          name: "Battery Voltage",
+          name: 'Battery Voltage',
           data: nodeArr[0],
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
+            pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>',
           },
         },
         {
-          name: "Solar Voltage",
+          name: 'Solar Voltage',
           data: nodeArr[2],
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>",
+            pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>',
           },
         },
       ],
@@ -353,16 +351,15 @@ const NodeSensorVisuals = (props) => {
     setCurrentChartOptions({
       ...currentChartOptions,
       chart: {
-        type: "scatter",
-        zoomType: "xy",
+        type: 'scatter',
+        zoomType: 'xy',
       },
       series: [
         {
-          name: "Solar Current",
+          name: 'Solar Current',
           data: nodeArr[1],
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>",
+            pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>',
           },
         },
       ],
@@ -371,16 +368,16 @@ const NodeSensorVisuals = (props) => {
     setSignalStrengthChartOptions({
       ...signalStrengthChartOptions,
       chart: {
-        type: "scatter",
-        zoomType: "xy",
+        type: 'scatter',
+        zoomType: 'xy',
       },
       series: [
         {
-          name: "Signal Strength",
+          name: 'Signal Strength',
           data: nodeArr[3],
           tooltip: {
             pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Strength: <b>{point.y}</b><br/>",
+              'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Strength: <b>{point.y}</b><br/>',
           },
         },
       ],
@@ -396,27 +393,24 @@ const NodeSensorVisuals = (props) => {
       // },
       series: [
         {
-          name: "Top Depth",
+          name: 'Top Depth',
           data: sensorArr[0].a,
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+            pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>',
           },
         },
         {
-          name: "Middle Depth",
+          name: 'Middle Depth',
           data: sensorArr[0].b,
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+            pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>',
           },
         },
         {
-          name: "Deep Depth",
+          name: 'Deep Depth',
           data: sensorArr[0].c,
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+            pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>',
           },
         },
       ],
@@ -426,32 +420,29 @@ const NodeSensorVisuals = (props) => {
     setSoilTempChartOptions({
       ...soilTempChartOptions,
       chart: {
-        type: "scatter",
-        zoomType: "xy",
+        type: 'scatter',
+        zoomType: 'xy',
       },
       series: [
         {
-          name: "Top Depth",
+          name: 'Top Depth',
           data: sensorArr[1].a,
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+            pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>',
           },
         },
         {
-          name: "Middle Depth",
+          name: 'Middle Depth',
           data: sensorArr[1].b,
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+            pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>',
           },
         },
         {
-          name: "Deep Depth",
+          name: 'Deep Depth',
           data: sensorArr[1].c,
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+            pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>',
           },
         },
       ],
@@ -459,32 +450,29 @@ const NodeSensorVisuals = (props) => {
     setVwcChartOptions({
       ...vwcChartOptions,
       chart: {
-        type: "scatter",
-        zoomType: "xy",
+        type: 'scatter',
+        zoomType: 'xy',
       },
       series: [
         {
-          name: "Top Depth",
+          name: 'Top Depth',
           data: sensorArr[2].a,
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+            pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>',
           },
         },
         {
-          name: "Middle Depth",
+          name: 'Middle Depth',
           data: sensorArr[2].b,
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+            pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>',
           },
         },
         {
-          name: "Deep Depth",
+          name: 'Deep Depth',
           data: sensorArr[2].c,
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+            pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>',
           },
         },
       ],
@@ -492,32 +480,29 @@ const NodeSensorVisuals = (props) => {
     setPermittivityChartOptions({
       ...permittivityChartOptions,
       chart: {
-        type: "scatter",
-        zoomType: "xy",
+        type: 'scatter',
+        zoomType: 'xy',
       },
       series: [
         {
-          name: "Top Depth",
+          name: 'Top Depth',
           data: sensorArr[3].a,
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+            pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>',
           },
         },
         {
-          name: "Middle Depth",
+          name: 'Middle Depth',
           data: sensorArr[3].b,
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+            pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>',
           },
         },
         {
-          name: "Deep Depth",
+          name: 'Deep Depth',
           data: sensorArr[3].c,
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+            pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>',
           },
         },
       ],
@@ -526,32 +511,29 @@ const NodeSensorVisuals = (props) => {
     setEcBulkChartOptions({
       ...ecBulkChartOptions,
       chart: {
-        type: "scatter",
-        zoomType: "xy",
+        type: 'scatter',
+        zoomType: 'xy',
       },
       series: [
         {
-          name: "Top Depth",
+          name: 'Top Depth',
           data: sensorArr[4].a,
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+            pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>',
           },
         },
         {
-          name: "Middle Depth",
+          name: 'Middle Depth',
           data: sensorArr[4].b,
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+            pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>',
           },
         },
         {
-          name: "Deep Depth",
+          name: 'Deep Depth',
           data: sensorArr[4].c,
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+            pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>',
           },
         },
       ],
@@ -560,32 +542,29 @@ const NodeSensorVisuals = (props) => {
     setEcPoreWaterChartOptions({
       ...ecPoreWaterChartOptions,
       chart: {
-        type: "scatter",
-        zoomType: "xy",
+        type: 'scatter',
+        zoomType: 'xy',
       },
       series: [
         {
-          name: "Top Depth",
+          name: 'Top Depth',
           data: sensorArr[5].a,
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+            pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>',
           },
         },
         {
-          name: "Middle Depth",
+          name: 'Middle Depth',
           data: sensorArr[5].b,
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+            pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>',
           },
         },
         {
-          name: "Deep Depth",
+          name: 'Deep Depth',
           data: sensorArr[5].c,
           tooltip: {
-            pointFormat:
-              "Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>",
+            pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Depth: <b>{point.y}</b><br/>',
           },
         },
       ],
@@ -595,12 +574,8 @@ const NodeSensorVisuals = (props) => {
   useEffect(() => {
     const init = async () => {
       setLoading(true);
-      let initialChartsData = await (
-        await fetchBasicNodeData(activeChip, year)
-      ).data;
-      let sensorChartData = await (
-        await fetchSensorNodeData(activeChip, year)
-      ).data;
+      let initialChartsData = await (await fetchBasicNodeData(activeChip, year)).data;
+      let sensorChartData = await (await fetchSensorNodeData(activeChip, year)).data;
       if (initialChartsData.data) {
         setInitialCharts(initialChartsData.data);
       }
@@ -628,55 +603,31 @@ const NodeSensorVisuals = (props) => {
       ) : (
         <Fragment>
           <Grid item md={12}>
-            <HighchartsReact
-              highcharts={Highcharts}
-              options={volatageChartOptions}
-            />
+            <HighchartsReact highcharts={Highcharts} options={volatageChartOptions} />
           </Grid>
           <Grid item md={12}>
-            <HighchartsReact
-              highcharts={Highcharts}
-              options={currentChartOptions}
-            />
+            <HighchartsReact highcharts={Highcharts} options={currentChartOptions} />
           </Grid>
           <Grid item md={12}>
-            <HighchartsReact
-              highcharts={Highcharts}
-              options={signalStrengthChartOptions}
-            />
+            <HighchartsReact highcharts={Highcharts} options={signalStrengthChartOptions} />
           </Grid>
 
           <Grid item md={12}>
-            <HighchartsReact
-              highcharts={Highcharts}
-              options={soilTempChartOptions}
-            />
+            <HighchartsReact highcharts={Highcharts} options={soilTempChartOptions} />
           </Grid>
 
           <Grid item md={12}>
-            <HighchartsReact
-              highcharts={Highcharts}
-              options={vwcChartOptions}
-            />
+            <HighchartsReact highcharts={Highcharts} options={vwcChartOptions} />
           </Grid>
 
           <Grid item md={12}>
-            <HighchartsReact
-              highcharts={Highcharts}
-              options={permittivityChartOptions}
-            />
+            <HighchartsReact highcharts={Highcharts} options={permittivityChartOptions} />
           </Grid>
           <Grid item md={12}>
-            <HighchartsReact
-              highcharts={Highcharts}
-              options={ecBulkChartOptions}
-            />
+            <HighchartsReact highcharts={Highcharts} options={ecBulkChartOptions} />
           </Grid>
           <Grid item md={12}>
-            <HighchartsReact
-              highcharts={Highcharts}
-              options={ecPoreWaterChartOptions}
-            />
+            <HighchartsReact highcharts={Highcharts} options={ecPoreWaterChartOptions} />
           </Grid>
         </Fragment>
       )}
@@ -689,17 +640,17 @@ const fetchBasicNodeData = async (nodeSerialNo, year) => {
   let dataObj = {
     serialNo: nodeSerialNo,
     year: year,
-    type: "node",
+    type: 'node',
   };
   return await Axios({
     url: `${apiURL}/api/retrieve/chart/water_node_data/by/node`,
-    method: "post",
+    method: 'post',
     auth: {
       username: apiUsername,
       password: apiPassword,
     },
     headers: {
-      "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+      'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
     },
     data: qs.stringify(dataObj),
   }).catch((e) => {
@@ -711,17 +662,17 @@ const fetchSensorNodeData = async (nodeSerialNo, year) => {
   let dataObj = {
     serialNo: nodeSerialNo,
     year: year,
-    type: "sensor",
+    type: 'sensor',
   };
   return await Axios({
     url: `${apiURL}/api/retrieve/chart/water_sensor_data/by/node`,
-    method: "post",
+    method: 'post',
     auth: {
       username: apiUsername,
       password: apiPassword,
     },
     headers: {
-      "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+      'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
     },
     data: qs.stringify(dataObj),
   });

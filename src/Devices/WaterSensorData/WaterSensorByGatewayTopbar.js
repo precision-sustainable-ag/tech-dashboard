@@ -1,7 +1,7 @@
 // Dependency Imports
-import React, { useEffect } from "react";
-import { makeStyles, Chip } from "@material-ui/core";
-import PropTypes from "prop-types";
+import React, { useEffect } from 'react';
+import { makeStyles, Chip } from '@material-ui/core';
+import PropTypes from 'prop-types';
 // const useStyles = makeStyles(theme => ({
 //   root: {
 //     backgroundColor: theme.palette.background.paper
@@ -11,10 +11,10 @@ import PropTypes from "prop-types";
 // Styles
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex",
-    justifyContent: "center",
-    flexWrap: "wrap",
-    "& > *": {
+    display: 'flex',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    '& > *': {
       margin: theme.spacing(0.5),
     },
   },
@@ -42,12 +42,12 @@ const WaterSensorByGatewayTopbar = (props) => {
           {bareNodes.map((node, index) => {
             return (
               <Chip
-                color={activeChip === node ? "primary" : "secondary"}
+                color={activeChip === node ? 'primary' : 'secondary'}
                 title={`Bare Node, Serial No: ${node}`}
                 key={index}
                 label={node}
                 onClick={() => {
-                  console.log("bare node chip clicked");
+                  console.log('bare node chip clicked');
                   if (activeChip !== node) setActiveChip(node);
                 }}
                 className={classes.chip}
@@ -56,7 +56,7 @@ const WaterSensorByGatewayTopbar = (props) => {
           })}
         </div>
       ) : (
-        ""
+        ''
       )}
       {coverNodes.length > 0 ? (
         <div>
@@ -64,12 +64,12 @@ const WaterSensorByGatewayTopbar = (props) => {
             return (
               <Chip
                 title={`Cover Node, Serial No: ${node}`}
-                color={activeChip === node ? "primary" : "secondary"}
+                color={activeChip === node ? 'primary' : 'secondary'}
                 key={index}
                 label={node}
                 onClick={() => {
                   if (activeChip !== node) setActiveChip(node);
-                  console.log("cover node chip clicked");
+                  console.log('cover node chip clicked');
                 }}
                 className={classes.chip}
               />
@@ -77,7 +77,7 @@ const WaterSensorByGatewayTopbar = (props) => {
           })}
         </div>
       ) : (
-        ""
+        ''
       )}
     </div>
   );

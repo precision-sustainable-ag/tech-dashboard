@@ -1,6 +1,6 @@
-import React from "react";
-import { Chip, Grid } from "@material-ui/core";
-import PropTypes from "prop-types";
+import React from 'react';
+import { Chip, Grid } from '@material-ui/core';
+import PropTypes from 'prop-types';
 
 const YearsChips = (props) => {
   const { years, handleActiveYear } = props;
@@ -11,7 +11,7 @@ const YearsChips = (props) => {
         <Grid item key={`yearChip-${index}`}>
           <Chip
             label={yearInfo.year}
-            color={yearInfo.active ? "primary" : "default"}
+            color={yearInfo.active ? 'primary' : 'default'}
             onClick={() => {
               handleActiveYear(yearInfo.year);
             }}
@@ -27,7 +27,7 @@ YearsChips.propTypes = {
     PropTypes.shape({
       year: PropTypes.string.isRequired,
       active: PropTypes.bool.isRequired,
-    })
+    }),
   ),
   handleActiveYear: PropTypes.func,
 };

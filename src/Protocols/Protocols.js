@@ -1,23 +1,22 @@
 // import React, { useState, useEffect } from "react";
-import React, { useEffect, useState } from "react";
-import { Paper, Typography, Grid, Button } from "@material-ui/core";
-import { Skeleton } from "@material-ui/lab";
-import PropTypes from "prop-types";
-import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
-import parse, { attributesToProps } from "html-react-parser";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { Paper, Typography, Grid, Button } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
+import PropTypes from 'prop-types';
+import { apiPassword, apiURL, apiUsername } from '../utils/api_secret';
+import parse, { attributesToProps } from 'html-react-parser';
+import { Link } from 'react-router-dom';
 
 const Protocols = () => {
-  const [htmlData, setHtmlData] = useState("");
+  const [htmlData, setHtmlData] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
       let data = await fetch(`${apiURL}/api/psa/internal/pages/957`, {
         headers: {
-          Authorization: `Basic ${Buffer.from(
-            apiUsername + ":" + apiPassword,
-            "binary"
-          ).toString("base64")}`,
+          Authorization: `Basic ${Buffer.from(apiUsername + ':' + apiPassword, 'binary').toString(
+            'base64',
+          )}`,
         },
       });
       let response = await data.text();
@@ -36,14 +35,14 @@ const Protocols = () => {
       //   return <span {...props} />;
       // }
 
-      if (domNode.attribs && domNode.name === "a") {
+      if (domNode.attribs && domNode.name === 'a') {
         const props = attributesToProps(domNode.attribs);
 
-        if (props.href.startsWith("https://onfarmtech.org/")) {
+        if (props.href.startsWith('https://onfarmtech.org/')) {
           // domNode
           console.log(domNode);
-          const relativeLink = props.href.replace("https://onfarmtech.org", "");
-          props.target = "_self";
+          const relativeLink = props.href.replace('https://onfarmtech.org', '');
+          props.target = '_self';
           return (
             <Button
               size="small"
@@ -51,9 +50,9 @@ const Protocols = () => {
               to={relativeLink}
               {...props}
               variant="text"
-              style={{ textTransform: "capitalize" }}
+              style={{ textTransform: 'capitalize' }}
             >
-              {relativeLink.split("/").join("").split("-").join(" ")}
+              {relativeLink.split('/').join('').split('-').join(' ')}
             </Button>
           );
         }
@@ -74,7 +73,7 @@ const Protocols = () => {
         {!htmlData ? (
           <Skeleton width="100%" height="50vh" />
         ) : (
-          <Paper style={{ padding: "1em" }} elevation={3}>
+          <Paper style={{ padding: '1em' }} elevation={3}>
             {parse(htmlData, options)}
           </Paper>
         )}

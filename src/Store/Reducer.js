@@ -17,7 +17,6 @@ const Reducer = (state, action) => {
       return updateUserInfo(state, action);
     case 'UPDATING_USER_INFO':
       return updatingUserInfo(state);
-
     default:
       return { ...state };
   }
