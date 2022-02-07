@@ -30,12 +30,17 @@ const tableHeaderOptions = [
   {
     title: 'Year',
     field: 'year',
+    type: 'numeric',
+    align: 'justify',
+    defaultGroupOrder: 1,
+    defaultGroupSort: 'desc',
+  },
+  {
+    title: 'Affiliation',
+    field: 'affiliation',
     type: 'string',
     align: 'justify',
-    searchable: true,
     defaultGroupOrder: 0,
-    defaultSort: 'desc',
-    defaultGroupSort: 'desc',
   },
   {
     title: 'Cover Crop Planting',
@@ -190,7 +195,7 @@ const FarmDates = () => {
               data={farmDatesData}
               options={{
                 padding: 'default',
-
+                defaultExpanded: true,
                 exportButton: true,
                 exportFileName: 'Farm Dates',
                 exportAllData: false,
