@@ -186,9 +186,7 @@ const VisualsByCode = () => {
 
           const codeDataRecords = await codeDataFromApi.json();
 
-          console.log(codeData);
-
-          setCodeData(codeDataRecords);
+          setCodeData(codeDataRecords[0]);
 
           setIssueBody(tdrDataRecords[tdrDataRecords.length - 1]);
 
@@ -350,7 +348,7 @@ const VisualsByCode = () => {
                 rowData={JSON.stringify(issueBody, null, '\t')}
                 dataType="json"
                 setSnackbarData={setSnackbarData}
-                labels={[code, 'tdr', 'water-sensor-visuals']}
+                labels={[code, 'tdr', 'water-sensor-visuals', codeData.affiliation]}
                 getTokenSilently={getTokenSilently}
               />
             ) : (
