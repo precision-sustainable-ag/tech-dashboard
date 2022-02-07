@@ -156,6 +156,28 @@ const EditDataModal = (props) => {
       postModalUpdate(newData).then(() => {
         props.handleEditModalClose();
         props.setValuesEdited(!props.valuesEdited);
+
+        setNewData({
+          cid: '',
+          code: '',
+          year: '',
+          affiliation: '',
+          county: '',
+          longitude: '',
+          latitude: '',
+          notes: '',
+          additional_contact: '',
+          producer_id: '',
+          address: '',
+          state: '',
+          last_name: '',
+          email: '',
+          phone: '',
+          latlng: '',
+          tableData: {
+            id: null,
+          },
+        });
         // console.log(res);
       });
       // .then(() => {

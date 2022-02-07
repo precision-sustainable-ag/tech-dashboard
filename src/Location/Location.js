@@ -98,9 +98,6 @@ const Location = ({
               addressLookup(e.lat, e.lng).then((res) => {
                 if (res.status === 'OK') {
                   if (res.results.length > 0) {
-                    let address = res.results[0].formatted_address
-                      ? res.results[0].formatted_address
-                      : '';
                     let county = res.results[0].address_components.filter(
                       (e) => e.types[0] === 'administrative_area_level_2',
                     );
@@ -112,7 +109,6 @@ const Location = ({
                       ...selectedToEditSite,
                       latitude: e.lat,
                       longitude: e.lng,
-                      address: address,
                       state: state[0].short_name || '',
                       county: county[0].long_name || '',
                     });
@@ -131,9 +127,6 @@ const Location = ({
               addressLookup(e.lat, e.lng).then((res) => {
                 if (res.status === 'OK') {
                   if (res.results.length > 0) {
-                    let address = res.results[0].formatted_address
-                      ? res.results[0].formatted_address
-                      : '';
                     let county = res.results[0].address_components.filter(
                       (e) => e.types[0] === 'administrative_area_level_2',
                     );
@@ -144,7 +137,6 @@ const Location = ({
                       ...selectedToEditSite,
                       latitude: e.lat,
                       longitude: e.lng,
-                      address: address,
                       state: state[0]?.short_name || '',
                       county: county[0]?.long_name || '',
                     });
