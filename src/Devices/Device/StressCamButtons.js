@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Button,
   TextField,
@@ -12,11 +12,11 @@ import {
   Typography,
   Tooltip,
   withStyles,
-} from "@material-ui/core";
-import { sendCommandToHologram } from "../../utils/SharedFunctions";
-import { getDeviceMessages } from "../../utils/SharedFunctions";
-import MuiAlert from "@material-ui/lab/Alert";
-import PropTypes from "prop-types";
+} from '@material-ui/core';
+import { sendCommandToHologram } from '../../utils/SharedFunctions';
+import { getDeviceMessages } from '../../utils/SharedFunctions';
+import MuiAlert from '@material-ui/lab/Alert';
+import PropTypes from 'prop-types';
 
 // Helper function
 function Alert(props) {
@@ -25,21 +25,21 @@ function Alert(props) {
 
 const StyledButton = withStyles({
   root: {
-    "&.Mui-disabled": {
-      pointerEvents: "auto",
+    '&.Mui-disabled': {
+      pointerEvents: 'auto',
     },
   },
 })(Button);
 
 const StressCamButtons = (props) => {
-  const [farmCode, setFarmCode] = useState("");
-  const [rep, setRep] = useState("");
+  const [farmCode, setFarmCode] = useState('');
+  const [rep, setRep] = useState('');
   const [open, setOpen] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const [snackbarData, setSnackbarData] = useState({
     open: false,
-    text: "",
-    severity: "success",
+    text: '',
+    severity: 'success',
   });
 
   const handleClose = () => {
@@ -49,7 +49,7 @@ const StressCamButtons = (props) => {
   const { deviceId, isDarkTheme } = props;
   const sendShutdownMessage = () => {
     setOpen(false);
-    sendCommandToHologram(deviceId, null, null, "shutdown", null);
+    sendCommandToHologram(deviceId, null, null, 'shutdown', null);
     queryHologram();
   };
 
@@ -58,29 +58,29 @@ const StressCamButtons = (props) => {
     let interval = setInterval(() => {
       getDeviceMessages(deviceId).then((res) => {
         let snackbarText =
-          "Attempting to send message to your device " +
+          'Attempting to send message to your device ' +
           (60 - count).toString() +
-          " attempts remaining";
-        setSnackbarData({ open: true, text: snackbarText, severity: "info" });
+          ' attempts remaining';
+        setSnackbarData({ open: true, text: snackbarText, severity: 'info' });
         const messages = JSON.parse(res.data.data);
 
-        if (messages.data[0].tags.includes("_SMS_DT_DELIVERED_")) {
-          console.log("contains");
+        if (messages.data[0].tags.includes('_SMS_DT_DELIVERED_')) {
+          console.log('contains');
           setButtonsDisabled(false);
           clearInterval(interval);
           setSnackbarData({
             open: true,
-            text: "Successfully sent message",
-            severity: "success",
+            text: 'Successfully sent message',
+            severity: 'success',
           });
         } else if (count >= 60) {
-          console.log("does not contain");
+          console.log('does not contain');
           setButtonsDisabled(false);
           clearInterval(interval);
           setSnackbarData({
             open: true,
-            text: "Could not send message. Your device is not connected to 3G/4G",
-            severity: "error",
+            text: 'Could not send message. Your device is not connected to 3G/4G',
+            severity: 'error',
           });
         }
         count++;
@@ -90,27 +90,14 @@ const StressCamButtons = (props) => {
   };
 
   const sendMessage = (command) => {
-    console.log("sending message");
+    console.log('sending message');
     setButtonsDisabled(true);
-    if (command === "startCorn")
-      sendCommandToHologram(
-        deviceId,
-        farmCode.toUpperCase(),
-        rep,
-        "start",
-        "corn"
-      );
-    else if (command === "startSoy")
-      sendCommandToHologram(
-        deviceId,
-        farmCode.toUpperCase(),
-        rep,
-        "start",
-        "soybean"
-      );
-    else if (command === "stop")
-      sendCommandToHologram(deviceId, null, null, "stop", null);
-    else if (command === "shutdown") {
+    if (command === 'startCorn')
+      sendCommandToHologram(deviceId, farmCode.toUpperCase(), rep, 'start', 'corn');
+    else if (command === 'startSoy')
+      sendCommandToHologram(deviceId, farmCode.toUpperCase(), rep, 'start', 'soybean');
+    else if (command === 'stop') sendCommandToHologram(deviceId, null, null, 'stop', null);
+    else if (command === 'shutdown') {
       setOpen(true);
       return;
     }
@@ -121,7 +108,7 @@ const StressCamButtons = (props) => {
   const ButtonWithTooltip = ({ tooltipText, disabled, onClick, ...other }) => {
     const adjustedButtonProps = {
       disabled: disabled,
-      component: disabled ? "div" : undefined,
+      component: disabled ? 'div' : undefined,
       onClick: disabled ? undefined : onClick,
     };
     return (
@@ -140,14 +127,12 @@ const StressCamButtons = (props) => {
     <>
       <Snackbar
         anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
+          vertical: 'bottom',
+          horizontal: 'center',
         }}
         open={snackbarData.open}
         autoHideDuration={10000}
-        onClose={() =>
-          setSnackbarData({ ...snackbarData, open: !snackbarData.open })
-        }
+        onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
       >
         <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
       </Snackbar>
@@ -156,8 +141,7 @@ const StressCamButtons = (props) => {
           Make sure your camera is connected to 2G/3G before sending commands
         </Typography>
         <Typography variant="h5">
-          Enter 3 letter farm code and rep (1 or 2) before sending start
-          commands
+          Enter 3 letter farm code and rep (1 or 2) before sending start commands
         </Typography>
       </Grid>
 
@@ -187,31 +171,19 @@ const StressCamButtons = (props) => {
       </Grid>
 
       <Grid item xs={12} md={6} display="flex" align="center">
-        <Grid
-          container
-          spacing={1}
-          display="flex"
-          justifyContent="center"
-          align="center"
-        >
+        <Grid container spacing={1} display="flex" justifyContent="center" align="center">
           <Grid item xs={12} md={3}>
             <ButtonWithTooltip
               tooltipText={
-                buttonsDisabled ||
-                farmCode.length !== 3 ||
-                (rep !== "1" && rep !== "2")
-                  ? "Make sure farm code is 3 letters and rep number is 1 or 2"
-                  : "Start your device in corn"
+                buttonsDisabled || farmCode.length !== 3 || (rep !== '1' && rep !== '2')
+                  ? 'Make sure farm code is 3 letters and rep number is 1 or 2'
+                  : 'Start your device in corn'
               }
-              disabled={
-                buttonsDisabled ||
-                farmCode.length !== 3 ||
-                (rep !== "1" && rep !== "2")
-              }
-              onClick={() => sendMessage("startCorn")}
+              disabled={buttonsDisabled || farmCode.length !== 3 || (rep !== '1' && rep !== '2')}
+              onClick={() => sendMessage('startCorn')}
               fullWidth
               variant="contained"
-              color={isDarkTheme ? "primary" : "default"}
+              color={isDarkTheme ? 'primary' : 'default'}
             >
               Start in Corn
             </ButtonWithTooltip>
@@ -219,21 +191,15 @@ const StressCamButtons = (props) => {
           <Grid item xs={12} md={3}>
             <ButtonWithTooltip
               tooltipText={
-                buttonsDisabled ||
-                farmCode.length !== 3 ||
-                (rep !== "1" && rep !== "2")
-                  ? "Make sure farm code is 3 letters and rep number is 1 or 2"
-                  : "Start your device in soy"
+                buttonsDisabled || farmCode.length !== 3 || (rep !== '1' && rep !== '2')
+                  ? 'Make sure farm code is 3 letters and rep number is 1 or 2'
+                  : 'Start your device in soy'
               }
-              disabled={
-                buttonsDisabled ||
-                farmCode.length !== 3 ||
-                (rep !== "1" && rep !== "2")
-              }
-              onClick={() => sendMessage("startSoy")}
+              disabled={buttonsDisabled || farmCode.length !== 3 || (rep !== '1' && rep !== '2')}
+              onClick={() => sendMessage('startSoy')}
               fullWidth
               variant="contained"
-              color={isDarkTheme ? "primary" : "default"}
+              color={isDarkTheme ? 'primary' : 'default'}
             >
               Start in Soybean
             </ButtonWithTooltip>
@@ -243,8 +209,8 @@ const StressCamButtons = (props) => {
               disabled={buttonsDisabled}
               fullWidth
               variant="contained"
-              color={isDarkTheme ? "primary" : "default"}
-              onClick={() => sendMessage("stop")}
+              color={isDarkTheme ? 'primary' : 'default'}
+              onClick={() => sendMessage('stop')}
             >
               Stop
             </Button>
@@ -254,8 +220,8 @@ const StressCamButtons = (props) => {
               disabled={buttonsDisabled}
               fullWidth
               variant="contained"
-              color={isDarkTheme ? "primary" : "default"}
-              onClick={() => sendMessage("shutdown")}
+              color={isDarkTheme ? 'primary' : 'default'}
+              onClick={() => sendMessage('shutdown')}
             >
               Shutdown
             </Button>
@@ -269,9 +235,7 @@ const StressCamButtons = (props) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          {"Shutdown your device?"}
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">{'Shutdown your device?'}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             Shutting down will require a manual restart of your device

@@ -8,20 +8,20 @@ import {
   CardHeader,
   Grid,
   Typography,
-} from "@material-ui/core";
-import { Check, Save } from "@material-ui/icons";
+} from '@material-ui/core';
+import { Check, Save } from '@material-ui/icons';
 // import Axios from "axios";
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
 // Local Imports
 // import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
-import { ucFirst } from "../utils/constants";
+import { ucFirst } from '../utils/constants';
 
 // Helper functions
 const ExistingGrowersGrid = ({
   allGrowers = [],
-  growerLastName = "",
+  growerLastName = '',
   enrollmentData = {},
   setEnrollmentData = {},
 }) => {
@@ -58,9 +58,7 @@ const ExistingGrowersGrid = ({
               </Grid>
               <Grid item xs={6}>
                 <Typography variant="body2">
-                  {grower.codes && grower.codes.length > 0
-                    ? grower.codes.toString()
-                    : "No Sites"}
+                  {grower.codes && grower.codes.length > 0 ? grower.codes.toString() : 'No Sites'}
                 </Typography>
               </Grid>
             </Grid>
@@ -69,9 +67,7 @@ const ExistingGrowersGrid = ({
             <Button
               size="small"
               color={
-                enrollmentData.growerInfo.producerId === grower.producer_id
-                  ? "primary"
-                  : "default"
+                enrollmentData.growerInfo.producerId === grower.producer_id ? 'primary' : 'default'
               }
               variant="contained"
               onClick={() => {
@@ -81,7 +77,7 @@ const ExistingGrowersGrid = ({
                     producerId: grower.producer_id,
                     collaborationStatus: grower.collaboration_status
                       ? grower.collaboration_status
-                      : "University",
+                      : 'University',
                     phone: grower.phone,
                     lastName: grower.last_name,
                     email: grower.email,
@@ -89,23 +85,17 @@ const ExistingGrowersGrid = ({
                 });
               }}
               startIcon={
-                enrollmentData.growerInfo.producerId === grower.producer_id ? (
-                  <Check />
-                ) : (
-                  <Save />
-                )
+                enrollmentData.growerInfo.producerId === grower.producer_id ? <Check /> : <Save />
               }
             >
-              {enrollmentData.growerInfo.producerId === grower.producer_id
-                ? "Selected"
-                : "Select"}
+              {enrollmentData.growerInfo.producerId === grower.producer_id ? 'Selected' : 'Select'}
             </Button>
           </CardActions>
         </Card>
       </Grid>
     ));
   } else if (growerLastName.length === 0) {
-    return "";
+    return '';
   } else {
     return <Typography variant="body1">Grower Not Found</Typography>;
   }

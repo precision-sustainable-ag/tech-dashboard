@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useContext, useState, useEffect, Fragment } from "react";
+import React, { useContext, useState, useEffect, Fragment } from 'react';
 import {
   Grid,
   Typography,
@@ -13,15 +13,15 @@ import {
   TableCell,
   Button,
   TableHead,
-  Link
-} from "@material-ui/core";
-import PropTypes from "prop-types";
+  Link,
+} from '@material-ui/core';
+import PropTypes from 'prop-types';
 
 // Local Imports
-import { Context } from "../Store/Store";
-import { useAuth0 } from "../Auth/react-auth0-spa";
-import { bannedRoles, fetchKoboPasswords, ucFirst } from "../utils/constants";
-import { BannedRoleMessage } from "../utils/CustomComponents";
+import { Context } from '../Store/Store';
+import { useAuth0 } from '../Auth/react-auth0-spa';
+import { bannedRoles, fetchKoboPasswords, ucFirst } from '../utils/constants';
+import { BannedRoleMessage } from '../utils/CustomComponents';
 
 /**
  * Logged in User's Profile Page
@@ -39,11 +39,10 @@ const Profile = () => {
     if (state.userInfo.state) {
       const response = fetchKoboPasswords({
         state: state.userInfo.state,
-        showAllStates:
-          state.userInfo.state.toLowerCase() === "all" ? true : false,
+        showAllStates: state.userInfo.state.toLowerCase() === 'all' ? true : false,
       });
       response.then(({ status, data, showAllStates }) => {
-        if (status === "success") {
+        if (status === 'success') {
           setKoboDetails({ data: data, allStates: showAllStates });
         } else {
           console.error(data);
@@ -55,15 +54,12 @@ const Profile = () => {
 
   return (
     isAuthenticated &&
-    (bannedRoles.includes(state.userInfo.role) ||
-    bannedRoles.includes(state.userInfo.state) ? (
+    (bannedRoles.includes(state.userInfo.role) || bannedRoles.includes(state.userInfo.state) ? (
       <BannedRoleMessage title="profile page" />
     ) : (
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h4">
-            Welcome, {user.name || user.nickname}
-          </Typography>
+          <Typography variant="h4">Welcome, {user.name || user.nickname}</Typography>
         </Grid>
 
         {Object.keys(state.userInfo).length > 0 && (
@@ -71,7 +67,7 @@ const Profile = () => {
             <Grid item xs={12} md={4}>
               <Card elevation={3}>
                 <CardHeader title="Github Details" />
-                <CardContent style={{ minHeight: "50vh" }}>
+                <CardContent style={{ minHeight: '50vh' }}>
                   <RenderGithubDetails user={user} />
                 </CardContent>
               </Card>
@@ -79,7 +75,7 @@ const Profile = () => {
             <Grid item xs={12} md={4}>
               <Card elevation={3}>
                 <CardHeader title="Account Details" />
-                <CardContent style={{ minHeight: "50vh" }}>
+                <CardContent style={{ minHeight: '50vh' }}>
                   <RenderGeneralInfo userInfo={state.userInfo} />
                 </CardContent>
               </Card>
@@ -87,7 +83,7 @@ const Profile = () => {
             <Grid item xs={12} md={4}>
               <Card elevation={3}>
                 <CardHeader title="Kobo Details" />
-                <CardContent style={{ minHeight: "50vh" }}>
+                <CardContent style={{ minHeight: '50vh' }}>
                   <RenderKoboDetails koboData={koboDetails} />
                 </CardContent>
               </Card>
@@ -100,44 +96,44 @@ const Profile = () => {
 };
 
 const RenderGeneralInfo = ({ userInfo }) => {
-  const invisibleKeys = ["data", "updated", "userid"];
-  const transformKey = (key = "", val) => {
-    return key === "apikey"
-      ? "api key"
-      : key === "state"
-      ? val.split(",").length > 1 || val === "all"
-        ? "States"
-        : "State"
-      : key.replace("_", " ");
+  const invisibleKeys = ['data', 'updated', 'userid'];
+  const transformKey = (key = '', val) => {
+    return key === 'apikey'
+      ? 'api key'
+      : key === 'state'
+      ? val.split(',').length > 1 || val === 'all'
+        ? 'States'
+        : 'State'
+      : key.replace('_', ' ');
   };
-  const transformVal = (key = "", val = "") => {
-    const stringSplitter = (val = "") => {
-      return val.split(",").reduce((accumulator, current, index, arr) => {
+  const transformVal = (key = '', val = '') => {
+    const stringSplitter = (val = '') => {
+      return val.split(',').reduce((accumulator, current, index, arr) => {
         if (arr.length === 1) return current;
         else {
           if (index === arr.length - 1) {
-            return accumulator + " and " + current;
+            return accumulator + ' and ' + current;
           } else if (index === 0) {
             return `${current}`;
           } else {
             return `${accumulator}, ${current}`;
           }
         }
-      }, "");
+      }, '');
     };
 
     switch (key) {
-      case "state":
-        return val.toLowerCase() === "all" ? "All" : stringSplitter(val);
+      case 'state':
+        return val.toLowerCase() === 'all' ? 'All' : stringSplitter(val);
 
-      case "permissions":
-        return ucFirst(stringSplitter(val)).replace("And", "and");
+      case 'permissions':
+        return ucFirst(stringSplitter(val)).replace('And', 'and');
 
-      case "role":
+      case 'role':
         return ucFirst(val);
 
-      case "view_protected":
-        return val === 1 ? "Yes" : "No";
+      case 'view_protected':
+        return val === 1 ? 'Yes' : 'No';
 
       default:
         return val;
@@ -150,7 +146,7 @@ const RenderGeneralInfo = ({ userInfo }) => {
           {Object.keys(userInfo).length > 0 &&
             Object.keys(userInfo).map((key, index) =>
               invisibleKeys.includes(key) ? (
-                ""
+                ''
               ) : (
                 <TableRow key={`userinfo${index}`}>
                   <TableCell>
@@ -160,13 +156,13 @@ const RenderGeneralInfo = ({ userInfo }) => {
                   </TableCell>
                   <TableCell>
                     <Typography variant="body1">
-                      {key === "apikey"
+                      {key === 'apikey'
                         ? showAPIKey(userInfo[key])
                         : transformVal(key, userInfo[key])}
                     </Typography>
                   </TableCell>
                 </TableRow>
-              )
+              ),
             )}
         </TableBody>
       </Table>
@@ -175,7 +171,7 @@ const RenderGeneralInfo = ({ userInfo }) => {
 };
 
 const RenderGithubDetails = ({ user }) => {
-  const invisibleKeys = ["picture", "updated_at", "email_verified"];
+  const invisibleKeys = ['picture', 'updated_at', 'email_verified'];
   return (
     <TableContainer>
       <Table>
@@ -199,7 +195,7 @@ const RenderGithubDetails = ({ user }) => {
                     <Typography variant="body1">{user[userKey]}</Typography>
                   </TableCell>
                 </TableRow>
-              )
+              ),
           )}
         </TableBody>
       </Table>
@@ -241,11 +237,13 @@ const RenderKoboDetails = ({ koboData = { data: [{}], allStates: false } }) => {
           </TableBody>
         </Table>
       </TableContainer>
-      
-      <Link href="https://docs.google.com/document/d/1rsSmhmEXTms_MDP745cyEUPTWbbvA34DU4A3jPc34qI/edit"><Typography>How to login</Typography></Link>
+
+      <Link href="https://docs.google.com/document/d/1rsSmhmEXTms_MDP745cyEUPTWbbvA34DU4A3jPc34qI/edit">
+        <Typography>How to login</Typography>
+      </Link>
     </Fragment>
   ) : (
-    ""
+    ''
   );
 };
 
@@ -254,22 +252,20 @@ const showAPIKey = (apiKey) => {
     <span
       id="showAPIKeyBtn"
       style={{
-        fontFamily: "Menlo, sans-serif",
-        fontSize: "0.8em",
-        fontStyle: "italic",
+        fontFamily: 'Menlo, sans-serif',
+        fontSize: '0.8em',
+        fontStyle: 'italic',
       }}
     >
       {apiKey ? (
         <Button
-          onClick={() =>
-            (document.getElementById("showAPIKeyBtn").innerHTML = apiKey)
-          }
+          onClick={() => (document.getElementById('showAPIKeyBtn').innerHTML = apiKey)}
           size="small"
         >
           Show
         </Button>
       ) : (
-        "N/A"
+        'N/A'
       )}
     </span>
   );

@@ -1,17 +1,17 @@
 // Dependency Imports
-import React, { useEffect, useState, useContext } from "react";
-import { Typography, Grid, List, Paper } from "@material-ui/core";
+import React, { useEffect, useState, useContext } from 'react';
+import { Typography, Grid, List, Paper } from '@material-ui/core';
 
 // Local Imports
-import getAllKoboAssets from "./KoboFormAuth";
-import FormsLoadingSkeleton from "./FormsLoadingSkeleton";
-import { Context } from "../Store/Store";
-import { bannedRoles } from "../utils/constants";
+import getAllKoboAssets from './KoboFormAuth';
+import FormsLoadingSkeleton from './FormsLoadingSkeleton';
+import { Context } from '../Store/Store';
+import { bannedRoles } from '../utils/constants';
 
-import { BannedRoleMessage } from "../utils/CustomComponents";
+import { BannedRoleMessage } from '../utils/CustomComponents';
 
-import FormsStatus from "./components/FormsStatus";
-import PropTypes from "prop-types";
+import FormsStatus from './components/FormsStatus';
+import PropTypes from 'prop-types';
 
 // Default function
 const Forms = ({ isDarkTheme }) => {
@@ -27,13 +27,11 @@ const Forms = ({ isDarkTheme }) => {
       setShowForms(false);
       setIsPSALoading(false);
     } else {
-      getAllKoboAssets("psa")
+      getAllKoboAssets('psa')
         .then((response) => {
           const allForms = response.data.data.results;
           const forms = allForms.filter(
-            (form) =>
-              !form.name.match(/^.*DEPRECATED*.$/gi) &&
-              !form.name.match(/^.*TESTING*.$/gi)
+            (form) => !form.name.match(/^.*DEPRECATED*.$/gi) && !form.name.match(/^.*TESTING*.$/gi),
           );
           setPsaForms(forms);
         })
@@ -64,20 +62,20 @@ const Forms = ({ isDarkTheme }) => {
         <List>
           <Grid item xs={12} container spacing={2}>
             {psaForms.map((form, index) =>
-              form.name !== "" && form.deployment__active ? (
+              form.name !== '' && form.deployment__active ? (
                 <Grid item xs={12} key={`psa-form-${index}`}>
                   <Paper elevation={isDarkTheme ? 3 : 1}>
                     <FormsStatus form={form} />
                   </Paper>
                 </Grid>
               ) : (
-                ""
-              )
+                ''
+              ),
             )}
           </Grid>
         </List>
       ) : (
-        ""
+        ''
       )}
     </Grid>
   ) : isPSALoading ? (

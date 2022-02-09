@@ -1,13 +1,8 @@
-import {
-  Avatar,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-} from "@material-ui/core";
-import { Storage } from "@material-ui/icons";
-import React, { useCallback } from "react";
-import { useHistory } from "react-router-dom";
-import PropTypes from "prop-types";
+import { Avatar, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
+import { Storage } from '@material-ui/icons';
+import React, { useCallback } from 'react';
+import { useHistory } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 const FormsStatus = ({ form }) => {
   const history = useHistory();
@@ -22,7 +17,7 @@ const FormsStatus = ({ form }) => {
         pathname: `/kobo-forms/${form.uid}`,
         state: { name: form.name },
       }),
-    [form.name, form.uid, history]
+    [form.name, form.uid, history],
   );
 
   return (
@@ -39,7 +34,7 @@ const FormsStatus = ({ form }) => {
       </ListItemAvatar>
       <ListItemText
         primary={form.name}
-        secondary={form.deployment__submission_count === 0 && "No Submissions"}
+        secondary={form.deployment__submission_count === 0 && 'No Submissions'}
       />
     </ListItem>
   );

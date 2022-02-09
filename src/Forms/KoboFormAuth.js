@@ -1,18 +1,18 @@
 // Dependency Imports
-import Axios from "axios";
-import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
+import Axios from 'axios';
+import { apiPassword, apiURL, apiUsername } from '../utils/api_secret';
 
 // Default function
 const getAllKoboAssets = async (who) => {
   switch (who) {
-    case "psa":
+    case 'psa':
       return await Axios.get(`${apiURL}/api/kobo/psa/basic/`, {
         auth: {
           username: apiUsername,
           password: apiPassword,
         },
       });
-    case "psassg":
+    case 'psassg':
       return await Axios.get(`${apiURL}/api/kobo/psassg/basic/`, {
         auth: {
           username: apiUsername,
