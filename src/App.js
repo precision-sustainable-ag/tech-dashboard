@@ -59,13 +59,22 @@ import ProducerInformation from './ProducerInformation/ProducerInformation';
 
 import TaskTimeline from './Landing/TaskTimeline/TaskTimeline';
 
-import Protocols from './Protocols/Protocols';
-import DecompBag from './DecompBag/DecompBag';
-import Debug from './Debug/Debug';
-import axios from 'axios';
-import { apiPassword, apiUsername, onfarmAPI, onfarmStaticApiKey } from './utils/api_secret';
-import { apiCorsUrl, APIURL } from './Devices/hologramConstants';
-import QueryString from 'qs';
+import Protocols from "./Protocols/Protocols";
+import DecompBag from "./DecompBag/DecompBag";
+import Debug from "./Debug/Debug";
+import axios from "axios";
+import {
+  apiPassword,
+  apiUsername,
+  onfarmAPI,
+  onfarmStaticApiKey,
+} from "./utils/api_secret";
+import { apiCorsUrl, APIURL } from "./Devices/hologramConstants";
+import QueryString from "qs";
+import TaskTracker from "./TaskTracker/TaskTracker";
+import TaskTracker1 from "./TaskTracker/TaskTracker1";
+
+
 
 // Helper function
 
@@ -451,6 +460,17 @@ function App() {
                 <PrivateRoute
                   path={`/biomass/farm-values`}
                   render={(props) => <FarmValues {...props} />}
+                />
+                {/* Task Tracker View */}
+                <PrivateRoute
+                  path={`/task-tracker`}
+                  component={TaskTracker}
+                  exact
+                />
+                <PrivateRoute
+                  path={`/task-tracker1`}
+                  component={TaskTracker1}
+                  exact
                 />
                 <Route path="*">
                   <PageNotFound />
