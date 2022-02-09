@@ -39,8 +39,9 @@ function Alert(props) {
 export const NewSiteInfo = ({ enrollmentData = {}, setEnrollmentData = () => {} }) => {
   const theme = useTheme();
   // const { control } = useForm();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-  const [maxWidth, setMaxWidth] = useState('md');
+  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const [maxWidth, setMaxWidth] = useState("md");
+  const [shuffleSites, setShuffleSites] = useState(false);
   const [totalSites, setTotalSites] = useState(0);
   useEffect(() => {
     setTotalSites(0);
@@ -79,7 +80,7 @@ export const NewSiteInfo = ({ enrollmentData = {}, setEnrollmentData = () => {} 
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [totalSites, enrollmentData.affiliation]);
+  }, [totalSites, enrollmentData.affiliation, shuffleSites]);
 
   const [modifyNewSiteDetailsModal, setModifyNewSiteDetailsModal] = useState(false);
   const [selectedToEditSite, setSelectedToEditSite] = useState({
@@ -184,6 +185,10 @@ export const NewSiteInfo = ({ enrollmentData = {}, setEnrollmentData = () => {} 
     }
   };
 
+  const shuffleSitesFunc = () => {
+    let temp_code = shuffleSites;
+    setShuffleSites(!temp_code);
+  };
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
@@ -207,6 +212,9 @@ export const NewSiteInfo = ({ enrollmentData = {}, setEnrollmentData = () => {} 
           ))}
         </Select>
         <FormHelperText>Total number of sites to be assigned</FormHelperText>
+      </Grid>
+      <Grid item xs={12} md={6} spacing={3}>
+         <Button size="small" variant="outlined" onClick={shuffleSitesFunc}>Shuffle Code</Button>
       </Grid>
       <Grid item xs={12}>
         <Grid container spacing={2}>
