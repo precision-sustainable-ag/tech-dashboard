@@ -19,7 +19,7 @@ const FormEditor = (props) => {
   const { getTokenSilently } = useAuth0();
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [editableList, setEditableList] = useState([]);
+  const [editingLists, setEditingLists] = useState([]);
   const [buttonText, setButtonText] = useState('Edit Form');
   const [snackbarData, setSnackbarData] = useState({
     open: false,
@@ -35,7 +35,7 @@ const FormEditor = (props) => {
   const fetchEditableList = async () => {
     const data = { version: slimRecord.__version__ };
     const res = await callAzureFunction(data, 'EditableList', getTokenSilently);
-    setEditableList(JSON.parse(res.jsonResponse));
+    setEditingLists(res.jsonResponse);
   };
 
   const handleEdit = async () => {
@@ -64,7 +64,7 @@ const FormEditor = (props) => {
           modalOpen={modalOpen}
           toggleModalOpen={toggleModalOpen}
           slimRecord={slimRecord}
-          editableList={editableList}
+          editingLists={editingLists}
           setButtonText={setButtonText}
           error={error}
           formName={formName}
