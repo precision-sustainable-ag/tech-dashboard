@@ -3,12 +3,18 @@ import { PropTypes } from 'prop-types';
 import { Grid, Typography, TextField } from '@material-ui/core';
 
 const EditableField = (props) => {
-  let { entry, editedForm, setEditedForm } = props;
+  let { entry, editedForm, setEditedForm, iterator_item, entry_to_iterate, iterator_index } = props;
 
   const handleEntryEdit = (e) => {
     let newObj = editedForm;
-    editedForm[entry] = e.target.value;
-    setEditedForm({ ...newObj });
+
+    if (iterator_item === false) {
+      editedForm[entry] = e.target.value;
+      setEditedForm({ ...newObj });
+    } else {
+      editedForm[entry_to_iterate][iterator_index][entry] = e.target.value;
+      setEditedForm({ ...newObj });
+    }
   };
 
   return (
@@ -18,7 +24,7 @@ const EditableField = (props) => {
       </Grid>
       <Grid item>
         <TextField
-          value={editedForm[entry]}
+          value={iterator_item && iterator_item[entry] ? iterator_item[entry] : editedForm[entry]}
           variant="filled"
           size="small"
           onChange={handleEntryEdit}
@@ -32,6 +38,9 @@ EditableField.propTypes = {
   entry: PropTypes.string,
   editedForm: PropTypes.object,
   setEditedForm: PropTypes.func,
+  iterator_item: PropTypes.object,
+  entry_to_iterate: PropTypes.oneOfType([PropTypes.string, PropTypes.boolean]),
+  iterator_index: PropTypes.number,
 };
 
 export default EditableField;
