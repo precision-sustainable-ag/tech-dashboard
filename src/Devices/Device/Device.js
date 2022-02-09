@@ -1,15 +1,13 @@
 // Dependency Imports
-import React, { useState, useEffect } from "react";
-import Axios from "axios";
-// import { Map, Marker, Popup, TileLayer } from "react-leaflet";
-// import Skeleton from "@material-ui/lab/Skeleton";
-import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
+import React, { useState, useEffect } from 'react';
+import Axios from 'axios';
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 
-import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
-import docco from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light";
-import dark from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-dark";
-import DateFnsUtils from "@date-io/date-fns";
-import qs from "qs";
+import json from 'react-syntax-highlighter/dist/esm/languages/hljs/json';
+import docco from 'react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light';
+import dark from 'react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-dark';
+import DateFnsUtils from '@date-io/date-fns';
+import qs from 'qs';
 import {
   makeStyles,
   ListItem,
@@ -31,7 +29,7 @@ import {
   Button,
   Tooltip,
   useTheme,
-} from "@material-ui/core";
+} from '@material-ui/core';
 import {
   NetworkCell,
   Router,
@@ -39,24 +37,24 @@ import {
   KeyboardArrowUp,
   CalendarToday,
   Timeline,
-} from "@material-ui/icons";
-import moment from "moment-timezone";
-import { Link, useHistory, useParams } from "react-router-dom";
-import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
+} from '@material-ui/icons';
+import moment from 'moment-timezone';
+import { Link, useHistory, useParams } from 'react-router-dom';
+import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
 
 // Local Imports
-import { apiUsername, apiPassword } from "../../utils/api_secret";
-import { APIURL, apiCorsUrl } from "../hologramConstants";
+import { apiUsername, apiPassword } from '../../utils/api_secret';
+import { APIURL, apiCorsUrl } from '../hologramConstants';
 
-import { ScrollTop, useInfiniteScroll } from "../../utils/CustomComponents";
-import Loading from "react-loading";
-import StressCamButtons from "./StressCamButtons";
-import { checkIfDeviceHasNickname } from "../../utils/constants";
-import { bool, any } from "prop-types";
+import { ScrollTop, useInfiniteScroll } from '../../utils/CustomComponents';
+import Loading from 'react-loading';
+import StressCamButtons from './StressCamButtons';
+import { checkIfDeviceHasNickname } from '../../utils/constants';
+import { bool, any } from 'prop-types';
 
 // import { theme } from "highcharts";
 
-SyntaxHighlighter.registerLanguage("json", json);
+SyntaxHighlighter.registerLanguage('json', json);
 
 // Styles
 const StyledTableCell = withStyles((theme) => ({
@@ -71,7 +69,7 @@ const StyledTableCell = withStyles((theme) => ({
 
 const StyledTableRow = withStyles((theme) => ({
   root: {
-    "&:nth-of-type(odd)": {
+    '&:nth-of-type(odd)': {
       backgroundColor: theme.palette.action.hover,
     },
   },
@@ -79,27 +77,27 @@ const StyledTableRow = withStyles((theme) => ({
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "space-around",
-    overflow: "hidden",
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    overflow: 'hidden',
     backgroundColor: theme.palette.background.paper,
   },
   gridList: {
-    width: "100%",
+    width: '100%',
     height: 300,
     // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
-    transform: "translateZ(0)",
+    transform: 'translateZ(0)',
   },
   titleBar: {
     background:
-      "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, " +
-      "rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)",
+      'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
+      'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
   },
 
   paper: {
     // padding: theme.spacing(2),
-    textAlign: "center",
+    textAlign: 'center',
     color: theme.palette.text.secondary,
   },
 }));
@@ -109,27 +107,25 @@ const DeviceComponent = (props) => {
   const { deviceId } = useParams();
   const { palette } = useTheme();
   const history = useHistory();
-  const activeTag = history.location.state ? history.location.state.activeTag : "all";
+  const activeTag = history.location.state ? history.location.state.activeTag : 'all';
   const classes = useStyles();
-  const [deviceData, setDeviceData] = useState({ name: "" });
+  const [deviceData, setDeviceData] = useState({ name: '' });
   const [mostRecentData, setMostRecentData] = useState([]);
-  const [userTimezone, setUserTimezone] = useState("America/New_York");
+  const [userTimezone, setUserTimezone] = useState('America/New_York');
   const [pagesLoaded, setPagesLoaded] = useState(0);
-  const [loadMoreDataURI, setLoadMoreDataURI] = useState("");
+  const [loadMoreDataURI, setLoadMoreDataURI] = useState('');
   const [timeEnd, setTimeEnd] = useState(Math.floor(Date.now() / 1000));
   const [hologramApiFunctional, setHologramApiFunctional] = useState(true);
-  const [fetchMessage, setFetchMessage] = useState("");
+  const [fetchMessage, setFetchMessage] = useState('');
   const [deviceName, setDeviceName] = useState(
-    props.history.location.state ? props.history.location.state.name : ""
+    props.history.location.state ? props.history.location.state.name : '',
   );
   const [chartRedirectYear, setChartRedirectYear] = useState(0);
-  const [siteCode, setSiteCode] = useState("");
+  const [siteCode, setSiteCode] = useState('');
 
   useEffect(() => {
     if (mostRecentData.length > 0) {
-      const latestDataYear = new Date(
-        JSON.parse(mostRecentData[0].data).received
-      ).getFullYear();
+      const latestDataYear = new Date(JSON.parse(mostRecentData[0].data).received).getFullYear();
       setChartRedirectYear(latestDataYear);
     }
   }, [mostRecentData]);
@@ -137,7 +133,7 @@ const DeviceComponent = (props) => {
   useEffect(() => {
     if (deviceName) {
       if (deviceName.match(/\w{0,3}[A-Z]\w\s/)) {
-        const code = deviceName.split(" ")[0];
+        const code = deviceName.split(' ')[0];
         setSiteCode(code);
       }
     }
@@ -147,8 +143,8 @@ const DeviceComponent = (props) => {
     // fetch nickname for device
     checkIfDeviceHasNickname(deviceId)
       .then((res) => {
-        if (res.data.status === "success") {
-          if (typeof res.data.data !== "object") {
+        if (res.data.status === 'success') {
+          if (typeof res.data.data !== 'object') {
             // no device nickname found
             setDeviceName(deviceId);
           } else {
@@ -165,13 +161,13 @@ const DeviceComponent = (props) => {
 
   useEffect(() => {
     return () => {
-      if (history.action === "POP") {
+      if (history.action === 'POP') {
         history.push({
           pathname: props.location.state
-            ? props.location.state.for === "watersensors"
-              ? "/devices/water-sensors"
-              : "/devices/stress-cams"
-            : "/devices/water-sensors",
+            ? props.location.state.for === 'watersensors'
+              ? '/devices/water-sensors'
+              : '/devices/stress-cams'
+            : '/devices/water-sensors',
           state: {
             activeTag: activeTag,
           },
@@ -184,22 +180,22 @@ const DeviceComponent = (props) => {
     setUserTimezone(moment.tz.guess);
     if (props.location.state === undefined) {
       // get data from api
-      setDeviceData({ name: "Loading" });
+      setDeviceData({ name: 'Loading' });
       setIsFetching(true);
       Axios({
-        method: "post",
+        method: 'post',
         url: apiCorsUrl + `/watersensors`,
         data: qs.stringify({
           url: `${APIURL()}/api/1/csr/rdm?deviceid=${deviceId}&withlocation=true&timeend=${timeEnd}`,
         }),
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+          'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
         },
         auth: {
           username: apiUsername,
           password: apiPassword,
         },
-        responseType: "json",
+        responseType: 'json',
       })
         .then((response) => {
           setIsFetching(false);
@@ -218,20 +214,21 @@ const DeviceComponent = (props) => {
       setDeviceData(props.location.state);
       setIsFetching(true);
       Axios({
-        method: "post",
+        method: 'post',
         url: apiCorsUrl + `/${props.location.state.for}`,
         data: qs.stringify({
-          url: `${APIURL()}/api/1/csr/rdm?deviceid=${props.location.state.id
-            }&withlocation=true&timeend=${timeEnd}`,
+          url: `${APIURL()}/api/1/csr/rdm?deviceid=${
+            props.location.state.id
+          }&withlocation=true&timeend=${timeEnd}`,
         }),
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+          'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
         },
         auth: {
           username: apiUsername,
           password: apiPassword,
         },
-        responseType: "json",
+        responseType: 'json',
       })
         .then((response) => {
           setIsFetching(false);
@@ -258,22 +255,22 @@ const DeviceComponent = (props) => {
         <Grid item xs={12}>
           <Button
             variant="contained"
-            color={props.isDarkTheme ? "primary" : "default"}
+            color={props.isDarkTheme ? 'primary' : 'default'}
             aria-label={`All Devices`}
             component={Link}
             tooltip="All Devices"
             to={{
               pathname:
                 props.location.state && props.location.state.for
-                  ? props.location.state.for === "watersensors"
-                    ? "/devices/water-sensors"
-                    : "/devices/stress-cams"
-                  : "/devices",
+                  ? props.location.state.for === 'watersensors'
+                    ? '/devices/water-sensors'
+                    : '/devices/stress-cams'
+                  : '/devices',
               state: {
                 activeTag:
                   history.location.state && history.location.state.activeTag
                     ? history.location.state.activeTag
-                    : "All",
+                    : 'All',
               },
             }}
             startIcon={<ArrowBackIosOutlined />}
@@ -282,10 +279,7 @@ const DeviceComponent = (props) => {
           </Button>
         </Grid>
         <Grid item xs={12}>
-          <Typography
-            variant="h4"
-            color={palette.type === "dark" ? "primary" : "secondary"}
-          >
+          <Typography variant="h4" color={palette.type === 'dark' ? 'primary' : 'secondary'}>
             Showing data for {deviceName}
           </Typography>
         </Grid>
@@ -336,35 +330,25 @@ const DeviceComponent = (props) => {
                   <TableCell>{index + 1}</TableCell>
                   {props.location.state ? (
                     <TableCell>
-                      {props.location.state.for !== "watersensors" ? (
+                      {props.location.state.for !== 'watersensors' ? (
                         isBase64(
-                          getDataFromJSON(
-                            data.data,
-                            "dataString",
-                            props.location.state.for
-                          )
+                          getDataFromJSON(data.data, 'dataString', props.location.state.for),
                         ) ? (
                           <Tooltip
                             title={
-                              <code
-                                style={{ minHeight: "50px", width: "300px" }}
-                              >
+                              <code style={{ minHeight: '50px', width: '300px' }}>
                                 {atob(
                                   getDataFromJSON(
                                     data.data,
-                                    "dataString",
-                                    props.location.state.for
-                                  )
+                                    'dataString',
+                                    props.location.state.for,
+                                  ),
                                 )}
                               </code>
                             }
                           >
                             <code>
-                              {getDataFromJSON(
-                                data.data,
-                                "dataString",
-                                props.location.state.for
-                              )}
+                              {getDataFromJSON(data.data, 'dataString', props.location.state.for)}
                             </code>
                           </Tooltip>
                         ) : (
@@ -372,42 +356,26 @@ const DeviceComponent = (props) => {
                             language="json"
                             style={props.isDarkTheme ? dark : docco}
                           >
-                            {getDataFromJSON(
-                              data.data,
-                              "dataString",
-                              props.location.state.for
-                            )}
+                            {getDataFromJSON(data.data, 'dataString', props.location.state.for)}
                           </SyntaxHighlighter>
                         )
                       ) : (
                         <code>
-                          {getDataFromJSON(
-                            data.data,
-                            "dataString",
-                            props.location.state.for
-                          )}
+                          {getDataFromJSON(data.data, 'dataString', props.location.state.for)}
                         </code>
                       )}
                     </TableCell>
                   ) : (
                     <TableCell>
-                      <code>
-                        {getDataFromJSON(
-                          data.data,
-                          "dataString",
-                          "watersensors"
-                        )}
-                      </code>
+                      <code>{getDataFromJSON(data.data, 'dataString', 'watersensors')}</code>
                     </TableCell>
                   )}
 
                   <TableCell datatype="">
                     {getDataFromJSON(
                       data.data,
-                      "timestamp",
-                      props.location.state
-                        ? props.location.state.for
-                        : "watersensors"
+                      'timestamp',
+                      props.location.state ? props.location.state.for : 'watersensors',
                     )}
                   </TableCell>
                 </StyledTableRow>
@@ -431,34 +399,30 @@ const DeviceComponent = (props) => {
     jsonData = JSON.parse(jsonData);
 
     let dataStringParsed =
-      sensorType === "watersensors" && isBase64(jsonData.data)
+      sensorType === 'watersensors' && isBase64(jsonData.data)
         ? atob(jsonData.data)
         : isValidJson(jsonData.data)
-          ? JSON.stringify(JSON.parse(jsonData.data), null, 2)
-          : jsonData.data;
+        ? JSON.stringify(JSON.parse(jsonData.data), null, 2)
+        : jsonData.data;
     switch (type) {
-      case "dataString":
+      case 'dataString':
         return dataStringParsed;
-      case "tags":
+      case 'tags':
         return <RenderTags chipsArray={jsonData.tags} />;
-      case "timestamp":
+      case 'timestamp':
         return moment
-          .tz(jsonData.received, "UTC")
+          .tz(jsonData.received, 'UTC')
           .tz(userTimezone)
-          .format("dddd, MMMM Do YYYY, h:mm:ss A");
+          .format('dddd, MMMM Do YYYY, h:mm:ss A');
       default:
-        return "";
+        return '';
     }
   };
   const RenderTags = ({ chipsArray }) => {
     let chips = chipsArray;
 
     return chips.map((chip, index) => (
-      <Chip
-        key={`chip${index}`}
-        style={{ marginRight: "1em", marginBottom: "1em" }}
-        label={chip}
-      />
+      <Chip key={`chip${index}`} style={{ marginRight: '1em', marginBottom: '1em' }} label={chip} />
     ));
   };
 
@@ -502,11 +466,11 @@ const DeviceComponent = (props) => {
                   <Router />
                 </ListItemIcon>
                 <ListItemText
-                  primary={"Last Connection"}
+                  primary={'Last Connection'}
                   secondary={moment
-                    .tz(deviceData.links.cellular[0].last_connect_time, "UTC")
+                    .tz(deviceData.links.cellular[0].last_connect_time, 'UTC')
                     .tz(userTimezone)
-                    .format("MM/DD/YYYY hh:mm A")
+                    .format('MM/DD/YYYY hh:mm A')
                     .toString()}
                 />
               </ListItem>
@@ -521,7 +485,7 @@ const DeviceComponent = (props) => {
                   <NetworkCell />
                 </ListItemIcon>
                 <ListItemText
-                  primary={"Network"}
+                  primary={'Network'}
                   secondary={deviceData.links.cellular[0].last_network_used}
                 />
               </ListItem>
@@ -530,22 +494,20 @@ const DeviceComponent = (props) => {
         )}
 
         {props.location.state ? (
-          props.location.state.for !== "watersensors" ? (
+          props.location.state.for !== 'watersensors' ? (
             <StressCamButtons deviceId={props.history.location.state.id} />
           ) : (
-            ""
+            ''
           )
         ) : (
-          ""
+          ''
         )}
         {siteCode &&
           chartRedirectYear !== 0 &&
-          (props.location.state
-            ? props.location.state.for === "watersensors"
-            : true) && (
+          (props.location.state ? props.location.state.for === 'watersensors' : true) && (
             <Grid item xs={12}>
               <Button
-                size={"small"}
+                size={'small'}
                 component={Link}
                 startIcon={<Timeline />}
                 to={{
@@ -565,12 +527,7 @@ const DeviceComponent = (props) => {
         </Grid>
         {isFetching && (
           <Grid item xs={12}>
-            <Grid
-              container
-              justifyContent="center"
-              alignItems="center"
-              spacing={3}
-            >
+            <Grid container justifyContent="center" alignItems="center" spacing={3}>
               {hologramApiFunctional && (
                 <Grid item>
                   <Loading
@@ -611,24 +568,21 @@ const DeviceComponent = (props) => {
   let fetchedCount = 0;
   const fetchMoreData = async () => {
     if (loadMoreDataURI) {
-      setFetchMessage("Fetching message " + (pagesLoaded + 1));
+      setFetchMessage('Fetching message ' + (pagesLoaded + 1));
       await Axios({
-        method: "post",
-        url:
-          apiCorsUrl +
-          `/${props.location.state ? props.location.state.for : "watersensors"
-          }`,
+        method: 'post',
+        url: apiCorsUrl + `/${props.location.state ? props.location.state.for : 'watersensors'}`,
         data: qs.stringify({
           url: `${APIURL()}${loadMoreDataURI}`,
         }),
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+          'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
         },
         auth: {
           username: apiUsername,
           password: apiPassword,
         },
-        responseType: "json",
+        responseType: 'json',
       })
         .then((response) => {
           // console.log(response);
@@ -641,32 +595,27 @@ const DeviceComponent = (props) => {
             setLoadMoreDataURI(response.data.links.next);
             setPagesLoaded(pagesLoaded + 1);
           } else {
-            setLoadMoreDataURI("");
+            setLoadMoreDataURI('');
           }
           setIsFetching(false);
         })
         .catch(() => {
           if (fetchedCount < 5) {
             fetchedCount++;
-            setFetchMessage(
-              "Fetch failed, retrying " + fetchedCount + " of 5 times"
-            );
+            setFetchMessage('Fetch failed, retrying ' + fetchedCount + ' of 5 times');
             fetchMoreData();
           } else {
             fetchedCount = 0;
             setIsFetching(false);
             setHologramApiFunctional(false);
-            setFetchMessage("Could not fetch more data");
+            setFetchMessage('Could not fetch more data');
           }
         });
     } else {
       return false;
     }
   };
-  const [isFetching, setIsFetching] = useInfiniteScroll(
-    fetchMoreData,
-    hologramApiFunctional
-  );
+  const [isFetching, setIsFetching] = useInfiniteScroll(fetchMoreData, hologramApiFunctional);
 
   return (
     <div>
@@ -693,7 +642,7 @@ const DeviceComponent = (props) => {
 // };
 
 const isValidJson = (json) => {
-  if (!(json && typeof json === "string")) {
+  if (!(json && typeof json === 'string')) {
     return false;
   }
 
@@ -705,9 +654,8 @@ const isValidJson = (json) => {
   }
 };
 
-const isBase64 = (str = "") => {
-  const base64regex =
-    /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+const isBase64 = (str = '') => {
+  const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
 
   return base64regex.test(str);
 };

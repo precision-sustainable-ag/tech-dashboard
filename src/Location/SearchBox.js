@@ -1,15 +1,15 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 // Dependency Imports
-import React, { useEffect } from "react";
-import TextField from "@material-ui/core/TextField";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import LocationOnIcon from "@material-ui/icons/LocationOn";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import parse from "autosuggest-highlight/parse";
-import throttle from "lodash/throttle";
+import React, { useEffect } from 'react';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
+import parse from 'autosuggest-highlight/parse';
+import throttle from 'lodash/throttle';
 
 //Global Vars
 const autocompleteService = { current: null };
@@ -30,7 +30,7 @@ const SearchBox = ({
   mapsApi,
   latLng,
   setLatLng,
-  searchLabel = "Add a location",
+  searchLabel = 'Add a location',
   setAddress,
   setCounty,
   selectedToEditSite,
@@ -38,7 +38,7 @@ const SearchBox = ({
 }) => {
   const classes = useStyles();
   const [value, setValue] = React.useState(null);
-  const [inputValue, setInputValue] = React.useState("");
+  const [inputValue, setInputValue] = React.useState('');
   const [options, setOptions] = React.useState([]);
   const [locationDetails, setLocationDetails] = React.useState({
     lat: 0,
@@ -67,7 +67,7 @@ const SearchBox = ({
       throttle((request, callback) => {
         autocompleteService.current.getPlacePredictions(request, callback);
       }, 200),
-    []
+    [],
   );
 
   const fetchLocalData = {
@@ -80,33 +80,35 @@ const SearchBox = ({
       placeService.current = new window.google.maps.Geocoder();
       const placeRequest = {
         placeId: place_id,
-        region: "en-US",
+        region: 'en-US',
       };
       return await new Promise((resolve) =>
         placeService.current.geocode(placeRequest, (results, status) => {
           resolve({ results, status });
-        })
+        }),
       );
     },
     setData: ({ results, status }, main_text) => {
-      if (status === "OK") {
+      if (status === 'OK') {
         // setAddress(results.formatted_address);
         const county = results[0].address_components.find(
-          (e) => e.types[0] === "administrative_area_level_2"
+          (e) => e.types[0] === 'administrative_area_level_2',
         );
 
         if (county.length !== 0) {
           // If google is able to find the county, pick the first preference!
           fetchLocalData.fetchGeocode(results, county, main_text);
         } else {
-          fetchLocalData.fetchGeocode(results, "", main_text);
+          fetchLocalData.fetchGeocode(results, '', main_text);
         }
       } else {
-        console.error("Google PlaceService Status", status);
+        console.error('Google PlaceService Status', status);
       }
     },
     fetchGeocode: (results, county, main_text) => {
-      const stateDetails = results[0].address_components.find((a) => a.types[0] === "administrative_area_level_1");
+      const stateDetails = results[0].address_components.find(
+        (a) => a.types[0] === 'administrative_area_level_1',
+      );
 
       setSelectedToEditSite({
         ...selectedToEditSite,
@@ -114,7 +116,7 @@ const SearchBox = ({
         longitude: results[0]?.geometry.location.lng(),
         county: county?.long_name,
         address: main_text,
-        state: stateDetails?.short_name || "",
+        state: stateDetails?.short_name || '',
       });
     },
   };
@@ -123,12 +125,12 @@ const SearchBox = ({
     if (place_id) {
       const placeRequest = {
         placeId: place_id,
-        fields: ["name", "geometry", "types", "formatted_address", "icon"],
-        region: "en-US",
+        fields: ['name', 'geometry', 'types', 'formatted_address', 'icon'],
+        region: 'en-US',
       };
       const geoRequest = {
         placeId: place_id,
-        region: "en-US",
+        region: 'en-US',
       };
 
       fetchLocalData.load(place_id, structured_formatting.main_text);
@@ -140,15 +142,14 @@ const SearchBox = ({
 
     if (!autocompleteService.current && window.google) {
       if (window.google.maps) {
-        autocompleteService.current =
-          new window.google.maps.places.AutocompleteService();
+        autocompleteService.current = new window.google.maps.places.AutocompleteService();
       }
     }
     if (!autocompleteService.current) {
       return undefined;
     }
 
-    if (inputValue === "") {
+    if (inputValue === '') {
       setOptions(value ? [value] : []);
       return undefined;
     }
@@ -178,9 +179,7 @@ const SearchBox = ({
     <Autocomplete
       id="google-map-demo"
       fullWidth
-      getOptionLabel={(option) =>
-        typeof option === "string" ? option : option.description
-      }
+      getOptionLabel={(option) => (typeof option === 'string' ? option : option.description)}
       filterOptions={(x) => x}
       options={options}
       autoComplete
@@ -199,22 +198,14 @@ const SearchBox = ({
         setInputValue(newInputValue);
       }}
       renderInput={(params) => {
-        params.inputProps.autoComplete = "new-password";
-        return (
-          <TextField
-            {...params}
-            label={searchLabel}
-            variant="standard"
-            fullWidth
-          />
-        );
+        params.inputProps.autoComplete = 'new-password';
+        return <TextField {...params} label={searchLabel} variant="standard" fullWidth />;
       }}
       renderOption={(option) => {
-        const matches =
-          option.structured_formatting.main_text_matched_substrings;
+        const matches = option.structured_formatting.main_text_matched_substrings;
         const parts = parse(
           option.structured_formatting.main_text,
-          matches.map((match) => [match.offset, match.offset + match.length])
+          matches.map((match) => [match.offset, match.offset + match.length]),
         );
 
         return (
@@ -224,10 +215,7 @@ const SearchBox = ({
             </Grid>
             <Grid item xs>
               {parts.map((part, index) => (
-                <span
-                  key={index}
-                  style={{ fontWeight: part.highlight ? 700 : 400 }}
-                >
+                <span key={index} style={{ fontWeight: part.highlight ? 700 : 400 }}>
                   {part.text}
                 </span>
               ))}

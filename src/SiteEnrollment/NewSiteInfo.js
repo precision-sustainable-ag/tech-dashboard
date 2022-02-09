@@ -17,22 +17,26 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
-} from "@material-ui/core";
+  Snackbar,
+} from '@material-ui/core';
+import MuiAlert from '@material-ui/lab/Alert';
 // import { Close } from "@material-ui/icons";
-import Axios from "axios";
-import React, { useState, useEffect } from "react";
+import Axios from 'axios';
+import React, { useState, useEffect } from 'react';
 // import { useForm, Controller } from "react-hook-form";
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 // Local Imports
-import Location from "../Location/Location";
-import { apiURL, apiUsername, apiPassword } from "../utils/api_secret";
-import "./newSiteInfo.scss";
+import Location from '../Location/Location';
+import { apiURL, apiUsername, apiPassword } from '../utils/api_secret';
+import './newSiteInfo.scss';
+
+// Helper function
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 // Default function
-export const NewSiteInfo = ({
-  enrollmentData = {},
-  setEnrollmentData = () => { },
-}) => {
+export const NewSiteInfo = ({ enrollmentData = {}, setEnrollmentData = () => {} }) => {
   const theme = useTheme();
   // const { control } = useForm();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -45,33 +49,27 @@ export const NewSiteInfo = ({
   useEffect(() => {
     const fetchSiteCodes = async (size, affiliation) => {
       // TODO: check university or partner
-      return await Axios.get(
-        `${apiURL}/api/sites/codes/unused/${affiliation}/${size}`,
-        {
-          auth: {
-            username: apiUsername,
-            password: apiPassword,
-          },
-        }
-      );
+      return await Axios.get(`${apiURL}/api/sites/codes/unused/${affiliation}/${size}`, {
+        auth: {
+          username: apiUsername,
+          password: apiPassword,
+        },
+      });
     };
     if (totalSites !== 0) {
-      let siteCodesPromise = fetchSiteCodes(
-        totalSites,
-        enrollmentData.affiliation
-      );
+      let siteCodesPromise = fetchSiteCodes(totalSites, enrollmentData.affiliation);
       siteCodesPromise.then((resp) => {
         let unusedSites = resp.data.data;
         let siteTemplate = unusedSites.map((site) => {
           return {
             code: site,
             irrigation: false,
-            address: "",
-            county: "",
-            latitude: "",
-            longitude: "",
-            additionalContact: "",
-            notes: "",
+            address: '',
+            county: '',
+            latitude: '',
+            longitude: '',
+            additionalContact: '',
+            notes: '',
           };
         });
         siteTemplate = siteTemplate.sort((a, b) => b.code < a.code);
@@ -84,18 +82,22 @@ export const NewSiteInfo = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [totalSites, enrollmentData.affiliation, shuffleSites]);
 
-  const [modifyNewSiteDetailsModal, setModifyNewSiteDetailsModal] =
-    useState(false);
+  const [modifyNewSiteDetailsModal, setModifyNewSiteDetailsModal] = useState(false);
   const [selectedToEditSite, setSelectedToEditSite] = useState({
-    code: "",
+    code: '',
     irrigation: false,
-    address: "",
-    state: "",
-    county: "",
+    address: '',
+    state: '',
+    county: '',
     latitude: null,
     longitude: null,
-    additionalContact: "",
-    notes: "",
+    additionalContact: '',
+    notes: '',
+  });
+  const [snackbarData, setSnackbarData] = useState({
+    open: false,
+    text: '',
+    severity: 'success',
   });
   const handleDialogClose = () => {
     setModifyNewSiteDetailsModal(!modifyNewSiteDetailsModal);
@@ -105,38 +107,82 @@ export const NewSiteInfo = ({
     setModifyNewSiteDetailsModal(true);
   };
 
+  const checkLatitude = (arg) => {
+    return /^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,6})?))$/.test(arg)
+      ? true
+      : false;
+  };
+
+  const checkLongitude = (arg) => {
+    return /^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,6})?))$/.test(
+      arg,
+    )
+      ? true
+      : false;
+  };
+
+  const validateData = () => {
+    if (
+      checkLatitude(Math.ceil(selectedToEditSite.latitude)) &&
+      checkLongitude(Math.ceil(selectedToEditSite.longitude))
+    ) {
+      return true;
+    } else {
+      if (
+        !checkLatitude(Math.ceil(selectedToEditSite.latitude)) &&
+        !checkLongitude(Math.ceil(selectedToEditSite.longitude))
+      ) {
+        setSnackbarData({
+          open: true,
+          text: `Wrong value for latitude and longitude, should be between -90 to 90 and -180 to 180 respectively`,
+          severity: 'error',
+        });
+      } else if (!checkLatitude(Math.ceil(selectedToEditSite.latitude))) {
+        setSnackbarData({
+          open: true,
+          text: `Wrong value for latitude, should be between -90 to 90`,
+          severity: 'error',
+        });
+      } else if (!checkLongitude(Math.ceil(selectedToEditSite.longitude))) {
+        setSnackbarData({
+          open: true,
+          text: `Wrong value for longitude, should be between -180 to 180`,
+          severity: 'error',
+        });
+      }
+      return false;
+    }
+  };
+
   const handleUpdateNewSite = () => {
-    // console.log(enrollmentData.growerInfo.sites);
-    // console.log(selectedToEditSite);
     // let editableSite = enrollmentData.growerInfo.sites.filter(
     //   (sites) => {
     //     return sites.code === selectedToEditSite.code;
     //   }
     // );
-    // console.log(editableSite);
     //   get site with code not relevant to the modal (selectedtoeditsite)
-    let allSitesExceptCurrent = enrollmentData.growerInfo.sites.filter(
-      (sites) => {
+    if (selectedToEditSite?.latitude && selectedToEditSite?.longitude && validateData()) {
+      let allSitesExceptCurrent = enrollmentData.growerInfo.sites.filter((sites) => {
         return sites.code !== selectedToEditSite.code;
-      }
-    );
-    //   append new data
-    allSitesExceptCurrent.push(selectedToEditSite);
+      });
+      //   append new data
+      allSitesExceptCurrent.push(selectedToEditSite);
 
-    //   sort Alphabetical
-    // const sortedAllSitesExceptCurrent = allSitesExceptCurrent.sort(
-    //   (a, b) => b.code < a.code
-    // );
-    setEnrollmentData({
-      ...enrollmentData,
-      growerInfo: {
-        ...enrollmentData.growerInfo,
-        sites: allSitesExceptCurrent,
-      },
-    });
+      //   sort Alphabetical
+      // const sortedAllSitesExceptCurrent = allSitesExceptCurrent.sort(
+      //   (a, b) => b.code < a.code
+      // );
+      setEnrollmentData({
+        ...enrollmentData,
+        growerInfo: {
+          ...enrollmentData.growerInfo,
+          sites: allSitesExceptCurrent,
+        },
+      });
 
-    //   close the modal
-    setModifyNewSiteDetailsModal(!modifyNewSiteDetailsModal);
+      //   close the modal
+      setModifyNewSiteDetailsModal(!modifyNewSiteDetailsModal);
+    }
   };
 
   const shuffleSitesFunc = () => {
@@ -172,101 +218,91 @@ export const NewSiteInfo = ({
       </Grid>
       <Grid item xs={12}>
         <Grid container spacing={2}>
-          {enrollmentData.growerInfo.sites &&
-            enrollmentData.growerInfo.sites.length > 0
+          {enrollmentData.growerInfo.sites && enrollmentData.growerInfo.sites.length > 0
             ? enrollmentData.growerInfo.sites.map((siteInfo, index) => (
-              <Grid item xs={12} md={4} key={`newSites-${index}`}>
-                <Card>
-                  {/* <span className="cardCloseIcon" title="">
+                <Grid item xs={12} md={4} key={`newSites-${index}`}>
+                  <Card>
+                    {/* <span className="cardCloseIcon" title="">
                       <Close />
                     </span> */}
-                  <CardHeader title={siteInfo.code} />
-                  <CardContent>
-                    <Grid container spacing={1}>
-                      <Grid item xs={4}>
-                        <Typography variant="body2">Irrigation</Typography>
-                      </Grid>
-                      <Grid item xs={8}>
-                        <Typography variant="body2">
-                          {siteInfo.irrigation ? "Yes" : "No"}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={4}>
-                        <Typography variant="body2">Field Address</Typography>
-                      </Grid>
-                      <Grid item xs={8}>
-                        <Typography variant="body2">
-                          {siteInfo.address ? siteInfo.address : "No Data"}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={4}>
-                        <Typography variant="body2">State</Typography>
-                      </Grid>
-                      <Grid item xs={8}>
-                        <Typography variant="body2">
-                          {siteInfo.state ? siteInfo.state : "No Data"}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={4}>
-                        <Typography variant="body2">County</Typography>
-                      </Grid>
-                      <Grid item xs={8}>
-                        <Typography variant="body2">
-                          {siteInfo.county ? siteInfo.county : "No Data"}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={4}>
-                        <Typography variant="body2">Latitude</Typography>
-                      </Grid>
-                      <Grid item xs={8}>
-                        <Typography variant="body2">
-                          {siteInfo.latitude ? siteInfo.latitude : "No Data"}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={4}>
-                        <Typography variant="body2">Longitude</Typography>
-                      </Grid>
-                      <Grid item xs={8}>
-                        <Typography variant="body2">
-                          {siteInfo.longitude
-                            ? siteInfo.longitude
-                            : "No Data"}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={4}>
-                        <Typography variant="body2">
-                          Additional Contact
+                    <CardHeader title={siteInfo.code} />
+                    <CardContent>
+                      <Grid container spacing={1}>
+                        <Grid item xs={4}>
+                          <Typography variant="body2">Irrigation</Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                          <Typography variant="body2">
+                            {siteInfo.irrigation ? 'Yes' : 'No'}
                           </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                          <Typography variant="body2">Field Address</Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                          <Typography variant="body2">
+                            {siteInfo.address ? siteInfo.address : 'No Data'}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                          <Typography variant="body2">State</Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                          <Typography variant="body2">
+                            {siteInfo.state ? siteInfo.state : 'No Data'}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                          <Typography variant="body2">County</Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                          <Typography variant="body2">
+                            {siteInfo.county ? siteInfo.county : 'No Data'}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                          <Typography variant="body2">Latitude</Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                          <Typography variant="body2">
+                            {siteInfo.latitude ? siteInfo.latitude : 'No Data'}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                          <Typography variant="body2">Longitude</Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                          <Typography variant="body2">
+                            {siteInfo.longitude ? siteInfo.longitude : 'No Data'}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                          <Typography variant="body2">Additional Contact</Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                          <Typography variant="body2">
+                            {siteInfo.additionalContact ? siteInfo.additionalContact : 'No Data'}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                          <Typography variant="body2">Notes</Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                          <Typography variant="body2">
+                            {siteInfo.notes ? siteInfo.notes : 'No Data'}
+                          </Typography>
+                        </Grid>
                       </Grid>
-                      <Grid item xs={8}>
-                        <Typography variant="body2">
-                          {siteInfo.additionalContact
-                            ? siteInfo.additionalContact
-                            : "No Data"}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={4}>
-                        <Typography variant="body2">Notes</Typography>
-                      </Grid>
-                      <Grid item xs={8}>
-                        <Typography variant="body2">
-                          {siteInfo.notes ? siteInfo.notes : "No Data"}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  </CardContent>
-                  <CardActions>
-                    <Button
-                      variant="outlined"
-                      onClick={() => handleDialogOpen(siteInfo)}
-                    >
-                      Open map to edit
+                    </CardContent>
+                    <CardActions>
+                      <Button variant="outlined" onClick={() => handleDialogOpen(siteInfo)}>
+                        Open map to edit
                       </Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))
-            : ""}
+                    </CardActions>
+                  </Card>
+                </Grid>
+              ))
+            : ''}
         </Grid>
       </Grid>
       <Dialog
@@ -280,9 +316,7 @@ export const NewSiteInfo = ({
         <DialogTitle id="form-dialog-title">
           <Grid container justifyContent="space-between">
             <Grid item>
-              <Typography variant="h4">
-                Edit Details for {selectedToEditSite.code}
-              </Typography>
+              <Typography variant="h4">Edit Details for {selectedToEditSite.code}</Typography>
             </Grid>
             <Grid item>
               <Select
@@ -293,8 +327,8 @@ export const NewSiteInfo = ({
                   setMaxWidth(e.target.value);
                 }}
                 inputProps={{
-                  name: "max-width",
-                  id: "max-width",
+                  name: 'max-width',
+                  id: 'max-width',
                 }}
               >
                 <MenuItem value="xs">x-small</MenuItem>
@@ -307,6 +341,17 @@ export const NewSiteInfo = ({
           </Grid>
         </DialogTitle>
         <DialogContent>
+          <Snackbar
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            open={snackbarData.open}
+            autoHideDuration={10000}
+            onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
+          >
+            <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
+          </Snackbar>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Location
@@ -336,7 +381,7 @@ export const NewSiteInfo = ({
               <TextField
                 fullWidth
                 label="State"
-                value={selectedToEditSite.state || ""}
+                value={selectedToEditSite.state || ''}
                 onChange={(e) =>
                   setSelectedToEditSite({
                     ...selectedToEditSite,
@@ -360,38 +405,40 @@ export const NewSiteInfo = ({
             </Grid>
             <Grid item xs={12}>
               <TextField
-                type="number"
-                InputLabelProps={{
-                  shrink: true,
-                  pattern: `^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?)$`,
-                }}
+                type="text"
+                // InputLabelProps={{
+                //   shrink: true,
+                //   pattern: `^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?)$`,
+                // }}
                 fullWidth
                 label="Latitude"
-                value={selectedToEditSite.latitude}
-                onChange={(e) =>
+                defaultValue={selectedToEditSite.latitude || ''}
+                value={selectedToEditSite.latitude || ''}
+                onChange={(e) => {
                   setSelectedToEditSite({
                     ...selectedToEditSite,
-                    latitude: e.target.valueAsNumber,
-                  })
-                }
+                    latitude: e.target.value,
+                  });
+                }}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                type="number"
-                InputLabelProps={{
-                  shrink: true,
-                  pattern: `^[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$`,
-                }}
+                type="text"
+                // InputLabelProps={{
+                //   shrink: true,
+                //   pattern: `^[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$`,
+                // }}
                 fullWidth
                 label="Longitude"
-                value={selectedToEditSite.longitude}
-                onChange={(e) =>
+                defaultValue={selectedToEditSite.longitude || ''}
+                value={selectedToEditSite.longitude || ''}
+                onChange={(e) => {
                   setSelectedToEditSite({
                     ...selectedToEditSite,
-                    longitude: e.target.valueAsNumber,
-                  })
-                }
+                    longitude: e.target.value,
+                  });
+                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -431,9 +478,7 @@ export const NewSiteInfo = ({
                 </Grid>
                 <Grid item>
                   <Switch
-                    color={
-                      selectedToEditSite.irrigation ? "primary" : "secondary"
-                    }
+                    color={selectedToEditSite.irrigation ? 'primary' : 'secondary'}
                     checked={selectedToEditSite.irrigation}
                     onChange={(e) => {
                       setSelectedToEditSite({
@@ -442,7 +487,7 @@ export const NewSiteInfo = ({
                       });
                     }}
                     name="checkedA"
-                    inputProps={{ "aria-label": "secondary checkbox" }}
+                    inputProps={{ 'aria-label': 'secondary checkbox' }}
                   />
                 </Grid>
               </Grid>
@@ -453,17 +498,15 @@ export const NewSiteInfo = ({
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={handleUpdateNewSite}
+                    onClick={() => {
+                      handleUpdateNewSite();
+                    }}
                   >
                     Update
                   </Button>
                 </Grid>
                 <Grid item>
-                  <Button
-                    variant="contained"
-                    color="default"
-                    onClick={handleDialogClose}
-                  >
+                  <Button variant="contained" color="default" onClick={handleDialogClose}>
                     Cancel
                   </Button>
                 </Grid>

@@ -1,19 +1,17 @@
-import { useContext, useState, useEffect } from "react";
-import { Context } from "../Store/Store";
-import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
-import Axios from "axios";
-import qs from "qs";
-import Platform from "react-platform-js";
+import { useContext, useState, useEffect } from 'react';
+import { Context } from '../Store/Store';
+import { apiPassword, apiURL, apiUsername } from '../utils/api_secret';
+import Axios from 'axios';
+import qs from 'qs';
+import Platform from 'react-platform-js';
 
 export const UserIsEditor = (permissions) => {
   const [state] = useContext(Context);
-  const userPermissions = permissions
-    ? permissions
-    : state.userInfo.permissions;
+  const userPermissions = permissions ? permissions : state.userInfo.permissions;
   if (
-    userPermissions.split(",").includes("all") ||
-    userPermissions.split(",").includes("edit") ||
-    userPermissions.split(",").includes("update")
+    userPermissions.split(',').includes('all') ||
+    userPermissions.split(',').includes('edit') ||
+    userPermissions.split(',').includes('update')
   )
     return true;
   else return false;
@@ -31,9 +29,9 @@ export function useWindowResize() {
   };
 
   useEffect(() => {
-    window.addEventListener("resize", listener);
+    window.addEventListener('resize', listener);
     return () => {
-      window.removeEventListener("resize", listener);
+      window.removeEventListener('resize', listener);
     };
   }, []);
 
@@ -72,10 +70,10 @@ export function useWindowDimensions() {
       });
     }, 1500);
 
-    window.addEventListener("resize", debouncedHandleResize);
+    window.addEventListener('resize', debouncedHandleResize);
 
     return () => {
-      window.removeEventListener("resize", debouncedHandleResize);
+      window.removeEventListener('resize', debouncedHandleResize);
     };
   });
 
@@ -88,10 +86,10 @@ export const createGithubIssue = async (
   labels,
   assignees,
   nickname,
-  getTokenSilently
+  getTokenSilently,
 ) => {
   const data = {
-    action: "create",
+    action: 'create',
     user: nickname,
     title: issueTitle,
     assignees: assignees,
@@ -99,47 +97,41 @@ export const createGithubIssue = async (
     body: body,
   };
 
-  return callAzureFunction(data, "GithubIssues", getTokenSilently);
+  return callAzureFunction(data, 'GithubIssues', getTokenSilently);
 };
-export const createGithubComment = async (
-  nickname,
-  newComment,
-  number,
-  getTokenSilently
-) => {
+export const createGithubComment = async (nickname, newComment, number, getTokenSilently) => {
   const data = {
-    action: "comment",
+    action: 'comment',
     user: nickname,
     comment: newComment,
     number: number,
   };
 
-  return callAzureFunction(data, "GithubIssues", getTokenSilently);
+  return callAzureFunction(data, 'GithubIssues', getTokenSilently);
 };
 
 export const addToTechnicians = async (nickname, getTokenSilently) => {
   const data = {
-    action: "add_to_technicians",
+    action: 'add_to_technicians',
     user: nickname,
   };
 
-  return callAzureFunction(data, "GithubIssues", getTokenSilently);
+  return callAzureFunction(data, 'GithubIssues', getTokenSilently);
 };
 
 export const callAzureFunction = async (data, endpoint, getTokenSilently) => {
   let token = await getTokenSilently({
     audience: `https://precision-sustaibale-ag/tech-dashboard`,
   });
-
   data = { ...data, token: token };
 
   const options = {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(data),
-    mode: "cors", // no-cors, *cors, same-origin
+    mode: 'cors', // no-cors, *cors, same-origin
   };
 
   let githubIssuesResponse;
@@ -147,7 +139,7 @@ export const callAzureFunction = async (data, endpoint, getTokenSilently) => {
   try {
     githubIssuesResponse = await fetch(
       `https://correctionsapi.azurewebsites.net/api/${endpoint}`,
-      options
+      options,
     );
   } catch (err) {
     console.log(err);
@@ -157,12 +149,10 @@ export const callAzureFunction = async (data, endpoint, getTokenSilently) => {
   let githubIssuesResponseJSON = null;
 
   if (githubIssuesResponse)
-    githubIssuesResponseJSON = await githubIssuesResponse
-      .json()
-      .catch((err) => {
-        console.log(err);
-        githubIssuesResponseJSON = githubIssuesResponse;
-      });
+    githubIssuesResponseJSON = await githubIssuesResponse.json().catch((err) => {
+      console.log(err);
+      githubIssuesResponseJSON = githubIssuesResponse;
+    });
 
   console.log(githubIssuesResponse);
 
@@ -174,11 +164,11 @@ export const callAzureFunction = async (data, endpoint, getTokenSilently) => {
     browserVersion: Platform.BrowserVersion,
     githubIssuesResponse: githubIssuesResponseJSON
       ? githubIssuesResponseJSON
-      : "No response from function likely cors",
+      : 'No response from function likely cors',
   });
 
   await Axios({
-    method: "POST",
+    method: 'POST',
     url: `${apiURL}/api/incoming/azurecloud/psa`,
     data: dataString,
     auth: {
@@ -186,7 +176,7 @@ export const callAzureFunction = async (data, endpoint, getTokenSilently) => {
       password: apiPassword,
     },
     headers: {
-      "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+      'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
     },
   }).catch((e) => {
     console.error(e);
@@ -194,19 +184,13 @@ export const callAzureFunction = async (data, endpoint, getTokenSilently) => {
 
   return {
     jsonResponse: githubIssuesResponseJSON,
-    response: githubIssuesResponse
+    response: githubIssuesResponse,
   };
 };
 
-export const sendCommandToHologram = async (
-  deviceId,
-  farmCode,
-  rep,
-  action,
-  crop
-) => {
+export const sendCommandToHologram = async (deviceId, farmCode, rep, action, crop) => {
   let data;
-  if (action === "start") {
+  if (action === 'start') {
     data = {
       device_id: deviceId,
       farm_code: farmCode,
@@ -224,7 +208,7 @@ export const sendCommandToHologram = async (
   const dataString = qs.stringify(data);
 
   let req = await Axios({
-    method: "POST",
+    method: 'POST',
     url: `${apiURL}/api/stress-cameras-test/commands`,
     data: dataString,
     auth: {
@@ -232,7 +216,7 @@ export const sendCommandToHologram = async (
       password: apiPassword,
     },
     headers: {
-      "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+      'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
     },
   }).catch((e) => {
     console.error(e);
@@ -241,7 +225,7 @@ export const sendCommandToHologram = async (
     if (req.status === 200) {
       return true;
     } else {
-      console.error("AJAX Error");
+      console.error('AJAX Error');
       return false;
     }
   } else {
@@ -258,7 +242,7 @@ export const getDeviceMessages = async (deviceId) => {
   const dataString = qs.stringify(data);
 
   let req = await Axios({
-    method: "POST",
+    method: 'POST',
     url: `${apiURL}/api/get-hologram-device-message`,
     data: dataString,
     auth: {
@@ -272,7 +256,7 @@ export const getDeviceMessages = async (deviceId) => {
     if (req.status === 200) {
       return req;
     } else {
-      console.error("AJAX Error");
+      console.error('AJAX Error');
       return false;
     }
   } else {
@@ -281,31 +265,31 @@ export const getDeviceMessages = async (deviceId) => {
 };
 
 export const tableOptions = (tableDataLength) => ({
-  padding: "dense",
+  padding: 'dense',
   exportButton: true,
-  exportFileName: "Producer Information",
-  addRowPosition: "first",
+  exportFileName: 'Producer Information',
+  addRowPosition: 'first',
   exportAllData: false,
   pageSizeOptions: [5, 10, 20, tableDataLength],
   pageSize: tableDataLength,
-  groupRowSeparator: "  ",
+  groupRowSeparator: '  ',
   grouping: true,
   headerStyle: {
-    fontWeight: "bold",
-    fontFamily: "Bilo, sans-serif",
-    fontSize: "0.8em",
-    textAlign: "left",
-    position: "sticky",
+    fontWeight: 'bold',
+    fontFamily: 'Bilo, sans-serif',
+    fontSize: '0.8em',
+    textAlign: 'left',
+    position: 'sticky',
     top: 0,
   },
   rowStyle: {
-    fontFamily: "Roboto, sans-serif",
-    fontSize: "0.8em",
-    textAlign: "left",
+    fontFamily: 'Roboto, sans-serif',
+    fontSize: '0.8em',
+    textAlign: 'left',
   },
   selection: false,
   searchAutoFocus: true,
-  toolbarButtonAlignment: "left",
+  toolbarButtonAlignment: 'left',
   actionsColumnIndex: 0,
 });
 
@@ -318,5 +302,5 @@ export const uniqueYears = (allYears) => {
     .sort((a, b) => b - a)
     .map((year) => {
       return { active: currentYear === year ? true : false, year: year };
-  });
+    });
 };

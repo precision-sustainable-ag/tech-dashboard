@@ -1,17 +1,17 @@
-import React from "react";
+import React from 'react';
 
-import Typography from "@material-ui/core/Typography";
+import Typography from '@material-ui/core/Typography';
 
-import Avatar from "@material-ui/core/Avatar";
+import Avatar from '@material-ui/core/Avatar';
 
-import MDEditor from "@uiw/react-md-editor";
+import MDEditor from '@uiw/react-md-editor';
 
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 // import "./IssueBodyBubble.scss";
-import { IconButton, Grid, Tooltip, makeStyles } from "@material-ui/core";
-import { format_AM_PM } from "../../utils/constants";
-import styled from "styled-components";
-import clsx from "clsx";
+import { IconButton, Grid, Tooltip, makeStyles } from '@material-ui/core';
+import { format_AM_PM } from '../../utils/constants';
+import styled from 'styled-components';
+import clsx from 'clsx';
 
 const ChatBubbleBody = styled.div`
   padding-top: 0.5em;
@@ -41,12 +41,12 @@ const ChatBubbleBody = styled.div`
 
 const useStyles = makeStyles({
   chatBubbleText: {
-    "&:first-letter": {
-      textTransform: "capitalize",
+    '&:first-letter': {
+      textTransform: 'capitalize',
     },
   },
   chatBubbleAvatar: {
-    boxShadow: "0 0 6px 1px #2d2d2d",
+    boxShadow: '0 0 6px 1px #2d2d2d',
     border: 0,
   },
 });
@@ -55,18 +55,18 @@ const IssueBubbleBody = ({ issueData, user }) => {
   const classes = useStyles();
   let side = issueData.hasMention
     ? issueData.user.login === user.nickname
-      ? "flex-end"
-      : "flex-start"
-    : "flex-start";
+      ? 'flex-end'
+      : 'flex-start'
+    : 'flex-start';
 
   const justify = issueData.hasMention
     ? side
     : issueData.user.login === user.nickname
-    ? "flex-end"
-    : "flex-start";
+    ? 'flex-end'
+    : 'flex-start';
 
   const issueAuthor = issueData.hasMention
-    ? issueData.mention.split("@")[1].split("[")[0]
+    ? issueData.mention.split('@')[1].split('[')[0]
     : issueData.user.login;
 
   const updateDate = new Date(issueData.updated_at);
@@ -78,7 +78,7 @@ const IssueBubbleBody = ({ issueData, user }) => {
           spacing={2}
           alignItems="center"
           justifyContent="flex-start"
-          direction={justify === "flex-start" ? "row" : "row-reverse"}
+          direction={justify === 'flex-start' ? 'row' : 'row-reverse'}
         >
           <Grid item>
             <Tooltip placement="bottom-start" title={issueAuthor}>
@@ -91,9 +91,7 @@ const IssueBubbleBody = ({ issueData, user }) => {
                   className={classes.chatBubbleAvatar}
                   src={
                     issueData.hasMention
-                      ? `https://github.com/${
-                          issueData.mention.split("@")[1].split("[")[0]
-                        }.png`
+                      ? `https://github.com/${issueData.mention.split('@')[1].split('[')[0]}.png`
                       : issueData.user.avatar_url
                   }
                   alt={issueData.user.login}
@@ -110,12 +108,7 @@ const IssueBubbleBody = ({ issueData, user }) => {
             </Button> */}
           </Grid>
           <Grid item>
-            <Grid
-              container
-              style={{ padding: 0 }}
-              justifyContent={justify}
-              alignItems={justify}
-            >
+            <Grid container style={{ padding: 0 }} justifyContent={justify} alignItems={justify}>
               {/* ${justify} ${
                     isDarkTheme ? `dark` : `light`
                   }` */}
@@ -125,12 +118,10 @@ const IssueBubbleBody = ({ issueData, user }) => {
                     variant="body1"
                     component="div"
                     className={classes.chatBubbleText}
-                    align={justify === "flex-start" ? "left" : "right"}
+                    align={justify === 'flex-start' ? 'left' : 'right'}
                   >
                     {issueData.viaEmail ? (
-                      <MDEditor.Markdown
-                        source={issueData.parsedEmailBody.getVisibleText()}
-                      />
+                      <MDEditor.Markdown source={issueData.parsedEmailBody.getVisibleText()} />
                     ) : (
                       <MDEditor.Markdown source={issueData.body} />
                     )}
@@ -142,7 +133,7 @@ const IssueBubbleBody = ({ issueData, user }) => {
                   <Grid item>
                     <Typography
                       variant="caption"
-                      align={justify === "flex-start" ? "left" : "right"}
+                      align={justify === 'flex-start' ? 'left' : 'right'}
                     >
                       {/* By{" "}
                       <a
@@ -153,7 +144,7 @@ const IssueBubbleBody = ({ issueData, user }) => {
                         {issueAuthor}
                       </a>{" "}
                       on  */}
-                      {updateDate.getMonth() + 1}/{updateDate.getDate()} at{" "}
+                      {updateDate.getMonth() + 1}/{updateDate.getDate()} at{' '}
                       {format_AM_PM(updateDate)}
                     </Typography>
                   </Grid>

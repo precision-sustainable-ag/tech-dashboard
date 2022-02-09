@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
-import MDEditor, { commands } from "@uiw/react-md-editor";
-import React, { useState, useEffect } from "react";
-import { PersonAdd, QuestionAnswer } from "@material-ui/icons";
-import { Octokit } from "@octokit/rest";
-import { githubToken } from "../utils/api_secret";
+import MDEditor, { commands } from '@uiw/react-md-editor';
+import React, { useState, useEffect } from 'react';
+import { PersonAdd, QuestionAnswer } from '@material-ui/icons';
+import { Octokit } from '@octokit/rest';
+import { githubToken } from '../utils/api_secret';
 import {
   Avatar,
   Button,
@@ -14,20 +14,20 @@ import {
   Grid,
   TextField,
   Typography,
-} from "@material-ui/core";
-import PropTypes from "prop-types";
+} from '@material-ui/core';
+import PropTypes from 'prop-types';
 
 const bodyFormatter = (dataType, rowData, newComment) => {
   let body;
 
-  if (dataType === "table") {
+  if (dataType === 'table') {
     let tableData = `<table>
             <tbody>`;
 
     for (var key in rowData) {
       var value = rowData[key];
 
-      if (key !== "tableData") {
+      if (key !== 'tableData') {
         tableData =
           tableData +
           `<tr>
@@ -41,17 +41,17 @@ const bodyFormatter = (dataType, rowData, newComment) => {
       tableData +
       `</tbody>
         </table>`;
-    body = tableData + " <br/> " + newComment;
-  } else if (dataType === "json") {
-    body = "```json\n" + rowData + "\n```\n <br/> " + newComment;
+    body = tableData + ' <br/> ' + newComment;
+  } else if (dataType === 'json') {
+    body = '```json\n' + rowData + '\n```\n <br/> ' + newComment;
   } else body = newComment;
 
   return body;
 };
 
 const Comments = (props) => {
-  const [newComment, setNewComment] = useState("");
-  const [searchUser, setSearchUser] = useState("");
+  const [newComment, setNewComment] = useState('');
+  const [searchUser, setSearchUser] = useState('');
   const [showUsersDialog, setShowUsersDialog] = useState(false);
   const [githubUsers, setGithubUsers] = useState([]);
 
@@ -61,20 +61,20 @@ const Comments = (props) => {
 
   const filteredUsers = React.useMemo(() => {
     return githubUsers.filter((user) =>
-      user.login.toLowerCase().includes(searchUser.toLowerCase())
+      user.login.toLowerCase().includes(searchUser.toLowerCase()),
     );
   }, [searchUser, githubUsers]);
 
   const githubUserMentionCommand = {
-    name: "MentionUser",
-    keyCommand: "MentionUser",
-    buttonProps: { "aria-label": "Mention user" },
-    icon: <PersonAdd style={{ width: "12px", height: "12px" }} />,
+    name: 'MentionUser',
+    keyCommand: 'MentionUser',
+    buttonProps: { 'aria-label': 'Mention user' },
+    icon: <PersonAdd style={{ width: '12px', height: '12px' }} />,
     execute: (state, api) => {
       console.log(state, api);
       if (!state.selectedText) {
         // no text selected, show all users
-        setSearchUser("");
+        setSearchUser('');
         setShowUsersDialog(true);
       } else {
         // find users that begin with selected users
@@ -87,17 +87,15 @@ const Comments = (props) => {
   useEffect(() => {
     async function getUsers() {
       const octokit = new Octokit({ auth: githubToken });
-      return await octokit.request("GET /repos/{owner}/{repo}/collaborators", {
-        owner: "precision-sustainable-ag",
-        repo: "data_corrections",
+      return await octokit.request('GET /repos/{owner}/{repo}/collaborators', {
+        owner: 'precision-sustainable-ag',
+        repo: 'data_corrections',
       });
     }
 
     getUsers().then((response) => {
       if (response.status === 200 && response.data.length > 0) {
-        setGithubUsers(
-          response.data.filter((user) => user.login !== "TechDashboard-BOT")
-        );
+        setGithubUsers(response.data.filter((user) => user.login !== 'TechDashboard-BOT'));
       } else {
         setGithubUsers([]);
         console.error(response);
@@ -112,7 +110,7 @@ const Comments = (props) => {
 
   useEffect(() => {
     if (removeCommentText) {
-      setNewCommentBody("");
+      setNewCommentBody('');
       setRemoveCommentText(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -125,9 +123,7 @@ const Comments = (props) => {
       <Grid item xs={12}>
         <Grid container spacing={1}>
           <Grid item lg={12}>
-            <Typography variant="caption">
-              Please enter your comments below
-            </Typography>
+            <Typography variant="caption">Please enter your comments below</Typography>
             <MDEditor
               preview="edit"
               value={newComment}
@@ -163,7 +159,7 @@ const Comments = (props) => {
                     props.handleNewComment(body);
                   }}
                 >
-                  {props.buttonDisabled ? "Creating Comment" : "Add Comment"}
+                  {props.buttonDisabled ? 'Creating Comment' : 'Add Comment'}
                 </Button>
               </Grid>
               {props.setShowNewIssueDialog && (
@@ -208,25 +204,16 @@ const Comments = (props) => {
 
                 {filteredUsers.map((user) => (
                   <Grid item key={user.id} xs={12} md={4}>
-                    <Grid
-                      container
-                      direction="row"
-                      justifyContent="flex-start"
-                      spacing={1}
-                    >
+                    <Grid container direction="row" justifyContent="flex-start" spacing={1}>
                       <Grid item xs="auto" md="auto">
-                        <Avatar
-                          variant="rounded"
-                          alt={user.login}
-                          src={user.avatar_url}
-                        />
+                        <Avatar variant="rounded" alt={user.login} src={user.avatar_url} />
                       </Grid>
                       <Grid item xs="auto" md="auto">
                         <Button
                           onClick={() => {
                             setNewComment(newComment + ` @${user.login}`);
                             setShowUsersDialog(false);
-                            setSearchUser("");
+                            setSearchUser('');
                           }}
                         >
                           {user.login}
@@ -242,11 +229,7 @@ const Comments = (props) => {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setShowUsersDialog(false)}
-          >
+          <Button variant="contained" color="primary" onClick={() => setShowUsersDialog(false)}>
             Close
           </Button>
         </DialogActions>

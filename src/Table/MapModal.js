@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Dialog,
   DialogContent,
@@ -6,19 +6,14 @@ import {
   Grid,
   IconButton,
   Typography,
-} from "@material-ui/core";
-import GoogleMap from "../Location/GoogleMap";
-import { Close } from "@material-ui/icons";
-import PropTypes from "prop-types";
+} from '@material-ui/core';
+import GoogleMap from '../Location/GoogleMap';
+import { Close } from '@material-ui/icons';
+import PropTypes from 'prop-types';
 
-const MapModal = ({
-  open = false,
-  setOpen = () => {},
-  lat = 35.763197,
-  lng = -78.700187,
-}) => {
+const MapModal = ({ open = false, setOpen = () => {}, lat = 35.763197, lng = -78.700187 }) => {
   const fullWidth = true;
-  const maxWidth = "md";
+  const maxWidth = 'md';
 
   return (
     <Dialog
@@ -39,7 +34,7 @@ const MapModal = ({
       <DialogContent>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <div style={{ height: "450px", width: "100%" }}>
+            <div style={{ height: '450px', width: '100%' }}>
               <GoogleMap from="mapModal" lat={lat} lng={lng} />
             </div>
           </Grid>

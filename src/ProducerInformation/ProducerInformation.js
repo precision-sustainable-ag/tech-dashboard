@@ -1,24 +1,19 @@
-import React, { useState, useEffect, useContext, Fragment } from "react";
-import { Grid, Snackbar } from "@material-ui/core";
-import { Context } from "../Store/Store";
-import MaterialTable from "material-table";
-import { bannedRoles } from "../utils/constants";
-import IssueDialogue from "../Comments/IssueDialogue";
-import { BannedRoleMessage, CustomLoader } from "../utils/CustomComponents";
-import {
-  apiPassword,
-  apiURL,
-  apiUsername,
-  onfarmAPI,
-} from "../utils/api_secret";
-import { useAuth0 } from "../Auth/react-auth0-spa";
-import MuiAlert from "@material-ui/lab/Alert";
+import React, { useState, useEffect, useContext, Fragment } from 'react';
+import { Grid, Snackbar } from '@material-ui/core';
+import { Context } from '../Store/Store';
+import MaterialTable from 'material-table';
+import { bannedRoles } from '../utils/constants';
+import IssueDialogue from '../Comments/IssueDialogue';
+import { BannedRoleMessage, CustomLoader } from '../utils/CustomComponents';
+import { apiPassword, apiURL, apiUsername, onfarmAPI } from '../utils/api_secret';
+import { useAuth0 } from '../Auth/react-auth0-spa';
+import MuiAlert from '@material-ui/lab/Alert';
 
-import axios from "axios";
-import QueryString from "qs";
+import axios from 'axios';
+import QueryString from 'qs';
 
 const producersURL = `${onfarmAPI}/producers${
-  process.env.NODE_ENV === "development" ? `?options=showtest` : ``
+  process.env.NODE_ENV === 'development' ? `?options=showtest` : ``
 }`;
 
 // Helper function
@@ -28,54 +23,54 @@ function Alert(props) {
 
 const tableHeaderOptions = [
   {
-    title: "Producer ID",
-    field: "producer_id",
-    type: "string",
-    align: "justify",
-    editable: "never",
+    title: 'Producer ID',
+    field: 'producer_id',
+    type: 'string',
+    align: 'justify',
+    editable: 'never',
   },
   {
-    title: "First Name",
-    field: "first_name",
-    type: "string",
-    align: "justify",
-    editable: "always",
+    title: 'First Name',
+    field: 'first_name',
+    type: 'string',
+    align: 'justify',
+    editable: 'always',
   },
   {
-    title: "Last Name or Organization Name",
-    field: "last_name",
-    type: "string",
-    align: "justify",
-    editable: "always",
+    title: 'Last Name or Organization Name',
+    field: 'last_name',
+    type: 'string',
+    align: 'justify',
+    editable: 'always',
   },
   {
-    title: "Site Codes",
-    field: "codes",
-    type: "string",
-    align: "justify",
-    editable: "never",
+    title: 'Site Codes',
+    field: 'codes',
+    type: 'string',
+    align: 'justify',
+    editable: 'never',
   },
   {
-    title: "Years",
-    field: "years",
-    type: "string",
-    align: "justify",
-    editable: "never",
+    title: 'Years',
+    field: 'years',
+    type: 'string',
+    align: 'justify',
+    editable: 'never',
   },
 
   {
-    title: "Email",
-    field: "email",
-    type: "string",
-    align: "justify",
-    editable: "always",
+    title: 'Email',
+    field: 'email',
+    type: 'string',
+    align: 'justify',
+    editable: 'always',
   },
   {
-    title: "Phone",
-    field: "phone",
-    type: "string",
-    align: "justify",
-    editable: "always",
+    title: 'Phone',
+    field: 'phone',
+    type: 'string',
+    align: 'justify',
+    editable: 'always',
   },
 ];
 
@@ -88,15 +83,15 @@ const ProducerInformation = () => {
   const { user } = useAuth0();
   const [snackbarData, setSnackbarData] = useState({
     open: false,
-    text: "",
-    severity: "success",
+    text: '',
+    severity: 'success',
   });
 
   const allowEditing = () => {
     let permissions = state.userInfo.permissions;
-    const allowedPermissions = ["edit", "update", "all"];
+    const allowedPermissions = ['edit', 'update', 'all'];
 
-    return permissions.split(",").some((i) => allowedPermissions.includes(i));
+    return permissions.split(',').some((i) => allowedPermissions.includes(i));
   };
 
   const { getTokenSilently } = useAuth0();
@@ -105,7 +100,7 @@ const ProducerInformation = () => {
     const fetchProducers = async () => {
       let response = await fetch(producersURL, {
         headers: {
-          "x-api-key": state.userInfo.apikey,
+          'x-api-key': state.userInfo.apikey,
         },
       });
 
@@ -123,8 +118,8 @@ const ProducerInformation = () => {
             let modRes = res.map((rec) => {
               return {
                 ...rec,
-                years: rec.years.split(".").join(", "),
-                codes: rec.codes.split(".").join(", "),
+                years: rec.years.split('.').join(', '),
+                codes: rec.codes.split('.').join(', '),
               };
             });
 
@@ -154,31 +149,31 @@ const ProducerInformation = () => {
   }
 
   const tableOptions = (tableData) => ({
-    padding: "dense",
+    padding: 'dense',
     exportButton: true,
-    exportFileName: "Producer Information",
-    addRowPosition: "first",
+    exportFileName: 'Producer Information',
+    addRowPosition: 'first',
     exportAllData: false,
     pageSizeOptions: [5, 10, 20, tableData.length],
     pageSize: tableData.length,
-    groupRowSeparator: "  ",
+    groupRowSeparator: '  ',
     grouping: true,
     headerStyle: {
-      fontWeight: "bold",
-      fontFamily: "Bilo, sans-serif",
-      fontSize: "0.8em",
-      textAlign: "justify",
-      position: "sticky",
+      fontWeight: 'bold',
+      fontFamily: 'Bilo, sans-serif',
+      fontSize: '0.8em',
+      textAlign: 'justify',
+      position: 'sticky',
       top: 0,
     },
     rowStyle: {
-      fontFamily: "Roboto, sans-serif",
-      fontSize: "0.8em",
-      textAlign: "justify",
+      fontFamily: 'Roboto, sans-serif',
+      fontSize: '0.8em',
+      textAlign: 'justify',
     },
     selection: false,
     searchAutoFocus: true,
-    toolbarButtonAlignment: "left",
+    toolbarButtonAlignment: 'left',
     actionsColumnIndex: 0,
     maxBodyHeight: height * 0.7,
   });
@@ -193,14 +188,12 @@ const ProducerInformation = () => {
         <Fragment>
           <Snackbar
             anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "center",
+              vertical: 'bottom',
+              horizontal: 'center',
             }}
             open={snackbarData.open}
             autoHideDuration={10000}
-            onClose={() =>
-              setSnackbarData({ ...snackbarData, open: !snackbarData.open })
-            }
+            onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
           >
             <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
           </Snackbar>
@@ -214,18 +207,18 @@ const ProducerInformation = () => {
                       const { email, last_name, phone, first_name } = newData;
                       // const filteredData = tableData.filter((records) => records.producer_id !== producer_id);
                       if (!producer_id) {
-                        reject("Producer id missing");
+                        reject('Producer id missing');
                       } else {
                         const preparedData = {
-                          first_name: first_name || "",
-                          last_name: last_name || "",
-                          email: email || "",
-                          phone: phone || "",
+                          first_name: first_name || '',
+                          last_name: last_name || '',
+                          email: email || '',
+                          phone: phone || '',
                         };
 
                         axios({
                           url: `${apiURL}/api/producers/${producer_id}`,
-                          method: "POST",
+                          method: 'POST',
                           data: QueryString.stringify(preparedData),
                           auth: {
                             username: apiUsername,
@@ -257,10 +250,10 @@ const ProducerInformation = () => {
               options={tableOptions(tableData)}
               detailPanel={[
                 {
-                  tooltip: "Add Comments",
-                  icon: "comment",
+                  tooltip: 'Add Comments',
+                  icon: 'comment',
 
-                  openIcon: "message",
+                  openIcon: 'message',
                   // eslint-disable-next-line react/display-name
                   render: (rowData) => {
                     return (
@@ -269,8 +262,8 @@ const ProducerInformation = () => {
                         rowData={rowData}
                         dataType="table"
                         setSnackbarData={setSnackbarData}
-                        labels={["producer-information"].concat(
-                          rowData.codes.replace(/\s/g, "").split(",")
+                        labels={['producer-information'].concat(
+                          rowData.codes.replace(/\s/g, '').split(','),
                         )}
                         getTokenSilently={getTokenSilently}
                       />

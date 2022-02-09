@@ -1,9 +1,9 @@
 // Dependency Imports
-import React, { useEffect, useContext, useState } from "react";
-import clsx from "clsx";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import MenuIcon from "@material-ui/icons/Menu";
-import { RiSensorFill, RiTimeLine } from "react-icons/all";
+import React, { useEffect, useContext, useState } from 'react';
+import clsx from 'clsx';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import MenuIcon from '@material-ui/icons/Menu';
+import { RiSensorFill, RiTimeLine } from 'react-icons/all';
 import {
   Drawer,
   AppBar,
@@ -19,8 +19,8 @@ import {
   MenuItem,
   Collapse,
   Icon,
-} from "@material-ui/core";
-import { Link } from "react-router-dom";
+} from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import {
   ChevronRight,
   ChevronLeft,
@@ -35,32 +35,32 @@ import {
   BugReport,
   Storage,
   Person,
-} from "@material-ui/icons";
-import Axios from "axios";
-import PropTypes from "prop-types";
+} from '@material-ui/icons';
+import Axios from 'axios';
+import PropTypes from 'prop-types';
 
 // Local Imports
-import { apiPassword, apiUsername, apiURL } from "../utils/api_secret";
-import { Context } from "../Store/Store";
-import { useAuth0 } from "../Auth/react-auth0-spa";
-import { addToTechnicians } from "../utils/SharedFunctions";
-import { debugAdmins } from "../utils/constants";
+import { apiPassword, apiUsername, apiURL } from '../utils/api_secret';
+import { Context } from '../Store/Store';
+import { useAuth0 } from '../Auth/react-auth0-spa';
+import { addToTechnicians } from '../utils/SharedFunctions';
+import { debugAdmins } from '../utils/constants';
 
 //Global Vars
 const drawerWidth = 240;
-const qs = require("qs");
+const qs = require('qs');
 
 // Styles
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex",
+    display: 'flex',
     flexGrow: 1,
   },
   title: {
     flexGrow: 1,
   },
   appBar: {
-    transition: theme.transitions.create(["margin", "width"], {
+    transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
-    transition: theme.transitions.create(["margin", "width"], {
+    transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
@@ -77,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   hide: {
-    display: "none",
+    display: 'none',
   },
   drawer: {
     width: drawerWidth,
@@ -87,23 +87,23 @@ const useStyles = makeStyles((theme) => ({
     width: drawerWidth,
   },
   drawerHeader: {
-    display: "flex",
-    alignItems: "center",
+    display: 'flex',
+    alignItems: 'center',
     padding: theme.spacing(0, 1),
     ...theme.mixins.toolbar,
-    justifyContent: "flex-end",
+    justifyContent: 'flex-end',
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
-    transition: theme.transitions.create("margin", {
+    transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
     marginLeft: -drawerWidth,
   },
   contentShift: {
-    transition: theme.transitions.create("margin", {
+    transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
@@ -163,7 +163,7 @@ export default function Header(props) {
     const addUserToDatabase = async (dataString) => {
       try {
         await Axios({
-          method: "POST",
+          method: 'POST',
           url: `${apiURL}/api/users`,
           data: dataString,
           auth: {
@@ -171,15 +171,15 @@ export default function Header(props) {
             password: apiPassword,
           },
           headers: {
-            "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
           },
         }).then((response) => {
           if (response.data.return) {
             // user added
             dispatch({
-              type: "UPDATE_ROLE",
+              type: 'UPDATE_ROLE',
               data: {
-                userRole: "default",
+                userRole: 'default',
               },
             });
           }
@@ -190,7 +190,7 @@ export default function Header(props) {
     };
     const fetchRole = async (user) => {
       dispatch({
-        type: "UPDATING_USER_INFO",
+        type: 'UPDATING_USER_INFO',
       });
       await Axios.get(`${apiURL}/api/users/${user.email}`, {
         auth: {
@@ -207,18 +207,18 @@ export default function Header(props) {
 
           addUserToDatabase(qs.stringify(obj));
         } else {
-          if(data.data.state !== "default"){
-            console.log("adding to technicians");
+          if (data.data.state !== 'default') {
+            console.log('adding to technicians');
             addToTechnicians(user.nickname, getTokenSilently);
           }
           dispatch({
-            type: "UPDATE_ROLE",
+            type: 'UPDATE_ROLE',
             data: {
               userRole: data.data.role,
             },
           });
           dispatch({
-            type: "UPDATE_USER_INFO",
+            type: 'UPDATE_USER_INFO',
             data: {
               userInfo: data.data,
             },
@@ -259,9 +259,7 @@ export default function Header(props) {
           {!props.isLoggedIn && (
             <IconButton
               color="inherit"
-              onClick={() =>
-                loginWithRedirect({ redirect_uri: window.location.href })
-              }
+              onClick={() => loginWithRedirect({ redirect_uri: window.location.href })}
             >
               <Lock />
             </IconButton>
@@ -281,31 +279,21 @@ export default function Header(props) {
               <Menu
                 id="menu-appbar"
                 anchorEl={anchorEl}
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
                 keepMounted
-                transformOrigin={{ vertical: "top", horizontal: "right" }}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                 open={profileMenuOpen}
                 onClose={handleProfileMenuClose}
               >
-                <MenuItem
-                  component={Link}
-                  to={"/profile"}
-                  onClick={handleProfileMenuClose}
-                >
+                <MenuItem component={Link} to={'/profile'} onClick={handleProfileMenuClose}>
                   Profile
                 </MenuItem>
                 {debugAdmins.includes(state.userInfo.email) && (
-                  <MenuItem
-                    component={Link}
-                    to={"/debug"}
-                    onClick={handleProfileMenuClose}
-                  >
+                  <MenuItem component={Link} to={'/debug'} onClick={handleProfileMenuClose}>
                     Debug
                   </MenuItem>
                 )}
-                <MenuItem
-                  onClick={() => logout({ returnTo: window.location.origin })}
-                >
+                <MenuItem onClick={() => logout({ returnTo: window.location.origin })}>
                   Log Out
                 </MenuItem>
               </Menu>
@@ -324,50 +312,44 @@ export default function Header(props) {
       >
         <div className={classes.drawerHeader}>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "ltr" ? <ChevronLeft /> : <ChevronRight />}
+            {theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}
           </IconButton>
         </div>
 
         <Divider />
         <List>
-          <ListItem
-            onClick={() => setOpen(false)}
-            button
-            key={"timeline"}
-            component={Link}
-            to="/"
-          >
+          <ListItem onClick={() => setOpen(false)} button key={'timeline'} component={Link} to="/">
             <ListItemIcon>
               <Icon>
                 <RiTimeLine />
               </Icon>
             </ListItemIcon>
-            <ListItemText primary={"Timeline"} />
+            <ListItemText primary={'Timeline'} />
           </ListItem>
           <ListItem
             onClick={() => setOpen(false)}
             button
-            key={"protocols"}
+            key={'protocols'}
             component={Link}
             to="/on-farm-protocols"
           >
             <ListItemIcon>
               <ListAlt />
             </ListItemIcon>
-            <ListItemText primary={"Protocols"} />
+            <ListItemText primary={'Protocols'} />
           </ListItem>
 
           <ListItem
             onClick={() => setOpen(false)}
             button
-            key={"Site Enrollment"}
+            key={'Site Enrollment'}
             component={Link}
             to="/site-enroll"
           >
             <ListItemIcon>
               <Info />
             </ListItemIcon>
-            <ListItemText primary={"Site Enrollment"} />
+            <ListItemText primary={'Site Enrollment'} />
           </ListItem>
 
           <ListItem
@@ -387,7 +369,7 @@ export default function Header(props) {
             <ListItemIcon>
               <Info />
             </ListItemIcon>
-            <ListItemText primary={"Site Information"} />
+            <ListItemText primary={'Site Information'} />
             {openAllDataNav ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
           <Collapse in={openAllDataNav} timeout="auto" unmountOnExit>
@@ -413,21 +395,28 @@ export default function Header(props) {
                   handleOpenAllDataNav();
                 }}
               >
-                <ListItemText inset primary="Dates" />
+                <ListItemText inset primary="Dates - Table View" />
+              </ListItem>
+
+              <ListItem
+                button
+                to="/site-information/farm-dates/calendar"
+                component={Link}
+                onClick={() => {
+                  setOpen(false);
+                  handleOpenAllDataNav();
+                }}
+              >
+                <ListItemText inset primary="Dates - Calendar View" />
               </ListItem>
             </List>
           </Collapse>
 
-          <ListItem
-            onClick={() =>
-              setOpenNav({ ...openNav, biomass: !openNav.biomass })
-            }
-            button
-          >
+          <ListItem onClick={() => setOpenNav({ ...openNav, biomass: !openNav.biomass })} button>
             <ListItemIcon>
               <Info />
             </ListItemIcon>
-            <ListItemText primary={"Biomass"} />
+            <ListItemText primary={'Biomass'} />
             {openNav.biomass ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
           <Collapse in={openNav.biomass} timeout="auto" unmountOnExit>
@@ -438,11 +427,11 @@ export default function Header(props) {
                   setOpen(false);
                 }}
                 button
-                key={"Farm Values"}
+                key={'Farm Values'}
                 component={Link}
                 to="/biomass/farm-values"
               >
-                <ListItemText inset primary={"Farm Values"} />
+                <ListItemText inset primary={'Farm Values'} />
               </ListItem>
             </List>
           </Collapse>
@@ -464,19 +453,19 @@ export default function Header(props) {
               setOpenNav({ ...openNav, waterSensors: !openNav.waterSensors });
             }}
             button
-            key={"WaterSensors"}
+            key={'WaterSensors'}
           >
             <ListItemIcon>
               <Icon>
                 <RiSensorFill />
               </Icon>
             </ListItemIcon>
-            <ListItemText primary={"Water Sensors"} />
+            <ListItemText primary={'Water Sensors'} />
             {openNav.waterSensors ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
           <Collapse in={openNav.waterSensors} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              {" "}
+              {' '}
               <ListItem
                 button
                 to="/devices/water-sensors"
@@ -503,9 +492,7 @@ export default function Header(props) {
           </Collapse>
 
           <ListItem
-            onClick={() =>
-              setOpenNav({ ...openNav, stressCams: !openNav.stressCams })
-            }
+            onClick={() => setOpenNav({ ...openNav, stressCams: !openNav.stressCams })}
             button
             key="stressCams"
           >
@@ -514,7 +501,7 @@ export default function Header(props) {
                 <Info />
               </Icon>
             </ListItemIcon>
-            <ListItemText primary={"Stress Cams"} />
+            <ListItemText primary={'Stress Cams'} />
             {openNav.stressCams ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
           <Collapse in={openNav.stressCams} timeout="auto" unmountOnExit>
@@ -534,14 +521,14 @@ export default function Header(props) {
           <ListItem
             onClick={() => setOpen(false)}
             button
-            key={"Issues"}
+            key={'Issues'}
             component={Link}
             to="/issues"
           >
             <ListItemIcon>
               <BugReport />
             </ListItemIcon>
-            <ListItemText primary={"Issues"} />
+            <ListItemText primary={'Issues'} />
           </ListItem>
 
           <ListItem

@@ -1,16 +1,11 @@
-import React, { Fragment, useState } from "react";
-import { Button, Tooltip } from "@material-ui/core";
-import { QuestionAnswer } from "@material-ui/icons";
-import ActualFarmDates from "./ActualFarmDates";
-import IssueDialogue from "../../Comments/IssueDialogue";
-import PropTypes from "prop-types";
+import React, { Fragment, useState } from 'react';
+import { Button, Tooltip } from '@material-ui/core';
+import { QuestionAnswer } from '@material-ui/icons';
+import ActualFarmDates from './ActualFarmDates';
+import IssueDialogue from '../../Comments/IssueDialogue';
+import PropTypes from 'prop-types';
 
-const FarmDatesDropdown = ({
-  rowData,
-  fetchFromApi,
-  nickname,
-  setSnackbarData,
-}) => {
+const FarmDatesDropdown = ({ rowData, fetchFromApi, nickname, setSnackbarData }) => {
   const [showIssue, setShowIssue] = useState(false);
 
   return (
@@ -26,7 +21,7 @@ const FarmDatesDropdown = ({
             color="primary"
             // color={props.props.isDarkTheme ? "primary" : "default"}
             onClick={() => {
-              console.log("clicked");
+              console.log('clicked');
               setShowIssue(!showIssue);
             }}
           >
@@ -41,7 +36,7 @@ const FarmDatesDropdown = ({
           rowData={rowData}
           dataType="table"
           setSnackbarData={setSnackbarData}
-          labels={["farm-dates"]}
+          labels={['farm-dates']}
           setShowNewIssueDialog={setShowIssue}
         />
       )}

@@ -30,9 +30,7 @@ export const apiURL = REACT_APP_ONFARM_OLD_API_URL;
 export const onfarmStaticApiKey = REACT_APP_ONFARM_GLOBAL_API_KEY;
 
 export const onfarmAPI =
-  NODE_ENV === "production"
-    ? REACT_APP_ONFARM_PROD_API_URL
-    : REACT_APP_ONFARM_DEV_API_URL;
+  NODE_ENV === 'production' ? REACT_APP_ONFARM_PROD_API_URL : REACT_APP_ONFARM_DEV_API_URL;
 
 export const hologramAPIKey = REACT_APP_HOLOGRAM_WATER_SENSOR_API_KEY;
 export const hologramStressCamAPIKey = REACT_APP_HOLOGRAM_STRESS_CAM_API_KEY;
@@ -45,8 +43,6 @@ export const primaryContactPerson = {
 // make sure to modify HTTP Referrers on Google Console
 
 export const googleApiKey =
-  NODE_ENV === "production"
-    ? REACT_APP_GOOGLE_API_KEY_PROD
-    : REACT_APP_GOOGLE_API_KEY_DEV;
+  NODE_ENV === 'production' ? REACT_APP_GOOGLE_API_KEY_PROD : REACT_APP_GOOGLE_API_KEY_DEV;
 
 export const githubToken = REACT_APP_GITHUB_AUTH_TOKEN;

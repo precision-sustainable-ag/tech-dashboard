@@ -4,15 +4,15 @@ no extra features are intended
 For extra features, import Location.js
 */
 
-import React from "react";
-import GoogleMapsReact from "google-map-react";
-import PropTypes from "prop-types";
+import React from 'react';
+import GoogleMapsReact from 'google-map-react';
+import PropTypes from 'prop-types';
 
-import { googleApiKey } from "../utils/api_secret";
+import { googleApiKey } from '../utils/api_secret';
 
-const GoogleMap = ({ lat = 35.763197, lng = -78.700187, from = "" }) => {
+const GoogleMap = ({ lat = 35.763197, lng = -78.700187, from = '' }) => {
   const getMapOptions = (maps) => {
-    if (from === "device" || from === "mapModal") {
+    if (from === 'device' || from === 'mapModal') {
       return {
         streetViewControl: true,
 
@@ -22,11 +22,11 @@ const GoogleMap = ({ lat = 35.763197, lng = -78.700187, from = "" }) => {
         fullscreenControl: false,
         styles: [
           {
-            featureType: "poi.business",
-            elementType: "labels",
+            featureType: 'poi.business',
+            elementType: 'labels',
             stylers: [
               {
-                visibility: "off",
+                visibility: 'off',
               },
             ],
           },
@@ -57,8 +57,8 @@ const GoogleMap = ({ lat = 35.763197, lng = -78.700187, from = "" }) => {
     <GoogleMapsReact
       bootstrapURLKeys={{
         key: googleApiKey,
-        language: "EN",
-        region: "US",
+        language: 'EN',
+        region: 'US',
       }}
       defaultCenter={center}
       center={center}

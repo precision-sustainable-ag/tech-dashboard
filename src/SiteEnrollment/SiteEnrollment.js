@@ -1,15 +1,15 @@
 // Dependency Imports
-import { Button, Grid, Snackbar, Typography } from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
-import Axios from "axios";
-import React, { useState, useEffect, useContext } from "react";
+import { Button, Grid, Snackbar, Typography } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
+import Axios from 'axios';
+import React, { useState, useEffect, useContext } from 'react';
 
 // Local Imports
-import { Context } from "../Store/Store";
-import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
-import { bannedRoles } from "../utils/constants";
-import { BannedRoleMessage, CustomLoader } from "../utils/CustomComponents";
-import EnrollNewSite from "./EnrollNewSite";
+import { Context } from '../Store/Store';
+import { apiPassword, apiURL, apiUsername } from '../utils/api_secret';
+import { bannedRoles } from '../utils/constants';
+import { BannedRoleMessage, CustomLoader } from '../utils/CustomComponents';
+import EnrollNewSite from './EnrollNewSite';
 
 // Default function
 const SiteEnrollment = (props) => {
@@ -19,7 +19,7 @@ const SiteEnrollment = (props) => {
   const [showStateSpecificSites, setShowStateSpecificSites] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const [bannedRolesCheckMessage, setBannedRolesCheckMessage] = useState(
-    "Checking your permissions.."
+    'Checking your permissions..',
   );
   const [enrollNewSite, setEnrollNewSite] = useState(false);
   const [savedData, setSavedData] = useState(false);
@@ -29,12 +29,10 @@ const SiteEnrollment = (props) => {
       if (state.userInfo.role) {
         if (bannedRoles.includes(state.userInfo.role)) {
           setShowContent(false);
-          setBannedRolesCheckMessage(
-            <BannedRoleMessage title="Site Enrollment" />
-          );
+          setBannedRolesCheckMessage(<BannedRoleMessage title="Site Enrollment" />);
         } else {
           setShowContent(true);
-          if (state.userInfo.state === "all") {
+          if (state.userInfo.state === 'all') {
             setShowStateSpecificSites(false);
           } else {
             setShowStateSpecificSites(true);
@@ -57,9 +55,9 @@ const SiteEnrollment = (props) => {
         <Button
           variant="contained"
           onClick={() => setEnrollNewSite(!enrollNewSite)}
-          color={enrollNewSite ? "secondary" : "primary"}
+          color={enrollNewSite ? 'secondary' : 'primary'}
         >
-          {enrollNewSite ? "Cancel" : "Enroll Site"}
+          {enrollNewSite ? 'Cancel' : 'Enroll Site'}
         </Button>
       </Grid>
 
@@ -78,8 +76,8 @@ const SiteEnrollment = (props) => {
               {showStateSpecificSites && (
                 <Typography variant="body1" gutterBottom>
                   {stateSitesEnrolled} sites enrolled in your team
-                  {state.userInfo.state.split(",").length > 1 ? "s" : ""}:{" "}
-                  {state.userInfo.state.split(",").join(", ")}
+                  {state.userInfo.state.split(',').length > 1 ? 's' : ''}:{' '}
+                  {state.userInfo.state.split(',').join(', ')}
                 </Typography>
               )}
               <Typography variant="body1">
@@ -92,7 +90,7 @@ const SiteEnrollment = (props) => {
         </Grid>
       )}
       <Snackbar
-        anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
+        anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
         open={savedData}
         autoHideDuration={6000}
         onClose={() => setSavedData(false)}
@@ -121,7 +119,7 @@ const getStats = async (state) => {
 const fetchStats = async (state) => {
   return await Axios.get(`${apiURL}/api/total/sites/${state}`, {
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     auth: {
       username: apiUsername,

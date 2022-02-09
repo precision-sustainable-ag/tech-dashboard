@@ -1,24 +1,17 @@
 // Dependency Imports
-import React, { useState, useEffect, useContext } from "react";
-import { useHistory } from "react-router-dom";
-import {
-  Button,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  Typography,
-} from "@material-ui/core";
-import Axios from "axios";
-import { Alert } from "@material-ui/lab";
-import PropTypes from "prop-types";
+import React, { useState, useEffect, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
+import { Button, Grid, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
+import Axios from 'axios';
+import { Alert } from '@material-ui/lab';
+import PropTypes from 'prop-types';
 // Local Imports
-import { Context } from "../Store/Store";
-import GrowerInformation from "./GrowerInformation";
-import { apiPassword, apiURL, apiUsername } from "../utils/api_secret";
+import { Context } from '../Store/Store';
+import GrowerInformation from './GrowerInformation';
+import { apiPassword, apiURL, apiUsername } from '../utils/api_secret';
 
 //Global Vars
-const qs = require("qs");
+const qs = require('qs');
 
 // const useStyles = makeStyles(() => ({
 //   labelRoot: {
@@ -37,30 +30,30 @@ const EnrollNewSite = (props) => {
   const currentYear = new Date().getFullYear();
   const [allAffiliations, setAllAffiliations] = useState([]);
   const [enrollmentData, setEnrollmentData] = useState({
-    year: "none",
-    affiliation: "none",
+    year: 'none',
+    affiliation: 'none',
     growerInfo: {
-      collaborationStatus: "University",
-      producerId: "",
-      phone: "",
+      collaborationStatus: 'University',
+      producerId: '',
+      phone: '',
 
-      lastName: "",
-      email: "",
+      lastName: '',
+      email: '',
       sites: [],
     },
   });
   const history = useHistory();
-  
+
   useEffect(() => {
     setEnrollmentData({
-      year: "none",
-      affiliation: "none",
+      year: 'none',
+      affiliation: 'none',
       growerInfo: {
-        collaborationStatus: "University",
-        producerId: "",
-        phone: "",
-        lastName: "",
-        email: "",
+        collaborationStatus: 'University',
+        producerId: '',
+        phone: '',
+        lastName: '',
+        email: '',
         sites: [],
       },
     });
@@ -91,7 +84,7 @@ const EnrollNewSite = (props) => {
           password: apiPassword,
         },
         headers: {
-          "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
+          'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
         },
       })
         .then((res) => {
@@ -100,14 +93,14 @@ const EnrollNewSite = (props) => {
         .then(() => {
           // reset everything
           setEnrollmentData({
-            year: "none",
-            affiliation: "none",
+            year: 'none',
+            affiliation: 'none',
             growerInfo: {
-              collaborationStatus: "University",
-              producerId: "",
-              phone: "",
-              lastName: "",
-              email: "",
+              collaborationStatus: 'University',
+              producerId: '',
+              phone: '',
+              lastName: '',
+              email: '',
               sites: [],
             },
           });
@@ -130,10 +123,10 @@ const EnrollNewSite = (props) => {
       .then((res) => {
         let affiliations = res.data.data;
         let permittedAffiliations = [];
-        if (state.userInfo.state === "all") {
+        if (state.userInfo.state === 'all') {
           setAllAffiliations(affiliations);
         } else {
-          const dbPermittedAffiliations = state.userInfo.state.split(",");
+          const dbPermittedAffiliations = state.userInfo.state.split(',');
           dbPermittedAffiliations.forEach((element) => {
             let a = affiliations.filter((data) => data.affiliation === element);
             permittedAffiliations.push(a);
@@ -152,121 +145,134 @@ const EnrollNewSite = (props) => {
       {/* {mediumUpScreen ? ( */}
 
       <Grid container spacing={3} alignItems="center">
-        <Grid item xs={12}>
-          <Typography variant="h4">Basic Information</Typography>
-        </Grid>
+        {!props.editSite && (
+          <>
+            <Grid item xs={12}>
+              <Typography variant="h4">Basic Information</Typography>
+            </Grid>
 
-        <Grid item xs={12} md={6}>
-          <InputLabel
-            // classes={{ root: styles.labelRoot }}
-            error={enrollmentYearError}
-            htmlFor="enroll-year"
-          >
-            Cash Crop Year
-          </InputLabel>
-          <Select
-            fullWidth
-            error={enrollmentYearError}
-            value={enrollmentData.year}
-            onChange={(e) => {
-              if (e.target.value !== "none") {
-                setEnrollmentYearError(false);
-                setEnrollmentData({ ...enrollmentData, year: e.target.value });
-              } else {
-                setEnrollmentYearError(true);
-              }
-            }}
-            inputProps={{
-              name: "year",
-              id: "enroll-year",
-            }}
-          >
-            <MenuItem value="none"></MenuItem>
-            <MenuItem value={currentYear}>{currentYear}</MenuItem>
-            <MenuItem value={currentYear + 1}>{currentYear + 1}</MenuItem>
-            <MenuItem value={currentYear + 2}>{currentYear + 2}</MenuItem>
-          </Select>
-        </Grid>
+            <Grid item xs={12} md={6}>
+              <InputLabel
+                // classes={{ root: styles.labelRoot }}
+                error={enrollmentYearError}
+                htmlFor="enroll-year"
+              >
+                Cash Crop Year
+              </InputLabel>
+              <Select
+                fullWidth
+                error={enrollmentYearError}
+                value={enrollmentData.year}
+                onChange={(e) => {
+                  if (e.target.value !== 'none') {
+                    setEnrollmentYearError(false);
+                    setEnrollmentData({ ...enrollmentData, year: e.target.value });
+                  } else {
+                    setEnrollmentYearError(true);
+                  }
+                }}
+                inputProps={{
+                  name: 'year',
+                  id: 'enroll-year',
+                }}
+              >
+                <MenuItem value="none"></MenuItem>
+                <MenuItem value={currentYear}>{currentYear}</MenuItem>
+                <MenuItem value={currentYear + 1}>{currentYear + 1}</MenuItem>
+                <MenuItem value={currentYear + 2}>{currentYear + 2}</MenuItem>
+              </Select>
+            </Grid>
 
-        <Grid item xs={12} md={6}>
-          <InputLabel
-            // classes={{ root: styles.labelRoot }}
-            error={affiliationError}
-            htmlFor="enroll-affiliation"
-          >
-            Affiliation
-          </InputLabel>
-          <Select
-            fullWidth
-            value={enrollmentData.affiliation}
-            error={affiliationError}
-            onChange={(e) => {
-              if (e.target.value !== "none") {
-                setAffiliationError(false);
-                setEnrollmentData({
-                  ...enrollmentData,
-                  affiliation: e.target.value,
-                });
-              } else {
-                setAffiliationError(true);
-              }
-            }}
-            inputProps={{
-              name: "year",
-              id: "enroll-year",
-            }}
-          >
-            <MenuItem value="none"></MenuItem>
-            {allAffiliations.map((data, index) => (
-              <MenuItem key={`aff-${index}`} value={data.affiliation}>
-                {data.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </Grid>
-        {enrollmentData.affiliation === "" ||
-        enrollmentData.affiliation === "none" ||
-        enrollmentData.year === "none" ? (
-          <Grid item xs={12}>
-            <Alert severity="info">
-              <Typography variant="body2">
-                Make sure you have selected the <b>year</b> and{" "}
-                <b>affiliation</b>
-              </Typography>
-            </Alert>
-          </Grid>
-        ) : (
-          ""
+            <Grid item xs={12} md={6}>
+              <InputLabel
+                // classes={{ root: styles.labelRoot }}
+                error={affiliationError}
+                htmlFor="enroll-affiliation"
+              >
+                Affiliation
+              </InputLabel>
+              <Select
+                fullWidth
+                value={enrollmentData.affiliation}
+                error={affiliationError}
+                onChange={(e) => {
+                  if (e.target.value !== 'none') {
+                    setAffiliationError(false);
+                    setEnrollmentData({
+                      ...enrollmentData,
+                      affiliation: e.target.value,
+                    });
+                  } else {
+                    setAffiliationError(true);
+                  }
+                }}
+                inputProps={{
+                  name: 'year',
+                  id: 'enroll-year',
+                }}
+              >
+                <MenuItem value="none"></MenuItem>
+                {allAffiliations.map((data, index) => (
+                  <MenuItem key={`aff-${index}`} value={data.affiliation}>
+                    {data.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Grid>
+            {enrollmentData.affiliation === '' ||
+            enrollmentData.affiliation === 'none' ||
+            enrollmentData.year === 'none' ? (
+              <Grid item xs={12}>
+                <Alert severity="info">
+                  <Typography variant="body2">
+                    Make sure you have selected the <b>year</b> and <b>affiliation</b>
+                  </Typography>
+                </Alert>
+              </Grid>
+            ) : (
+              ''
+            )}
+          </>
         )}
-
         {/* Grower Information  */}
-        {enrollmentData.affiliation === "none" ||
-        enrollmentData.affiliation === "" ||
-        enrollmentData.year === "none" ? (
-          ""
+        {enrollmentData.affiliation === 'none' ||
+        enrollmentData.affiliation === '' ||
+        enrollmentData.year === 'none' ? (
+          ''
         ) : (
           <GrowerInformation
             enrollmentData={enrollmentData}
             setEnrollmentData={setEnrollmentData}
+            editSite={props.editSite}
+            code={props.code}
+            producerId={props.producerId}
+            year={props.year}
           />
         )}
 
-        {enrollmentData.growerInfo.sites &&
-        enrollmentData.growerInfo.sites.length > 0 ? (
+        {props.editSite && (
+          <GrowerInformation
+            enrollmentData={enrollmentData}
+            setEnrollmentData={setEnrollmentData}
+            editSite={props.editSite}
+            code={props.code}
+            producerId={props.producerId}
+            year={props.year}
+            affiliation={props.affiliation}
+            closeModal={props.closeModal}
+          />
+        )}
+
+        {enrollmentData.growerInfo.sites && enrollmentData.growerInfo.sites.length > 0 ? (
           <Grid item xs={12}>
             <Grid container justifyContent="center" alignItems="center">
-              <Button
-                size="large"
-                variant="contained"
-                color="primary"
-                onClick={finalConfirm}
-              >
+              <Button size="large" variant="contained" color="primary" onClick={finalConfirm}>
                 Confirm Site Information
               </Button>
             </Grid>
           </Grid>
         ) : (
-          ""
+          ''
         )}
       </Grid>
     </LoadingWrapper>
@@ -279,11 +285,17 @@ EnrollNewSite.propTypes = {
   setEnrollNewSite: PropTypes.func,
   setSaveData: PropTypes.func,
   enrollNewSite: PropTypes.any,
+  editSite: PropTypes.bool,
+  code: PropTypes.string,
+  producerId: PropTypes.string,
+  year: PropTypes.any,
+  affiliation: PropTypes.string,
+  closeModal: PropTypes.func,
 };
 
 // Helper functions
 const LoadingWrapper = ({ children, loading }) => {
-  return loading ? "Loading" : <>{children}</>;
+  return loading ? 'Loading' : <>{children}</>;
 };
 
 LoadingWrapper.propTypes = {

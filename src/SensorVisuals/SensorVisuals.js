@@ -1,16 +1,16 @@
-import { Grid, TextField, Typography } from "@material-ui/core";
-import React, { useState, useEffect, useContext, useMemo } from "react";
-import PropTypes from "prop-types";
-import { onfarmAPI } from "../utils/api_secret";
-import { Context } from "../Store/Store";
-import { CustomLoader } from "../utils/CustomComponents";
-import YearsChips from "../utils/YearsChips";
-import { groupBy } from "../utils/constants";
-import FarmCodeCard from "./Components/FarmCodeCard";
-import { Search } from "@material-ui/icons";
-import { useHistory } from "react-router-dom";
-import { green, grey } from "@material-ui/core/colors";
-import moment from "moment-timezone";
+import { Grid, TextField, Typography } from '@material-ui/core';
+import React, { useState, useEffect, useContext, useMemo } from 'react';
+import PropTypes from 'prop-types';
+import { onfarmAPI } from '../utils/api_secret';
+import { Context } from '../Store/Store';
+import { CustomLoader } from '../utils/CustomComponents';
+import YearsChips from '../utils/YearsChips';
+import { groupBy } from '../utils/constants';
+import FarmCodeCard from './Components/FarmCodeCard';
+import { Search } from '@material-ui/icons';
+import { useHistory } from 'react-router-dom';
+import { green, grey } from '@material-ui/core/colors';
+import moment from 'moment-timezone';
 
 // const allYears
 
@@ -22,24 +22,23 @@ const SensorVisuals = (props) => {
   const { isDarkTheme, type } = props;
   const { location } = useHistory();
 
-  const displayTitle =
-    type === "watersensors" ? "Water Sensors" : "Stress Cams";
+  const displayTitle = type === 'watersensors' ? 'Water Sensors' : 'Stress Cams';
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [years, setYears] = useState([]);
   const [, setAffiliations] = useState([]);
   const [state] = useContext(Context);
-  const [codeSearchText, setCodeSearchText] = useState("");
+  const [codeSearchText, setCodeSearchText] = useState('');
 
   // Styles
   const deviceColors = {
     bothSubplots: green[800],
     oneSubplot: green[400],
     loading: grey[400],
-    default: "default",
+    default: 'default',
   };
 
-  const handleActiveYear = (year = "") => {
+  const handleActiveYear = (year = '') => {
     const newYears = years.map((yearInfo) => {
       return { active: year === yearInfo.year, year: yearInfo.year };
     });
@@ -49,23 +48,22 @@ const SensorVisuals = (props) => {
   };
 
   async function getCameraStatus(data, apiKey) {
-    let allCodes = "";
+    let allCodes = '';
     let allResponses = {};
     let responseArray = [];
 
     data.forEach((entry) => {
-      allCodes = allCodes.concat(entry.code.toLowerCase() + ",");
+      allCodes = allCodes.concat(entry.code.toLowerCase() + ',');
       allResponses[entry.code.toLowerCase()] = [];
       responseArray.push(entry);
     });
 
-    const waterSensorInstallEndpoint =
-      onfarmAPI + `/raw?table=wsensor_install&code=${allCodes}`;
+    const waterSensorInstallEndpoint = onfarmAPI + `/raw?table=wsensor_install&code=${allCodes}`;
 
     await fetch(waterSensorInstallEndpoint, {
       headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
       },
     }).then((res) => {
       res.json().then((resJson) => {
@@ -81,24 +79,21 @@ const SensorVisuals = (props) => {
               ...responseArray[index],
               code: key,
               color: deviceColors.default,
-              lastUpdated: "",
+              lastUpdated: '',
             };
           } else {
             let tz = moment.tz.guess();
 
             let lastUpdatedString;
             if (allResponses[key][allResponses[key].length - 1].time_begin) {
-              let deviceSessionBegin =
-                allResponses[key][allResponses[key].length - 1].time_begin;
+              let deviceSessionBegin = allResponses[key][allResponses[key].length - 1].time_begin;
               // get device session begin as user local time
-              let deviceDateLocal = moment
-                .tz(deviceSessionBegin, "Africa/Abidjan")
-                .tz(tz);
+              let deviceDateLocal = moment.tz(deviceSessionBegin, 'Africa/Abidjan').tz(tz);
 
               let deviceDateFormatted = deviceDateLocal.fromNow();
-              lastUpdatedString = "Form registered " + deviceDateFormatted;
+              lastUpdatedString = 'Form registered ' + deviceDateFormatted;
             } else {
-              lastUpdatedString = "No timestamp";
+              lastUpdatedString = 'No timestamp';
             }
 
             if (allResponses[key].length === 1) {
@@ -113,7 +108,7 @@ const SensorVisuals = (props) => {
               let foundSubplotTwo = false;
 
               allResponses[key].forEach((entry) => {
-                if ("subplot" in entry) {
+                if ('subplot' in entry) {
                   if (entry.subplot === 1) {
                     foundSubplotOne = true;
                   } else if (entry.subplot === 2) foundSubplotTwo = true;
@@ -138,7 +133,7 @@ const SensorVisuals = (props) => {
                     ...responseArray[index],
                     code: key,
                     color: deviceColors.default,
-                    lastUpdated: " ",
+                    lastUpdated: ' ',
                   };
                 }
               });
@@ -147,7 +142,7 @@ const SensorVisuals = (props) => {
         });
         setLoading(false);
         let responseWithFilter = responseArray.filter((r) => {
-          return r.protocols_enrolled !== "-999";
+          return r.protocols_enrolled !== '-999';
         });
         setData(responseWithFilter);
       });
@@ -161,14 +156,13 @@ const SensorVisuals = (props) => {
 
     const fetchData = async (apiKey) => {
       setLoading(true);
-      const endpoint =
-        type === "watersensors" ? datesURL : stressCamAPIEndpoint;
+      const endpoint = type === 'watersensors' ? datesURL : stressCamAPIEndpoint;
       if (apiKey) {
         try {
           const records = await fetch(endpoint, {
             headers: {
-              "Content-Type": "application/json",
-              "x-api-key": apiKey,
+              'Content-Type': 'application/json',
+              'x-api-key': apiKey,
             },
           });
           const response = await records.json();
@@ -178,14 +172,14 @@ const SensorVisuals = (props) => {
               return {
                 ...entry,
                 color: deviceColors.loading,
-                lastUpdated: "Fetching last update time",
+                lastUpdated: 'Fetching last update time',
               };
             });
 
             getCameraStatus(newData, state.userInfo.apikey);
           }
 
-          const recs = groupBy(response, "year");
+          const recs = groupBy(response, 'year');
           const currentYear = new Date().getFullYear().toString();
 
           const uniqueYears = Object.keys(recs)
@@ -211,9 +205,7 @@ const SensorVisuals = (props) => {
             });
           setYears(uniqueYears);
 
-          const uniqueAffiliations = Object.keys(
-            groupBy(response, "affiliation")
-          )
+          const uniqueAffiliations = Object.keys(groupBy(response, 'affiliation'))
             .sort((a, b) => b - a)
             .map((a, i) => {
               return {
@@ -224,7 +216,7 @@ const SensorVisuals = (props) => {
 
           setAffiliations(uniqueAffiliations);
         } catch (e) {
-          console.error("Error:" + e);
+          console.error('Error:' + e);
           setYears([]);
           setAffiliations([]);
         }
@@ -243,7 +235,7 @@ const SensorVisuals = (props) => {
       if (curr.active) {
         return curr.year;
       } else return acc;
-    }, "");
+    }, '');
 
     // const activeAffiliation = affiliations.reduce((acc, curr, index, array) => {
     //   if (curr.active) return curr.affiliation;
@@ -253,9 +245,7 @@ const SensorVisuals = (props) => {
       return data.filter((data) => data.year === activeYear);
     } else {
       return data.filter(
-        (data) =>
-          data.year === activeYear &&
-          data.code.includes(codeSearchText.toLowerCase())
+        (data) => data.year === activeYear && data.code.includes(codeSearchText.toLowerCase()),
       );
     }
   }, [years, data, codeSearchText]);
@@ -265,7 +255,7 @@ const SensorVisuals = (props) => {
       if (curr.active) {
         return curr.year;
       } else return acc;
-    }, "");
+    }, '');
   }, [years]);
 
   // const activeAffiliation = useMemo(() => {
@@ -321,11 +311,11 @@ const SensorVisuals = (props) => {
 };
 
 SensorVisuals.defaultProps = {
-  type: "watersensors",
+  type: 'watersensors',
 };
 
 SensorVisuals.propTypes = {
-  type: PropTypes.oneOf(["watersensors", "stresscams"]).isRequired,
+  type: PropTypes.oneOf(['watersensors', 'stresscams']).isRequired,
   isDarkTheme: PropTypes.bool.isRequired,
 };
 

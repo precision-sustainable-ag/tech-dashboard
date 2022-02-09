@@ -1,9 +1,9 @@
 // Dependency Imports
-import React, { useEffect } from "react";
-import { Route } from "react-router-dom";
-import PropTypes from "prop-types";
+import React, { useEffect } from 'react';
+import { Route } from 'react-router-dom';
+import PropTypes from 'prop-types';
 // Local Imports
-import { useAuth0 } from "../Auth/react-auth0-spa";
+import { useAuth0 } from '../Auth/react-auth0-spa';
 
 // Default Function
 const PrivateRoute = ({ component: Component, path, ...rest }) => {
@@ -21,8 +21,7 @@ const PrivateRoute = ({ component: Component, path, ...rest }) => {
     fn();
   }, [loading, isAuthenticated, loginWithRedirect, path]);
 
-  const render = (props) =>
-    isAuthenticated === true ? <Component {...props} /> : null;
+  const render = (props) => (isAuthenticated === true ? <Component {...props} /> : null);
 
   return <Route path={path} render={render} {...rest} />;
 };

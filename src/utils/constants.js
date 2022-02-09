@@ -1,28 +1,25 @@
 // Dependency Imports
-import Axios from "axios";
-import qs from "qs";
+import Axios from 'axios';
+import qs from 'qs';
 
 // Local Imports
-import { apiUsername, apiPassword, apiURL } from "./api_secret";
-import { apiCorsUrl } from "../Devices/hologramConstants";
+import { apiUsername, apiPassword, apiURL, onfarmAPI } from './api_secret';
+import { apiCorsUrl } from '../Devices/hologramConstants';
 
 // anyone with these roles are not supposed to view anything !
-export const bannedRoles = ["default", "Default", "none", ""];
+export const bannedRoles = ['default', 'Default', 'none', ''];
 
 /**
  * Fetch Kobo usernames and passwords
  * @param {{state: string, showAllStates: boolean}} User  - User
  * @returns {Promise} A promise object
  */
- export const fetchKoboPasswords = async ({ state, showAllStates }) => {
+export const fetchKoboPasswords = async ({ state, showAllStates }) => {
   let response = await fetch(`${apiURL}/api/kobo/passwords/${state}`, {
     headers: {
       Authorization:
-        "Basic " +
-        Buffer.from(apiUsername + ":" + apiPassword, "binary").toString(
-          "base64"
-        ),
-      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        'Basic ' + Buffer.from(apiUsername + ':' + apiPassword, 'binary').toString('base64'),
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
     },
   });
 
@@ -34,120 +31,120 @@ export const bannedRoles = ["default", "Default", "none", ""];
 
 export const checkIfDeviceHasNickname = async (deviceId) => {
   let data = await Axios({
-    method: "get",
+    method: 'get',
     url: `${apiURL}/api/hologram/device/nicknames/${deviceId}`,
 
     auth: {
       username: apiUsername,
       password: apiPassword,
     },
-    responseType: "json",
+    responseType: 'json',
   });
   return data;
 };
 
 export const apiCall = async (url, options, from) => {
   return await Axios({
-    method: "post",
+    method: 'post',
     url: apiCorsUrl + `/${from}`,
     data: qs.stringify({
       url: url,
     }),
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+      'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
     },
     auth: {
       username: apiUsername,
       password: apiPassword,
     },
-    responseType: "json",
+    responseType: 'json',
   });
 };
 
 export const debugAdmins = [
-  "rbandooni@live.in",
-  "rbandooni90@gmail.com",
-  "mikah@theeducationalgardenproject.org",
-  "mikahpinegar@gmail.com",
-  "bwdavis3@ncsu.edu",
-  "brianwdavis@gmail.com",
-  "saseehav@ncsu.edu",
-  "screberg@ncsu.edu",
+  'rbandooni@live.in',
+  'rbandooni90@gmail.com',
+  'mikah@theeducationalgardenproject.org',
+  'mikahpinegar@gmail.com',
+  'bwdavis3@ncsu.edu',
+  'brianwdavis@gmail.com',
+  'saseehav@ncsu.edu',
+  'screberg@ncsu.edu',
 ];
-export const azureDebugURL = apiURL + "/api/debug/azure";
-export const githubWebhookDebugURL = apiURL + "/api/debug/github";
+export const azureDebugURL = apiURL + '/api/debug/azure';
+export const githubWebhookDebugURL = apiURL + '/api/debug/github';
 
 export const statesHash = {
-  AL: "Alabama",
-  AK: "Alaska",
-  AS: "American Samoa",
-  AZ: "Arizona",
-  AR: "Arkansas",
-  CA: "California",
-  CO: "Colorado",
-  CT: "Connecticut",
-  DE: "Delaware",
-  DC: "District Of Columbia",
-  FM: "Federated States Of Micronesia",
-  FL: "Florida",
-  GA: "Georgia",
-  GU: "Guam",
-  HI: "Hawaii",
-  ID: "Idaho",
-  IL: "Illinois",
-  IN: "Indiana",
-  IA: "Iowa",
-  KS: "Kansas",
-  KY: "Kentucky",
-  LA: "Louisiana",
-  ME: "Maine",
-  MH: "Marshall Islands",
-  MD: "Maryland",
-  MA: "Massachusetts",
-  MI: "Michigan",
-  MN: "Minnesota",
-  MS: "Mississippi",
-  MO: "Missouri",
-  MT: "Montana",
-  NE: "Nebraska",
-  NV: "Nevada",
-  NH: "New Hampshire",
-  NJ: "New Jersey",
-  NM: "New Mexico",
-  NY: "New York",
-  NC: "North Carolina",
-  ND: "North Dakota",
-  MP: "Northern Mariana Islands",
-  OH: "Ohio",
-  OK: "Oklahoma",
-  OR: "Oregon",
-  PW: "Palau",
-  PA: "Pennsylvania",
-  PR: "Puerto Rico",
-  RI: "Rhode Island",
-  SC: "South Carolina",
-  SD: "South Dakota",
-  TN: "Tennessee",
-  TX: "Texas",
-  UT: "Utah",
-  VT: "Vermont",
-  VI: "Virgin Islands",
-  VA: "Virginia",
-  WA: "Washington",
-  WV: "West Virginia",
-  WI: "Wisconsin",
-  WY: "Wyoming",
+  AL: 'Alabama',
+  AK: 'Alaska',
+  AS: 'American Samoa',
+  AZ: 'Arizona',
+  AR: 'Arkansas',
+  CA: 'California',
+  CO: 'Colorado',
+  CT: 'Connecticut',
+  DE: 'Delaware',
+  DC: 'District Of Columbia',
+  FM: 'Federated States Of Micronesia',
+  FL: 'Florida',
+  GA: 'Georgia',
+  GU: 'Guam',
+  HI: 'Hawaii',
+  ID: 'Idaho',
+  IL: 'Illinois',
+  IN: 'Indiana',
+  IA: 'Iowa',
+  KS: 'Kansas',
+  KY: 'Kentucky',
+  LA: 'Louisiana',
+  ME: 'Maine',
+  MH: 'Marshall Islands',
+  MD: 'Maryland',
+  MA: 'Massachusetts',
+  MI: 'Michigan',
+  MN: 'Minnesota',
+  MS: 'Mississippi',
+  MO: 'Missouri',
+  MT: 'Montana',
+  NE: 'Nebraska',
+  NV: 'Nevada',
+  NH: 'New Hampshire',
+  NJ: 'New Jersey',
+  NM: 'New Mexico',
+  NY: 'New York',
+  NC: 'North Carolina',
+  ND: 'North Dakota',
+  MP: 'Northern Mariana Islands',
+  OH: 'Ohio',
+  OK: 'Oklahoma',
+  OR: 'Oregon',
+  PW: 'Palau',
+  PA: 'Pennsylvania',
+  PR: 'Puerto Rico',
+  RI: 'Rhode Island',
+  SC: 'South Carolina',
+  SD: 'South Dakota',
+  TN: 'Tennessee',
+  TX: 'Texas',
+  UT: 'Utah',
+  VT: 'Vermont',
+  VI: 'Virgin Islands',
+  VA: 'Virginia',
+  WA: 'Washington',
+  WV: 'West Virginia',
+  WI: 'Wisconsin',
+  WY: 'Wyoming',
 };
 
-export const fetchGrowerByLastName = async (query) => {
-  return await Axios({
-    url: `${apiURL}/api/retrieve/grower/lastname/${query}`,
-    method: "get",
-    auth: {
-      username: apiUsername,
-      password: apiPassword,
+export const fetchGrowerByLastName = async (query, apiKey) => {
+  const response = await fetch(`${onfarmAPI}/producers?search=${query}`, {
+    headers: {
+      'x-api-key': apiKey,
     },
   });
+
+  const data = await response.json();
+  return data;
 };
 
 // export const ucFirst = (str = "") => {
@@ -165,23 +162,23 @@ export const fetchGrowerByLastName = async (query) => {
 //     }, "");
 //   }
 // };
-export const ucFirst = (str = "") => {
+export const ucFirst = (str = '') => {
   if (str.length === 0) {
-    return "";
+    return '';
   } else {
     if (str.length > 0) return str.charAt(0).toUpperCase() + str.slice(1);
     else return str;
   }
 };
 export const format_AM_PM = (date) => {
-  if (Object.prototype.toString.call(date) !== "[object Date]") return date;
+  if (Object.prototype.toString.call(date) !== '[object Date]') return date;
   var hours = date.getHours();
   var minutes = date.getMinutes();
-  var ampm = hours >= 12 ? "PM" : "AM";
+  var ampm = hours >= 12 ? 'PM' : 'AM';
   hours = hours % 12;
   hours = hours ? hours : 12; // the hour '0' should be '12'
-  minutes = minutes < 10 ? "0" + minutes : minutes;
-  var strTime = hours + ":" + minutes + " " + ampm;
+  minutes = minutes < 10 ? '0' + minutes : minutes;
+  var strTime = hours + ':' + minutes + ' ' + ampm;
   return strTime;
 };
 

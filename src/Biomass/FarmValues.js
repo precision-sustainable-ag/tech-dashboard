@@ -1,17 +1,17 @@
-import { Grid, Snackbar } from "@material-ui/core";
-import React, { useState, useEffect, useContext, Fragment } from "react";
-import { Context } from "../Store/Store";
-import { onfarmAPI } from "../utils/api_secret";
+import { Grid, Snackbar } from '@material-ui/core';
+import React, { useState, useEffect, useContext, Fragment } from 'react';
+import { Context } from '../Store/Store';
+import { onfarmAPI } from '../utils/api_secret';
 import {
   BannedRoleMessage,
   CustomLoader,
   YearsAndAffiliations,
   CustomSwitch,
-} from "../utils/CustomComponents";
-import { uniqueYears } from "../utils/SharedFunctions";
-import MuiAlert from "@material-ui/lab/Alert";
+} from '../utils/CustomComponents';
+import { uniqueYears } from '../utils/SharedFunctions';
+import MuiAlert from '@material-ui/lab/Alert';
 
-import FarmValuesTable from "./FarmValuesTable";
+import FarmValuesTable from './FarmValuesTable';
 
 // Helper function
 function Alert(props) {
@@ -27,14 +27,12 @@ const FarmValues = () => {
   const [affiliations, setAffiliations] = useState([]);
   const [snackbarData, setSnackbarData] = useState({
     open: false,
-    text: "",
-    severity: "success",
+    text: '',
+    severity: 'success',
   });
 
   const activeFarmYear = () => {
-    const activeYear = farmYears
-      .filter((rec) => rec.active)
-      .map((rec) => rec.year);
+    const activeYear = farmYears.filter((rec) => rec.active).map((rec) => rec.year);
 
     return parseInt(activeYear);
   };
@@ -43,11 +41,11 @@ const FarmValues = () => {
       affiliations
         .filter((rec) => rec.active)
         .map((rec) => rec.affiliation)
-        .toString() || "all"
+        .toString() || 'all'
     );
   };
 
-  const handleActiveYear = (year = "") => {
+  const handleActiveYear = (year = '') => {
     const newFarmYears = farmYears.map((yearInfo) => {
       return { active: year === yearInfo.year, year: yearInfo.year };
     });
@@ -56,7 +54,7 @@ const FarmValues = () => {
     setFarmYears(sortedNewFarmYears);
   };
 
-  const handleActiveAffiliation = (affiliation = "all") => {
+  const handleActiveAffiliation = (affiliation = 'all') => {
     const newAffiliations = affiliations.map((rec) => {
       return {
         active: affiliation === rec.affiliation,
@@ -64,7 +62,7 @@ const FarmValues = () => {
       };
     });
     const sortedNewAffiliations = newAffiliations.sort((a, b) =>
-      b.affiliation < a.affiliation ? 1 : b.affiliation > a.affiliation ? -1 : 0
+      b.affiliation < a.affiliation ? 1 : b.affiliation > a.affiliation ? -1 : 0,
     );
 
     setAffiliations(sortedNewAffiliations);
@@ -73,7 +71,7 @@ const FarmValues = () => {
     const fetchData = async (apiKey) => {
       const response = await fetch(`${onfarmAPI}/biomass?subplot=separate`, {
         headers: {
-          "x-api-key": apiKey,
+          'x-api-key': apiKey,
         },
       });
 
@@ -87,18 +85,16 @@ const FarmValues = () => {
       fetchData(state.userInfo.apikey)
         .then((response) => {
           setFarmValues(response);
-          
+
           let allYears = response.map((record) => record.year);
           setFarmYears(uniqueYears(allYears));
 
           const affiliations = response
-            .filter(record => record.affiliation !== undefined)
+            .filter((record) => record.affiliation !== undefined)
             .reduce(
               (prev, curr) =>
-                !prev.includes(curr.affiliation)
-                  ? [...prev, curr.affiliation]
-                  : [...prev],
-              []
+                !prev.includes(curr.affiliation) ? [...prev, curr.affiliation] : [...prev],
+              [],
             )
             .map((aff) => {
               return {
@@ -107,11 +103,7 @@ const FarmValues = () => {
               };
             });
           const sortedAffiliations = affiliations.sort((a, b) =>
-            b.affiliation < a.affiliation
-              ? 1
-              : b.affiliation > a.affiliation
-              ? -1
-              : 0
+            b.affiliation < a.affiliation ? 1 : b.affiliation > a.affiliation ? -1 : 0,
           );
           setAffiliations(sortedAffiliations);
         })
@@ -123,18 +115,18 @@ const FarmValues = () => {
     }
   }, [state.userInfo.apikey, farmValues.length]);
 
-  const [units, setUnits] = useState("kg/ha");
+  const [units, setUnits] = useState('kg/ha');
 
   const changeSwitchUnits = (e) => {
     if (e.target.checked) {
-      setUnits("lbs/ac");
+      setUnits('lbs/ac');
     } else {
-      setUnits("kg/ha");
+      setUnits('kg/ha');
     }
   };
 
   return (
-    <Grid container spacing={3} style={{ maxHeight: "90vh" }}>
+    <Grid container spacing={3} style={{ maxHeight: '90vh' }}>
       {fetching ? (
         <CustomLoader />
       ) : farmValues.length === 0 ? (
@@ -145,14 +137,12 @@ const FarmValues = () => {
         <Fragment>
           <Snackbar
             anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "center",
+              vertical: 'bottom',
+              horizontal: 'center',
             }}
             open={snackbarData.open}
             autoHideDuration={10000}
-            onClose={() =>
-              setSnackbarData({ ...snackbarData, open: !snackbarData.open })
-            }
+            onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
           >
             <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
           </Snackbar>
@@ -160,7 +150,7 @@ const FarmValues = () => {
           <Grid item lg={9} sm={12}>
             <Grid container spacing={3}>
               <YearsAndAffiliations
-                title={"Farm Values"}
+                title={'Farm Values'}
                 years={farmYears}
                 handleActiveYear={handleActiveYear}
                 affiliations={affiliations}
@@ -179,10 +169,7 @@ const FarmValues = () => {
             component="label"
           >
             <Grid item>kg/ha</Grid>
-            <CustomSwitch
-              checked={units === "lbs/ac"}
-              onChange={changeSwitchUnits}
-            />
+            <CustomSwitch checked={units === 'lbs/ac'} onChange={changeSwitchUnits} />
             <Grid item>lbs/ac</Grid>
           </Grid>
           {/* Farm Values Table */}
@@ -191,7 +178,7 @@ const FarmValues = () => {
               units={units}
               data={farmValues}
               year={activeFarmYear() || currentYear}
-              affiliation={activeAffiliation() || "all"}
+              affiliation={activeAffiliation() || 'all'}
               setSnackbarData={setSnackbarData}
             />
           </Grid>
@@ -202,4 +189,3 @@ const FarmValues = () => {
 };
 
 export default FarmValues;
-
