@@ -8,7 +8,7 @@ const EditableField = (props) => {
   const handleEntryEdit = (e) => {
     let newObj = editedForm;
 
-    if (iterator_item === false) {
+    if (entry_to_iterate === false) {
       editedForm[entry] = e.target.value;
       setEditedForm({ ...newObj });
     } else {
