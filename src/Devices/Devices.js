@@ -32,6 +32,7 @@ const DevicesComponent = ({
   const [deviceTags, setDeviceTags] = useState([]);
   const [deviceSearchText, setDeviceSearchText] = useState('');
   const [activeTag, setActiveTag] = useState('All');
+  const [refreshDevices, setRefreshDevices] = useState(false);
   const history = useHistory();
 
   useEffect(() => {
@@ -79,6 +80,11 @@ const DevicesComponent = ({
               .filter((rec) => parseInt(rec.device_id) === parseInt(device.id))
               .map((r) => r.nickname)
               .toString() || null,
+          nicknameDeviceID:
+            nicknameRecords.data
+              .filter((rec) => parseInt(rec.device_id) === parseInt(device.id))
+              .map((r) => r.device_id)
+              .toString() || null,
         };
       });
 
@@ -86,7 +92,7 @@ const DevicesComponent = ({
     };
 
     initNicknamesFetch();
-  }, [validDevices]);
+  }, [validDevices, refreshDevices]);
 
   useEffect(() => {
     if (deviceSearchText) {
@@ -223,6 +229,7 @@ const DevicesComponent = ({
                       deviceData={device}
                       lastSession={true}
                       activeTag={activeTag}
+                      setRefreshDevices={setRefreshDevices}
                     />
                   </Card>
                 </Grid>
@@ -239,6 +246,7 @@ const DevicesComponent = ({
                       key={device.id}
                       deviceData={device}
                       lastSession={false}
+                      setRefreshDevices={setRefreshDevices}
                     />
                   </Card>
                 </Grid>
