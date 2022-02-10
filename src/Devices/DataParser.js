@@ -39,7 +39,7 @@ const DataParser = (props) => {
   const [dateStringFormatted, setDateStringFormatted] = useState('');
   let device = props.deviceData;
   device.for = props.for;
-  const { lastSession } = props;
+  const { lastSession, setRefreshDevices } = props;
   // console.log("deviceData", props.deviceData);
   const setDeviceState = (deviceId) => {
     setDeviceId(deviceId);
@@ -141,6 +141,7 @@ const DataParser = (props) => {
     }
   };
   const publishDeviceNickname = () => {
+    setRefreshDevices(true);
     updateDeviceNickname()
       .then((r) => {
         if (r.data.status === 'success') {
@@ -164,7 +165,7 @@ const DataParser = (props) => {
       type = 'stresscam';
     }
     return Axios({
-      method: device.nickname ? 'put' : 'post',
+      method: device.nicknameDeviceID ? 'put' : 'post',
       url: `${apiURL}/api/hologram/device/nicknames`,
       auth: {
         username: apiUsername,
@@ -332,4 +333,5 @@ DataParser.propTypes = {
   lastSession: PropTypes.any,
   deviceData: PropTypes.any,
   for: PropTypes.string,
+  setRefreshDevices: PropTypes.func,
 };
