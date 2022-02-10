@@ -10,15 +10,15 @@ const _ = require('lodash');
 
 const tableHeaderOptions = [
   {
-    title: 'Code',
-    field: 'code',
-    type: 'string',
-    align: 'justify',
-  },
-  {
     title: 'Year',
     field: 'year',
     type: 'numeric',
+    align: 'justify',
+  },
+  {
+    title: 'Code',
+    field: 'code',
+    type: 'string',
     align: 'justify',
   },
   {
@@ -65,8 +65,8 @@ const tableHeaderOptions = [
     align: 'justify',
   },
   {
-    title: 'Crucible Wt',
-    field: 'crucible_wt',
+    title: 'Dry Biomass Wt',
+    field: 'dry_biomass_wt',
     type: 'string',
     align: 'justify',
   },
@@ -77,32 +77,14 @@ const tableHeaderOptions = [
     align: 'justify',
   },
   {
-    title: 'Bag Weight at 65',
-    field: 'tot_bwt_at_65',
-    type: 'string',
-    align: 'justify',
-  },
-  {
-    title: 'Bag Weight at 550',
-    field: 'tot_bwt_at_550',
-    type: 'string',
-    align: 'justify',
-  },
-  {
-    title: 'Percent C',
-    field: 'percent_c',
-    type: 'string',
-    align: 'justify',
-  },
-  {
     title: 'Percent N',
     field: 'percent_n',
     type: 'string',
     align: 'justify',
   },
   {
-    title: 'Dry Biomass Wt',
-    field: 'dry_biomass_wt',
+    title: 'Percent C',
+    field: 'percent_c',
     type: 'string',
     align: 'justify',
   },
