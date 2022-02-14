@@ -141,7 +141,6 @@ const DataParser = (props) => {
     }
   };
   const publishDeviceNickname = () => {
-    setRefreshDevices((status) => !status);
     updateDeviceNickname()
       .then((r) => {
         if (r.data.status === 'success') {
@@ -149,6 +148,7 @@ const DataParser = (props) => {
           device['nickname'] = deviceActualName;
           setIsDeviceNameBeingEdited(false);
           setShowEditBtn(false);
+          setRefreshDevices((status) => !status);
         }
       })
       .catch((e) => {
