@@ -19,22 +19,6 @@ const StressCamVisuals = (/* props */) => {
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
-        /* switch (newValue) {
-          case "1":
-            let rep1CoverData = originalData.filter(ele => ele.rep === 1 && ele.trt === 'cover');
-            rep1CoverData.length > 0 ? setData(rep1CoverData) : setData({});
-            break;
-          case "2":
-            let rep2CoverData = originalData.filter(ele => ele.rep === 2 && ele.trt === 'cover');
-            rep2CoverData.length > 0 ? setData(rep2CoverData) : setData({});
-            break;
-          case "3":
-            let rep1BareData = originalData.filter(ele => ele.rep === 1 && ele.trt === 'bare');
-            rep1BareData.length > 0 ? setData(rep1BareData) : setData({});
-            break;
-          default:
-            break;
-        } */
       };
 
     return (
@@ -180,24 +164,6 @@ const StressCamVisuals = (/* props */) => {
                     </Grid>
                 }
             </Grid>
-            {/* <Grid item xs={12}>
-            {data ? (
-                Array.isArray(data) ? (
-                    <Grid item>
-                        <CPUHealthChart data={data} />
-                        <SDSpaceChart data={data}/>
-                        <ProbabilitiesChart data={data} />
-                    </Grid>
-                ) : (
-                    <Grid item>
-                        Sorry, No data found!
-                    </Grid>
-                    )
-                ) 
-                : 
-                <>Loading ... </>
-            }
-            </Grid> */}
         </Grid>
     );
 };
