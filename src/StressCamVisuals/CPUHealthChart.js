@@ -9,7 +9,8 @@ const CPUHealthChart = (props) => {
     const cpuChartData = useMemo(() => {
         return data.map((record) => {
           return [
-            new Date(record.timestamp_utc.split(" ").join("T")).getTime(),
+            // new Date(record.timestamp_utc.split(" ").join("T")).getTime(),
+            new Date(record.timestamp_local.split(" ").slice(0,-1).join("T")).getTime(),
             record.cpu_temp,
           ];
         });
@@ -17,7 +18,8 @@ const CPUHealthChart = (props) => {
 
     const chartOptions = {
         chart: {
-            type: 'spline'
+            type: "scatter",
+            zoomType: "xy",
         },
         title: {
             text: 'CPU Health'
