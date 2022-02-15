@@ -72,7 +72,6 @@ import {
 import { apiCorsUrl, APIURL } from "./Devices/hologramConstants";
 import QueryString from "qs";
 import TaskTracker from "./TaskTracker/TaskTracker";
-import TaskTracker1 from "./TaskTracker/TaskTracker1";
 
 
 
@@ -465,11 +464,6 @@ function App() {
                 <PrivateRoute
                   path={`/task-tracker`}
                   component={TaskTracker}
-                  exact
-                />
-                <PrivateRoute
-                  path={`/task-tracker1`}
-                  component={TaskTracker1}
                   exact
                 />
                 <Route path="*">

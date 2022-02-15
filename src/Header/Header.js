@@ -543,6 +543,20 @@ export default function Header(props) {
             </ListItemIcon>
             <ListItemText primary="Forms" />
           </ListItem>
+
+          <ListItem
+            onClick={() => setOpen(false)}
+            button
+            key="TaskTracker"
+            component={Link}
+            to="/task-tracker"
+          >
+            <ListItemIcon>
+              <Storage />
+            </ListItemIcon>
+            <ListItemText primary="Task Tracker" />
+          </ListItem>
+
         </List>
       </Drawer>
     </div>
