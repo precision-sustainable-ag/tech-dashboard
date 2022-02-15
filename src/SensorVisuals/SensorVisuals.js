@@ -16,7 +16,8 @@ import moment from "moment-timezone";
 
 const datesURL = onfarmAPI + `/raw?table=site_information`;
 
-const stressCamAPIEndpoint = `https://weather.aesl.ces.uga.edu/onfarm/raw?table=stresscam_ratings&output=json`;
+// const stressCamAPIEndpoint = `https://weather.aesl.ces.uga.edu/onfarm/raw?table=stresscam_ratings&output=json`;
+const stressCamAPIEndpoint = `https://weather.aesl.ces.uga.edu/onfarm/raw?table=site_information&output=json`;
 
 const SensorVisuals = (props) => {
   const { isDarkTheme, type } = props;
@@ -191,7 +192,7 @@ const SensorVisuals = (props) => {
               getCameraStatus(newData, state.userInfo.apikey);
             } else {
               setLoading(false);
-              let resp = response.splice(10);
+              // response.splice(100);
               let responseWithFilter = response.filter((r) => {
                 return r.protocols_enrolled !== "-999";
               });
@@ -325,6 +326,7 @@ const SensorVisuals = (props) => {
               data={data}
               isDarkTheme={isDarkTheme}
               type={type}
+              apiKey={state.userInfo.apikey}
             />
             {/* <div>{data.code}</div> */}
           </Grid>

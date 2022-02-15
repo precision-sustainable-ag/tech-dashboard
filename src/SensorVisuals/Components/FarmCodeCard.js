@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import { grey } from "@material-ui/core/colors";
 
 const FarmCodeCard = (props) => {
-  let { code, year, lastUpdated, data, color, isDarkTheme, type } = props;
+  let { code, year, lastUpdated, data, color, isDarkTheme, type, apiKey } = props;
   const theme = useTheme();
 
   if(color === "default")
@@ -29,7 +29,7 @@ const FarmCodeCard = (props) => {
           style={{ height: "75px" }}
           to={{
             pathname: type === 'watersensors' ? `/sensor-visuals/${year}/${code.toUpperCase()}` : `/stress-cam-visuals/${year}/${code.toUpperCase()}`,
-            state: { data: data },
+            state: { data: type === 'watersensors' ? data : { code: code, apiKey: apiKey } },
           }}
         >
           <CardContent style={{ height: "75px" }}>
@@ -67,7 +67,8 @@ FarmCodeCard.propTypes = {
   data: PropTypes.any,
   color: PropTypes.any,
   isDarkTheme: PropTypes.bool,
-  type: PropTypes.string
+  type: PropTypes.string,
+  apiKey: PropTypes.string
 };
 
 export default FarmCodeCard;

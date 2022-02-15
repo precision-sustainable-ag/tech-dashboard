@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, Box, Tab, Typography } from "@material-ui/core";
 import { TabList, TabContext } from "@material-ui/lab";
 import { useHistory } from "react-router-dom";
@@ -11,15 +11,42 @@ const StressCamVisuals = (/* props */) => {
     const history = useHistory();
     const originalData = history.location.state.data;
     const [value, setValue] = useState("1");
-    // const [data, setData] = useState(history.location.state.data);
-    let rep1CoverData = originalData.filter(ele => ele.rep === 1 && ele.trt === 'cover');
-    let rep2CoverData = originalData.filter(ele => ele.rep === 2 && ele.trt === 'cover');
-    let rep1BareData = originalData.filter(ele => ele.rep === 1 && ele.trt === 'bare');
-    let rep2BareData = originalData.filter(ele => ele.rep === 2 && ele.trt === 'bare');
+    const [stressCamData, setStressCamData] = useState([]);    
+
+    const getStressCamData = async () => {
+        const endpoint = `https://weather.aesl.ces.uga.edu/onfarm/raw?table=stresscam_ratings&output=json&code=`+originalData.code.toUpperCase();
+        if (originalData.apiKey) {
+            try {
+            const records = await fetch(endpoint, {
+                headers: {
+                "Content-Type": "application/json",
+                "x-api-key": originalData.apiKey,
+                },
+            });
+            let response = await records.json();
+            let responseWithFilter = response.filter((r) => {
+                return r.protocols_enrolled !== "-999";
+            });
+            setStressCamData(responseWithFilter);
+            } catch (e) {
+            
+            setStressCamData([]);
+            }
+        }
+    };
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
-      };
+    };
+
+    useEffect(() => {
+        getStressCamData();
+    },[]);
+
+    let rep1CoverData = stressCamData.filter(ele => ele.rep === 1 && ele.trt === 'cover');
+    let rep2CoverData = stressCamData.filter(ele => ele.rep === 2 && ele.trt === 'cover');
+    let rep1BareData = stressCamData.filter(ele => ele.rep === 1 && ele.trt === 'bare');
+    let rep2BareData = stressCamData.filter(ele => ele.rep === 2 && ele.trt === 'bare');
 
     return (
         <Grid container spacing={3}>
