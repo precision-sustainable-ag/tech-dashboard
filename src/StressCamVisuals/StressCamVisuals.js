@@ -43,10 +43,10 @@ const StressCamVisuals = (/* props */) => {
         getStressCamData();
     },[]);
 
-    let rep1CoverData = stressCamData.filter(ele => ele.rep === 1 && ele.trt === 'cover');
-    let rep2CoverData = stressCamData.filter(ele => ele.rep === 2 && ele.trt === 'cover');
-    let rep1BareData = stressCamData.filter(ele => ele.rep === 1 && ele.trt === 'bare');
-    let rep2BareData = stressCamData.filter(ele => ele.rep === 2 && ele.trt === 'bare');
+    let rep1CoverData = stressCamData.filter(ele => ele.subplot === 1 && ele.treatment === 'cover');
+    let rep2CoverData = stressCamData.filter(ele => ele.subplot === 2 && ele.treatment === 'cover');
+    let rep1BareData = stressCamData.filter(ele => ele.subplot === 1 && ele.treatment === 'bare');
+    let rep2BareData = stressCamData.filter(ele => ele.subplot === 2 && ele.treatment === 'bare');
 
     return (
         <Grid container spacing={3}>
