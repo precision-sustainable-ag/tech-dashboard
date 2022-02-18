@@ -18,11 +18,10 @@ const TaskTrackerCard = (props) => {
     let affiliation = props.affiliation;
     let code = props.code;
     let time = props.time;
-
-    if (affiliation=="all") {
-        affiliation="";
-    }
     let complete_col = props.complete_col;
+    if (affiliation=="all") {
+      affiliation="";
+    }
     if(code=="all") {
       code="";
     }
@@ -32,45 +31,39 @@ const TaskTrackerCard = (props) => {
     
     useEffect(() => {      
       const fetchData = async (apiKey) => {
-        // console.log('http://localhost:1000/onfarm/raw?table='+table+'&complete_count='+complete_col+'&affiliation='+affiliation+'&year='+year+'&code='+code);
           const response = await fetch(`${onfarmAPI}/raw?table=${table}&complete_count=${complete_col}&affiliation=${affiliation}&year=${year}&code=${code}&time=${time}`, {
               headers: {
             "x-api-key": apiKey,
           },
         });
-  
         const data = await response.json();
         return data;
       };
 
       if (state.userInfo.apikey) {
-
-      //   setFetching(true);
         fetchData(state.userInfo.apikey)
           .then((response) => {
             const map = new Map();
-              for(let i=0;i<response.length;i++){
-                
-                if(map.has(response[i].code)){
-                  
-                  response[i].bgcolor='yellow';
-                  response[i].col='black';
-                  response.splice(map.get(response[i].code),1);
-                  i--;
+              for(let item=0;item<response.length;item++){
+                if(map.has(response[item].code)){
+                  response[item].bgcolor='yellow';
+                  response[item].col='black';
+                  response.splice(map.get(response[item].code),1);
+                  item--;
                 }
                 else{
-                  if(response[i].flag=='1'){
-                    response[i].bgcolor='green';
-                    response[i].col='white';
+                  if(response[item].flag=='1'){
+                    response[item].bgcolor='green';
+                    response[item].col='white';
                   }
-                  else if(response[i].flag=='0'){
-                    response[i].bgcolor='gray';
-                    response[i].col='black';
+                  else if(response[item].flag=='0'){
+                    response[item].bgcolor='gray';
+                    response[item].col='black';
                   }
-                  else if(response[i].flag=='-1'){
-                    response.splice(i,1);
+                  else if(response[item].flag=='-1'){
+                    response.splice(item,1);
                   }
-                  map.set(response[i].code, i);
+                  map.set(response[item].code, item);
                 }
               }
               map.clear();
@@ -110,7 +103,7 @@ const TaskTrackerCard = (props) => {
                 ? codes.map((siteinfo, index) => (
                 <Grid item spacing={3} key={`newSites-${index}`}>
                     <Chip
-                        label={siteinfo.code} color="primary" size="small" style={{backgroundColor:siteinfo.bgcolor, color:siteinfo.col}}
+                        label={siteinfo.code} size="small" style={{backgroundColor:siteinfo.bgcolor, color:siteinfo.col}}
                         >
                         <Typography variant="body2">{siteinfo.code}</Typography>
                     </Chip>
@@ -120,12 +113,10 @@ const TaskTrackerCard = (props) => {
             </Grid>
           </Grid>
         </CardContent>
-
         </>
     );
   };
 
-  
 TaskTrackerCard.propTypes = {
 title: PropTypes.string,
 table: PropTypes.string,

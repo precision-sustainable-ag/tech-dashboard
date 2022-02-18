@@ -1,4 +1,4 @@
-import { Grid, Snackbar, Card, Typography } from "@material-ui/core";
+import { Grid, Snackbar, Card, Typography, Chip } from "@material-ui/core";
 import React, { useState, useEffect, useContext, Fragment } from "react";
 import { Context } from "../Store/Store";
 import { onfarmAPI } from "../utils/api_secret";
@@ -17,12 +17,51 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
+// Data for the respective cards
+let siteEnrollmentJson = [
+  {title:"Address", table:"site_information", complete_col:"address", time:""},
+  {title:"Site Co-ordinates", table:"site_information", complete_col:"latitude", time:""},
+  {title:"GPS Co-ordinates", table:"gps_corners", complete_col:"latitude", time:""}
+];
 
-const deviceCardStyle = {
-    height: "210px",
-  };
-  
-// const currentYear = new Date().getFullYear();
+let biomassJson = [
+  {title:"Fresh weight", table:"biomass_in_field", complete_col:"fresh_wt_a", time:""},
+  {title:"Legumes", table:"biomass_in_field", complete_col:"legumes_40", time:""},
+  {title:"Planting date", table:"farm_history", complete_col:"cc_planting_date", time:""},
+  {title:"Termination date", table:"farm_history", complete_col:"cc_termination_date", time:""}
+];
+
+let decompBagJson = [
+  {title:"T0 Decomp bag empty weights", table:"decomp_biomass_fresh", complete_col:"empty_bag_wt", time:"0"},
+  {title:"T0 Decomp bag fresh weights", table:"decomp_biomass_fresh", complete_col:"fresh_biomass_wt", time:"0"},
+  {title:"T0 Decomp bag recovery date", table:"decomp_biomass_dry", complete_col:"recovery_date", time:"0"},
+  {title:"T0 Decomp bag dry weights", table:"decomp_biomass_dry", complete_col:"dry_biomass_wt", time:"0"},
+  {title:"T1 Decomp bag empty weights", table:"decomp_biomass_fresh", complete_col:"empty_bag_wt", time:"1"},
+  {title:"T1 Decomp bag fresh weights", table:"decomp_biomass_fresh", complete_col:"fresh_biomass_wt", time:"1"},
+  {title:"T1 Decomp bag recovery date", table:"decomp_biomass_dry", complete_col:"recovery_date", time:"1"},
+  {title:"T1 Decomp bag dry weights", table:"decomp_biomass_dry", complete_col:"dry_biomass_wt", time:"1"},
+  {title:"T2 Decomp bag empty weights", table:"decomp_biomass_fresh", complete_col:"empty_bag_wt", time:"2"},
+  {title:"T2 Decomp bag fresh weights", table:"decomp_biomass_fresh", complete_col:"fresh_biomass_wt", time:"2"},
+  {title:"T2 Decomp bag recovery date", table:"decomp_biomass_dry", complete_col:"recovery_date", time:"2"},
+  {title:"T2 Decomp bag dry weights", table:"decomp_biomass_dry", complete_col:"dry_biomass_wt", time:"2"},
+  {title:"T3 Decomp bag empty weights", table:"decomp_biomass_fresh", complete_col:"empty_bag_wt", time:"3"},
+  {title:"T3 Decomp bag fresh weights", table:"decomp_biomass_fresh", complete_col:"fresh_biomass_wt", time:"3"},
+  {title:"T3 Decomp bag recovery date", table:"decomp_biomass_dry", complete_col:"recovery_date", time:"3"},
+  {title:"T3 Decomp bag dry weights", table:"decomp_biomass_dry", complete_col:"dry_biomass_wt", time:"3"},
+  {title:"T4 Decomp bag empty weights", table:"decomp_biomass_fresh", complete_col:"empty_bag_wt", time:"4"},
+  {title:"T4 Decomp bag fresh weights", table:"decomp_biomass_fresh", complete_col:"fresh_biomass_wt", time:"4"},
+  {title:"T4 Decomp bag recovery date", table:"decomp_biomass_dry", complete_col:"recovery_date", time:"4"},
+  {title:"T4 Decomp bag dry weights", table:"decomp_biomass_dry", complete_col:"dry_biomass_wt", time:"4"},
+  {title:"T5 Decomp bag empty weights", table:"decomp_biomass_fresh", complete_col:"empty_bag_wt", time:"5"},
+  {title:"T5 Decomp bag fresh weights", table:"decomp_biomass_fresh", complete_col:"fresh_biomass_wt", time:"5"},
+  {title:"T5 Decomp bag recovery date", table:"decomp_biomass_dry", complete_col:"recovery_date", time:"5"},
+  {title:"T5 Decomp bag dry weights", table:"decomp_biomass_dry", complete_col:"dry_biomass_wt", time:"5"}
+];
+
+let sensorJson = [
+  {title:"Bare Node serial no", table:"wsensor_install", complete_col:"bare_node_serial_no", time:""},
+  {title:"CashCrop Planting", table:"farm_history", complete_col:"cash_crop_planting_date", time:""}
+];
 const TaskTracker = () => {
   const [state] = useContext(Context);
   const [fetching, setFetching] = useState(true);
@@ -160,13 +199,11 @@ const TaskTracker = () => {
       const data = await response.json();
       return data;
     };
-    // if (activeAffiliation()=='all') return false;
 
     if (state.userInfo.apikey) {
       setFetching(true);
       fetchData(state.userInfo.apikey)
         .then((response) => {
-
           const codes = response
             .filter(record => record.code !== undefined)
             .reduce(
@@ -254,334 +291,138 @@ const TaskTracker = () => {
           >
 
           </Grid>
-          {/* Farm Values Table */}
+          {/* Tracker cards */}
           <Grid container xs={12} spacing={3}>
+            {/* Site Enrollment */}
             <Grid item xs={12}>
                 <Typography variant="h5">Site Enrollment</Typography>
-              </Grid>
-              <Grid item xs={12} md={4} lg={3} sm={6} spacing={3}>
+            </Grid>
+            {
+              siteEnrollmentJson && siteEnrollmentJson.length>0 
+              ? siteEnrollmentJson.map((siteData, index)=>(
+                <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
                 <Card
-                style={deviceCardStyle}
                 variant="elevation"
                 elevation={3}
                 className="deviceDataWrapper"
                 >
                 <TaskTrackerCard
-                    title={"Address"}
-                    table={"site_information"}
+                    title={siteData.title}
+                    table={siteData.table}
                     year={activeFarmYear()}
                     affiliation={activeAffiliation() || ""}
                     code={activeCode() || ""}
                     list_code={codes}
-                    complete_col={"address"}
-                    time={""}
+                    complete_col={siteData.complete_col}
+                    time={siteData.time}
                 />
                 </Card> 
             </Grid>
-            <Grid item xs={12} md={4} lg={3} sm={6} spacing={3}>
-                <Card
-                style={deviceCardStyle}
-                variant="elevation"
-                elevation={3}
-                className="deviceDataWrapper"
-                >
-                <TaskTrackerCard
-                    title={"County"}
-                    table={"site_information"}
-                    year={activeFarmYear()}
-                    affiliation={activeAffiliation() || ""}
-                    code={activeCode() || ""}
-                    list_code={codes}
-                    complete_col={"county"}
-                    time={""}
-                />
-                </Card> 
-            </Grid>
+              ))
+            :""}
+            {/* Biomass */}
             <Grid item xs={12}>
                 <Typography variant="h5">Biomass</Typography>
-              </Grid>
-              <Grid item xs={12} md={4} lg={3} sm={6} spacing={3}>
+            </Grid>
+            {
+              biomassJson && biomassJson.length>0 
+              ? biomassJson.map((biomassData, index)=>(
+                <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
                 <Card
-                style={deviceCardStyle}
                 variant="elevation"
                 elevation={3}
                 className="deviceDataWrapper"
                 >
                 <TaskTrackerCard
-                    title={"Fresh weight"}
-                    table={"biomass_in_field"}
+                    title={biomassData.title}
+                    table={biomassData.table}
                     year={activeFarmYear()}
                     affiliation={activeAffiliation() || ""}
                     code={activeCode() || ""}
                     list_code={codes}
-                    complete_col={"fresh_wt_a"}
-                    time={""}
+                    complete_col={biomassData.complete_col}
+                    time={biomassData.time}
                 />
                 </Card> 
             </Grid>
-            <Grid item xs={12} md={4} lg={3} sm={6} spacing={3}>
-                <Card
-                style={deviceCardStyle}
-                variant="elevation"
-                elevation={3}
-                className="deviceDataWrapper"
-                >
-                <TaskTrackerCard
-                    title={"Legumes"}
-                    table={"biomass_in_field"}
-                    year={activeFarmYear()}
-                    affiliation={activeAffiliation() || ""}
-                    code={activeCode() || ""}
-                    list_code={codes}
-                    complete_col={"legumes_40"}
-                    time={""}
-                />
-                </Card> 
-            </Grid>
+              ))
+            :""}
+            {/* DecompBag */}
             <Grid item xs={12}>
                 <Typography variant="h5">Decomp Bag</Typography>
-              </Grid>
-              <Grid item xs={12} md={4} lg={3} sm={6} spacing={3}>
+            </Grid>
+            {
+              decompBagJson && decompBagJson.length>0 
+              ? decompBagJson.map((decompData, index)=>(
+                <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
                 <Card
-                style={deviceCardStyle}
                 variant="elevation"
                 elevation={3}
                 className="deviceDataWrapper"
                 >
                 <TaskTrackerCard
-                    title={"T0 Decomp bag dry weights"}
-                    table={"decomp_biomass_dry"}
+                    title={decompData.title}
+                    table={decompData.table}
                     year={activeFarmYear()}
                     affiliation={activeAffiliation() || ""}
                     code={activeCode() || ""}
                     list_code={codes}
-                    complete_col={"dry_biomass_wt"}
-                    time={"0"}
+                    complete_col={decompData.complete_col}
+                    time={decompData.time}
                 />
                 </Card> 
             </Grid>
-            <Grid item xs={12} md={4} lg={3} sm={6} spacing={3}>
-                <Card
-                style={deviceCardStyle}
-                variant="elevation"
-                elevation={3}
-                className="deviceDataWrapper"
-                >
-                <TaskTrackerCard
-                    title={"T1 Decomp bag dry weights"}
-                    table={"decomp_biomass_dry"}
-                    year={activeFarmYear()}
-                    affiliation={activeAffiliation() || ""}
-                    code={activeCode() || ""}
-                    list_code={codes}
-                    complete_col={"dry_biomass_wt"}
-                    time={"1"}
-                />
-                </Card> 
-            </Grid>
-            <Grid item xs={12} md={4} lg={3} sm={6} spacing={3}>
-                <Card
-                style={deviceCardStyle}
-                variant="elevation"
-                elevation={3}
-                className="deviceDataWrapper"
-                >
-                <TaskTrackerCard
-                    title={"T2 Decomp bag dry weights"}
-                    table={"decomp_biomass_dry"}
-                    year={activeFarmYear()}
-                    affiliation={activeAffiliation() || ""}
-                    code={activeCode() || ""}
-                    list_code={codes}
-                    complete_col={"dry_biomass_wt"}
-                    time={"2"}
-                />
-                </Card> 
-            </Grid>
-            <Grid item xs={12} md={4} lg={3} sm={6} spacing={3}>
-                <Card
-                style={deviceCardStyle}
-                variant="elevation"
-                elevation={3}
-                className="deviceDataWrapper"
-                >
-                <TaskTrackerCard
-                    title={"T3 Decomp bag dry weights"}
-                    table={"decomp_biomass_dry"}
-                    year={activeFarmYear()}
-                    affiliation={activeAffiliation() || ""}
-                    code={activeCode() || ""}
-                    list_code={codes}
-                    complete_col={"dry_biomass_wt"}
-                    time={"3"}
-                />
-                </Card> 
-            </Grid>
-            <Grid item xs={12} md={4} lg={3} sm={6} spacing={3}>
-                <Card
-                style={deviceCardStyle}
-                variant="elevation"
-                elevation={3}
-                className="deviceDataWrapper"
-                >
-                <TaskTrackerCard
-                    title={"T4 Decomp bag dry weights"}
-                    table={"decomp_biomass_dry"}
-                    year={activeFarmYear()}
-                    affiliation={activeAffiliation() || ""}
-                    code={activeCode() || ""}
-                    list_code={codes}
-                    complete_col={"dry_biomass_wt"}
-                    time={"4"}
-                />
-                </Card> 
-            </Grid>
-            <Grid item xs={12} md={4} lg={3} sm={6} spacing={3}>
-                <Card
-                style={deviceCardStyle}
-                variant="elevation"
-                elevation={3}
-                className="deviceDataWrapper"
-                >
-                <TaskTrackerCard
-                    title={"T5 Decomp bag dry weights"}
-                    table={"decomp_biomass_dry"}
-                    year={activeFarmYear()}
-                    affiliation={activeAffiliation() || ""}
-                    code={activeCode() || ""}
-                    list_code={codes}
-                    complete_col={"dry_biomass_wt"}
-                    time={"5"}
-                />
-                </Card> 
-            </Grid>
+              ))
+            :""}
+            {/* Sensor data */}
             <Grid item xs={12}>
                 <Typography variant="h5">Sensor Installation</Typography>
-              </Grid>
-              <Grid item xs={12} md={4} lg={3} sm={6} spacing={3}>
+            </Grid>
+            {
+              sensorJson && sensorJson.length>0 
+              ? sensorJson.map((sensorData, index)=>(
+                <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
                 <Card
-                style={deviceCardStyle}
                 variant="elevation"
                 elevation={3}
                 className="deviceDataWrapper"
                 >
                 <TaskTrackerCard
-                    title={"T0 Decomp bag dry weights"}
-                    table={"decomp_biomass_dry"}
+                    title={sensorData.title}
+                    table={sensorData.table}
                     year={activeFarmYear()}
                     affiliation={activeAffiliation() || ""}
                     code={activeCode() || ""}
                     list_code={codes}
-                    complete_col={"dry_biomass_wt"}
-                    time={"0"}
+                    complete_col={sensorData.complete_col}
+                    time={sensorData.time}
                 />
                 </Card> 
             </Grid>
-            <Grid item xs={12} md={4} lg={3} sm={6} spacing={3}>
-                <Card
-                style={deviceCardStyle}
-                variant="elevation"
-                elevation={3}
-                className="deviceDataWrapper"
-                >
-                <TaskTrackerCard
-                    title={"T0 Decomp bag dry weights"}
-                    table={"decomp_biomass_dry"}
-                    year={activeFarmYear()}
-                    affiliation={activeAffiliation() || ""}
-                    code={activeCode() || ""}
-                    list_code={codes}
-                    complete_col={"dry_biomass_wt"}
-                    time={"0"}
-                />
-                </Card> 
-            </Grid>
-            <Grid item xs={12}>
-                <Typography variant="h5">Yield</Typography>
-              </Grid>
-              <Grid item xs={12} md={4} lg={3} sm={6} spacing={3}>
-                <Card
-                style={deviceCardStyle}
-                variant="elevation"
-                elevation={3}
-                className="deviceDataWrapper"
-                >
-                <TaskTrackerCard
-                    title={"T0 Decomp bag dry weights"}
-                    table={"decomp_biomass_dry"}
-                    year={activeFarmYear()}
-                    affiliation={activeAffiliation() || ""}
-                    code={activeCode() || ""}
-                    list_code={codes}
-                    complete_col={"dry_biomass_wt"}
-                    time={"0"}
-                />
-                </Card> 
-            </Grid>
-            <Grid item xs={12} md={4} lg={3} sm={6} spacing={3}>
-                <Card
-                style={deviceCardStyle}
-                variant="elevation"
-                elevation={3}
-                className="deviceDataWrapper"
-                >
-                <TaskTrackerCard
-                    title={"T0 Decomp bag dry weights"}
-                    table={"decomp_biomass_dry"}
-                    year={activeFarmYear()}
-                    affiliation={activeAffiliation() || ""}
-                    code={activeCode() || ""}
-                    list_code={codes}
-                    complete_col={"dry_biomass_wt"}
-                    time={"0"}
-                />
-                </Card> 
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h5">Basic Information</Typography>
-            </Grid>
-            <Grid item xs={12} md={4} lg={3} sm={6} spacing={3}>
-                <Card
-                style={deviceCardStyle}
-                variant="elevation"
-                elevation={3}
-                className="deviceDataWrapper"
-                >
-                <TaskTrackerCard
-                    title={"Decomp bag pickups"}
-                    table={"decomp_biomass_dry"}
-                    year={activeFarmYear()}
-                    affiliation={activeAffiliation() || ""}
-                    code={activeCode() || ""}
-                    list_code={codes}
-                    complete_col={"recovery_date"}
-                    time={""}
-                />
-                </Card> 
-            </Grid>
-            <Grid item xs={12} md={4} lg={3} sm={6} spacing={3}>
-                <Card
-                style={deviceCardStyle}
-                variant="elevation"
-                elevation={3}
-                className="deviceDataWrapper"
-                >
-                <TaskTrackerCard
-                    title={"GPS corners"}
-                    table={"gps_corners"}
-                    year={activeFarmYear()}
-                    affiliation={activeAffiliation() || ""}
-                    code={activeCode() || ""}
-                    list_code={codes}
-                    complete_col={"latitude"}
-                    time={""}
-                />
-                </Card> 
-            </Grid>                 
-          </Grid>
+              ))
+            :""}
+        </Grid>
         </Fragment>
       )}
+      <Grid item xs={12}>
+        <Chip
+          label={"Fully Complete"} size="small" style={{backgroundColor:"green", color:"white"}}
+        >
+          <Typography variant="body2">{"siteinfo.code"}</Typography>
+        </Chip>
+        <Chip
+          label={"Partially Complete"} size="small" style={{backgroundColor:"yellow", color:"black"}}
+        >
+          <Typography variant="body2">{"siteinfo.code"}</Typography>
+        </Chip>
+        <Chip
+          label={"Incomplete"} size="small" style={{backgroundColor:"gray", color:"black"}}
+        >
+          <Typography variant="body2">{"siteinfo.code"}</Typography>
+        </Chip>
+      </Grid>
     </Grid>
+
   );
 };
 
