@@ -1,16 +1,15 @@
-import { Button, Grid } from "@material-ui/core";
-import React, { useState, useEffect, useContext } from "react";
-import { Context } from "../../Store/Store";
-import { onfarmAPI } from "../../utils/api_secret";
-import { Calendar, dateFnsLocalizer } from "react-big-calendar";
+import { Grid } from '@material-ui/core';
+import React, { useState, useEffect, useContext } from 'react';
+import { Context } from '../../Store/Store';
+import { onfarmAPI } from '../../utils/api_secret';
+import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 
-import "react-big-calendar/lib/css/react-big-calendar.css";
-import { enUS } from "date-fns/locale";
-import { Link } from "react-router-dom";
-import { blue, green, yellow } from "@material-ui/core/colors";
-import { addDays, format, parse, startOfWeek, getDay } from "date-fns";
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { enUS } from 'date-fns/locale';
+import { blue, green, yellow } from '@material-ui/core/colors';
+import { addDays, format, parse, startOfWeek, getDay } from 'date-fns';
 const locales = {
-  "en-US": enUS,
+  'en-US': enUS,
 };
 const localizer = dateFnsLocalizer({
   format,
@@ -36,8 +35,8 @@ const FarmDatesCalendar = () => {
       try {
         const response = await fetch(`${onfarmAPI}/dates`, {
           headers: {
-            "cache-control": "no-cache",
-            "x-api-key": apikey,
+            'cache-control': 'no-cache',
+            'x-api-key': apikey,
           },
         });
 
@@ -112,7 +111,7 @@ const FarmDatesCalendar = () => {
           allDay: true,
           start: new Date(record.biomass_harvest),
           end: new Date(record.biomass_harvest),
-          type: "biomassHarvest",
+          type: 'biomassHarvest',
         };
       });
 
@@ -122,7 +121,7 @@ const FarmDatesCalendar = () => {
           allDay: true,
           start: new Date(record.cover_planting),
           end: new Date(record.cover_planting),
-          type: "coverPlanting",
+          type: 'coverPlanting',
         };
       });
 
@@ -132,7 +131,7 @@ const FarmDatesCalendar = () => {
           allDay: true,
           start: new Date(record.cover_termination),
           end: new Date(record.cover_termination),
-          type: "coverTermination",
+          type: 'coverTermination',
         };
       });
 
@@ -142,7 +141,7 @@ const FarmDatesCalendar = () => {
           allDay: true,
           start: new Date(record.cash_planting),
           end: new Date(record.cash_planting),
-          type: "cashPlanting",
+          type: 'cashPlanting',
         };
       });
 
@@ -152,7 +151,7 @@ const FarmDatesCalendar = () => {
           allDay: true,
           start: addDays(new Date(record.biomass_harvest), 14),
           end: addDays(new Date(record.biomass_harvest), 14),
-          type: "target",
+          type: 'target',
         };
       });
       const t2TargetDate = data.map((record) => {
@@ -161,7 +160,7 @@ const FarmDatesCalendar = () => {
           allDay: true,
           start: addDays(new Date(record.biomass_harvest), 30),
           end: addDays(new Date(record.biomass_harvest), 30),
-          type: "target",
+          type: 'target',
         };
       });
       const t3TargetDate = data.map((record) => {
@@ -170,7 +169,7 @@ const FarmDatesCalendar = () => {
           allDay: true,
           start: addDays(new Date(record.biomass_harvest), 60),
           end: addDays(new Date(record.biomass_harvest), 60),
-          type: "target",
+          type: 'target',
         };
       });
       const t4TargetDate = data.map((record) => {
@@ -179,7 +178,7 @@ const FarmDatesCalendar = () => {
           allDay: true,
           start: addDays(new Date(record.biomass_harvest), 90),
           end: addDays(new Date(record.biomass_harvest), 90),
-          type: "target",
+          type: 'target',
         };
       });
 
@@ -202,7 +201,7 @@ const FarmDatesCalendar = () => {
             allDay: true,
             start: new Date(record.t1_actual),
             end: new Date(record.t1_actual),
-            type: "actual",
+            type: 'actual',
           };
         });
       }
@@ -214,7 +213,7 @@ const FarmDatesCalendar = () => {
             allDay: true,
             start: new Date(record.t2_actual),
             end: new Date(record.t2_actual),
-            type: "actual",
+            type: 'actual',
           };
         });
       }
@@ -226,7 +225,7 @@ const FarmDatesCalendar = () => {
             allDay: true,
             start: new Date(record.t3_actual),
             end: new Date(record.t3_actual),
-            type: "actual",
+            type: 'actual',
           };
         });
       }
@@ -238,7 +237,7 @@ const FarmDatesCalendar = () => {
             allDay: true,
             start: new Date(record.t4_actual),
             end: new Date(record.t4_actual),
-            type: "actual",
+            type: 'actual',
           };
         });
       }
@@ -264,57 +263,45 @@ const FarmDatesCalendar = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item>
-        <Button
-          size="small"
-          color="primary"
-          variant="contained"
-          component={Link}
-          to="/site-information/farm-dates"
-        >
-          Table View
-        </Button>
-      </Grid>
-
       <Grid item xs={12}>
         <Calendar
           localizer={localizer}
           selectable
-          style={{ height: "80vh" }}
+          style={{ height: '80vh' }}
           startAccessor="start"
           showMultiDayTimes
           endAccessor="end"
           events={allEvents}
-          views={["month", "week", "day", "agenda"]}
+          views={['month', 'week', 'day', 'agenda']}
           onSelectEvent={(event) => alert(event.title)}
           culture="en-US"
           eventPropGetter={(event) => {
             let newStyle = {
-              backgroundColor: "lightgrey",
-              color: "black",
-              borderRadius: "0px",
+              backgroundColor: 'lightgrey',
+              color: 'black',
+              borderRadius: '0px',
               //   border: "1px solid white",
               //   boxShadow: "0 0 1px rgba(0,0,0,0.4)",
             };
-            if (event.type === "biomassHarvest") {
+            if (event.type === 'biomassHarvest') {
               newStyle.backgroundColor = blue[300];
             }
-            if (event.type === "cashPlanting") {
+            if (event.type === 'cashPlanting') {
               newStyle.backgroundColor = green[300];
             }
-            if (event.type === "coverTermination") {
+            if (event.type === 'coverTermination') {
               newStyle.backgroundColor = yellow[400];
             }
-            if (event.type === "target") {
+            if (event.type === 'target') {
               newStyle.border = `1px solid ${blue[300]}`;
-              newStyle.backgroundColor = "white";
+              newStyle.backgroundColor = 'white';
             }
-            if (event.type === "actual") {
+            if (event.type === 'actual') {
               newStyle.backgroundColor = green[600];
             }
 
             return {
-              className: "",
+              className: '',
               style: newStyle,
             };
           }}

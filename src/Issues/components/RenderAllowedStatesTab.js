@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from 'react';
 
-import PropTypes from "prop-types";
-import { apiPassword, apiURL, apiUsername } from "../../utils/api_secret";
-import Axios from "axios";
-import { Context } from "../../Store/Store";
-import { YearsAndAffiliations } from "../../utils/CustomComponents";
+import PropTypes from 'prop-types';
+import { apiPassword, apiURL, apiUsername } from '../../utils/api_secret';
+import Axios from 'axios';
+import { Context } from '../../Store/Store';
+import { YearsAndAffiliations } from '../../utils/CustomComponents';
 
 export const RenderAllowedStatesTab = ({ setActiveState, activeState }) => {
   const [, setLoading] = useState(true);
@@ -20,17 +20,16 @@ export const RenderAllowedStatesTab = ({ setActiveState, activeState }) => {
       .then((res) => {
         let affiliations = res.data.data;
         let permittedAffiliations = [];
-        if (state.userInfo.state === "all") {
+        if (state.userInfo.state === 'all') {
           affiliations.map((affiliation) => {
             permittedAffiliations.push({
               affiliation: affiliation.affiliation,
-              active:
-                affiliation.affiliation.valueOf() === activeState.valueOf(),
+              active: affiliation.affiliation.valueOf() === activeState.valueOf(),
             });
           });
           setAllAffiliations(permittedAffiliations);
         } else {
-          const dbPermittedAffiliations = state.userInfo.state.split(",");
+          const dbPermittedAffiliations = state.userInfo.state.split(',');
           dbPermittedAffiliations.sort().forEach((element) => {
             let a = affiliations.filter((data) => data.affiliation === element);
             console.log(a);
@@ -49,7 +48,7 @@ export const RenderAllowedStatesTab = ({ setActiveState, activeState }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeState, state.userInfo.state]);
 
-  const handleActiveAffiliation = (affiliation = "all") => {
+  const handleActiveAffiliation = (affiliation = 'all') => {
     const newAffiliations = allAffiliations.map((rec) => {
       return {
         active: affiliation === rec.affiliation,
@@ -57,7 +56,7 @@ export const RenderAllowedStatesTab = ({ setActiveState, activeState }) => {
       };
     });
     const sortedNewAffiliations = newAffiliations.sort((a, b) =>
-      b.affiliation < a.affiliation ? 1 : b.affiliation > a.affiliation ? -1 : 0
+      b.affiliation < a.affiliation ? 1 : b.affiliation > a.affiliation ? -1 : 0,
     );
 
     setActiveState(affiliation);
@@ -66,7 +65,7 @@ export const RenderAllowedStatesTab = ({ setActiveState, activeState }) => {
 
   return allAffiliations.length > 0 ? (
     <YearsAndAffiliations
-      title={"Issues"}
+      title={'Issues'}
       years={null}
       handleActiveYear={null}
       affiliations={allAffiliations}
@@ -74,7 +73,7 @@ export const RenderAllowedStatesTab = ({ setActiveState, activeState }) => {
       showYears={false}
     />
   ) : (
-    ""
+    ''
   );
 };
 

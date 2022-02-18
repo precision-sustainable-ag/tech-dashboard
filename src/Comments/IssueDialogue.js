@@ -1,27 +1,20 @@
-import React, { useState } from "react";
-import { Grid, TextField, Typography } from "@material-ui/core";
-import Comments from "./Comments";
-import { useAuth0 } from "../Auth/react-auth0-spa";
-import { createGithubIssue } from "../utils/SharedFunctions";
-import PropTypes from "prop-types";
+import React, { useState } from 'react';
+import { Grid, TextField, Typography } from '@material-ui/core';
+import Comments from './Comments';
+import { useAuth0 } from '../Auth/react-auth0-spa';
+import { createGithubIssue } from '../utils/SharedFunctions';
+import PropTypes from 'prop-types';
 
 const IssueDialogue = (props) => {
   const [checkValidation, setCheckValidation] = useState({
     title: false,
     comment: false,
   });
-  const [issueTitle, setIssueTitle] = useState("");
+  const [issueTitle, setIssueTitle] = useState('');
   const { getTokenSilently } = useAuth0();
-  const {
-    nickname,
-    labels,
-    setSnackbarData,
-    setShowNewIssueDialog,
-    rowData,
-    dataType,
-  } = props;
+  const { nickname, labels, setSnackbarData, setShowNewIssueDialog, rowData, dataType } = props;
 
-  const alwaysTaggedPeople = ["brianwdavis", "saseehav", nickname];
+  const alwaysTaggedPeople = ['brianwdavis', 'saseehav', nickname];
   const [personName] = useState(alwaysTaggedPeople);
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [removeCommentText, setRemoveCommentText] = useState(false);
@@ -32,8 +25,7 @@ const IssueDialogue = (props) => {
 
       setButtonDisabled(true);
 
-      const assignedPeople =
-        personName.length > 0 ? personName : [`${nickname}`];
+      const assignedPeople = personName.length > 0 ? personName : [`${nickname}`];
 
       const body = newComment;
 
@@ -43,34 +35,34 @@ const IssueDialogue = (props) => {
         labels,
         assignedPeople,
         nickname,
-        getTokenSilently
+        getTokenSilently,
       );
 
       issueSet.then((res) => {
         setButtonDisabled(false);
-        setIssueTitle("");
+        setIssueTitle('');
         setRemoveCommentText(true);
         if (res.response) {
           if (res.response.status === 201) {
             setSnackbarData({
               open: true,
               text: `New Issue has been created`,
-              severity: "success",
+              severity: 'success',
             });
           } else {
-            console.log("Function could not create issue");
+            console.log('Function could not create issue');
             setSnackbarData({
               open: true,
               text: `Could not create issue (error code 0)`,
-              severity: "error",
+              severity: 'error',
             });
           }
         } else {
-          console.log("No response from function, likely cors");
+          console.log('No response from function, likely cors');
           setSnackbarData({
             open: true,
             text: `Could not create issue (error code 1)`,
-            severity: "error",
+            severity: 'error',
           });
         }
 

@@ -1,36 +1,31 @@
 /* eslint-disable react/display-name */
 /* eslint-disable react/prop-types */
 // Dependency Imports
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from 'react';
 // import Axios from "axios";
-import Loading from "react-loading";
-import { Grid, Typography, Button, Tooltip, Snackbar } from "@material-ui/core";
-import MuiAlert from "@material-ui/lab/Alert";
-import MaterialTable from "material-table";
-import {
-  Edit,
-  DeleteForever,
-  Search,
-  QuestionAnswer,
-} from "@material-ui/icons";
+import Loading from 'react-loading';
+import { Grid, Typography, Button, Tooltip, Snackbar } from '@material-ui/core';
+import MuiAlert from '@material-ui/lab/Alert';
+import MaterialTable from 'material-table';
+import { Edit, DeleteForever, Search, QuestionAnswer } from '@material-ui/icons';
 
 // Local Imports
-import { Context } from "../Store/Store";
-import { bannedRoles } from "../utils/constants";
-import EditDataModal from "./EditDataModal";
-import UnenrollSiteModal from "./UnenrollSiteModal";
-import NewIssueModal from "./NewIssueModal";
+import { Context } from '../Store/Store';
+import { bannedRoles } from '../utils/constants';
+import EditDataModal from './EditDataModal';
+import UnenrollSiteModal from './UnenrollSiteModal';
+import NewIssueModal from './NewIssueModal';
 import ReassignDataModal from './ReassignDataModal';
-import { BannedRoleMessage } from "../utils/CustomComponents";
-import { onfarmAPI } from "../utils/api_secret";
-import { UserIsEditor } from "../utils/SharedFunctions";
-import MapModal from "./MapModal";
-import { useAuth0 } from "../Auth/react-auth0-spa";
-import PropTypes from "prop-types";
-import styled from "styled-components";
+import { BannedRoleMessage } from '../utils/CustomComponents';
+import { onfarmAPI } from '../utils/api_secret';
+import { UserIsEditor } from '../utils/SharedFunctions';
+import MapModal from './MapModal';
+import { useAuth0 } from '../Auth/react-auth0-spa';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
 
 const siteInfoAPI_URL = `${onfarmAPI}/raw?output=json&table=site_information${
-  process.env.NODE_ENV === "development" ? `&options=showtest` : ``
+  process.env.NODE_ENV === 'development' ? `&options=showtest` : ``
 }`;
 
 const InnerTable = styled.table`
@@ -67,49 +62,49 @@ const InnerTableCell = styled.td`
 
 const tableHeaderOptions = [
   {
-    title: "Code",
-    field: "code",
-    type: "string",
-    align: "justify",
+    title: 'Code',
+    field: 'code',
+    type: 'string',
+    align: 'justify',
   },
   {
-    title: "Grower",
-    field: "last_name",
-    type: "string",
-    align: "justify",
+    title: 'Grower',
+    field: 'last_name',
+    type: 'string',
+    align: 'justify',
   },
   {
-    title: "Affiliation",
-    field: "affiliation",
-    type: "string",
-    align: "justify",
+    title: 'Affiliation',
+    field: 'affiliation',
+    type: 'string',
+    align: 'justify',
     defaultGroupOrder: 0,
   },
   {
-    title: "County",
-    field: "county",
-    type: "string",
-    align: "justify",
+    title: 'County',
+    field: 'county',
+    type: 'string',
+    align: 'justify',
   },
   {
-    title: "Year",
-    field: "year",
-    type: "numeric",
-    align: "justify",
+    title: 'Year',
+    field: 'year',
+    type: 'numeric',
+    align: 'justify',
     defaultGroupOrder: 1,
-    defaultGroupSort: "desc",
+    defaultGroupSort: 'desc',
   },
   {
-    title: "Field Address",
-    field: "address",
-    type: "string",
-    align: "justify",
+    title: 'Field Address',
+    field: 'address',
+    type: 'string',
+    align: 'justify',
   },
   {
-    title: "Notes",
-    field: "notes",
-    type: "string",
-    align: "justify",
+    title: 'Notes',
+    field: 'notes',
+    type: 'string',
+    align: 'justify',
   },
 ];
 // Helper function
@@ -127,14 +122,14 @@ const AllDataTable = (props) => {
   const [showTable, setShowTable] = useState(false);
   const { user } = useAuth0();
   const [bannedRolesCheckMessage, setBannedRolesCheckMessage] = useState(
-    "Checking your permissions.."
+    'Checking your permissions..',
   );
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [snackbarData, setSnackbarData] = useState({
     open: false,
-    text: "",
-    severity: "success",
+    text: '',
+    severity: 'success',
   });
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editModalData, setEditModalData] = useState({});
@@ -176,9 +171,7 @@ const AllDataTable = (props) => {
         if (state.userInfo.role) {
           if (bannedRoles.includes(state.userInfo.role)) {
             setShowTable(false);
-            setBannedRolesCheckMessage(
-              <BannedRoleMessage title="All Contact and Location" />
-            );
+            setBannedRolesCheckMessage(<BannedRoleMessage title="All Contact and Location" />);
           } else {
             setShowTable(true);
           }
@@ -186,7 +179,7 @@ const AllDataTable = (props) => {
         if (state.userInfo.apikey) {
           let records = fetch(siteInfoAPI_URL, {
             headers: {
-              "x-api-key": state.userInfo.apikey,
+              'x-api-key': state.userInfo.apikey,
             },
           });
 
@@ -194,14 +187,14 @@ const AllDataTable = (props) => {
             let res = response.json();
             res
               .then((records) => {
-                return parseXHRResponse({ status: "success", data: records });
+                return parseXHRResponse({ status: 'success', data: records });
               })
               .then((resp) => {
                 if (resp) {
                   setLoading(false);
                 } else {
                   setLoading(true);
-                  console.log("Check API");
+                  console.log('Check API');
                 }
               });
           });
@@ -271,7 +264,7 @@ const AllDataTable = (props) => {
   // }, [state.userInfo, valuesEdited, state.userRole]);
 
   const parseXHRResponse = (data) => {
-    if (data.status === "success") {
+    if (data.status === 'success') {
       let responseData = data.data;
       let modifiedData = responseData.map((data) => {
         return {
@@ -281,18 +274,16 @@ const AllDataTable = (props) => {
           // address: data.address ? data.address : "Not Provided",
           latlng:
             data.latitude !== null && data.longitude !== null
-              ? data.latitude !== "-999" && data.longitude !== "-999"
+              ? data.latitude !== '-999' && data.longitude !== '-999'
                 ? `${data.latitude},${data.longitude}`
-                : "-999"
-              : "",
+                : '-999'
+              : '',
           year: parseInt(data.year),
         };
       });
 
       let finalData = modifiedData.filter((data) => {
-        if (
-          data.protocols_enrolled === "-999"
-        ) {
+        if (data.protocols_enrolled === '-999') {
           return false;
         } else return true;
       });
@@ -329,7 +320,7 @@ const AllDataTable = (props) => {
               size="small"
               variant="contained"
               startIcon={<Edit />}
-              color={props.isDarkTheme ? "primary" : "default"}
+              color={props.isDarkTheme ? 'primary' : 'default'}
               disabled={disabled}
               onClick={() => {
                 if (!disabled) {
@@ -348,7 +339,7 @@ const AllDataTable = (props) => {
               size="small"
               variant="contained"
               startIcon={<Edit />}
-              color={props.isDarkTheme ? "primary" : "default"}
+              color={props.isDarkTheme ? 'primary' : 'default'}
               disabled={disabled}
               onClick={() => {
                 if (!disabled) {
@@ -367,7 +358,7 @@ const AllDataTable = (props) => {
               size="small"
               variant="contained"
               startIcon={<DeleteForever />}
-              color={props.isDarkTheme ? "primary" : "default"}
+              color={props.isDarkTheme ? 'primary' : 'default'}
               disabled={disabled}
               onClick={() => {
                 if (!disabled) {
@@ -397,7 +388,7 @@ const AllDataTable = (props) => {
           startIcon={<QuestionAnswer />}
           size="small"
           variant="contained"
-          color={props.isDarkTheme ? "primary" : "default"}
+          color={props.isDarkTheme ? 'primary' : 'default'}
           onClick={() => {
             setShowNewIssueDialog(true);
             setNewIssueData(rowData);
@@ -409,16 +400,11 @@ const AllDataTable = (props) => {
     );
   };
   const RenderLatLongMap = ({ rowData }) => {
-    const latLongNotPresent =
-      rowData.latlng !== "" && rowData.latlng !== "-999" ? false : true;
+    const latLongNotPresent = rowData.latlng !== '' && rowData.latlng !== '-999' ? false : true;
 
     return (
       <Tooltip
-        title={
-          latLongNotPresent
-            ? "Lat, long data not available"
-            : "View this field on a map"
-        }
+        title={latLongNotPresent ? 'Lat, long data not available' : 'View this field on a map'}
       >
         <span>
           <Button
@@ -426,18 +412,15 @@ const AllDataTable = (props) => {
             disabled={latLongNotPresent}
             startIcon={<Search />}
             variant="contained"
-            color={props.isDarkTheme ? "primary" : "default"}
+            color={props.isDarkTheme ? 'primary' : 'default'}
             onClick={() => {
               if (!latLongNotPresent) {
-                setMapModalData([
-                  parseFloat(rowData.latitude),
-                  parseFloat(rowData.longitude),
-                ]);
+                setMapModalData([parseFloat(rowData.latitude), parseFloat(rowData.longitude)]);
                 setMapModalOpen(true);
               }
             }}
           >
-            {"Map"}
+            {'Map'}
           </Button>
         </span>
       </Tooltip>
@@ -463,11 +446,11 @@ const AllDataTable = (props) => {
         container
         spacing={3}
         style={{
-          minHeight: "10vh",
-          paddingTop: "1em",
-          paddingBottom: "1em",
-          paddingLeft: "0.5em",
-          paddingRight: "0.5em",
+          minHeight: '10vh',
+          paddingTop: '1em',
+          paddingBottom: '1em',
+          paddingLeft: '0.5em',
+          paddingRight: '0.5em',
         }}
       >
         {/* <Grid item container>
@@ -536,21 +519,19 @@ const AllDataTable = (props) => {
 
   return showTable ? (
     loading ? (
-      <div style={{ display: "flex", justifyContent: "center" }}>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Loading type="bars" width="200px" height="200px" color="#3f51b5" />
       </div>
     ) : (
       <div>
         <Snackbar
           anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "center",
+            vertical: 'bottom',
+            horizontal: 'center',
           }}
           open={snackbarData.open}
           autoHideDuration={10000}
-          onClose={() =>
-            setSnackbarData({ ...snackbarData, open: !snackbarData.open })
-          }
+          onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
         >
           <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
         </Snackbar>
@@ -559,7 +540,7 @@ const AllDataTable = (props) => {
             <MaterialTable
               detailPanel={[
                 {
-                  tooltip: "Expand Actions Panel",
+                  tooltip: 'Expand Actions Panel',
 
                   render: (rowData) => {
                     return <RenderActionsPanel rowData={rowData} />;
@@ -571,31 +552,31 @@ const AllDataTable = (props) => {
               title="Contact and Location"
               options={{
                 defaultExpanded: true,
-                padding: "default",
+                padding: 'default',
                 exportButton: false,
-                exportFileName: "Contact and Location",
-                addRowPosition: "last",
+                exportFileName: 'Contact and Location',
+                addRowPosition: 'last',
                 exportAllData: false,
                 // pageSizeOptions: [5, 10, 20, 50, tableData.length],
                 pageSize: tableData.length,
-                groupRowSeparator: "  ",
+                groupRowSeparator: '  ',
                 grouping: true,
                 headerStyle: {
-                  fontWeight: "bold",
-                  fontFamily: "Bilo, sans-serif",
-                  fontSize: "0.8em",
-                  textAlign: "left",
-                  position: "sticky",
+                  fontWeight: 'bold',
+                  fontFamily: 'Bilo, sans-serif',
+                  fontSize: '0.8em',
+                  textAlign: 'left',
+                  position: 'sticky',
                   top: 0,
                 },
                 rowStyle: {
-                  fontFamily: "Roboto, sans-serif",
-                  fontSize: "0.8em",
-                  textAlign: "left",
+                  fontFamily: 'Roboto, sans-serif',
+                  fontSize: '0.8em',
+                  textAlign: 'left',
                 },
                 selection: false,
                 searchAutoFocus: true,
-                toolbarButtonAlignment: "left",
+                toolbarButtonAlignment: 'left',
                 actionsColumnIndex: 1,
                 maxBodyHeight: height * 0.7,
               }}

@@ -1,24 +1,22 @@
 // Default function
 const Reducer = (state, action) => {
   switch (action.type) {
-    case "SET_SITE_INFO":
+    case 'SET_SITE_INFO':
       return setSiteInfo(state, action);
-    case "ADD_ONE_SITE_INFO_TO_STATE":
+    case 'ADD_ONE_SITE_INFO_TO_STATE':
       return setOneSiteInfo(state, action);
-    case "UPDATE_ALL_REPOS":
+    case 'UPDATE_ALL_REPOS':
       return updateAllRepos(state, action);
-    case "SET_DEVICES_INFO":
+    case 'SET_DEVICES_INFO':
       return setDevicesInfo(state, action);
-    case "CHECK_USERNAME_PASSWORD":
+    case 'CHECK_USERNAME_PASSWORD':
       return checkAuth(state, action);
-    case "UPDATE_ROLE":
+    case 'UPDATE_ROLE':
       return updateRole(state, action);
-    case "UPDATE_USER_INFO":
+    case 'UPDATE_USER_INFO':
       return updateUserInfo(state, action);
-
-    case "UPDATING_USER_INFO":
-      return updatingUserInfo(state, action);
-
+    case 'UPDATING_USER_INFO':
+      return updatingUserInfo(state);
     default:
       return { ...state };
   }
@@ -73,7 +71,7 @@ const setOneSiteInfo = (state, action) => {
 };
 
 const checkAuth = (state, action) => {
-  if (action.data.username === "hey" && action.data.password === "hey")
+  if (action.data.username === 'hey' && action.data.password === 'hey')
     return { ...state, loggedIn: true };
   else return { ...state, loggedIn: false };
 };

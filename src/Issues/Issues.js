@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Grid, Slide, Select, MenuItem, Typography } from "@material-ui/core";
-import { Context } from "../Store/Store";
-import Loading from "react-loading";
-import { useHistory } from "react-router-dom";
+import React, { useState, useEffect, useContext } from 'react';
+import { Grid, Slide, Select, MenuItem, Typography } from '@material-ui/core';
+import { Context } from '../Store/Store';
+import Loading from 'react-loading';
+import { useHistory } from 'react-router-dom';
 
-import { RenderAllowedStatesTab } from "./components/RenderAllowedStatesTab";
-import { RenderIssues } from "./components/RenderIssues";
+import { RenderAllowedStatesTab } from './components/RenderAllowedStatesTab';
+import { RenderIssues } from './components/RenderIssues';
 
 /**
  *
@@ -14,14 +14,14 @@ import { RenderIssues } from "./components/RenderIssues";
 
 const Issues = () => {
   const [state] = useContext(Context);
-  const [activeState, setActiveState] = useState("");
+  const [activeState, setActiveState] = useState('');
   const [assignedStates, setAssignedStates] = useState([]);
   const [showLoader, setShowLoader] = useState(true);
-  const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState('all');
   const { location } = useHistory();
 
   useEffect(() => {
-    setActiveState(location.state ? location.state.activeAffiliation : "");
+    setActiveState(location.state ? location.state.activeAffiliation : '');
   }, [location]);
 
   // setFilter("all")
@@ -33,9 +33,9 @@ const Issues = () => {
   useEffect(() => {
     if (Object.keys(state.userInfo).length > 0 && state.userInfo.state) {
       setActiveState((activeState) =>
-        activeState ? activeState : state.userInfo.state.split(",")[0]
+        activeState ? activeState : state.userInfo.state.split(',')[0],
       );
-      setAssignedStates(state.userInfo.state.split(","));
+      setAssignedStates(state.userInfo.state.split(','));
       setShowLoader(false);
     } else {
       setShowLoader(true);
@@ -72,30 +72,18 @@ const Issues = () => {
                 <MenuItem value="all">all</MenuItem>
                 <MenuItem value="kobo-forms">kobo-forms</MenuItem>
                 <MenuItem value="site-information">site-information</MenuItem>
-                <MenuItem value="producer-information">
-                  producer-information
-                </MenuItem>
+                <MenuItem value="producer-information">producer-information</MenuItem>
                 <MenuItem value="farm-dates">farm-dates</MenuItem>
                 <MenuItem value="farm-values">farm-values</MenuItem>
-                <MenuItem value="water-sensor-visuals">
-                  water-sensor-visuals
-                </MenuItem>
+                <MenuItem value="water-sensor-visuals">water-sensor-visuals</MenuItem>
               </Select>
             </Grid>
           </Grid>
         </Grid>
       </Grid>
-      <Slide
-        in={!showLoader || !state.loadingUser}
-        direction="down"
-        timeout={800}
-      >
-        <div style={{ paddingTop: "20px" }}>
-          <RenderIssues
-            stateLabel={activeState}
-            userRole={state.userRole}
-            filter={filter}
-          />
+      <Slide in={!showLoader || !state.loadingUser} direction="down" timeout={800}>
+        <div style={{ paddingTop: '20px' }}>
+          <RenderIssues stateLabel={activeState} userRole={state.userRole} filter={filter} />
         </div>
       </Slide>
     </>
