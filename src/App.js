@@ -58,20 +58,16 @@ import FarmDatesCalendar from './SiteInformation/FarmDates/FarmDatesCalendar';
 import ProducerInformation from './ProducerInformation/ProducerInformation';
 
 import TaskTimeline from './Landing/TaskTimeline/TaskTimeline';
+import TaskTracker from "./TaskTracker/TaskTracker";
 
 import Protocols from "./Protocols/Protocols";
 import DecompBag from "./DecompBag/DecompBag";
 import Debug from "./Debug/Debug";
 import axios from "axios";
-import {
-  apiPassword,
-  apiUsername,
-  onfarmAPI,
-  onfarmStaticApiKey,
-} from "./utils/api_secret";
+import { apiPassword, apiUsername, onfarmAPI, onfarmStaticApiKey } from './utils/api_secret';
 import { apiCorsUrl, APIURL } from "./Devices/hologramConstants";
 import QueryString from "qs";
-import TaskTracker from "./TaskTracker/TaskTracker";
+
 
 
 

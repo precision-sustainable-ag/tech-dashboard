@@ -11,7 +11,7 @@ import React, { useEffect, useContext, useState } from "react";
 import { onfarmAPI } from "../utils/api_secret";
 import { Context } from "../Store/Store";
 
-const TaskTrackerCard = (props) => {
+export const TaskTrackerCard = (props) => {
     let title = props.title;
     let table = props.table;
     let year = props.year;
@@ -127,6 +127,3 @@ list_code: PropTypes.array,
 complete_col: PropTypes.string,
 time: PropTypes.string,
 };
-  
-  export default TaskTrackerCard;
-  
