@@ -4,7 +4,7 @@ import React, { useEffect, useContext, useState } from 'react';
 import { onfarmAPI } from '../utils/api_secret';
 import { Context } from '../Store/Store';
 
-export const TaskTrackerCard = (props) => {
+const TaskTrackerCard = (props) => {
   let title = props.title;
   let table = props.table;
   let year = props.year;
@@ -116,3 +116,5 @@ TaskTrackerCard.propTypes = {
   complete_col: PropTypes.string,
   time: PropTypes.string,
 };
+
+export default TaskTrackerCard;
