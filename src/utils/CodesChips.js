@@ -1,6 +1,6 @@
-import React from "react";
-import { Chip, Grid } from "@material-ui/core";
-import PropTypes from "prop-types";
+import React from 'react';
+import { Chip, Grid } from '@material-ui/core';
+import PropTypes from 'prop-types';
 
 const CodesChips = (props) => {
   const { codes, handleActiveCode, activeCode } = props;
@@ -8,10 +8,10 @@ const CodesChips = (props) => {
     <>
       <Grid item>
         <Chip
-          label={"All"}
-          color={activeCode === "all" ? "primary" : "default"}
+          label={'All'}
+          color={activeCode === 'all' ? 'primary' : 'default'}
           onClick={() => {
-            handleActiveCode("all");
+            handleActiveCode('all');
           }}
         />
       </Grid>
@@ -20,7 +20,7 @@ const CodesChips = (props) => {
           <Grid item key={`codeChip-${index}`}>
             <Chip
               label={code.code}
-              color={code.active ? "primary" : "default"}
+              color={code.active ? 'primary' : 'default'}
               onClick={() => {
                 handleActiveCode(code.code);
               }}
@@ -32,8 +32,8 @@ const CodesChips = (props) => {
 };
 
 CodesChips.defaultProps = {
-  activeCode: "all",
-  codes: [{ code: "all", active: true }],
+  activeCode: 'all',
+  codes: [{ code: 'all', active: true }],
 };
 
 CodesChips.propTypes = {
@@ -42,7 +42,7 @@ CodesChips.propTypes = {
     PropTypes.shape({
       code: PropTypes.string.isRequired,
       active: PropTypes.bool.isRequired,
-    })
+    }),
   ),
   handleActiveCode: PropTypes.func,
 };

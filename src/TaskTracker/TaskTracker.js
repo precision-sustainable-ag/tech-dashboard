@@ -1,16 +1,16 @@
-import { Grid, Snackbar, Card, Typography, Chip } from "@material-ui/core";
-import React, { useState, useEffect, useContext, Fragment } from "react";
-import { Context } from "../Store/Store";
-import { onfarmAPI } from "../utils/api_secret";
+import { Grid, Snackbar, Card, Typography, Chip } from '@material-ui/core';
+import React, { useState, useEffect, useContext, Fragment } from 'react';
+import { Context } from '../Store/Store';
+import { onfarmAPI } from '../utils/api_secret';
 import {
   BannedRoleMessage,
   CustomLoader,
   YearsAndAffiliations,
-  Codes
-} from "../utils/CustomComponents";
-import { uniqueYears } from "../utils/SharedFunctions";
-import MuiAlert from "@material-ui/lab/Alert";
-import TaskTrackerCard from "./TaskTrackerCard";
+  Codes,
+} from '../utils/CustomComponents';
+import { uniqueYears } from '../utils/SharedFunctions';
+import MuiAlert from '@material-ui/lab/Alert';
+import TaskTrackerCard from './TaskTrackerCard';
 
 // Helper function
 function Alert(props) {
@@ -19,48 +19,183 @@ function Alert(props) {
 
 // Data for the respective cards
 let siteEnrollmentJson = [
-  {title:"Address", table:"site_information", complete_col:"address", time:""},
-  {title:"Site Co-ordinates", table:"site_information", complete_col:"latitude", time:""},
-  {title:"GPS Co-ordinates", table:"gps_corners", complete_col:"latitude", time:""}
+  { title: 'Address', table: 'site_information', complete_col: 'address', time: '' },
+  { title: 'Site Co-ordinates', table: 'site_information', complete_col: 'latitude', time: '' },
+  { title: 'GPS Co-ordinates', table: 'gps_corners', complete_col: 'latitude', time: '' },
 ];
 
 let biomassJson = [
-  {title:"Fresh weight", table:"biomass_in_field", complete_col:"fresh_wt_a", time:""},
-  {title:"Legumes", table:"biomass_in_field", complete_col:"legumes_40", time:""},
-  {title:"Planting date", table:"farm_history", complete_col:"cc_planting_date", time:""},
-  {title:"Termination date", table:"farm_history", complete_col:"cc_termination_date", time:""}
+  { title: 'Fresh weight', table: 'biomass_in_field', complete_col: 'fresh_wt_a', time: '' },
+  { title: 'Legumes', table: 'biomass_in_field', complete_col: 'legumes_40', time: '' },
+  { title: 'Planting date', table: 'farm_history', complete_col: 'cc_planting_date', time: '' },
+  {
+    title: 'Termination date',
+    table: 'farm_history',
+    complete_col: 'cc_termination_date',
+    time: '',
+  },
 ];
 
 let decompBagJson = [
-  {title:"T0 Decomp bag empty weights", table:"decomp_biomass_fresh", complete_col:"empty_bag_wt", time:"0"},
-  {title:"T0 Decomp bag fresh weights", table:"decomp_biomass_fresh", complete_col:"fresh_biomass_wt", time:"0"},
-  {title:"T0 Decomp bag recovery date", table:"decomp_biomass_dry", complete_col:"recovery_date", time:"0"},
-  {title:"T0 Decomp bag dry weights", table:"decomp_biomass_dry", complete_col:"dry_biomass_wt", time:"0"},
-  {title:"T1 Decomp bag empty weights", table:"decomp_biomass_fresh", complete_col:"empty_bag_wt", time:"1"},
-  {title:"T1 Decomp bag fresh weights", table:"decomp_biomass_fresh", complete_col:"fresh_biomass_wt", time:"1"},
-  {title:"T1 Decomp bag recovery date", table:"decomp_biomass_dry", complete_col:"recovery_date", time:"1"},
-  {title:"T1 Decomp bag dry weights", table:"decomp_biomass_dry", complete_col:"dry_biomass_wt", time:"1"},
-  {title:"T2 Decomp bag empty weights", table:"decomp_biomass_fresh", complete_col:"empty_bag_wt", time:"2"},
-  {title:"T2 Decomp bag fresh weights", table:"decomp_biomass_fresh", complete_col:"fresh_biomass_wt", time:"2"},
-  {title:"T2 Decomp bag recovery date", table:"decomp_biomass_dry", complete_col:"recovery_date", time:"2"},
-  {title:"T2 Decomp bag dry weights", table:"decomp_biomass_dry", complete_col:"dry_biomass_wt", time:"2"},
-  {title:"T3 Decomp bag empty weights", table:"decomp_biomass_fresh", complete_col:"empty_bag_wt", time:"3"},
-  {title:"T3 Decomp bag fresh weights", table:"decomp_biomass_fresh", complete_col:"fresh_biomass_wt", time:"3"},
-  {title:"T3 Decomp bag recovery date", table:"decomp_biomass_dry", complete_col:"recovery_date", time:"3"},
-  {title:"T3 Decomp bag dry weights", table:"decomp_biomass_dry", complete_col:"dry_biomass_wt", time:"3"},
-  {title:"T4 Decomp bag empty weights", table:"decomp_biomass_fresh", complete_col:"empty_bag_wt", time:"4"},
-  {title:"T4 Decomp bag fresh weights", table:"decomp_biomass_fresh", complete_col:"fresh_biomass_wt", time:"4"},
-  {title:"T4 Decomp bag recovery date", table:"decomp_biomass_dry", complete_col:"recovery_date", time:"4"},
-  {title:"T4 Decomp bag dry weights", table:"decomp_biomass_dry", complete_col:"dry_biomass_wt", time:"4"},
-  {title:"T5 Decomp bag empty weights", table:"decomp_biomass_fresh", complete_col:"empty_bag_wt", time:"5"},
-  {title:"T5 Decomp bag fresh weights", table:"decomp_biomass_fresh", complete_col:"fresh_biomass_wt", time:"5"},
-  {title:"T5 Decomp bag recovery date", table:"decomp_biomass_dry", complete_col:"recovery_date", time:"5"},
-  {title:"T5 Decomp bag dry weights", table:"decomp_biomass_dry", complete_col:"dry_biomass_wt", time:"5"}
+  {
+    title: 'T0 Decomp bag empty weights',
+    table: 'decomp_biomass_fresh',
+    complete_col: 'empty_bag_wt',
+    time: '0',
+  },
+  {
+    title: 'T0 Decomp bag fresh weights',
+    table: 'decomp_biomass_fresh',
+    complete_col: 'fresh_biomass_wt',
+    time: '0',
+  },
+  {
+    title: 'T0 Decomp bag recovery date',
+    table: 'decomp_biomass_dry',
+    complete_col: 'recovery_date',
+    time: '0',
+  },
+  {
+    title: 'T0 Decomp bag dry weights',
+    table: 'decomp_biomass_dry',
+    complete_col: 'dry_biomass_wt',
+    time: '0',
+  },
+  {
+    title: 'T1 Decomp bag empty weights',
+    table: 'decomp_biomass_fresh',
+    complete_col: 'empty_bag_wt',
+    time: '1',
+  },
+  {
+    title: 'T1 Decomp bag fresh weights',
+    table: 'decomp_biomass_fresh',
+    complete_col: 'fresh_biomass_wt',
+    time: '1',
+  },
+  {
+    title: 'T1 Decomp bag recovery date',
+    table: 'decomp_biomass_dry',
+    complete_col: 'recovery_date',
+    time: '1',
+  },
+  {
+    title: 'T1 Decomp bag dry weights',
+    table: 'decomp_biomass_dry',
+    complete_col: 'dry_biomass_wt',
+    time: '1',
+  },
+  {
+    title: 'T2 Decomp bag empty weights',
+    table: 'decomp_biomass_fresh',
+    complete_col: 'empty_bag_wt',
+    time: '2',
+  },
+  {
+    title: 'T2 Decomp bag fresh weights',
+    table: 'decomp_biomass_fresh',
+    complete_col: 'fresh_biomass_wt',
+    time: '2',
+  },
+  {
+    title: 'T2 Decomp bag recovery date',
+    table: 'decomp_biomass_dry',
+    complete_col: 'recovery_date',
+    time: '2',
+  },
+  {
+    title: 'T2 Decomp bag dry weights',
+    table: 'decomp_biomass_dry',
+    complete_col: 'dry_biomass_wt',
+    time: '2',
+  },
+  {
+    title: 'T3 Decomp bag empty weights',
+    table: 'decomp_biomass_fresh',
+    complete_col: 'empty_bag_wt',
+    time: '3',
+  },
+  {
+    title: 'T3 Decomp bag fresh weights',
+    table: 'decomp_biomass_fresh',
+    complete_col: 'fresh_biomass_wt',
+    time: '3',
+  },
+  {
+    title: 'T3 Decomp bag recovery date',
+    table: 'decomp_biomass_dry',
+    complete_col: 'recovery_date',
+    time: '3',
+  },
+  {
+    title: 'T3 Decomp bag dry weights',
+    table: 'decomp_biomass_dry',
+    complete_col: 'dry_biomass_wt',
+    time: '3',
+  },
+  {
+    title: 'T4 Decomp bag empty weights',
+    table: 'decomp_biomass_fresh',
+    complete_col: 'empty_bag_wt',
+    time: '4',
+  },
+  {
+    title: 'T4 Decomp bag fresh weights',
+    table: 'decomp_biomass_fresh',
+    complete_col: 'fresh_biomass_wt',
+    time: '4',
+  },
+  {
+    title: 'T4 Decomp bag recovery date',
+    table: 'decomp_biomass_dry',
+    complete_col: 'recovery_date',
+    time: '4',
+  },
+  {
+    title: 'T4 Decomp bag dry weights',
+    table: 'decomp_biomass_dry',
+    complete_col: 'dry_biomass_wt',
+    time: '4',
+  },
+  {
+    title: 'T5 Decomp bag empty weights',
+    table: 'decomp_biomass_fresh',
+    complete_col: 'empty_bag_wt',
+    time: '5',
+  },
+  {
+    title: 'T5 Decomp bag fresh weights',
+    table: 'decomp_biomass_fresh',
+    complete_col: 'fresh_biomass_wt',
+    time: '5',
+  },
+  {
+    title: 'T5 Decomp bag recovery date',
+    table: 'decomp_biomass_dry',
+    complete_col: 'recovery_date',
+    time: '5',
+  },
+  {
+    title: 'T5 Decomp bag dry weights',
+    table: 'decomp_biomass_dry',
+    complete_col: 'dry_biomass_wt',
+    time: '5',
+  },
 ];
 
 let sensorJson = [
-  {title:"Bare Node serial no", table:"wsensor_install", complete_col:"bare_node_serial_no", time:""},
-  {title:"CashCrop Planting", table:"farm_history", complete_col:"cash_crop_planting_date", time:""}
+  {
+    title: 'Bare Node serial no',
+    table: 'wsensor_install',
+    complete_col: 'bare_node_serial_no',
+    time: '',
+  },
+  {
+    title: 'CashCrop Planting',
+    table: 'farm_history',
+    complete_col: 'cash_crop_planting_date',
+    time: '',
+  },
 ];
 const TaskTracker = () => {
   const [state] = useContext(Context);
@@ -71,14 +206,12 @@ const TaskTracker = () => {
   const [codes, setCodes] = useState([]);
   const [snackbarData, setSnackbarData] = useState({
     open: false,
-    text: "",
-    severity: "success",
+    text: '',
+    severity: 'success',
   });
 
   const activeFarmYear = () => {
-    const activeYear = farmYears
-      .filter((rec) => rec.active)
-      .map((rec) => rec.year);
+    const activeYear = farmYears.filter((rec) => rec.active).map((rec) => rec.year);
 
     return parseInt(activeYear);
   };
@@ -87,7 +220,7 @@ const TaskTracker = () => {
       affiliations
         .filter((rec) => rec.active)
         .map((rec) => rec.affiliation)
-        .toString() || "all"
+        .toString() || 'all'
     );
   };
   const activeCode = () => {
@@ -95,11 +228,11 @@ const TaskTracker = () => {
       codes
         .filter((rec) => rec.active)
         .map((rec) => rec.code)
-        .toString() || "all"
+        .toString() || 'all'
     );
   };
- 
-  const handleActiveYear = (year = "") => {
+
+  const handleActiveYear = (year = '') => {
     const newFarmYears = farmYears.map((yearInfo) => {
       return { active: year === yearInfo.year, year: yearInfo.year };
     });
@@ -107,8 +240,8 @@ const TaskTracker = () => {
     setFarmYears(sortedNewFarmYears);
   };
 
-  const handleActiveAffiliation = (affiliation = "all") => {
-    console.log("new change");
+  const handleActiveAffiliation = (affiliation = 'all') => {
+    console.log('new change');
     const newAffiliations = affiliations.map((rec) => {
       return {
         active: affiliation === rec.affiliation,
@@ -116,13 +249,13 @@ const TaskTracker = () => {
       };
     });
     const sortedNewAffiliations = newAffiliations.sort((a, b) =>
-      b.affiliation < a.affiliation ? 1 : b.affiliation > a.affiliation ? -1 : 0
+      b.affiliation < a.affiliation ? 1 : b.affiliation > a.affiliation ? -1 : 0,
     );
 
     setAffiliations(sortedNewAffiliations);
   };
 
-  const handleActiveCode = (code = "all") => {
+  const handleActiveCode = (code = 'all') => {
     const newCodes = codes.map((rec) => {
       return {
         active: code === rec.code,
@@ -130,16 +263,16 @@ const TaskTracker = () => {
       };
     });
     const sortedNewCodes = newCodes.sort((a, b) =>
-      b.code < a.code ? 1 : b.code > a.code ? -1 : 0
+      b.code < a.code ? 1 : b.code > a.code ? -1 : 0,
     );
 
     setCodes(sortedNewCodes);
   };
   useEffect(() => {
     const fetchData = async (apiKey) => {
-        const response = await fetch(`${onfarmAPI}/raw?table=site_information`, {
-            headers: {
-          "x-api-key": apiKey,
+      const response = await fetch(`${onfarmAPI}/raw?table=site_information`, {
+        headers: {
+          'x-api-key': apiKey,
         },
       });
 
@@ -153,18 +286,16 @@ const TaskTracker = () => {
       fetchData(state.userInfo.apikey)
         .then((response) => {
           setFarmValues(response);
-          
+
           let allYears = response.map((record) => record.year);
           setFarmYears(uniqueYears(allYears));
 
           const affiliations = response
-            .filter(record => record.affiliation !== undefined)
+            .filter((record) => record.affiliation !== undefined)
             .reduce(
               (prev, curr) =>
-                !prev.includes(curr.affiliation)
-                  ? [...prev, curr.affiliation]
-                  : [...prev],
-              []
+                !prev.includes(curr.affiliation) ? [...prev, curr.affiliation] : [...prev],
+              [],
             )
             .map((aff) => {
               return {
@@ -173,11 +304,7 @@ const TaskTracker = () => {
               };
             });
           const sortedAffiliations = affiliations.sort((a, b) =>
-            b.affiliation < a.affiliation
-              ? 1
-              : b.affiliation > a.affiliation
-              ? -1
-              : 0
+            b.affiliation < a.affiliation ? 1 : b.affiliation > a.affiliation ? -1 : 0,
           );
           setAffiliations(sortedAffiliations);
         })
@@ -191,11 +318,14 @@ const TaskTracker = () => {
 
   useEffect(() => {
     const fetchData = async (apiKey) => {
-        const response = await fetch(`${onfarmAPI}/raw?table=site_information&affiliation=${activeAffiliation()}&year=${activeFarmYear()}`, {
-            headers: {
-          "x-api-key": apiKey,
+      const response = await fetch(
+        `${onfarmAPI}/raw?table=site_information&affiliation=${activeAffiliation()}&year=${activeFarmYear()}`,
+        {
+          headers: {
+            'x-api-key': apiKey,
+          },
         },
-      });
+      );
       const data = await response.json();
       return data;
     };
@@ -205,13 +335,10 @@ const TaskTracker = () => {
       fetchData(state.userInfo.apikey)
         .then((response) => {
           const codes = response
-            .filter(record => record.code !== undefined)
+            .filter((record) => record.code !== undefined)
             .reduce(
-              (prev, curr) =>
-                !prev.includes(curr.code)
-                  ? [...prev, curr.code]
-                  : [...prev],
-              []
+              (prev, curr) => (!prev.includes(curr.code) ? [...prev, curr.code] : [...prev]),
+              [],
             )
             .map((aff) => {
               return {
@@ -220,11 +347,7 @@ const TaskTracker = () => {
               };
             });
           const sortedCodes = codes.sort((a, b) =>
-            b.code < a.code
-              ? 1
-              : b.code > a.code
-              ? -1
-              : 0
+            b.code < a.code ? 1 : b.code > a.code ? -1 : 0,
           );
           setCodes(sortedCodes);
         })
@@ -236,7 +359,7 @@ const TaskTracker = () => {
     }
   }, [state.userInfo.apikey, activeAffiliation(), activeFarmYear()]);
   return (
-    <Grid container spacing={3} >
+    <Grid container spacing={3}>
       {fetching ? (
         <CustomLoader />
       ) : farmValues.length === 0 ? (
@@ -247,14 +370,12 @@ const TaskTracker = () => {
         <Fragment>
           <Snackbar
             anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "center",
+              vertical: 'bottom',
+              horizontal: 'center',
             }}
             open={snackbarData.open}
             autoHideDuration={10000}
-            onClose={() =>
-              setSnackbarData({ ...snackbarData, open: !snackbarData.open })
-            }
+            onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
           >
             <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
           </Snackbar>
@@ -262,7 +383,7 @@ const TaskTracker = () => {
           <Grid item lg={9} sm={12}>
             <Grid container spacing={3}>
               <YearsAndAffiliations
-                title={"Task Tracker"}
+                title={'Task Tracker'}
                 years={farmYears}
                 handleActiveYear={handleActiveYear}
                 affiliations={affiliations}
@@ -274,10 +395,7 @@ const TaskTracker = () => {
           {/* Codes */}
           <Grid item lg={9} sm={12}>
             <Grid container spacing={3}>
-              <Codes
-                codes={codes}
-                handleActiveCode={handleActiveCode}
-              />
+              <Codes codes={codes} handleActiveCode={handleActiveCode} />
             </Grid>
           </Grid>
           <Grid
@@ -288,143 +406,121 @@ const TaskTracker = () => {
             justifyContent="flex-end"
             alignItems="center"
             component="label"
-          >
-
-          </Grid>
+          ></Grid>
           {/* Tracker cards */}
           <Grid container xs={12} spacing={3}>
             {/* Site Enrollment */}
             <Grid item xs={12}>
-                <Typography variant="h5">Site Enrollment</Typography>
+              <Typography variant="h5">Site Enrollment</Typography>
             </Grid>
-            {
-              siteEnrollmentJson && siteEnrollmentJson.length>0 
-              ? siteEnrollmentJson.map((siteData, index)=>(
-                <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
-                <Card
-                variant="elevation"
-                elevation={3}
-                className="deviceDataWrapper"
-                >
-                <TaskTrackerCard
-                    title={siteData.title}
-                    table={siteData.table}
-                    year={activeFarmYear()}
-                    affiliation={activeAffiliation() || ""}
-                    code={activeCode() || ""}
-                    list_code={codes}
-                    complete_col={siteData.complete_col}
-                    time={siteData.time}
-                />
-                </Card> 
-            </Grid>
-              ))
-            :""}
+            {siteEnrollmentJson && siteEnrollmentJson.length > 0
+              ? siteEnrollmentJson.map((siteData, index) => (
+                  <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
+                    <Card variant="elevation" elevation={3} className="deviceDataWrapper">
+                      <TaskTrackerCard
+                        title={siteData.title}
+                        table={siteData.table}
+                        year={activeFarmYear()}
+                        affiliation={activeAffiliation() || ''}
+                        code={activeCode() || ''}
+                        list_code={codes}
+                        complete_col={siteData.complete_col}
+                        time={siteData.time}
+                      />
+                    </Card>
+                  </Grid>
+                ))
+              : ''}
             {/* Biomass */}
             <Grid item xs={12}>
-                <Typography variant="h5">Biomass</Typography>
+              <Typography variant="h5">Biomass</Typography>
             </Grid>
-            {
-              biomassJson && biomassJson.length>0 
-              ? biomassJson.map((biomassData, index)=>(
-                <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
-                <Card
-                variant="elevation"
-                elevation={3}
-                className="deviceDataWrapper"
-                >
-                <TaskTrackerCard
-                    title={biomassData.title}
-                    table={biomassData.table}
-                    year={activeFarmYear()}
-                    affiliation={activeAffiliation() || ""}
-                    code={activeCode() || ""}
-                    list_code={codes}
-                    complete_col={biomassData.complete_col}
-                    time={biomassData.time}
-                />
-                </Card> 
-            </Grid>
-              ))
-            :""}
+            {biomassJson && biomassJson.length > 0
+              ? biomassJson.map((biomassData, index) => (
+                  <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
+                    <Card variant="elevation" elevation={3} className="deviceDataWrapper">
+                      <TaskTrackerCard
+                        title={biomassData.title}
+                        table={biomassData.table}
+                        year={activeFarmYear()}
+                        affiliation={activeAffiliation() || ''}
+                        code={activeCode() || ''}
+                        list_code={codes}
+                        complete_col={biomassData.complete_col}
+                        time={biomassData.time}
+                      />
+                    </Card>
+                  </Grid>
+                ))
+              : ''}
             {/* DecompBag */}
             <Grid item xs={12}>
-                <Typography variant="h5">Decomp Bag</Typography>
+              <Typography variant="h5">Decomp Bag</Typography>
             </Grid>
-            {
-              decompBagJson && decompBagJson.length>0 
-              ? decompBagJson.map((decompData, index)=>(
-                <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
-                <Card
-                variant="elevation"
-                elevation={3}
-                className="deviceDataWrapper"
-                >
-                <TaskTrackerCard
-                    title={decompData.title}
-                    table={decompData.table}
-                    year={activeFarmYear()}
-                    affiliation={activeAffiliation() || ""}
-                    code={activeCode() || ""}
-                    list_code={codes}
-                    complete_col={decompData.complete_col}
-                    time={decompData.time}
-                />
-                </Card> 
-            </Grid>
-              ))
-            :""}
+            {decompBagJson && decompBagJson.length > 0
+              ? decompBagJson.map((decompData, index) => (
+                  <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
+                    <Card variant="elevation" elevation={3} className="deviceDataWrapper">
+                      <TaskTrackerCard
+                        title={decompData.title}
+                        table={decompData.table}
+                        year={activeFarmYear()}
+                        affiliation={activeAffiliation() || ''}
+                        code={activeCode() || ''}
+                        list_code={codes}
+                        complete_col={decompData.complete_col}
+                        time={decompData.time}
+                      />
+                    </Card>
+                  </Grid>
+                ))
+              : ''}
             {/* Sensor data */}
             <Grid item xs={12}>
-                <Typography variant="h5">Sensor Installation</Typography>
+              <Typography variant="h5">Sensor Installation</Typography>
             </Grid>
-            {
-              sensorJson && sensorJson.length>0 
-              ? sensorJson.map((sensorData, index)=>(
-                <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
-                <Card
-                variant="elevation"
-                elevation={3}
-                className="deviceDataWrapper"
-                >
-                <TaskTrackerCard
-                    title={sensorData.title}
-                    table={sensorData.table}
-                    year={activeFarmYear()}
-                    affiliation={activeAffiliation() || ""}
-                    code={activeCode() || ""}
-                    list_code={codes}
-                    complete_col={sensorData.complete_col}
-                    time={sensorData.time}
-                />
-                </Card> 
-            </Grid>
-              ))
-            :""}
-        </Grid>
+            {sensorJson && sensorJson.length > 0
+              ? sensorJson.map((sensorData, index) => (
+                  <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
+                    <Card variant="elevation" elevation={3} className="deviceDataWrapper">
+                      <TaskTrackerCard
+                        title={sensorData.title}
+                        table={sensorData.table}
+                        year={activeFarmYear()}
+                        affiliation={activeAffiliation() || ''}
+                        code={activeCode() || ''}
+                        list_code={codes}
+                        complete_col={sensorData.complete_col}
+                        time={sensorData.time}
+                      />
+                    </Card>
+                  </Grid>
+                ))
+              : ''}
+          </Grid>
         </Fragment>
       )}
       <Grid item xs={12}>
         <Chip
-          label={"Fully Complete"} size="small" style={{backgroundColor:"green", color:"white"}}
+          label={'Fully Complete'}
+          size="small"
+          style={{ backgroundColor: 'green', color: 'white' }}
         >
-          <Typography variant="body2">{"siteinfo.code"}</Typography>
+          <Typography variant="body2">{'siteinfo.code'}</Typography>
         </Chip>
         <Chip
-          label={"Partially Complete"} size="small" style={{backgroundColor:"yellow", color:"black"}}
+          label={'Partially Complete'}
+          size="small"
+          style={{ backgroundColor: 'yellow', color: 'black' }}
         >
-          <Typography variant="body2">{"siteinfo.code"}</Typography>
+          <Typography variant="body2">{'siteinfo.code'}</Typography>
         </Chip>
-        <Chip
-          label={"Incomplete"} size="small" style={{backgroundColor:"gray", color:"black"}}
-        >
-          <Typography variant="body2">{"siteinfo.code"}</Typography>
+        <Chip label={'Incomplete'} size="small" style={{ backgroundColor: 'gray', color: 'black' }}>
+          <Typography variant="body2">{'siteinfo.code'}</Typography>
         </Chip>
       </Grid>
     </Grid>
-
   );
 };
 
 export default TaskTracker;
-

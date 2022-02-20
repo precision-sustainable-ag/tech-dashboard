@@ -556,7 +556,6 @@ export default function Header(props) {
             </ListItemIcon>
             <ListItemText primary="Task Tracker" />
           </ListItem>
-
         </List>
       </Drawer>
     </div>
