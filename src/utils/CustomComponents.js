@@ -19,6 +19,7 @@ import { primaryContactPerson } from './api_secret';
 import { Context } from '../Store/Store';
 import YearsChips from './YearsChips';
 import AffiliationsChips from './AffiliationsChips';
+import CodesChips from './CodesChips';
 
 import PropTypes from 'prop-types';
 
@@ -370,4 +371,44 @@ YearsAndAffiliations.propTypes = {
   handleActiveAffiliation: PropTypes.func,
   handleActiveYear: PropTypes.func,
   showYears: PropTypes.bool,
+};
+
+export const Codes = (props) => {
+  const { codes, handleActiveCode } = props;
+
+  const activeCode = () => {
+    return (
+      codes
+        .filter((rec) => rec.active)
+        .map((rec) => rec.code)
+        .toString() || 'all'
+    );
+  };
+
+  return (
+    <Fragment>
+      {codes.length > 1 && (
+        <Grid item container spacing={2} xs={12}>
+          <Grid item sm={2} md={1} xs={12}>
+            <Typography variant="body1">Codes</Typography>
+          </Grid>
+          <CodesChips
+            activeCode={activeCode() || 'all'}
+            codes={codes}
+            handleActiveCode={handleActiveCode}
+          />
+        </Grid>
+      )}
+    </Fragment>
+  );
+};
+
+Codes.defaultProps = {
+  codes: [],
+  handleActiveCode: () => {},
+};
+
+Codes.propTypes = {
+  codes: PropTypes.array,
+  handleActiveCode: PropTypes.func,
 };

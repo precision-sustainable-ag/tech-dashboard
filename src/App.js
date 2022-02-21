@@ -58,6 +58,7 @@ import FarmDatesCalendar from './SiteInformation/FarmDates/FarmDatesCalendar';
 import ProducerInformation from './ProducerInformation/ProducerInformation';
 
 import TaskTimeline from './Landing/TaskTimeline/TaskTimeline';
+import TaskTracker from './TaskTracker/TaskTracker';
 
 import Protocols from './Protocols/Protocols';
 import DecompBag from './DecompBag/DecompBag';
@@ -452,6 +453,8 @@ function App() {
                   path={`/biomass/farm-values`}
                   render={(props) => <FarmValues {...props} />}
                 />
+                {/* Task Tracker View */}
+                <PrivateRoute path={`/task-tracker`} component={TaskTracker} exact />
                 <Route path="*">
                   <PageNotFound />
                 </Route>
