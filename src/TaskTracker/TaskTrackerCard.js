@@ -4,14 +4,7 @@ import React, { useEffect, useContext, useState } from 'react';
 import { onfarmAPI } from '../utils/api_secret';
 import { Context } from '../Store/Store';
 
-const TaskTrackerCard = (props) => {
-  let title = props.title;
-  let table = props.table;
-  let year = props.year;
-  let affiliation = props.affiliation;
-  let code = props.code;
-  let time = props.time;
-  let complete_col = props.complete_col;
+const TaskTrackerCard = ({ title, table, year, affiliation, code, time, complete_col }) => {
   if (affiliation == 'all') {
     affiliation = '';
   }
