@@ -61,7 +61,7 @@ const NodeVoltage = () => {
   const { code, year } = useParams();
   const waterNodeDataEndpoint =
     onfarmAPI +
-    `/soil_moisture?type=node&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=node_serial_no,serial,trt,subplot,timestamp,nd_solar_voltage,nd_batt_voltage,signal_strength&location=true`;
+    `/soil_moisture?type=node&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=node_serial_no,serial,treatment,subplot,timestamp,nd_solar_voltage,nd_batt_voltage,signal_strength&location=true`;
 
   useEffect(() => {
     const setNodeData = async (apiKey) => {
@@ -99,7 +99,7 @@ const NodeVoltage = () => {
   }, [state.userInfo.apikey, waterNodeDataEndpoint]);
 
   const bareSub1Data = useMemo(() => {
-    const filteredData = data.filter((rec) => rec.trt === 'b' && rec.subplot === 1);
+    const filteredData = data.filter((rec) => rec.treatment === 'b' && rec.subplot === 1);
     const serials = filteredData.map((r) => r.serial);
     const uniqueSerials = [...new Set(serials)];
 
@@ -149,7 +149,7 @@ const NodeVoltage = () => {
     };
   }, [data]);
   const bareSub2Data = useMemo(() => {
-    const filteredData = data.filter((rec) => rec.trt === 'b' && rec.subplot === 2);
+    const filteredData = data.filter((rec) => rec.treatment === 'b' && rec.subplot === 2);
 
     const serials = filteredData.map((r) => r.serial);
     const uniqueSerials = [...new Set(serials)];
@@ -200,7 +200,7 @@ const NodeVoltage = () => {
     };
   }, [data]);
   const coverSub1Data = useMemo(() => {
-    const filteredData = data.filter((rec) => rec.trt === 'c' && rec.subplot === 1);
+    const filteredData = data.filter((rec) => rec.treatment === 'c' && rec.subplot === 1);
 
     const serials = filteredData.map((r) => r.serial);
     const uniqueSerials = [...new Set(serials)];
@@ -252,7 +252,7 @@ const NodeVoltage = () => {
   }, [data]);
 
   const coverSub2Data = useMemo(() => {
-    const filteredData = data.filter((rec) => rec.trt === 'c' && rec.subplot === 2);
+    const filteredData = data.filter((rec) => rec.treatment === 'c' && rec.subplot === 2);
 
     const serials = filteredData.map((r) => r.serial);
     const uniqueSerials = [...new Set(serials)];
