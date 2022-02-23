@@ -48,6 +48,11 @@ const StressCamVisuals = (/* props */) => {
     let rep1BareData = stressCamData.filter(ele => ele.subplot === 1 && ele.treatment === 'bare');
     let rep2BareData = stressCamData.filter(ele => ele.subplot === 2 && ele.treatment === 'bare');
 
+    if (rep1CoverData.length === 0 && rep2CoverData.length === 0 && rep1BareData.length === 0 && rep2BareData.length === 0) {
+        return <Grid container spacing={3}>
+            Loading ...
+        </Grid>
+    } else {
     return (
         <Grid container spacing={3}>
             <Grid item xs={12}>
@@ -193,6 +198,7 @@ const StressCamVisuals = (/* props */) => {
             </Grid>
         </Grid>
     );
+    }
 };
 
 export default StressCamVisuals;

@@ -43,7 +43,9 @@ const ProbabilitiesChart = (props) => {
         yAxis: {
             title: {
                 text: 'Probability'
-            }
+            },
+            tickInterval: 0.1,
+            tickLength: 10
         },
 
         xAxis: {
