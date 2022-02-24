@@ -64,7 +64,7 @@ const CPUHealthChart = (props) => {
 };
 
 CPUHealthChart.propTypes = {
-    data: PropTypes.any
+    data: PropTypes.object
   };
 
 export default CPUHealthChart;

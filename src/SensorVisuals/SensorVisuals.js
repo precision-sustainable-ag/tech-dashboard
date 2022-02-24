@@ -17,7 +17,7 @@ import moment from 'moment-timezone';
 const datesURL = onfarmAPI + `/raw?table=site_information`;
 
 // const stressCamAPIEndpoint = `https://weather.aesl.ces.uga.edu/onfarm/raw?table=stresscam_ratings&output=json`;
-const stressCamAPIEndpoint = `https://weather.aesl.ces.uga.edu/onfarm/raw?table=site_information&output=json`;
+const stressCamAPIEndpoint = onfarmAPI + `/raw?table=site_information&output=json`;
 
 const SensorVisuals = (props) => {
   const { isDarkTheme, type } = props;

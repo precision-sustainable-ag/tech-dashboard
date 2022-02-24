@@ -96,7 +96,7 @@ const ProbabilitiesChart = (props) => {
 };
 
 ProbabilitiesChart.propTypes = {
-    data: PropTypes.any
+    data: PropTypes.object
   };
 
 export default ProbabilitiesChart;

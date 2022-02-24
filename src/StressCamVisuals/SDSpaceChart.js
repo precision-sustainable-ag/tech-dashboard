@@ -64,7 +64,7 @@ const SDSpaceChart = (props) => {
 };
 
 SDSpaceChart.propTypes = {
-    data: PropTypes.any
+    data: PropTypes.object
   };
 
 export default SDSpaceChart;

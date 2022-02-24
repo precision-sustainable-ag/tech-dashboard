@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Grid, Box, Tab, Typography } from "@material-ui/core";
 import { TabList, TabContext } from "@material-ui/lab";
 import { useHistory } from "react-router-dom";
+import { onfarmAPI } from '../utils/api_secret';
 import CPUHealthChart from './CPUHealthChart';
 import SDSpaceChart from './SDSpaceChart';
 import ProbabilitiesChart from './ProbabilitiesChart';
@@ -14,7 +15,7 @@ const StressCamVisuals = (/* props */) => {
     const [stressCamData, setStressCamData] = useState([]);    
 
     const getStressCamData = async () => {
-        const endpoint = `https://weather.aesl.ces.uga.edu/onfarm/raw?table=stresscam_ratings&output=json&code=`+originalData.code.toUpperCase();
+        const endpoint = onfarmAPI + `/raw?table=stresscam_ratings&output=json&code=`+originalData.code.toUpperCase();
         if (originalData.apiKey) {
             try {
             const records = await fetch(endpoint, {
