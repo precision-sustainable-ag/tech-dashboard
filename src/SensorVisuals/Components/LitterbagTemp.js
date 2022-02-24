@@ -53,7 +53,7 @@ const TempByLbs = () => {
 
   const waterAmbientSensorDataEndpoint =
     onfarmAPI +
-    `/soil_moisture?type=ambient&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,subplot,trt,t_lb&location=true`;
+    `/soil_moisture?type=ambient&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,subplot,treatment,t_lb&location=true`;
 
   useEffect(() => {
     const setNodeData = async (apiKey) => {
@@ -81,7 +81,7 @@ const TempByLbs = () => {
   }, [state.userInfo.apikey, waterAmbientSensorDataEndpoint]);
 
   const coverSub1Data = useMemo(() => {
-    const filteredData = data.filter((rec) => rec.trt === 'c' && rec.subplot === 1);
+    const filteredData = data.filter((rec) => rec.treatment === 'c' && rec.subplot === 1);
 
     const val = filteredData.map((rec) => [rec.timestamp, rec.t_lb]);
     return {
@@ -101,7 +101,7 @@ const TempByLbs = () => {
     };
   }, [data]);
   const coverSub2Data = useMemo(() => {
-    const filteredData = data.filter((rec) => rec.trt === 'c' && rec.subplot === 2);
+    const filteredData = data.filter((rec) => rec.treatment === 'c' && rec.subplot === 2);
 
     const val = filteredData.map((rec) => [rec.timestamp, rec.t_lb]);
 

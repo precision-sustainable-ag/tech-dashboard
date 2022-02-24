@@ -59,7 +59,7 @@ const VisualsByCode = () => {
   const affiliationEndpoint = onfarmAPI + `/raw?table=site_information&code=${code}`;
   const waterSensorDataEndpoint =
     onfarmAPI +
-    `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,trt,center_depth,soil_temp&location=true`;
+    `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,treatment,center_depth,soil_temp&location=true`;
   const [snackbarData, setSnackbarData] = useState({
     open: false,
     text: '',
