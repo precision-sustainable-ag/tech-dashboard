@@ -339,7 +339,7 @@ export const YearsAndAffiliations = (props) => {
         </Grid>
       )}
 
-      {affiliations.length > 1 && (
+      {affiliations.length > 0 && (
         <Grid item container spacing={2} xs={12}>
           <Grid item sm={2} md={1} xs={12}>
             <Typography variant="body1">Affiliations</Typography>
