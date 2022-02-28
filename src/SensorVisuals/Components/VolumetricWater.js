@@ -70,7 +70,7 @@ const VolumetricWater = ({ tdrData }) => {
   }, [tdrData]);
 
   const bareSub1Data = useMemo(() => {
-    const filteredData = data.filter((rec) => rec.trt === 'b' && rec.subplot === 1);
+    const filteredData = data.filter((rec) => rec.treatment === 'b' && rec.subplot === 1);
 
     const topDepth = filteredData
       .filter((rec) => rec.center_depth === -15)
@@ -123,7 +123,7 @@ const VolumetricWater = ({ tdrData }) => {
     };
   }, [data]);
   const bareSub2Data = useMemo(() => {
-    const filteredData = data.filter((rec) => rec.trt === 'b' && rec.subplot === 2);
+    const filteredData = data.filter((rec) => rec.treatment === 'b' && rec.subplot === 2);
 
     const topDepth = filteredData
       .filter((rec) => rec.center_depth === -15)
@@ -176,7 +176,7 @@ const VolumetricWater = ({ tdrData }) => {
     };
   }, [data]);
   const coverSub1Data = useMemo(() => {
-    const filteredData = data.filter((rec) => rec.trt === 'c' && rec.subplot === 1);
+    const filteredData = data.filter((rec) => rec.treatment === 'c' && rec.subplot === 1);
 
     const topDepth = filteredData
       .filter((rec) => rec.center_depth === -15)
@@ -229,7 +229,7 @@ const VolumetricWater = ({ tdrData }) => {
     };
   }, [data]);
   const coverSub2Data = useMemo(() => {
-    const filteredData = data.filter((rec) => rec.trt === 'c' && rec.subplot === 2);
+    const filteredData = data.filter((rec) => rec.treatment === 'c' && rec.subplot === 2);
 
     const topDepth = filteredData
       .filter((rec) => rec.center_depth === -15)

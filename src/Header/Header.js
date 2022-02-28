@@ -505,6 +505,8 @@ export default function Header(props) {
             {openNav.stressCams ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
           <Collapse in={openNav.stressCams} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+              {" "}
             <ListItem
               button
               to="/devices/stress-cams"
@@ -516,6 +518,18 @@ export default function Header(props) {
             >
               <ListItemText inset primary="Device Status" />
             </ListItem>
+            <ListItem
+                button
+                to="/stress-cam-visuals"
+                component={Link}
+                onClick={() => {
+                  setOpen(false);
+                  handleOpenDevicesNav();
+                }}
+              >
+                <ListItemText inset primary="Chart View" />
+              </ListItem>
+            </List>
           </Collapse>
 
           <ListItem
@@ -542,6 +556,19 @@ export default function Header(props) {
               <Storage />
             </ListItemIcon>
             <ListItemText primary="Forms" />
+          </ListItem>
+
+          <ListItem
+            onClick={() => setOpen(false)}
+            button
+            key="TaskTracker"
+            component={Link}
+            to="/task-tracker"
+          >
+            <ListItemIcon>
+              <Storage />
+            </ListItemIcon>
+            <ListItemText primary="Task Tracker" />
           </ListItem>
         </List>
       </Drawer>

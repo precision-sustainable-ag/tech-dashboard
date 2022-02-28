@@ -106,7 +106,7 @@ const Marker = (props) => {
       <StyledMarker>
         {props.data.treatment && (
           <Typography align="center" variant="body1">
-            Rep: {props.data.rep}, {props.data.treatment.toLowerCase() === 'b' ? `Bare` : `Cover`}
+            Rep: {props.data.subplot}, {props.data.treatment.toLowerCase() === 'b' ? `Bare` : `Cover`}
           </Typography>
         )}
         {/* <p>ProducerID: {props.data.producer_id}</p> */}
