@@ -20,8 +20,8 @@ function Alert(props) {
 // Data for the respective cards
 let siteEnrollmentJson = [
   { title: 'Address', table: 'site_information', complete_col: 'address', time: '' },
-  { title: 'Site Co-ordinates', table: 'site_information', complete_col: 'latitude', time: '' },
-  { title: 'GPS Co-ordinates', table: 'gps_corners', complete_col: 'latitude', time: '' },
+  { title: 'Site coordinates', table: 'site_information', complete_col: 'latitude', time: '' },
+  { title: 'GPS corners', table: 'gps_corners', complete_col: 'latitude', time: '' },
 ];
 
 let biomassJson = [
@@ -38,145 +38,145 @@ let biomassJson = [
 
 let decompBagJson = [
   {
-    title: 'T0 Decomp bag empty weights',
+    title: 'T0 empty weights',
     table: 'decomp_biomass_fresh',
     complete_col: 'empty_bag_wt',
     time: '0',
   },
   {
-    title: 'T0 Decomp bag fresh weights',
+    title: 'T0 fresh weights',
     table: 'decomp_biomass_fresh',
     complete_col: 'fresh_biomass_wt',
     time: '0',
   },
   {
-    title: 'T0 Decomp bag recovery date',
+    title: 'T0 recovery date',
     table: 'decomp_biomass_dry',
     complete_col: 'recovery_date',
     time: '0',
   },
   {
-    title: 'T0 Decomp bag dry weights',
+    title: 'T0 dry weights',
     table: 'decomp_biomass_dry',
     complete_col: 'dry_biomass_wt',
     time: '0',
   },
   {
-    title: 'T1 Decomp bag empty weights',
+    title: 'T1 empty weights',
     table: 'decomp_biomass_fresh',
     complete_col: 'empty_bag_wt',
     time: '1',
   },
   {
-    title: 'T1 Decomp bag fresh weights',
+    title: 'T1 fresh weights',
     table: 'decomp_biomass_fresh',
     complete_col: 'fresh_biomass_wt',
     time: '1',
   },
   {
-    title: 'T1 Decomp bag recovery date',
+    title: 'T1 recovery date',
     table: 'decomp_biomass_dry',
     complete_col: 'recovery_date',
     time: '1',
   },
   {
-    title: 'T1 Decomp bag dry weights',
+    title: 'T1 dry weights',
     table: 'decomp_biomass_dry',
     complete_col: 'dry_biomass_wt',
     time: '1',
   },
   {
-    title: 'T2 Decomp bag empty weights',
+    title: 'T2 empty weights',
     table: 'decomp_biomass_fresh',
     complete_col: 'empty_bag_wt',
     time: '2',
   },
   {
-    title: 'T2 Decomp bag fresh weights',
+    title: 'T2 fresh weights',
     table: 'decomp_biomass_fresh',
     complete_col: 'fresh_biomass_wt',
     time: '2',
   },
   {
-    title: 'T2 Decomp bag recovery date',
+    title: 'T2 recovery date',
     table: 'decomp_biomass_dry',
     complete_col: 'recovery_date',
     time: '2',
   },
   {
-    title: 'T2 Decomp bag dry weights',
+    title: 'T2 dry weights',
     table: 'decomp_biomass_dry',
     complete_col: 'dry_biomass_wt',
     time: '2',
   },
   {
-    title: 'T3 Decomp bag empty weights',
+    title: 'T3 empty weights',
     table: 'decomp_biomass_fresh',
     complete_col: 'empty_bag_wt',
     time: '3',
   },
   {
-    title: 'T3 Decomp bag fresh weights',
+    title: 'T3 fresh weights',
     table: 'decomp_biomass_fresh',
     complete_col: 'fresh_biomass_wt',
     time: '3',
   },
   {
-    title: 'T3 Decomp bag recovery date',
+    title: 'T3 recovery date',
     table: 'decomp_biomass_dry',
     complete_col: 'recovery_date',
     time: '3',
   },
   {
-    title: 'T3 Decomp bag dry weights',
+    title: 'T3 dry weights',
     table: 'decomp_biomass_dry',
     complete_col: 'dry_biomass_wt',
     time: '3',
   },
   {
-    title: 'T4 Decomp bag empty weights',
+    title: 'T4 empty weights',
     table: 'decomp_biomass_fresh',
     complete_col: 'empty_bag_wt',
     time: '4',
   },
   {
-    title: 'T4 Decomp bag fresh weights',
+    title: 'T4 fresh weights',
     table: 'decomp_biomass_fresh',
     complete_col: 'fresh_biomass_wt',
     time: '4',
   },
   {
-    title: 'T4 Decomp bag recovery date',
+    title: 'T4 recovery date',
     table: 'decomp_biomass_dry',
     complete_col: 'recovery_date',
     time: '4',
   },
   {
-    title: 'T4 Decomp bag dry weights',
+    title: 'T4 dry weights',
     table: 'decomp_biomass_dry',
     complete_col: 'dry_biomass_wt',
     time: '4',
   },
   {
-    title: 'T5 Decomp bag empty weights',
+    title: 'T5 empty weights',
     table: 'decomp_biomass_fresh',
     complete_col: 'empty_bag_wt',
     time: '5',
   },
   {
-    title: 'T5 Decomp bag fresh weights',
+    title: 'T5 fresh weights',
     table: 'decomp_biomass_fresh',
     complete_col: 'fresh_biomass_wt',
     time: '5',
   },
   {
-    title: 'T5 Decomp bag recovery date',
+    title: 'T5 recovery date',
     table: 'decomp_biomass_dry',
     complete_col: 'recovery_date',
     time: '5',
   },
   {
-    title: 'T5 Decomp bag dry weights',
+    title: 'T5 dry weights',
     table: 'decomp_biomass_dry',
     complete_col: 'dry_biomass_wt',
     time: '5',
@@ -212,16 +212,15 @@ const TaskTracker = () => {
 
   const activeFarmYear = () => {
     const activeYear = farmYears.filter((rec) => rec.active).map((rec) => rec.year);
-
     return parseInt(activeYear);
   };
   const activeAffiliation = () => {
-    return (
+    const activeAff =
       affiliations
         .filter((rec) => rec.active)
         .map((rec) => rec.affiliation)
-        .toString() || 'all'
-    );
+        .toString() || 'all';
+    return activeAff;
   };
   const activeCode = () => {
     return (
@@ -241,7 +240,6 @@ const TaskTracker = () => {
   };
 
   const handleActiveAffiliation = (affiliation = 'all') => {
-    console.log('new change');
     const newAffiliations = affiliations.map((rec) => {
       return {
         active: affiliation === rec.affiliation,
