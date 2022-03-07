@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useHistory } from "react-router-dom";
 import { Grid } from '@material-ui/core';
 import { onfarmAPI } from '../utils/api_secret';
 import { Context } from '../Store/Store';
@@ -91,6 +92,8 @@ const tableHeaderOptions = [
 ];
 
 const DecompBag = () => {
+  const history = useHistory();
+  const originalData = history.location.state.data;
   const [state] = useContext(Context);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -98,7 +101,7 @@ const DecompBag = () => {
   useEffect(() => {
     const fetchData = async (apiKey) => {
       setLoading(true);
-      const decompBag_url = onfarmAPI + `/raw?table=decomp_bag`;
+      const decompBag_url = onfarmAPI + `/raw?table=decomp_bag&output=json&code=`+originalData.code.toUpperCase()+`&year=`+originalData.year;
 
       const fetchRecords = async (url) => {
         try {
@@ -116,7 +119,7 @@ const DecompBag = () => {
       const allJoined = await fetchRecords(decompBag_url);
 
       const uniq = _.uniqWith(allJoined, _.isEqual);
-      console.log(uniq);
+      // console.log(uniq);
       setData(uniq);
       setLoading(false);
     };
@@ -124,7 +127,7 @@ const DecompBag = () => {
     if (!state.userInfo.apikey) return false;
 
     fetchData(state.userInfo.apikey);
-  }, [state.userInfo.apikey]);
+  }, []);
 
   const height = window.innerHeight;
   return (

@@ -21,8 +21,9 @@ const FarmCodeCard = (props) => {
           enabled="false"
           style={{ height: '75px' }}
           to={{
-            pathname: type === 'watersensors' ? `/sensor-visuals/${year}/${code.toUpperCase()}` : `/stress-cam-visuals/${year}/${code.toUpperCase()}`,
-            state: { data: type === 'watersensors' ? data : { code: code, apiKey: apiKey } },
+            pathname: type === "decompbags" ? `/decomp-bags/${year}/${code.toUpperCase()}` :
+              (type === 'watersensors' ? `/sensor-visuals/${year}/${code.toUpperCase()}` : `/stress-cam-visuals/${year}/${code.toUpperCase()}`),
+            state: { data: type === 'watersensors' ? data : { code: code, apiKey: apiKey, year: year } },
           }}
         >
           <CardContent style={{ height: '75px' }}>
