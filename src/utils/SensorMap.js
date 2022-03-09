@@ -18,7 +18,7 @@ const StyledMarker = styled.div.attrs((/* props */) => ({ tabIndex: 0 }))`
     width: 100px;
     height: auto;
     padding: 2px;
-    background-color: rgba(248, 208, 93, 0.5);
+    background-color: ${(props) => props.background};
     margin: 0 auto;
     box-shadow: 0 0 2px transparent;
     border-radius: 5px;
@@ -26,13 +26,13 @@ const StyledMarker = styled.div.attrs((/* props */) => ({ tabIndex: 0 }))`
     margin-left: -50px;
   }
   &:hover {
-    background-color: rgba(248, 208, 93, 1);
+    background-color: ${(props) => props.backgroundHover};
     box-shadow: 0 0 2px black;
   }
   &:after {
     border-right: solid 15px transparent;
     border-left: solid 15px transparent;
-    border-top: solid 15px #f8d05d;
+    border-top: solid 15px ${(props) => props.backgroundArrow};
     position: absolute;
     transform: translate(-50%, -50%);
     content: '';
@@ -102,11 +102,22 @@ const SensorMap = (props) => {
 const Marker = (props) => {
   const latLngStr = props.data.lat + ',' + props.data.lon;
   if (props.data.type !== 'corner') {
+    const background =
+      props.data.type === 'address' ? 'rgba(204, 204, 255, 0.5)' : 'rgba(248, 208, 93, 0.5)';
+    const backgroundHover =
+      props.data.type === 'address' ? 'rgba(204, 204, 255, 1)' : 'rgba(248, 208, 93, 1)';
+    const backgroundArrow = props.data.type === 'address' ? '#CCCCFF' : '#f8d05d';
+
     return (
-      <StyledMarker>
+      <StyledMarker
+        background={background}
+        backgroundHover={backgroundHover}
+        backgroundArrow={backgroundArrow}
+      >
         {props.data.treatment && (
           <Typography align="center" variant="body1">
-            Rep: {props.data.subplot}, {props.data.treatment.toLowerCase() === 'b' ? `Bare` : `Cover`}
+            Rep: {props.data.subplot},{' '}
+            {props.data.treatment.toLowerCase() === 'b' ? `Bare` : `Cover`}
           </Typography>
         )}
         {/* <p>ProducerID: {props.data.producer_id}</p> */}
