@@ -213,6 +213,13 @@ const DevicesComponent = ({
               onChange={(e) => setDeviceSearchText(e.target.value)}
             />
           </Grid>
+          <Grid item xs={12} md={12} lg={12} xl={12}>
+            <Typography>
+              To rename a device, use the pencil icon (insert icon). Add your farm code in all caps
+              anywhere in the nickname, plus any other info you want. Example: &quot;ABC (Farmer
+              Brown top of the hill)&quot;
+            </Typography>
+          </Grid>
           {searchedDevices.length > 0 ? (
             searchedDevices.map((device) =>
               device.lastsession ? (
