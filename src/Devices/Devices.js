@@ -9,7 +9,7 @@ import { BannedRoleMessage } from '../utils/CustomComponents';
 // import "./Devices.scss";
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
-import { Search } from '@material-ui/icons';
+import { Edit, Search } from '@material-ui/icons';
 import { apiPassword, apiURL, apiUsername } from '../utils/api_secret';
 
 const deviceCardStyle = {
@@ -212,6 +212,13 @@ const DevicesComponent = ({
               helperText="Enter device id or name"
               onChange={(e) => setDeviceSearchText(e.target.value)}
             />
+          </Grid>
+          <Grid item xs={12} md={12} lg={12} xl={12}>
+            <Typography>
+              To rename a device, use the pencil icon <Edit fontSize="small" />. Add your farm code
+              in all caps anywhere in the nickname, plus any other info you want. Example: &quot;ABC
+              (Farmer Brown top of the hill)&quot;
+            </Typography>
           </Grid>
           {searchedDevices.length > 0 ? (
             searchedDevices.map((device) =>
