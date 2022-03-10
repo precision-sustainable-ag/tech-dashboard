@@ -6,13 +6,6 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 
-// import NodeCharts from "./NodeCharts";
-
-// import NodeVoltage from "./NodeVoltage";
-// import VolumetricWater from "./VolumetricWater";
-// import SoilTemp from "./SoilTemp";
-// import TempByLbs from "./TempByLbs";
-
 const StyledMarker = styled.div.attrs((/* props */) => ({ tabIndex: 0 }))`
   & {
     width: 100px;
@@ -78,25 +71,35 @@ const getMapOptions = (maps) => ({
 const SensorMap = (props) => {
   const { mapData } = props;
 
-  return (
-    <Grid item xs={12} style={{ height: '400px' }}>
-      <GoogleMapsReact
-        bootstrapURLKeys={{
-          key: googleApiKey,
-          language: 'EN',
-          region: 'US',
-        }}
-        // defaultCenter={center}
-        center={[mapData.locationData[0].lat, mapData.locationData[0].lon]}
-        zoom={mapData.zoom}
-        options={getMapOptions}
-      >
-        {mapData.locationData.map((val, index) => (
-          <Marker key={index} data={val} lat={val.lat} lng={val.lon} />
-        ))}
-      </GoogleMapsReact>
-    </Grid>
+  mapData.locationData = mapData.locationData.filter(
+    (point) => point.lat !== null && point.lon !== null,
   );
+
+  const center = averageGeolocation(mapData.locationData);
+
+  if (center !== null) {
+    return (
+      <Grid item xs={12} style={{ height: '70vh' }}>
+        <GoogleMapsReact
+          bootstrapURLKeys={{
+            key: googleApiKey,
+            language: 'EN',
+            region: 'US',
+          }}
+          // defaultCenter={center}
+          center={[center.lat, center.lon]}
+          zoom={mapData.zoom - 1}
+          options={getMapOptions}
+        >
+          {mapData.locationData.map((val, index) => (
+            <Marker key={index} data={val} lat={val.lat} lng={val.lon} />
+          ))}
+        </GoogleMapsReact>
+      </Grid>
+    );
+  } else {
+    return <Typography>No coordinates for this farm code</Typography>;
+  }
 };
 
 const Marker = (props) => {
@@ -135,6 +138,47 @@ const Marker = (props) => {
   } else {
     return <FiberManualRecordIcon></FiberManualRecordIcon>;
   }
+};
+
+const averageGeolocation = (coordsList) => {
+  if (coordsList.length === 0) {
+    return null;
+  } else if (coordsList.length === 1) {
+    return coordsList[0];
+  }
+
+  coordsList = coordsList.filter((coord) => coord.type !== 'address');
+  if (coordsList.length === 1) {
+    return coordsList[0];
+  }
+
+  let x = 0.0;
+  let y = 0.0;
+  let z = 0.0;
+
+  for (let coord of coordsList) {
+    let lat = (coord.lat * Math.PI) / 180;
+    let lon = (coord.lon * Math.PI) / 180;
+
+    x += Math.cos(lat) * Math.cos(lon);
+    y += Math.cos(lat) * Math.sin(lon);
+    z += Math.sin(lat);
+  }
+
+  let total = coordsList.length;
+
+  x = x / total;
+  y = y / total;
+  z = z / total;
+
+  let centralLongitude = Math.atan2(y, x);
+  let centralSquareRoot = Math.sqrt(x * x + y * y);
+  let centralLatitude = Math.atan2(z, centralSquareRoot);
+
+  return {
+    lat: (centralLatitude * 180) / Math.PI,
+    lon: (centralLongitude * 180) / Math.PI,
+  };
 };
 
 SensorMap.propTypes = {
