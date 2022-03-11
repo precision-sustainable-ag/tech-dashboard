@@ -422,7 +422,26 @@ function App() {
                 <PrivateRoute path="/device-enroll" component={DeviceEnroll} />
 
                 {/* Decomp Bag View */}
-                <PrivateRoute path={`/decomp-bags`} component={DecompBag} exact />
+                {/* <PrivateRoute path={`/decomp-bags`} component={DecompBag} exact /> */}
+
+                {/* New Sensors Page URLS */}
+
+                <PrivateRoute
+                  path={`/decomp-bags`}
+                  render={(props) => (
+                    <SensorVisuals
+                      isDarkTheme={theme.palette.type === 'light' ? false : true}
+                      type="decompbags"
+                      {...props}
+                    />
+                  )}
+                  exact
+                />
+                <PrivateRoute
+                  path={`/decomp-bags/:year/:code`}
+                  component={DecompBag}
+                  exact
+                />
 
                 <PrivateRoute path={`/debug`} render={(props) => <Debug {...props} />} exact />
 

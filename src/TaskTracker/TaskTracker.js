@@ -1,4 +1,14 @@
-import { Grid, Snackbar, Card, Typography, Chip } from '@material-ui/core';
+import {
+  Grid,
+  Snackbar,
+  Card,
+  Typography,
+  Chip,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+} from '@material-ui/core';
+import { ExpandMore } from '@material-ui/icons';
 import React, { useState, useEffect, useContext, Fragment } from 'react';
 import { Context } from '../Store/Store';
 import { onfarmAPI } from '../utils/api_secret';
@@ -406,95 +416,145 @@ const TaskTracker = () => {
             component="label"
           ></Grid>
           {/* Tracker cards */}
-          <Grid container xs={12} spacing={3}>
-            {/* Site Enrollment */}
-            <Grid item xs={12}>
-              <Typography variant="h5">Site Enrollment</Typography>
-            </Grid>
-            {siteEnrollmentJson && siteEnrollmentJson.length > 0
-              ? siteEnrollmentJson.map((siteData, index) => (
-                  <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
-                    <Card variant="elevation" elevation={3} className="deviceDataWrapper">
-                      <TaskTrackerCard
-                        title={siteData.title}
-                        table={siteData.table}
-                        year={activeFarmYear()}
-                        affiliation={activeAffiliation() || ''}
-                        code={activeCode() || ''}
-                        list_code={codes}
-                        complete_col={siteData.complete_col}
-                        time={siteData.time}
-                      />
-                    </Card>
-                  </Grid>
-                ))
-              : ''}
-            {/* Biomass */}
-            <Grid item xs={12}>
-              <Typography variant="h5">Biomass</Typography>
-            </Grid>
-            {biomassJson && biomassJson.length > 0
-              ? biomassJson.map((biomassData, index) => (
-                  <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
-                    <Card variant="elevation" elevation={3} className="deviceDataWrapper">
-                      <TaskTrackerCard
-                        title={biomassData.title}
-                        table={biomassData.table}
-                        year={activeFarmYear()}
-                        affiliation={activeAffiliation() || ''}
-                        code={activeCode() || ''}
-                        list_code={codes}
-                        complete_col={biomassData.complete_col}
-                        time={biomassData.time}
-                      />
-                    </Card>
-                  </Grid>
-                ))
-              : ''}
-            {/* DecompBag */}
-            <Grid item xs={12}>
-              <Typography variant="h5">Decomp Bag</Typography>
-            </Grid>
-            {decompBagJson && decompBagJson.length > 0
-              ? decompBagJson.map((decompData, index) => (
-                  <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
-                    <Card variant="elevation" elevation={3} className="deviceDataWrapper">
-                      <TaskTrackerCard
-                        title={decompData.title}
-                        table={decompData.table}
-                        year={activeFarmYear()}
-                        affiliation={activeAffiliation() || ''}
-                        code={activeCode() || ''}
-                        list_code={codes}
-                        complete_col={decompData.complete_col}
-                        time={decompData.time}
-                      />
-                    </Card>
-                  </Grid>
-                ))
-              : ''}
-            {/* Sensor data */}
-            <Grid item xs={12}>
-              <Typography variant="h5">Sensor Installation</Typography>
-            </Grid>
-            {sensorJson && sensorJson.length > 0
-              ? sensorJson.map((sensorData, index) => (
-                  <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
-                    <Card variant="elevation" elevation={3} className="deviceDataWrapper">
-                      <TaskTrackerCard
-                        title={sensorData.title}
-                        table={sensorData.table}
-                        year={activeFarmYear()}
-                        affiliation={activeAffiliation() || ''}
-                        code={activeCode() || ''}
-                        list_code={codes}
-                        complete_col={sensorData.complete_col}
-                        time={sensorData.time}
-                      />
-                    </Card>
-                  </Grid>
-                ))
-              : ''}
+
+          {/* Site Enrollment */}
+          <Grid xs={12}>
+            <Accordion defaultExpanded={true}>
+              <AccordionSummary
+                expandIcon={<ExpandMore />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography variant="h5">Site Enrollment</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container xs={12} spacing={3}>
+                  {siteEnrollmentJson && siteEnrollmentJson.length > 0
+                    ? siteEnrollmentJson.map((siteData, index) => (
+                        <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
+                          <Card variant="elevation" elevation={3} className="deviceDataWrapper">
+                            <TaskTrackerCard
+                              title={siteData.title}
+                              table={siteData.table}
+                              year={activeFarmYear()}
+                              affiliation={activeAffiliation() || ''}
+                              code={activeCode() || ''}
+                              list_code={codes}
+                              complete_col={siteData.complete_col}
+                              time={siteData.time}
+                            />
+                          </Card>
+                        </Grid>
+                      ))
+                    : ''}
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+          </Grid>
+
+          {/* Biomass */}
+          <Grid xs={12}>
+            <Accordion defaultExpanded={true}>
+              <AccordionSummary
+                expandIcon={<ExpandMore />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography variant="h5">Biomass</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container xs={12} spacing={3}>
+                  {biomassJson && biomassJson.length > 0
+                    ? biomassJson.map((biomassData, index) => (
+                        <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
+                          <Card variant="elevation" elevation={3} className="deviceDataWrapper">
+                            <TaskTrackerCard
+                              title={biomassData.title}
+                              table={biomassData.table}
+                              year={activeFarmYear()}
+                              affiliation={activeAffiliation() || ''}
+                              code={activeCode() || ''}
+                              list_code={codes}
+                              complete_col={biomassData.complete_col}
+                              time={biomassData.time}
+                            />
+                          </Card>
+                        </Grid>
+                      ))
+                    : ''}
+                </Grid>
+              </AccordionDetails>
+            </Accordion> 
+          </Grid>
+
+          {/* Decomp bag */}
+          <Grid xs={12}>
+            <Accordion defaultExpanded={true}>
+              <AccordionSummary
+                expandIcon={<ExpandMore />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography variant="h5">Decomp bag</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container xs={12} spacing={3}>
+                  {decompBagJson && decompBagJson.length > 0
+                    ? decompBagJson.map((decompData, index) => (
+                        <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
+                          <Card variant="elevation" elevation={3} className="deviceDataWrapper">
+                            <TaskTrackerCard
+                              title={decompData.title}
+                              table={decompData.table}
+                              year={activeFarmYear()}
+                              affiliation={activeAffiliation() || ''}
+                              code={activeCode() || ''}
+                              list_code={codes}
+                              complete_col={decompData.complete_col}
+                              time={decompData.time}
+                            />
+                          </Card>
+                        </Grid>
+                      ))
+                    : ''}
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+          </Grid>
+
+          {/* Sensor Installation */}
+          <Grid xs={12}>
+            <Accordion defaultExpanded={true}>
+              <AccordionSummary
+                expandIcon={<ExpandMore />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography variant="h5">Sensor Installation</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container xs={12} spacing={3}>
+                  {sensorJson && sensorJson.length > 0
+                    ? sensorJson.map((sensorData, index) => (
+                        <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
+                          <Card variant="elevation" elevation={3} className="deviceDataWrapper">
+                            <TaskTrackerCard
+                              title={sensorData.title}
+                              table={sensorData.table}
+                              year={activeFarmYear()}
+                              affiliation={activeAffiliation() || ''}
+                              code={activeCode() || ''}
+                              list_code={codes}
+                              complete_col={sensorData.complete_col}
+                              time={sensorData.time}
+                            />
+                          </Card>
+                        </Grid>
+                      ))
+                    : ''}
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
           </Grid>
         </Fragment>
       )}

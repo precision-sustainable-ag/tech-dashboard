@@ -23,7 +23,7 @@ const SensorVisuals = (props) => {
   const { isDarkTheme, type } = props;
   const { location } = useHistory();
 
-  const displayTitle = type === 'watersensors' ? 'Water Sensors' : 'Stress Cams';
+  const displayTitle = type === "decompbags" ? 'Decomp Bags' : (type === 'watersensors' ? 'Water Sensors' : 'Stress Cams');
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [years, setYears] = useState([]);
