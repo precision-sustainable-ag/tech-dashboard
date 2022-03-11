@@ -173,8 +173,9 @@ const DecompBag = () => {
               exportFileName: 'Site Information',
               addRowPosition: 'last',
               exportAllData: false,
-              pageSizeOptions: [20, 50, 100, data.length],
-              pageSize: 20,
+              // pageSizeOptions: [20, 50, 100, data.length],
+              // pageSize: 20,
+              paging: false,
               groupRowSeparator: '  ',
               grouping: true,
               headerStyle: {
