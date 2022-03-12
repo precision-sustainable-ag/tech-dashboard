@@ -21,7 +21,8 @@ const stressCamAPIEndpoint = onfarmAPI + `/raw?table=site_information&output=jso
 
 const SensorVisuals = (props) => {
   const { isDarkTheme, type } = props;
-  const { location } = useHistory();
+  const history = useHistory();
+  const location = history.location;
 
   const displayTitle = type === "decompbags" ? 'Decomp Bags' : (type === 'watersensors' ? 'Water Sensors' : 'Stress Cams');
   const [loading, setLoading] = useState(false);
@@ -44,7 +45,6 @@ const SensorVisuals = (props) => {
       return { active: year === yearInfo.year, year: yearInfo.year };
     });
     const sortedNewYears = newYears.sort((a, b) => b.year - a.year);
-
     setYears(sortedNewYears);
   };
 
@@ -197,11 +197,16 @@ const SensorVisuals = (props) => {
             .sort((a, b) => b - a)
             .map((y) => {
               if (location.state) {
-                if (location.state.year)
+                if (location.state.previousState.year)
+                  return {
+                    year: y,
+                    active: location.state.previousState.year === y,
+                  };
+                else if (location.state.year)
                   return {
                     year: y,
                     active: location.state.year === y,
-                  };
+                  }; 
                 else
                   return {
                     year: y,
