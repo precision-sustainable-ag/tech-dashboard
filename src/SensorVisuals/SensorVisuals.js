@@ -244,6 +244,12 @@ const SensorVisuals = (props) => {
     fetchData(state.userInfo.apikey);
   }, [state.userInfo.apikey, type, location.state, data.length]);
 
+  useEffect(() => {
+    return () => {
+      setData([]);
+    };
+  }, [location]);
+
   const activeData = useMemo(() => {
     const activeYear = years.reduce((acc, curr) => {
       if (curr.active) {
