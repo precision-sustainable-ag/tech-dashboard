@@ -127,6 +127,14 @@ const DecompBag = () => {
     if (!state.userInfo.apikey) return false;
 
     fetchData(state.userInfo.apikey);
+
+    return (() => {
+      const location = {
+        ...history.location,
+        state: {previousState: originalData}
+      };
+      history.push(location);
+    });
   }, []);
 
   const height = window.innerHeight;
