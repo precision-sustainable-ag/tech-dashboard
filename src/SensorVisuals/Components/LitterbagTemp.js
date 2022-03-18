@@ -32,11 +32,16 @@ const chartOptions = {
     min: 0,
     max: 50,
   },
+  boost: {
+    useGPUTranslations: true,
+    seriesThreshold: 100
+  },
 
   series: [
     {
       name: 'vwc',
       data: [],
+      boostThreshold: 100,
       tooltip: {
         pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>',
       },
