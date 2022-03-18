@@ -55,9 +55,14 @@ const SDSpaceChart = (props) => {
                 }
             }
         },
+
+        boost: {
+            useGPUTranslations: true,
+            seriesThreshold: 100
+        },
     
         colors: ['#06C', '#036', '#000', '#6CF', '#39F', ],
-        series: [{name: data[0].code, data: sdSpaceChartData}]
+        series: [{name: data[0].code, boostThreshold: 100, data: sdSpaceChartData}]
       };
 
     return <HighchartsReact highcharts={Highcharts} options={chartOptions} />;
