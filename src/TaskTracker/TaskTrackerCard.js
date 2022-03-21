@@ -34,22 +34,47 @@ const TaskTrackerCard = ({ title, table, year, affiliation, code, time, complete
         .then((response) => {
           const map = new Map();
           for (let item = 0; item < response.length; item++) {
+            // If the complete count response is some combination of -1 and +1, the chip should be green.
+            //  If there's any 0 and 1/-1 combo, yellow, and if all 0, gray.
             if (map.has(response[item].code)) {
-              response[item].bgcolor = 'yellow';
-              response[item].col = 'black';
-              response.splice(map.get(response[item].code), 1);
-              item--;
+              let flagAndItem = map.get(response[item].code);
+              if (flagAndItem[1] == '0' || response[item].flag == '0') {
+                response[flagAndItem[0]].bgcolor = 'yellow';
+                response[flagAndItem[0]].col = 'black';
+                if (flagAndItem[1] == '-1') {
+                  response[flagAndItem[0]].flag = response[item].flag;
+                }
+                response.splice(item, 1);
+                item--;
+              } else if (flagAndItem[1] == '-1' || response[item].flag == '-1') {
+                response[flagAndItem[0]].bgcolor = 'green';
+                response[flagAndItem[0]].col = 'white';
+                if (flagAndItem[1] == '-1') {
+                  response[flagAndItem[0]].flag = response[item].flag;
+                }
+                response.splice(item, 1);
+                item--;
+              }
             } else {
               if (response[item].flag == '1') {
                 response[item].bgcolor = 'green';
                 response[item].col = 'white';
+                map.set(response[item].code, [item, response[item].flag]);
               } else if (response[item].flag == '0') {
                 response[item].bgcolor = 'gray';
                 response[item].col = 'black';
+                map.set(response[item].code, [item, response[item].flag]);
               } else if (response[item].flag == '-1') {
-                response.splice(item, 1);
+                map.set(response[item].code, [item, response[item].flag]);
+                console.log(1);
               }
-              map.set(response[item].code, item);
+            }
+          }
+          // Remove codes with flag -1.
+          for (let item = 0; item < response.length; item++) {
+            if (response[item].flag == '-1') {
+              response.splice(item, 1);
+              item--;
             }
           }
           map.clear();
