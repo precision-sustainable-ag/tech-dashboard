@@ -197,6 +197,7 @@ const AllDataTable = (props) => {
                   console.log('Check API');
                 }
               });
+            setValuesEdited(false);
           });
         }
       }
@@ -595,6 +596,7 @@ const AllDataTable = (props) => {
           open={reassignSiteModalOpen}
           handleEditModalClose={handleReassignSiteModalClose}
           data={reassignSiteModalData}
+          setValuesEdited={setValuesEdited}
         />
         <UnenrollSiteModal
           open={unenrollOpen}
