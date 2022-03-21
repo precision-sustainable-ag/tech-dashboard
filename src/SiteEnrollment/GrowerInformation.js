@@ -378,7 +378,7 @@ const GrowerInformation = ({
                     .then(() => {
                       setSnackbarData({
                         open: true,
-                        text: `Updated grower successfully`,
+                        text: `Updated grower successfully. Please edit the site information if necessary.`,
                         severity: 'success',
                       });
                     })
