@@ -70,7 +70,7 @@ const TaskTrackerCard = ({ title, table, year, affiliation, code, time, complete
               }
             }
           }
-          // Remove codes with flag -1.
+          // Remove codes with flag '-1'.
           for (let item = 0; item < response.length; item++) {
             if (response[item].flag == '-1') {
               response.splice(item, 1);
