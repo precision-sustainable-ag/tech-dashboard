@@ -260,6 +260,7 @@ const EnrollNewSite = (props) => {
             year={props.year}
             affiliation={props.affiliation}
             closeModal={props.closeModal}
+            setValuesEdited={props.setValuesEdited}
           />
         )}
 
@@ -291,6 +292,7 @@ EnrollNewSite.propTypes = {
   year: PropTypes.any,
   affiliation: PropTypes.string,
   closeModal: PropTypes.func,
+  setValuesEdited: PropTypes.func,
 };
 
 // Helper functions

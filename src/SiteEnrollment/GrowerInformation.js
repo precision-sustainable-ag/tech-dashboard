@@ -58,6 +58,7 @@ const GrowerInformation = ({
   year,
   affiliation,
   closeModal,
+  setValuesEdited,
 }) => {
   const [growerType, setGrowerType] = useState('existing');
   const [growerLastNameSearch, setGrowerLastNameSearch] = useState('');
@@ -389,7 +390,10 @@ const GrowerInformation = ({
                       });
                     })
                     .finally(() => {
-                      setTimeout(() => closeModal(), 2500);
+                      setTimeout(() => {
+                        closeModal();
+                        setValuesEdited(true);
+                      }, 2500);
                     });
                 }}
                 color="primary"
@@ -622,6 +626,7 @@ GrowerInformation.propTypes = {
   year: PropTypes.any,
   affiliation: PropTypes.string,
   closeModal: PropTypes.func,
+  setValuesEdited: PropTypes.func,
 };
 
 ExistingGrowersGrid.propTypes = {
