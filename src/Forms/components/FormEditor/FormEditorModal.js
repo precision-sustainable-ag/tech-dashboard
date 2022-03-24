@@ -130,23 +130,6 @@ const FormEditorModal = (props) => {
                   {JSON.stringify(slimRecord, undefined, 2)}
                 </SyntaxHighlighter>
               </Grid>
-              <Grid item>
-                <Typography variant="h4">Table Parsing Status</Typography>
-              </Grid>
-              {JSON.parse(editingLists.table_names).map((table, index) => {
-                return (
-                  <Grid item key={index}>
-                    <Typography>
-                      {failedTables.includes(table) || noProducer || noFarmCode ? (
-                        <Error color="error" />
-                      ) : (
-                        <CheckCircle color="primary" />
-                      )}{' '}
-                      {table}
-                    </Typography>
-                  </Grid>
-                );
-              })}
             </Grid>
           </Grid>
           <Grid item>
@@ -248,6 +231,23 @@ const FormEditorModal = (props) => {
             )}
           </Grid>
           <Grid item container spacing={1}>
+            <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+              <Typography variant="h4">Table Parsing Status</Typography>
+            </Grid>
+            {JSON.parse(editingLists.table_names).map((table, index) => {
+              return (
+                <Grid item key={index} xs={12} sm={12} md={12} lg={12} xl={12}>
+                  <Typography>
+                    {failedTables.includes(table) || noProducer || noFarmCode ? (
+                      <Error color="error" />
+                    ) : (
+                      <CheckCircle color="primary" />
+                    )}{' '}
+                    {table}
+                  </Typography>
+                </Grid>
+              );
+            })}
             <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
               <Typography variant="h4">Table Parsing Errors</Typography>
             </Grid>
