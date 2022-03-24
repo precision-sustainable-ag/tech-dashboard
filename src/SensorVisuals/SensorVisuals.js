@@ -252,6 +252,7 @@ const SensorVisuals = (props) => {
   useEffect(() => {
     return () => {
       setData([]);
+      setCodeSearchText('');
     };
   }, [location]);
 
