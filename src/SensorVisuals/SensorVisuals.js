@@ -224,10 +224,10 @@ const SensorVisuals = (props) => {
 
           const uniqueAffiliations = Object.keys(groupBy(response, 'affiliation'))
             // .sort((a, b) => b - a)
-            .map((a,i) => {
+            .map((a) => {
               return {
                 affiliation: a,
-                active: i === 0,
+                active: false,
               };
             });
 
@@ -252,6 +252,7 @@ const SensorVisuals = (props) => {
   useEffect(() => {
     return () => {
       setData([]);
+      setCodeSearchText('');
     };
   }, [location]);
 
