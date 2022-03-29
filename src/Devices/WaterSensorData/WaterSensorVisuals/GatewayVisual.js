@@ -57,9 +57,14 @@ const GatewayVisual = (props) => {
       verticalAlign: 'middle',
       borderWidth: 0,
     },
+    boost: {
+      useGPUTranslations: true,
+      seriesThreshold: 100
+    },
     series: [
       {
         name: 'Battery Voltage',
+        boostThreshold: 100,
         data: [],
         tooltip: {
           pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Voltage: <b>{point.y}</b><br/>',
@@ -90,10 +95,15 @@ const GatewayVisual = (props) => {
       verticalAlign: 'middle',
       borderWidth: 0,
     },
+    boost: {
+      useGPUTranslations: true,
+      seriesThreshold: 100
+    },
     series: [
       {
         name: 'Solar Current',
         data: [],
+        boostThreshold: 100,
         tooltip: {
           pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>',
         },

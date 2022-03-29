@@ -37,7 +37,7 @@ const VisualsByCode = () => {
 
   const [tdrData, setTdrData] = useState([]);
   const [value, setValue] = useState('1');
-  const [activeCharts, setActiveCharts] = useState('gateway');
+  const [activeCharts, setActiveCharts] = useState('vwc');
 
   const { getTokenSilently } = useAuth0();
 
@@ -250,12 +250,12 @@ const VisualsByCode = () => {
       case '1':
         // setData(validData);
         // setFormType("valid");
-        setActiveCharts('gateway');
+        setActiveCharts('vwc');
         break;
       case '2':
         // setData(invalidData);
         // setFormType("invalid");
-        setActiveCharts('vwc');
+        setActiveCharts('gateway');
         break;
       case '3':
         // setData(historyData);
@@ -385,8 +385,8 @@ const VisualsByCode = () => {
                   <TabContext value={value}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                       <TabList onChange={handleChange} aria-label="lab API tabs example">
-                        <Tab label="Gateway and Node" value="1" />
-                        <Tab label="VWC" value="2" />
+                        <Tab label="VWC" value="1" />
+                        <Tab label="Gateway and Node" value="2" />
                         <Tab label="Soil and Litterbag Temp" value="3" />
                       </TabList>
                     </Box>

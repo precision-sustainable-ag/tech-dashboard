@@ -24,7 +24,7 @@ const ProbabilitiesChart = (props) => {
     names = Object.keys(probabilitiesChartData);
 
     names.forEach((name) => {
-        seriesOptions.push({name: name, data: probabilitiesChartData[name]});
+        seriesOptions.push({name: name, boostThreshold: 100, data: probabilitiesChartData[name]});
     });
 
     const chartOptions = {
@@ -72,6 +72,11 @@ const ProbabilitiesChart = (props) => {
                 },
             }
         },
+
+        boost: {
+            useGPUTranslations: true,
+            seriesThreshold: 100
+        },
     
         series: seriesOptions,
     
@@ -89,7 +94,6 @@ const ProbabilitiesChart = (props) => {
                 }
             }]
         }
-    
     };
 
     return <HighchartsReact highcharts={Highcharts} options={chartOptions} />;

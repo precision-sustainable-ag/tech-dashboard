@@ -5,6 +5,7 @@ import { onfarmAPI } from '../utils/api_secret';
 import { Context } from '../Store/Store';
 import { CustomLoader } from '../utils/CustomComponents';
 import YearsChips from '../utils/YearsChips';
+import AffiliationsChips from '../utils/AffiliationsChips';
 import { groupBy } from '../utils/constants';
 import FarmCodeCard from './Components/FarmCodeCard';
 import { Search } from '@material-ui/icons';
@@ -28,7 +29,7 @@ const SensorVisuals = (props) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [years, setYears] = useState([]);
-  const [, setAffiliations] = useState([]);
+  const [affiliations, setAffiliations] = useState(['all']);
   const [state] = useContext(Context);
   const [codeSearchText, setCodeSearchText] = useState('');
 
@@ -222,15 +223,19 @@ const SensorVisuals = (props) => {
           setYears(uniqueYears);
 
           const uniqueAffiliations = Object.keys(groupBy(response, 'affiliation'))
-            .sort((a, b) => b - a)
-            .map((a, i) => {
+            // .sort((a, b) => b - a)
+            .map((a) => {
               return {
                 affiliation: a,
-                active: i === 0,
+                active: false,
               };
             });
 
-          setAffiliations(uniqueAffiliations);
+            const sortedUniqueAffiliations = uniqueAffiliations.sort((a, b) =>
+              b.affiliation < a.affiliation ? 1 : b.affiliation > a.affiliation ? -1 : 0,
+            );
+
+          setAffiliations(sortedUniqueAffiliations);
         } catch (e) {
           setYears([]);
           setAffiliations([]);
@@ -247,6 +252,7 @@ const SensorVisuals = (props) => {
   useEffect(() => {
     return () => {
       setData([]);
+      setCodeSearchText('');
     };
   }, [location]);
 
@@ -257,18 +263,31 @@ const SensorVisuals = (props) => {
       } else return acc;
     }, '');
 
-    // const activeAffiliation = affiliations.reduce((acc, curr, index, array) => {
-    //   if (curr.active) return curr.affiliation;
-    //   else return acc;
-    // }, "");
+    const activeAffiliation = affiliations.reduce((acc, curr) => {
+      if (curr.active) return curr.affiliation;
+      else return acc;
+    }, "");
+
     if (!codeSearchText) {
-      return data.filter((data) => data.year === activeYear);
+      if (activeAffiliation === '') {
+        return data.filter((data) => data.year === activeYear);
+      } else {
+        return data.filter((data) => data.year === activeYear && data.affiliation === activeAffiliation);
+      }
     } else {
-      return data.filter(
-        (data) => data.year === activeYear && data.code.includes(codeSearchText.toLowerCase()),
-      );
+      
+      if (activeAffiliation === '') {
+        return data.filter(
+          (data) => data.year === activeYear && data.code.includes(codeSearchText),
+        );
+      } else {
+        return data.filter(
+          (data) => data.year === activeYear && data.affiliation === activeAffiliation && data.code.includes(codeSearchText),
+        );
+      }
+      
     }
-  }, [years, data, codeSearchText]);
+  }, [years, data, affiliations, codeSearchText]);
 
   const activeYear = useMemo(() => {
     return years.reduce((acc, curr) => {
@@ -278,12 +297,37 @@ const SensorVisuals = (props) => {
     }, '');
   }, [years]);
 
+  // console.log('affiliations are -- ', affiliations);
+
+  const activeAffiliation = () => {
+    return (
+      affiliations
+        .filter((rec) => rec.active)
+        .map((rec) => rec.affiliation)
+        .toString() || 'all'
+    );
+  };
+
   // const activeAffiliation = useMemo(() => {
-  //   return affiliations.reduce((acc, curr, index, array) => {
+  //   return affiliations.reduce((acc, curr) => {
   //     if (curr.active) return curr.affiliation;
   //     else return acc;
   //   }, "");
   // }, [affiliations]);
+
+  const handleActiveAffiliation = (affiliation = 'all') => {
+    const newAffiliations = affiliations.map((rec) => {
+      return {
+        active: affiliation === rec.affiliation,
+        affiliation: rec.affiliation,
+      };
+    });
+    const sortedNewAffiliations = newAffiliations.sort((a, b) =>
+      b.affiliation < a.affiliation ? 1 : b.affiliation > a.affiliation ? -1 : 0,
+    );
+
+    setAffiliations(sortedNewAffiliations);
+  };
 
   return loading && data.length === 0 ? (
     <CustomLoader />
@@ -294,8 +338,23 @@ const SensorVisuals = (props) => {
       </Grid>
       <Grid item container justifyContent="space-between" spacing={2}>
         <Grid item container spacing={2} xs={12} md={6} lg={9}>
+          <Grid item sm={2} md={1} xs={12}>
+            <Typography variant="body1">Years</Typography>
+          </Grid>
           <YearsChips years={years} handleActiveYear={handleActiveYear} />
         </Grid>
+        {affiliations.length > 1 && (
+        <Grid item container spacing={2} xs={12}>
+          <Grid item sm={2} md={1} xs={12}>
+            <Typography variant="body1">Affiliations</Typography>
+          </Grid>
+          <AffiliationsChips
+            activeAffiliation={activeAffiliation() || 'all'}
+            affiliations={affiliations}
+            handleActiveAffiliation={handleActiveAffiliation}
+          />
+        </Grid>
+        )}
         <Grid item container direction="row-reverse">
           <Grid item xs={12} md={6} lg={3}>
             <TextField
@@ -317,6 +376,7 @@ const SensorVisuals = (props) => {
             <FarmCodeCard
               code={entry.code}
               year={activeYear}
+              affiliation={activeAffiliation() || 'all'}
               color={entry.color}
               lastUpdated={entry.lastUpdated}
               data={data}

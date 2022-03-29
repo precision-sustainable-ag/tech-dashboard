@@ -15,7 +15,7 @@ import EnrollNewSite from '../SiteEnrollment/EnrollNewSite';
 const fullWidth = true;
 
 const ReassignDataModal = (props) => {
-  const open = props.open;
+  const { open, handleEditModalClose, data, setValuesEdited } = props;
 
   const [maxWidth, setMaxWidth] = useState('md');
 
@@ -26,7 +26,7 @@ const ReassignDataModal = (props) => {
   return (
     <Dialog
       open={open}
-      onClose={props.handleEditModalClose}
+      onClose={handleEditModalClose}
       aria-labelledby="form-dialog-title"
       fullWidth={fullWidth}
       maxWidth={maxWidth}
@@ -35,8 +35,8 @@ const ReassignDataModal = (props) => {
       <DialogTitle id="form-dialog-title">
         <Grid container justifyContent="space-between">
           <Grid item>
-            Site <mark>{props.data.code}</mark> of producer: <strong>{props.data.last_name}</strong>{' '}
-            [{props.data.producer_id}]
+            Site <mark>{data.code}</mark> of producer: <strong>{data.last_name}</strong> [
+            {data.producer_id}]
           </Grid>
           <Grid item>
             <Select
@@ -61,16 +61,17 @@ const ReassignDataModal = (props) => {
       <DialogContent>
         <EnrollNewSite
           editSite={true}
-          code={props.data.code}
-          producerId={props.data.producer_id}
-          year={props.data.year}
-          affiliation={props.data.affiliation}
-          closeModal={props.handleEditModalClose}
+          code={data.code}
+          producerId={data.producer_id}
+          year={data.year}
+          affiliation={data.affiliation}
+          closeModal={handleEditModalClose}
+          setValuesEdited={setValuesEdited}
         />
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={props.handleEditModalClose}
+          onClick={handleEditModalClose}
           color="primary"
           variant={window.localStorage.getItem('theme') === 'dark' ? 'contained' : 'text'}
         >

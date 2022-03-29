@@ -30,9 +30,13 @@ const Forms = ({ isDarkTheme }) => {
       getAllKoboAssets('psa')
         .then((response) => {
           const allForms = response.data.data.results;
-          const forms = allForms.filter(
-            (form) => !form.name.match(/^.*DEPRECATED*.$/gi) && !form.name.match(/^.*TESTING*.$/gi),
-          );
+          console.log(allForms);
+          const forms = allForms
+            .filter(
+              (form) =>
+                !form.name.match(/^.*DEPRECATED*.$/gi) && !form.name.match(/^.*TESTING*.$/gi),
+            )
+            .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
           setPsaForms(forms);
         })
         .then(() => {

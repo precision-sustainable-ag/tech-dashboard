@@ -52,10 +52,15 @@ const NodeSensorVisuals = (props) => {
       verticalAlign: 'middle',
       borderWidth: 0,
     },
+    boost: {
+      useGPUTranslations: true,
+      seriesThreshold: 100
+    },
     series: [
       {
         name: 'Battery Voltage',
         data: [],
+        boostThreshold: 100,
       },
     ],
   });
@@ -84,10 +89,15 @@ const NodeSensorVisuals = (props) => {
       verticalAlign: 'middle',
       borderWidth: 0,
     },
+    boost: {
+      useGPUTranslations: true,
+      seriesThreshold: 100
+    },
     series: [
       {
         name: 'Solar Current',
         data: [],
+        boostThreshold: 100
       },
     ],
   });
@@ -116,10 +126,15 @@ const NodeSensorVisuals = (props) => {
       verticalAlign: 'middle',
       borderWidth: 0,
     },
+    boost: {
+      useGPUTranslations: true,
+      seriesThreshold: 100
+    },
     series: [
       {
         name: 'Signal Strength',
         data: [],
+        boostThreshold: 100
       },
     ],
   });
@@ -149,10 +164,15 @@ const NodeSensorVisuals = (props) => {
       verticalAlign: 'middle',
       borderWidth: 0,
     },
+    boost: {
+      useGPUTranslations: true,
+      seriesThreshold: 100
+    },
     series: [
       {
         name: 'Sensor Depth',
         data: [],
+        boostThreshold: 100
       },
     ],
   });
@@ -182,10 +202,15 @@ const NodeSensorVisuals = (props) => {
       verticalAlign: 'middle',
       borderWidth: 0,
     },
+    boost: {
+      useGPUTranslations: true,
+      seriesThreshold: 100
+    },
     series: [
       {
         name: 'Soil Temperature',
         data: [],
+        boostThreshold: 100
       },
     ],
   });
@@ -215,10 +240,15 @@ const NodeSensorVisuals = (props) => {
       verticalAlign: 'middle',
       borderWidth: 0,
     },
+    boost: {
+      useGPUTranslations: true,
+      seriesThreshold: 100
+    },
     series: [
       {
         name: 'VWC',
         data: [],
+        boostThreshold: 100
       },
     ],
   });
@@ -248,10 +278,15 @@ const NodeSensorVisuals = (props) => {
       verticalAlign: 'middle',
       borderWidth: 0,
     },
+    boost: {
+      useGPUTranslations: true,
+      seriesThreshold: 100
+    },
     series: [
       {
         name: 'Permittivity',
         data: [],
+        boostThreshold: 100
       },
     ],
   });
@@ -281,10 +316,15 @@ const NodeSensorVisuals = (props) => {
       verticalAlign: 'middle',
       borderWidth: 0,
     },
+    boost: {
+      useGPUTranslations: true,
+      seriesThreshold: 100
+    },
     series: [
       {
         name: 'EC Bulk',
         data: [],
+        boostThreshold: 100
       },
     ],
   });
@@ -314,10 +354,15 @@ const NodeSensorVisuals = (props) => {
       verticalAlign: 'middle',
       borderWidth: 0,
     },
+    boost: {
+      useGPUTranslations: true,
+      seriesThreshold: 100
+    },
     series: [
       {
         name: 'EC Pore Water',
         data: [],
+        boostThreshold: 100
       },
     ],
   });

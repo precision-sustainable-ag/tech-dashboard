@@ -5,7 +5,7 @@ import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import docco from 'react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light';
 import dark from 'react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-dark';
 import { useAuth0 } from '../../../Auth/react-auth0-spa';
-import { Error } from '@material-ui/icons/';
+import { Error, CheckCircle } from '@material-ui/icons/';
 
 import EditableField from './EditableField';
 import { callAzureFunction } from './../../../utils/SharedFunctions';
@@ -102,6 +102,19 @@ const FormEditorModal = (props) => {
       }
     });
   };
+
+  const errors = JSON.parse(error[0]);
+  const failedTables = errors.map((err) => err.split('table ')[1]);
+  const noProducer = errors.find((element) => {
+    if (element.includes('producer with that email or phone does not exist')) {
+      return true;
+    }
+  });
+  const noFarmCode = errors.find((element) => {
+    if (element.includes('No farm code')) {
+      return true;
+    }
+  });
 
   return typeof modalOpen === 'boolean' && modalOpen ? (
     <Dialog open={modalOpen} aria-labelledby="form-dialog-title" fullWidth={true} maxWidth="xl">
@@ -218,18 +231,39 @@ const FormEditorModal = (props) => {
             )}
           </Grid>
           <Grid item container spacing={1}>
-            <Grid item>
-              <Error color="error" />
+            <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+              <Typography variant="h4">Table Parsing Status</Typography>
             </Grid>
-            <Grid item>
-              <Typography>See errors below</Typography>
+            {JSON.parse(editingLists.table_names).map((table, index) => {
+              return (
+                <Grid item key={index} xs={12} sm={12} md={12} lg={12} xl={12}>
+                  <Typography>
+                    {failedTables.includes(table) || noProducer || noFarmCode ? (
+                      <Error color="error" />
+                    ) : (
+                      <CheckCircle color="primary" />
+                    )}{' '}
+                    {table}
+                  </Typography>
+                </Grid>
+              );
+            })}
+            <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+              <Typography variant="h4">Table Parsing Errors</Typography>
             </Grid>
+            {JSON.parse(error[0]).map((err, index) => {
+              return (
+                <Grid item container spacing={1} key={index}>
+                  <Grid item>
+                    <Error color="error" />
+                  </Grid>
+                  <Grid item>
+                    <Typography>{`Error ${index}: ${err}`}</Typography>
+                  </Grid>
+                </Grid>
+              );
+            })}
             <Grid item container spacing={1}>
-              <Grid item>
-                {JSON.parse(error[0]).map((err, index) => {
-                  return <Typography key={index}>{`Error ${index}: ${err}`}</Typography>;
-                })}
-              </Grid>
               <Grid container spacing={2}>
                 <Grid item>
                   <Button

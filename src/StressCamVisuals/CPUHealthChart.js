@@ -55,9 +55,14 @@ const CPUHealthChart = (props) => {
                 }
             }
         },
+
+        boost: {
+            useGPUTranslations: true,
+            seriesThreshold: 100
+        },
     
         colors: ['#6CF', '#39F', '#06C', '#036', '#000'],
-        series: [{name: data[0].code, data: cpuChartData}]
+        series: [{name: data[0].code, boostThreshold: 100, data: cpuChartData}]
       };
 
     return <HighchartsReact highcharts={Highcharts} options={chartOptions} />;
