@@ -388,6 +388,18 @@ export default function Header(props) {
 
               <ListItem
                 button
+                to="/site-information/inactive-sites"
+                component={Link}
+                onClick={() => {
+                  setOpen(false);
+                  handleOpenAllDataNav();
+                }}
+              >
+                <ListItemText inset primary="Inactive Sites" />
+              </ListItem>
+
+              <ListItem
+                button
                 to="/site-information/farm-dates"
                 component={Link}
                 onClick={() => {
