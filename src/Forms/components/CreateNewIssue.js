@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Button, Tooltip } from '@material-ui/core';
 import { QuestionAnswer } from '@material-ui/icons';
-import IssueDialogue from '../../Comments/IssueDialogue';
+
 import PropTypes from 'prop-types';
 
+import { useAuth0 } from '../../Auth/react-auth0-spa';
+import { Context } from '../../Store/Store';
+import IssueDialogue from '../../Comments/IssueDialogue';
+
 const CreateNewIssue = (props) => {
-  let { issueData, index, user, affiliationLookup, setSnackbarData, formName, formType } = props;
+  let { issueData, index, setSnackbarData } = props;
+
+  const { user } = useAuth0();
+  const [state] = useContext(Context);
 
   const [showNewIssueDialog, setShowNewIssueDialog] = useState(false);
   const [newIssueData, setNewIssueData] = useState({});
@@ -39,15 +46,14 @@ const CreateNewIssue = (props) => {
           rowData={JSON.stringify(newIssueData, null, '\t')}
           dataType="json"
           setSnackbarData={setSnackbarData}
-          formName={formName}
-          affiliationLookup={affiliationLookup}
+          formName={state.formsData.name}
           closeDialogue={setShowNewIssueDialog}
           labels={[
             newIssueData._id.toString(),
-            affiliationLookup[newIssueData._submitted_by],
-            formName,
+            state.affiliationLookup[newIssueData._submitted_by],
+            state.formsData.name,
             'kobo-forms',
-            formType,
+            state.formsData.type,
           ]}
           setShowNewIssueDialog={setShowNewIssueDialog}
         />
@@ -61,10 +67,6 @@ const CreateNewIssue = (props) => {
 CreateNewIssue.propTypes = {
   issueData: PropTypes.any,
   index: PropTypes.number,
-  user: PropTypes.any,
-  affiliationLookup: PropTypes.object,
   setSnackbarData: PropTypes.func,
-  formName: PropTypes.any,
-  formType: PropTypes.string,
 };
 export default CreateNewIssue;
