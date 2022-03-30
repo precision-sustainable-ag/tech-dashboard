@@ -22,7 +22,7 @@ const FormEditor = (props) => {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingLists, setEditingLists] = useState([]);
-  const [buttonText, setButtonText] = useState('Edit Form');
+  const [buttonText, setButtonText] = useState('View errors and fix form');
   const [snackbarData, setSnackbarData] = useState({
     open: false,
     text: '',

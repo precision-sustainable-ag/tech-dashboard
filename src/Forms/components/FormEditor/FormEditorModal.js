@@ -5,6 +5,7 @@ import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import docco from 'react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light';
 import dark from 'react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-dark';
 import { Error, CheckCircle } from '@material-ui/icons/';
+import { Delete } from '@material-ui/icons';
 
 import EditableField from './EditableField';
 import { callAzureFunction } from './../../../utils/SharedFunctions';
@@ -24,9 +25,23 @@ const FormEditorModal = (props) => {
   const [deleteItemText, setDeleteItemText] = useState('');
   const [deleteButtonText, setDeleteButtonText] = useState('Delete this item');
   const [deleteIndex, setDeleteIndex] = useState(0);
+  const [removeText, setRemoveText] = useState('Errors can be dismissed');
+
+  const errors = JSON.parse(state.selectedFormData.error[0]);
+  const failedTables = errors.map((err) => err.split('table ')[1]);
+  const noProducer = errors.find((element) => {
+    if (element.includes('producer with that email or phone does not exist')) {
+      return true;
+    }
+  });
+  const noFarmCode = errors.find((element) => {
+    if (element.includes('No farm code')) {
+      return true;
+    }
+  });
 
   const handleCancel = () => {
-    setButtonText('Edit Form');
+    setButtonText('View errors and fix form');
     setEditedForm({ ...state.selectedFormData.slimRecord });
     toggleModalOpen();
   };
@@ -56,7 +71,7 @@ const FormEditorModal = (props) => {
   };
 
   const handleSubmit = () => {
-    setButtonText('Edit Form');
+    setButtonText('View errors and fix form');
     setSubmitText('Submitting form...');
     let data = {
       data: JSON.stringify(editedForm),
@@ -96,18 +111,40 @@ const FormEditorModal = (props) => {
     });
   };
 
-  const errors = JSON.parse(state.selectedFormData.error[0]);
-  const failedTables = errors.map((err) => err.split('table ')[1]);
-  const noProducer = errors.find((element) => {
-    if (element.includes('producer with that email or phone does not exist')) {
-      return true;
-    }
-  });
-  const noFarmCode = errors.find((element) => {
-    if (element.includes('No farm code')) {
-      return true;
-    }
-  });
+  const handleResolve = () => {
+    setRemoveText('Removing form...');
+    let data = {
+      uid: state.selectedFormData.uid,
+    };
+    callAzureFunction(data, 'RemoveForm', getTokenSilently).then((res) => {
+      toggleModalOpen();
+      setRemoveText('Errors can be dismissed');
+
+      if (res.response) {
+        if (res.response.status === 201) {
+          setSnackbarData({
+            open: true,
+            text: `Successfully removed form, check back in 5 minutes`,
+            severity: 'success',
+          });
+        } else {
+          console.log('Function could not remove form');
+          setSnackbarData({
+            open: true,
+            text: `Could not remove form (error code 0)`,
+            severity: 'error',
+          });
+        }
+      } else {
+        console.log('No response from function, likely cors');
+        setSnackbarData({
+          open: true,
+          text: `Could not remove form (error code 1)`,
+          severity: 'error',
+        });
+      }
+    });
+  };
 
   return typeof modalOpen === 'boolean' && modalOpen ? (
     <Dialog open={modalOpen} aria-labelledby="form-dialog-title" fullWidth={true} maxWidth="xl">
@@ -279,6 +316,19 @@ const FormEditorModal = (props) => {
                     onClick={handleSubmit}
                   >
                     {submitText}
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    color={isDarkTheme ? 'primary' : 'default'}
+                    aria-label={`All Forms`}
+                    tooltip="All Forms"
+                    size="small"
+                    startIcon={<Delete />}
+                    onClick={handleResolve}
+                  >
+                    {removeText}
                   </Button>
                 </Grid>
               </Grid>

@@ -314,17 +314,19 @@ const FormData = (props) => {
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
           <Typography variant="h5">Form name: {state.formsData.name}</Typography>
         </Grid>
-        <Box sx={{ width: '100%', typography: 'body1' }}>
-          <TabContext value={value}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-              <TabList onChange={handleChange} aria-label="lab API tabs example">
-                <Tab label="Valid Forms" value="1" />
-                <Tab label="Please Fix" value="2" />
-                <Tab label="Submission History" value="3" />
-              </TabList>
-            </Box>
-          </TabContext>
-        </Box>
+        {!fetching && (
+          <Box sx={{ width: '100%', typography: 'body1' }}>
+            <TabContext value={value}>
+              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <TabList onChange={handleChange} aria-label="lab API tabs example">
+                  <Tab label="Valid Forms" value="1" />
+                  <Tab label="Please Fix" value="2" />
+                  <Tab label="Submission History" value="3" />
+                </TabList>
+              </Box>
+            </TabContext>
+          </Box>
+        )}
         {state.loadingUser && fetching ? (
           <Grid item xs={12}>
             <Typography variant="h5">Fetching Data...</Typography>
