@@ -14,6 +14,25 @@ const initialState = {
   userRole: 'default',
   userInfo: {},
   loadingUser: true,
+  affiliationLookup: {},
+  formsData: {
+    name: '',
+    type: '',
+    data: [],
+    invalidData: [],
+    validData: [],
+    historyData: [],
+    originalData: {
+      validRecords: [],
+      invalidRecords: [],
+      historyRecords: [],
+    },
+  },
+  selectedFormData: {
+    slimRecord: {},
+    error: [],
+    uid: '',
+  },
 };
 
 // Default function

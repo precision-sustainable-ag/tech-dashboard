@@ -16,18 +16,9 @@ import { callAzureFunction } from '../../utils/SharedFunctions';
 SyntaxHighlighter.registerLanguage('json', json);
 
 const FormEntry = (props) => {
-  let {
-    record,
-    index,
-    isDarkTheme,
-    timezoneOffset,
-    user,
-    affiliationLookup,
-    setSnackbarData,
-    formName,
-    formType,
-  } = props;
+  let { record, index, isDarkTheme, setSnackbarData } = props;
   let slimRecord = record.data;
+  const timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
   let localTime = new Date(Date.parse(record.data._submission_time) - timezoneOffset);
   const submittedDate = localTime;
   const uid = record.uid;
@@ -85,7 +76,6 @@ const FormEntry = (props) => {
             year: 'numeric',
             hour: 'numeric',
             minute: 'numeric',
-            // timeZone: "UTC",
             timeZone: 'America/New_York',
           })}
         </Typography>
@@ -116,11 +106,7 @@ const FormEntry = (props) => {
             <CreateNewIssue
               issueData={record.data}
               index={index}
-              user={user}
-              affiliationLookup={affiliationLookup}
               setSnackbarData={setSnackbarData}
-              formName={formName}
-              formType={formType}
             />
           </Grid>
           {record.errs ? (
@@ -130,7 +116,6 @@ const FormEntry = (props) => {
                   isDarkTheme={isDarkTheme}
                   slimRecord={slimRecord}
                   error={record.errs}
-                  formName={formName}
                   uid={uid}
                 />
               </Grid>
@@ -151,12 +136,7 @@ const FormEntry = (props) => {
           ) : null}
         </Grid>
         {modalOpen && (
-          <Dialog
-            open={modalOpen}
-            aria-labelledby="form-dialog-title"
-            // fullWidth={true}
-            maxWidth="xl"
-          >
+          <Dialog open={modalOpen} aria-labelledby="form-dialog-title" maxWidth="xl">
             <DialogContent>
               <Grid container spacing={2}>
                 <Grid item>
@@ -202,11 +182,6 @@ FormEntry.propTypes = {
   index: PropTypes.number,
   isDarkTheme: PropTypes.bool,
   CreateNewIssue: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
-  timezoneOffset: PropTypes.number,
-  user: PropTypes.any,
-  affiliationLookup: PropTypes.object,
   setSnackbarData: PropTypes.func,
-  formName: PropTypes.string,
-  formType: PropTypes.string,
 };
 export default FormEntry;
