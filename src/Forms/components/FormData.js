@@ -10,7 +10,6 @@ import json from 'react-syntax-highlighter/dist/esm/languages/hljs/json';
 import { Link, useHistory } from 'react-router-dom';
 import { Context } from '../../Store/Store';
 import { fetchKoboPasswords } from '../../utils/constants';
-import PropTypes from 'prop-types';
 
 import RenderFormsData from './RenderFormsData';
 import { callAzureFunction } from './../../utils/SharedFunctions';
@@ -22,9 +21,7 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-const FormData = (props) => {
-  let { isDarkTheme } = props;
-
+const FormData = () => {
   const history = useHistory();
 
   const [fetching, setFetching] = useState(false);
@@ -275,7 +272,7 @@ const FormData = (props) => {
         <Grid item>
           <Button
             variant="contained"
-            color={isDarkTheme ? 'primary' : 'default'}
+            color={state.isDarkTheme ? 'primary' : 'default'}
             aria-label={`All Forms`}
             component={Link}
             tooltip="All Forms"
@@ -334,7 +331,6 @@ const FormData = (props) => {
         ) : (
           <RenderFormsData
             fetching={fetching}
-            isDarkTheme={isDarkTheme}
             allowedAccounts={allowedAccounts}
             setSnackbarData={setSnackbarData}
           />
@@ -345,7 +341,3 @@ const FormData = (props) => {
 };
 
 export default FormData;
-
-FormData.propTypes = {
-  isDarkTheme: PropTypes.bool,
-};

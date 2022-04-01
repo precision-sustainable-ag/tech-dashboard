@@ -13,8 +13,7 @@ import { Context } from '../../../Store/Store';
 import { useAuth0 } from '../../../Auth/react-auth0-spa';
 
 const FormEditorModal = (props) => {
-  let { isDarkTheme, modalOpen, toggleModalOpen, editingLists, setButtonText, setSnackbarData } =
-    props;
+  let { modalOpen, toggleModalOpen, editingLists, setButtonText, setSnackbarData } = props;
 
   const { getTokenSilently } = useAuth0();
   const [state] = useContext(Context);
@@ -156,7 +155,7 @@ const FormEditorModal = (props) => {
                 <Typography variant="h4">Original Form</Typography>
               </Grid>
               <Grid item>
-                <SyntaxHighlighter language="json" style={isDarkTheme ? dark : docco}>
+                <SyntaxHighlighter language="json" style={state.isDarkTheme ? dark : docco}>
                   {JSON.stringify(state.selectedFormData.slimRecord, undefined, 2)}
                 </SyntaxHighlighter>
               </Grid>
@@ -224,7 +223,7 @@ const FormEditorModal = (props) => {
                             <Grid item>
                               <Button
                                 variant="contained"
-                                color={isDarkTheme ? 'primary' : 'default'}
+                                color={state.isDarkTheme ? 'primary' : 'default'}
                                 aria-label={`All Forms`}
                                 tooltip="All Forms"
                                 size="small"
@@ -240,7 +239,7 @@ const FormEditorModal = (props) => {
                           <Grid item>
                             <Button
                               variant="contained"
-                              color={isDarkTheme ? 'primary' : 'default'}
+                              color={state.isDarkTheme ? 'primary' : 'default'}
                               aria-label={`All Forms`}
                               tooltip="All Forms"
                               size="small"
@@ -297,7 +296,7 @@ const FormEditorModal = (props) => {
                 <Grid item>
                   <Button
                     variant="contained"
-                    color={isDarkTheme ? 'primary' : 'default'}
+                    color={state.isDarkTheme ? 'primary' : 'default'}
                     aria-label={`All Forms`}
                     tooltip="All Forms"
                     size="small"
@@ -309,7 +308,7 @@ const FormEditorModal = (props) => {
                 <Grid item>
                   <Button
                     variant="contained"
-                    color={isDarkTheme ? 'primary' : 'default'}
+                    color={state.isDarkTheme ? 'primary' : 'default'}
                     aria-label={`All Forms`}
                     tooltip="All Forms"
                     size="small"
@@ -321,7 +320,7 @@ const FormEditorModal = (props) => {
                 <Grid item>
                   <Button
                     variant="contained"
-                    color={isDarkTheme ? 'primary' : 'default'}
+                    color={state.isDarkTheme ? 'primary' : 'default'}
                     aria-label={`All Forms`}
                     tooltip="All Forms"
                     size="small"
@@ -343,7 +342,6 @@ const FormEditorModal = (props) => {
 };
 
 FormEditorModal.propTypes = {
-  isDarkTheme: PropTypes.bool,
   modalOpen: PropTypes.bool,
   toggleModalOpen: PropTypes.func,
   editingLists: PropTypes.object,

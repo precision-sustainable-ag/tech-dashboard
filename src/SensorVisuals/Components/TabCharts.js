@@ -94,8 +94,6 @@ const TabCharts = (props) => {
 };
 
 TabCharts.propTypes = {
-  // type: PropTypes.oneOf(["watersensors", "stresscams"]).isRequired,
-  // isDarkTheme: PropTypes.bool.isRequired,
   value: PropTypes.string,
   handleChange: PropTypes.func,
   gatewayData: PropTypes.array,

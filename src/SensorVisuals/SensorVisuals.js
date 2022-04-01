@@ -21,11 +21,16 @@ const datesURL = onfarmAPI + `/raw?table=site_information`;
 const stressCamAPIEndpoint = onfarmAPI + `/raw?table=site_information&output=json`;
 
 const SensorVisuals = (props) => {
-  const { isDarkTheme, type } = props;
+  const { type } = props;
   const history = useHistory();
   const location = history.location;
 
-  const displayTitle = type === "decompbags" ? 'Decomp Bags' : (type === 'watersensors' ? 'Water Sensors' : 'Stress Cams');
+  const displayTitle =
+    type === 'decompbags'
+      ? 'Decomp Bags'
+      : type === 'watersensors'
+      ? 'Water Sensors'
+      : 'Stress Cams';
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [years, setYears] = useState([]);
@@ -184,11 +189,10 @@ const SensorVisuals = (props) => {
               setLoading(false);
               // response.splice(100);
               let responseWithFilter = response.filter((r) => {
-                return r.protocols_enrolled !== "-999";
+                return r.protocols_enrolled !== '-999';
               });
               setData(responseWithFilter);
             }
-            
           }
 
           const recs = groupBy(response, 'year');
@@ -207,7 +211,7 @@ const SensorVisuals = (props) => {
                   return {
                     year: y,
                     active: location.state.year === y,
-                  }; 
+                  };
                 else
                   return {
                     year: y,
@@ -231,9 +235,9 @@ const SensorVisuals = (props) => {
               };
             });
 
-            const sortedUniqueAffiliations = uniqueAffiliations.sort((a, b) =>
-              b.affiliation < a.affiliation ? 1 : b.affiliation > a.affiliation ? -1 : 0,
-            );
+          const sortedUniqueAffiliations = uniqueAffiliations.sort((a, b) =>
+            b.affiliation < a.affiliation ? 1 : b.affiliation > a.affiliation ? -1 : 0,
+          );
 
           setAffiliations(sortedUniqueAffiliations);
         } catch (e) {
@@ -266,26 +270,29 @@ const SensorVisuals = (props) => {
     const activeAffiliation = affiliations.reduce((acc, curr) => {
       if (curr.active) return curr.affiliation;
       else return acc;
-    }, "");
+    }, '');
 
     if (!codeSearchText) {
       if (activeAffiliation === '') {
         return data.filter((data) => data.year === activeYear);
       } else {
-        return data.filter((data) => data.year === activeYear && data.affiliation === activeAffiliation);
+        return data.filter(
+          (data) => data.year === activeYear && data.affiliation === activeAffiliation,
+        );
       }
     } else {
-      
       if (activeAffiliation === '') {
         return data.filter(
           (data) => data.year === activeYear && data.code.includes(codeSearchText),
         );
       } else {
         return data.filter(
-          (data) => data.year === activeYear && data.affiliation === activeAffiliation && data.code.includes(codeSearchText),
+          (data) =>
+            data.year === activeYear &&
+            data.affiliation === activeAffiliation &&
+            data.code.includes(codeSearchText),
         );
       }
-      
     }
   }, [years, data, affiliations, codeSearchText]);
 
@@ -344,16 +351,16 @@ const SensorVisuals = (props) => {
           <YearsChips years={years} handleActiveYear={handleActiveYear} />
         </Grid>
         {affiliations.length > 1 && (
-        <Grid item container spacing={2} xs={12}>
-          <Grid item sm={2} md={1} xs={12}>
-            <Typography variant="body1">Affiliations</Typography>
+          <Grid item container spacing={2} xs={12}>
+            <Grid item sm={2} md={1} xs={12}>
+              <Typography variant="body1">Affiliations</Typography>
+            </Grid>
+            <AffiliationsChips
+              activeAffiliation={activeAffiliation() || 'all'}
+              affiliations={affiliations}
+              handleActiveAffiliation={handleActiveAffiliation}
+            />
           </Grid>
-          <AffiliationsChips
-            activeAffiliation={activeAffiliation() || 'all'}
-            affiliations={affiliations}
-            handleActiveAffiliation={handleActiveAffiliation}
-          />
-        </Grid>
         )}
         <Grid item container direction="row-reverse">
           <Grid item xs={12} md={6} lg={3}>
@@ -380,7 +387,6 @@ const SensorVisuals = (props) => {
               color={entry.color}
               lastUpdated={entry.lastUpdated}
               data={data}
-              isDarkTheme={isDarkTheme}
               type={type}
               apiKey={state.userInfo.apikey}
             />
@@ -398,7 +404,6 @@ SensorVisuals.defaultProps = {
 
 SensorVisuals.propTypes = {
   type: PropTypes.oneOf(['watersensors', 'stresscams']).isRequired,
-  isDarkTheme: PropTypes.bool.isRequired,
 };
 
 export default SensorVisuals;
