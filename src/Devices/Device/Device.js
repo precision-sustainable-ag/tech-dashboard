@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Axios from 'axios';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 
@@ -50,7 +50,8 @@ import { ScrollTop, useInfiniteScroll } from '../../utils/CustomComponents';
 import Loading from 'react-loading';
 import StressCamButtons from './StressCamButtons';
 import { checkIfDeviceHasNickname } from '../../utils/constants';
-import { bool, any } from 'prop-types';
+import { any } from 'prop-types';
+import { Context } from '../../Store/Store';
 
 // import { theme } from "highcharts";
 
@@ -122,6 +123,8 @@ const DeviceComponent = (props) => {
   );
   const [chartRedirectYear, setChartRedirectYear] = useState(0);
   const [siteCode, setSiteCode] = useState('');
+
+  const [state] = useContext(Context);
 
   useEffect(() => {
     if (mostRecentData.length > 0) {
@@ -255,7 +258,7 @@ const DeviceComponent = (props) => {
         <Grid item xs={12}>
           <Button
             variant="contained"
-            color={props.isDarkTheme ? 'primary' : 'default'}
+            color={state.isDarkTheme ? 'primary' : 'default'}
             aria-label={`All Devices`}
             component={Link}
             tooltip="All Devices"
@@ -354,7 +357,7 @@ const DeviceComponent = (props) => {
                         ) : (
                           <SyntaxHighlighter
                             language="json"
-                            style={props.isDarkTheme ? dark : docco}
+                            style={state.isDarkTheme ? dark : docco}
                           >
                             {getDataFromJSON(data.data, 'dataString', props.location.state.for)}
                           </SyntaxHighlighter>
@@ -663,6 +666,5 @@ export default DeviceComponent;
 
 DeviceComponent.propTypes = {
   location: any,
-  isDarkTheme: bool,
   history: any,
 };

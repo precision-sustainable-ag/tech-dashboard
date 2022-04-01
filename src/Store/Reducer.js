@@ -29,6 +29,8 @@ const Reducer = (state, action) => {
       return setAffiliationLookup(state, action);
     case 'UPDATE_SNACKBAR_DATA':
       return updateSnackbarData(state, action);
+    case 'TOGGLE_IS_DARK_THEME':
+      return toggleIsDarkTheme(state);
     default:
       return { ...state };
   }
@@ -154,6 +156,13 @@ const updateSnackbarData = (state, action) => {
       text: action.data.snackbarText,
       severity: action.data.snackbarSeverity,
     },
+  };
+};
+
+const toggleIsDarkTheme = (state) => {
+  return {
+    ...state,
+    isDarkTheme: !state.isDarkTheme,
   };
 };
 

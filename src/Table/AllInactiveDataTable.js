@@ -19,7 +19,6 @@ import { onfarmAPI } from '../utils/api_secret';
 import { UserIsEditor } from '../utils/SharedFunctions';
 import MapModal from './MapModal';
 import { useAuth0 } from '../Auth/react-auth0-spa';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const siteInfoAPI_URL = `${onfarmAPI}/raw?output=json&table=site_information${
@@ -121,7 +120,7 @@ function Alert(props) {
  */
 
 // Default function
-const AllDataTable2 = (props) => {
+const AllDataTable2 = () => {
   const [state] = useContext(Context);
   const [showTable, setShowTable] = useState(false);
   const { user } = useAuth0();
@@ -138,11 +137,11 @@ const AllDataTable2 = (props) => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editModalData, setEditModalData] = useState({});
 
-//   const [reassignSiteModalOpen, setReassignSiteModalOpen] = useState(false);
-//   const [reassignSiteModalData, setReassignSiteModalData] = useState({});
+  //   const [reassignSiteModalOpen, setReassignSiteModalOpen] = useState(false);
+  //   const [reassignSiteModalData, setReassignSiteModalData] = useState({});
 
-//   const [unenrollRowData, setUnenrollRowData] = useState({});
-//   const [unenrollOpen, setUnenrollOpen] = useState(false);
+  //   const [unenrollRowData, setUnenrollRowData] = useState({});
+  //   const [unenrollOpen, setUnenrollOpen] = useState(false);
 
   const [valuesEdited, setValuesEdited] = useState(false);
   // const [siteRemoved, setSiteRemoved] = useState(false);
@@ -152,12 +151,12 @@ const AllDataTable2 = (props) => {
   const handleEditModalClose = () => {
     setEditModalOpen(!editModalOpen);
   };
-//   const handleUnenrollClose = () => {
-//     setUnenrollOpen(!unenrollOpen);
-//   };
-//   const handleReassignSiteModalClose = () => {
-//     setReassignSiteModalOpen(!reassignSiteModalOpen);
-//   };
+  //   const handleUnenrollClose = () => {
+  //     setUnenrollOpen(!unenrollOpen);
+  //   };
+  //   const handleReassignSiteModalClose = () => {
+  //     setReassignSiteModalOpen(!reassignSiteModalOpen);
+  //   };
 
   // fetch height from useWindowDimensions hook
   let height = window.innerHeight;
@@ -324,7 +323,7 @@ const AllDataTable2 = (props) => {
               size="small"
               variant="contained"
               startIcon={<Edit />}
-              color={props.isDarkTheme ? 'primary' : 'default'}
+              color={state.isDarkTheme ? 'primary' : 'default'}
               disabled={disabled}
               onClick={() => {
                 if (!disabled) {
@@ -354,7 +353,7 @@ const AllDataTable2 = (props) => {
           startIcon={<QuestionAnswer />}
           size="small"
           variant="contained"
-          color={props.isDarkTheme ? 'primary' : 'default'}
+          color={state.isDarkTheme ? 'primary' : 'default'}
           onClick={() => {
             setShowNewIssueDialog(true);
             setNewIssueData(rowData);
@@ -378,7 +377,7 @@ const AllDataTable2 = (props) => {
             disabled={latLongNotPresent}
             startIcon={<Search />}
             variant="contained"
-            color={props.isDarkTheme ? 'primary' : 'default'}
+            color={state.isDarkTheme ? 'primary' : 'default'}
             onClick={() => {
               if (!latLongNotPresent) {
                 setMapModalData([parseFloat(rowData.latitude), parseFloat(rowData.longitude)]);
@@ -578,11 +577,6 @@ const AllDataTable2 = (props) => {
   ) : (
     bannedRolesCheckMessage
   );
-};
-
-AllDataTable2.propTypes = {
-  /** Is dark theme enabled? */
-  isDarkTheme: PropTypes.bool.isRequired,
 };
 
 export default AllDataTable2;

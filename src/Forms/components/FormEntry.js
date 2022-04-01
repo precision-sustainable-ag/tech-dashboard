@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useContext } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 import docco from 'react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light';
 import dark from 'react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-dark';
@@ -8,16 +8,18 @@ import PropTypes from 'prop-types';
 
 import FormEditor from './FormEditor/FormEditor';
 import CreateNewIssue from './CreateNewIssue';
+import { Context } from '../../Store/Store';
 
 SyntaxHighlighter.registerLanguage('json', json);
 
 const FormEntry = (props) => {
-  let { record, index, isDarkTheme, setSnackbarData } = props;
+  let { record, index, setSnackbarData } = props;
   let slimRecord = record.data;
   const timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
   let localTime = new Date(Date.parse(record.data._submission_time) - timezoneOffset);
   const submittedDate = localTime;
   const uid = record.uid;
+  const [state] = useContext(Context);
 
   return (
     <Grid item container xs={12} spacing={1}>
@@ -32,7 +34,7 @@ const FormEntry = (props) => {
             timeZone: 'America/New_York',
           })}
         </Typography>
-        <SyntaxHighlighter language="json" style={isDarkTheme ? dark : docco}>
+        <SyntaxHighlighter language="json" style={state.isDarkTheme ? dark : docco}>
           {JSON.stringify(slimRecord, undefined, 2)}
         </SyntaxHighlighter>
       </Grid>
@@ -48,12 +50,7 @@ const FormEntry = (props) => {
           {record.errs ? (
             <Fragment>
               <Grid item>
-                <FormEditor
-                  isDarkTheme={isDarkTheme}
-                  slimRecord={slimRecord}
-                  error={record.errs}
-                  uid={uid}
-                />
+                <FormEditor slimRecord={slimRecord} error={record.errs} uid={uid} />
               </Grid>
             </Fragment>
           ) : null}
@@ -66,7 +63,6 @@ const FormEntry = (props) => {
 FormEntry.propTypes = {
   record: PropTypes.object,
   index: PropTypes.number,
-  isDarkTheme: PropTypes.bool,
   CreateNewIssue: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
   setSnackbarData: PropTypes.func,
 };

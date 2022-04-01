@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense, useContext } from 'react';
 import {
   makeStyles,
   Box,
@@ -69,6 +69,7 @@ import { apiPassword, apiUsername, onfarmAPI, onfarmStaticApiKey } from './utils
 import { apiCorsUrl, APIURL } from './Devices/hologramConstants';
 import QueryString from 'qs';
 import StressCamVisuals from './StressCamVisuals/StressCamVisuals';
+import { Context } from './Store/Store';
 
 // Helper function
 
@@ -168,6 +169,7 @@ function App() {
   const { loading, isAuthenticated, loginWithRedirect, getTokenSilently } = useAuth0();
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [, dispatch] = useContext(Context);
 
   const [theme, setTheme] = useState({
     palette: {
@@ -209,6 +211,10 @@ function App() {
         ...theme.palette,
         type: newPaletteType,
       },
+    });
+
+    dispatch({
+      type: 'TOGGLE_IS_DARK_THEME',
     });
   };
 
@@ -275,11 +281,7 @@ function App() {
     ) : isLoggedIn ? (
       <ThemeProvider theme={muiTheme}>
         <Container maxWidth={'xl'} className="mainContainer">
-          <Header
-            isDarkTheme={theme.palette.type === 'light' ? false : true}
-            setDarkTheme={toggleThemeDarkness}
-            isLoggedIn={isLoggedIn}
-          />
+          <Header setDarkTheme={toggleThemeDarkness} isLoggedIn={isLoggedIn} />
           {/* <DrawerComponent /> */}
 
           <Suspense fallback={<div>Loading...</div>}>
@@ -293,71 +295,38 @@ function App() {
                     //   {...props}
                     //   isDarkTheme={theme.palette.type === "light" ? false : true}
                     // />
-                    <TaskTimeline
-                      isDarkTheme={theme.palette.type === 'light' ? false : true}
-                      title="Task Timeline"
-                    />
+                    <TaskTimeline title="Task Timeline" />
                   )}
                   path="/"
                   exact
                 />
                 <PrivateRoute
                   path="/on-farm-protocols"
-                  render={() => (
-                    <Protocols
-                      isDarkTheme={theme.palette.type === 'light' ? false : true}
-                      title="On Farm Protocols"
-                    />
-                  )}
+                  render={() => <Protocols title="On Farm Protocols" />}
                 />
                 <PrivateRoute
                   path="/devices/stress-cams"
-                  render={() => (
-                    <StressCams
-                      isDarkTheme={theme.palette.type === 'light' ? false : true}
-                      title="Devices - Stress Cams"
-                    />
-                  )}
+                  render={() => <StressCams title="Devices - Stress Cams" />}
                 />
                 <PrivateRoute
                   path="/devices/water-sensors"
-                  render={() => (
-                    <WaterSensors
-                      isDarkTheme={theme.palette.type === 'light' ? false : true}
-                      title="Devices - Water Sensors"
-                    />
-                  )}
+                  render={() => <WaterSensors title="Devices - Water Sensors" />}
                 />
 
                 <PrivateRoute
                   path="/site-information/contact-enrollment"
-                  render={() => (
-                    <AllDataTable
-                      isDarkTheme={theme.palette.type === 'light' ? false : true}
-                      title="Contact Information and Site Enrollment"
-                    />
-                  )}
+                  render={() => <AllDataTable title="Contact Information and Site Enrollment" />}
                 />
 
                 <PrivateRoute
                   path="/site-information/inactive-sites"
-                  render={() => (
-                    <AllDataTable2
-                      isDarkTheme={theme.palette.type === 'light' ? false : true}
-                      title="Inactive Sites"
-                    />
-                  )}
+                  render={() => <AllDataTable2 title="Inactive Sites" />}
                 />
 
                 <PrivateRoute
                   path="/site-information/farm-dates"
                   exact
-                  render={() => (
-                    <FarmDates
-                      isDarkTheme={theme.palette.type === 'light' ? false : true}
-                      title="Farm Dates"
-                    />
-                  )}
+                  render={() => <FarmDates title="Farm Dates" />}
                 />
 
                 <PrivateRoute
@@ -378,42 +347,23 @@ function App() {
                 />
                 <PrivateRoute
                   path="/issues/:issueNumber"
-                  render={(props) => (
-                    <Issue
-                      {...props}
-                      isDarkTheme={theme.palette.type === 'light' ? false : true}
-                      title="Issue"
-                    />
-                  )}
+                  render={(props) => <Issue {...props} title="Issue" />}
                 />
                 <PrivateRoute path="/devices" component={DevicesWrapper} exact />
                 <PrivateRoute
                   path={`/devices/:deviceId`}
-                  render={(props) => (
-                    <DeviceComponent
-                      {...props}
-                      isDarkTheme={theme.palette.type === 'light' ? false : true}
-                      title="Device Data"
-                    />
-                  )}
+                  render={(props) => <DeviceComponent {...props} title="Device Data" />}
                 />
                 <PrivateRoute
                   path={`/kobo-forms/`}
                   exact
-                  render={(props) => (
-                    <Forms
-                      {...props}
-                      isDarkTheme={theme.palette.type === 'light' ? false : true}
-                      title="Kobo Forms"
-                    />
-                  )}
+                  render={(props) => <Forms {...props} title="Kobo Forms" />}
                 />
                 <PrivateRoute
                   path={`/kobo-forms/:formId`}
                   render={() => (
                     <FormData
                       // assetId={props}
-                      isDarkTheme={theme.palette.type === 'light' ? false : true}
                       title="Kobo Forms - Data"
                     />
                   )}
@@ -422,11 +372,7 @@ function App() {
                 <PrivateRoute
                   path={`/producers`}
                   render={(props) => (
-                    <ProducerInformation
-                      {...props}
-                      isDarkTheme={theme.palette.type === 'light' ? false : true}
-                      title="Producer Information"
-                    />
+                    <ProducerInformation {...props} title="Producer Information" />
                   )}
                 />
 
@@ -440,20 +386,10 @@ function App() {
 
                 <PrivateRoute
                   path={`/decomp-bags`}
-                  render={(props) => (
-                    <SensorVisuals
-                      isDarkTheme={theme.palette.type === 'light' ? false : true}
-                      type="decompbags"
-                      {...props}
-                    />
-                  )}
+                  render={(props) => <SensorVisuals type="decompbags" {...props} />}
                   exact
                 />
-                <PrivateRoute
-                  path={`/decomp-bags/:year/:code`}
-                  component={DecompBag}
-                  exact
-                />
+                <PrivateRoute path={`/decomp-bags/:year/:code`} component={DecompBag} exact />
 
                 <PrivateRoute path={`/debug`} render={(props) => <Debug {...props} />} exact />
 
@@ -461,13 +397,7 @@ function App() {
 
                 <PrivateRoute
                   path={`/sensor-visuals`}
-                  render={(props) => (
-                    <SensorVisuals
-                      isDarkTheme={theme.palette.type === 'light' ? false : true}
-                      type="watersensors"
-                      {...props}
-                    />
-                  )}
+                  render={(props) => <SensorVisuals type="watersensors" {...props} />}
                   exact
                 />
                 <PrivateRoute
@@ -480,13 +410,7 @@ function App() {
 
                 <PrivateRoute
                   path={`/stress-cam-visuals`}
-                  render={(props) => (
-                    <SensorVisuals
-                      isDarkTheme={theme.palette.type === 'light' ? false : true}
-                      type="stresscams"
-                      {...props}
-                    />
-                  )}
+                  render={(props) => <SensorVisuals type="stresscams" {...props} />}
                   exact
                 />
                 <PrivateRoute

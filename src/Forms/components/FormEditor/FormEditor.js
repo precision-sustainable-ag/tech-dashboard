@@ -15,10 +15,10 @@ function Alert(props) {
 }
 
 const FormEditor = (props) => {
-  let { isDarkTheme, slimRecord, error, uid } = props;
+  let { slimRecord, error, uid } = props;
 
   const { getTokenSilently } = useAuth0();
-  const [, dispatch] = useContext(Context);
+  const [state, dispatch] = useContext(Context);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingLists, setEditingLists] = useState([]);
@@ -71,7 +71,6 @@ const FormEditor = (props) => {
       </Snackbar>
       {modalOpen ? (
         <FormEditorModal
-          isDarkTheme={isDarkTheme}
           modalOpen={modalOpen}
           toggleModalOpen={toggleModalOpen}
           editingLists={editingLists}
@@ -81,7 +80,7 @@ const FormEditor = (props) => {
       ) : (
         <Button
           variant="contained"
-          color={isDarkTheme ? 'primary' : 'default'}
+          color={state.isDarkTheme ? 'primary' : 'default'}
           aria-label={`All Forms`}
           tooltip="All Forms"
           size="small"
@@ -96,7 +95,6 @@ const FormEditor = (props) => {
 };
 
 FormEditor.propTypes = {
-  isDarkTheme: PropTypes.bool,
   slimRecord: PropTypes.any,
   error: PropTypes.any,
   uid: PropTypes.any,

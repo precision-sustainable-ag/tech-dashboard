@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Typography, Card, CardContent, CardActionArea, useTheme } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { grey } from '@material-ui/core/colors';
+import { Context } from '../../Store/Store';
 
 const FarmCodeCard = (props) => {
-  let { code, year, affiliation, lastUpdated, data, color, isDarkTheme, type, apiKey } = props;
+  let { code, year, affiliation, lastUpdated, data, color, type, apiKey } = props;
   const theme = useTheme();
+  const [state] = useContext(Context);
 
-  if (color === 'default') color = isDarkTheme ? grey[700] : 'white';
+  if (color === 'default') color = state.isDarkTheme ? grey[700] : 'white';
 
   return (
     <Card
@@ -21,9 +23,18 @@ const FarmCodeCard = (props) => {
           enabled="false"
           style={{ height: '75px' }}
           to={{
-            pathname: type === "decompbags" ? `/decomp-bags/${year}/${code.toUpperCase()}` :
-              (type === 'watersensors' ? `/sensor-visuals/${year}/${code.toUpperCase()}` : `/stress-cam-visuals/${year}/${code.toUpperCase()}`),
-            state: { data: type === 'watersensors' ? data : { code: code, apiKey: apiKey, year: year, affiliation: affiliation } },
+            pathname:
+              type === 'decompbags'
+                ? `/decomp-bags/${year}/${code.toUpperCase()}`
+                : type === 'watersensors'
+                ? `/sensor-visuals/${year}/${code.toUpperCase()}`
+                : `/stress-cam-visuals/${year}/${code.toUpperCase()}`,
+            state: {
+              data:
+                type === 'watersensors'
+                  ? data
+                  : { code: code, apiKey: apiKey, year: year, affiliation: affiliation },
+            },
           }}
         >
           <CardContent style={{ height: '75px' }}>
@@ -61,9 +72,8 @@ FarmCodeCard.propTypes = {
   lastUpdated: PropTypes.any,
   data: PropTypes.any,
   color: PropTypes.any,
-  isDarkTheme: PropTypes.bool,
   type: PropTypes.string,
-  apiKey: PropTypes.string
+  apiKey: PropTypes.string,
 };
 
 export default FarmCodeCard;
