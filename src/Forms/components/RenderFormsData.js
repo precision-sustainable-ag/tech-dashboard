@@ -6,7 +6,7 @@ import { Context } from '../../Store/Store';
 import PropTypes from 'prop-types';
 
 const RenderFormsData = (props) => {
-  let { fetching, isDarkTheme, allowedAccounts, setSnackbarData } = props;
+  let { fetching, allowedAccounts, setSnackbarData } = props;
 
   const [state] = useContext(Context);
 
@@ -41,7 +41,6 @@ const RenderFormsData = (props) => {
               record={record}
               index={index}
               key={`record${index}`}
-              isDarkTheme={isDarkTheme}
               setSnackbarData={setSnackbarData}
             />
           );
@@ -52,7 +51,6 @@ const RenderFormsData = (props) => {
 
 RenderFormsData.propTypes = {
   fetching: PropTypes.bool,
-  isDarkTheme: PropTypes.bool,
   allowedAccounts: PropTypes.array,
   setSnackbarData: PropTypes.func,
 };

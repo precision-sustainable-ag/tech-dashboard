@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import Typography from '@material-ui/core/Typography';
 
@@ -9,13 +9,15 @@ import PropTypes from 'prop-types';
 import { IconButton, Grid, Tooltip } from '@material-ui/core';
 import './IssueBodyBubble.scss';
 import { format_AM_PM } from '../../utils/constants';
+import { Context } from '../../Store/Store';
 
 export const SingleIssueBodyBubble = ({
   issue: { username = 'TechDashboard-BOT', body = '', updated_at },
-  isDarkTheme = false,
 }) => {
   const justify = 'flex-start';
   const updateDate = new Date(updated_at);
+  const [state] = useContext(Context);
+
   return (
     <Grid container justifyContent={justify}>
       <Grid item>
@@ -34,7 +36,9 @@ export const SingleIssueBodyBubble = ({
           <Grid item>
             <Grid container style={{ padding: 0 }} justifyContent={justify} alignItems={justify}>
               <Grid item>
-                <div className={`chatBubbleBody ${justify} ${isDarkTheme ? `dark` : `light`}`}>
+                <div
+                  className={`chatBubbleBody ${justify} ${state.isDarkTheme ? `dark` : `light`}`}
+                >
                   <Typography
                     variant="body1"
                     component="div"
@@ -77,5 +81,4 @@ export const SingleIssueBodyBubble = ({
 
 SingleIssueBodyBubble.propTypes = {
   issue: PropTypes.object,
-  isDarkTheme: PropTypes.bool,
 };

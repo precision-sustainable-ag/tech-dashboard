@@ -19,7 +19,6 @@ const FarmDatesDropdown = ({ rowData, fetchFromApi, nickname, setSnackbarData })
             size="small"
             variant="contained"
             color="primary"
-            // color={props.props.isDarkTheme ? "primary" : "default"}
             onClick={() => {
               console.log('clicked');
               setShowIssue(!showIssue);

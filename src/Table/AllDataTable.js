@@ -21,7 +21,6 @@ import { onfarmAPI } from '../utils/api_secret';
 import { UserIsEditor } from '../utils/SharedFunctions';
 import MapModal from './MapModal';
 import { useAuth0 } from '../Auth/react-auth0-spa';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const siteInfoAPI_URL = `${onfarmAPI}/raw?output=json&table=site_information${
@@ -123,7 +122,7 @@ function Alert(props) {
  */
 
 // Default function
-const AllDataTable = (props) => {
+const AllDataTable = () => {
   const [state] = useContext(Context);
   const [showTable, setShowTable] = useState(false);
   const { user } = useAuth0();
@@ -327,7 +326,7 @@ const AllDataTable = (props) => {
               size="small"
               variant="contained"
               startIcon={<Edit />}
-              color={props.isDarkTheme ? 'primary' : 'default'}
+              color={state.isDarkTheme ? 'primary' : 'default'}
               disabled={disabled}
               onClick={() => {
                 if (!disabled) {
@@ -346,7 +345,7 @@ const AllDataTable = (props) => {
               size="small"
               variant="contained"
               startIcon={<Edit />}
-              color={props.isDarkTheme ? 'primary' : 'default'}
+              color={state.isDarkTheme ? 'primary' : 'default'}
               disabled={disabled}
               onClick={() => {
                 if (!disabled) {
@@ -365,7 +364,7 @@ const AllDataTable = (props) => {
               size="small"
               variant="contained"
               startIcon={<DeleteForever />}
-              color={props.isDarkTheme ? 'primary' : 'default'}
+              color={state.isDarkTheme ? 'primary' : 'default'}
               disabled={disabled}
               onClick={() => {
                 if (!disabled) {
@@ -395,7 +394,7 @@ const AllDataTable = (props) => {
           startIcon={<QuestionAnswer />}
           size="small"
           variant="contained"
-          color={props.isDarkTheme ? 'primary' : 'default'}
+          color={state.isDarkTheme ? 'primary' : 'default'}
           onClick={() => {
             setShowNewIssueDialog(true);
             setNewIssueData(rowData);
@@ -419,7 +418,7 @@ const AllDataTable = (props) => {
             disabled={latLongNotPresent}
             startIcon={<Search />}
             variant="contained"
-            color={props.isDarkTheme ? 'primary' : 'default'}
+            color={state.isDarkTheme ? 'primary' : 'default'}
             onClick={() => {
               if (!latLongNotPresent) {
                 setMapModalData([parseFloat(rowData.latitude), parseFloat(rowData.longitude)]);
@@ -631,11 +630,6 @@ const AllDataTable = (props) => {
   ) : (
     bannedRolesCheckMessage
   );
-};
-
-AllDataTable.propTypes = {
-  /** Is dark theme enabled? */
-  isDarkTheme: PropTypes.bool.isRequired,
 };
 
 export default AllDataTable;

@@ -6,6 +6,7 @@ import Reducer from './Reducer';
 
 const initialState = {
   loggedIn: false,
+  isDarkTheme: false,
   site_information: [],
   repositories: [],
   devices: [],

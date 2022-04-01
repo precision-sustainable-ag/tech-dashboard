@@ -11,10 +11,9 @@ import { bannedRoles } from '../utils/constants';
 import { BannedRoleMessage } from '../utils/CustomComponents';
 
 import FormsStatus from './components/FormsStatus';
-import PropTypes from 'prop-types';
 
 // Default function
-const Forms = ({ isDarkTheme }) => {
+const Forms = () => {
   const [isPSALoading, setIsPSALoading] = useState(true);
   const [showForms, setShowForms] = useState(false);
   const [state] = useContext(Context);
@@ -68,7 +67,7 @@ const Forms = ({ isDarkTheme }) => {
             {psaForms.map((form, index) =>
               form.name !== '' && form.deployment__active ? (
                 <Grid item xs={12} key={`psa-form-${index}`}>
-                  <Paper elevation={isDarkTheme ? 3 : 1}>
+                  <Paper elevation={state.isDarkTheme ? 3 : 1}>
                     <FormsStatus form={form} />
                   </Paper>
                 </Grid>
@@ -90,7 +89,3 @@ const Forms = ({ isDarkTheme }) => {
 };
 
 export default Forms;
-
-Forms.propTypes = {
-  isDarkTheme: PropTypes.bool,
-};

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   Button,
   TextField,
@@ -17,6 +17,7 @@ import { sendCommandToHologram } from '../../utils/SharedFunctions';
 import { getDeviceMessages } from '../../utils/SharedFunctions';
 import MuiAlert from '@material-ui/lab/Alert';
 import PropTypes from 'prop-types';
+import { Context } from '../../Store/Store';
 
 // Helper function
 function Alert(props) {
@@ -41,12 +42,13 @@ const StressCamButtons = (props) => {
     text: '',
     severity: 'success',
   });
+  const [state] = useContext(Context);
 
   const handleClose = () => {
     setOpen(false);
     setButtonsDisabled(false);
   };
-  const { deviceId, isDarkTheme } = props;
+  const { deviceId } = props;
   const sendShutdownMessage = () => {
     setOpen(false);
     sendCommandToHologram(deviceId, null, null, 'shutdown', null);
@@ -183,7 +185,7 @@ const StressCamButtons = (props) => {
               onClick={() => sendMessage('startCorn')}
               fullWidth
               variant="contained"
-              color={isDarkTheme ? 'primary' : 'default'}
+              color={state.isDarkTheme ? 'primary' : 'default'}
             >
               Start in Corn
             </ButtonWithTooltip>
@@ -199,7 +201,7 @@ const StressCamButtons = (props) => {
               onClick={() => sendMessage('startSoy')}
               fullWidth
               variant="contained"
-              color={isDarkTheme ? 'primary' : 'default'}
+              color={state.isDarkTheme ? 'primary' : 'default'}
             >
               Start in Soybean
             </ButtonWithTooltip>
@@ -209,7 +211,7 @@ const StressCamButtons = (props) => {
               disabled={buttonsDisabled}
               fullWidth
               variant="contained"
-              color={isDarkTheme ? 'primary' : 'default'}
+              color={state.isDarkTheme ? 'primary' : 'default'}
               onClick={() => sendMessage('stop')}
             >
               Stop
@@ -220,7 +222,7 @@ const StressCamButtons = (props) => {
               disabled={buttonsDisabled}
               fullWidth
               variant="contained"
-              color={isDarkTheme ? 'primary' : 'default'}
+              color={state.isDarkTheme ? 'primary' : 'default'}
               onClick={() => sendMessage('shutdown')}
             >
               Shutdown
@@ -258,5 +260,4 @@ export default StressCamButtons;
 
 StressCamButtons.propTypes = {
   deviceId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  isDarkTheme: PropTypes.bool,
 };
