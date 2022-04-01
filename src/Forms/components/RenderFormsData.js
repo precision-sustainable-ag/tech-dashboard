@@ -1,22 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Grid, Typography } from '@material-ui/core';
+
 import FormEntry from './FormEntry';
+import { Context } from '../../Store/Store';
 import PropTypes from 'prop-types';
 
 const RenderFormsData = (props) => {
-  let {
-    data,
-    fetching,
-    isDarkTheme,
-    timezoneOffset,
-    originalData,
-    allowedAccounts,
-    user,
-    affiliationLookup,
-    setSnackbarData,
-    formName,
-    formType,
-  } = props;
+  let { fetching, allowedAccounts, setSnackbarData } = props;
+
+  const [state] = useContext(Context);
 
   if (fetching)
     return (
@@ -24,7 +16,7 @@ const RenderFormsData = (props) => {
         <Typography variant="h5">Fetching Data...</Typography>
       </Grid>
     );
-  else if (data.length === 0 && originalData.length === 0)
+  else if (state.formsData.data.length === 0 && state.formsData.originalData.length === 0)
     return (
       <Grid item xs={12}>
         <Typography variant="h5">
@@ -41,21 +33,15 @@ const RenderFormsData = (props) => {
     return (
       <>
         <Grid item xs={12}>
-          <Typography variant="body1">{data.length} submissions</Typography>
+          <Typography variant="body1">{state.formsData.data.length} submissions</Typography>
         </Grid>
-        {data.map((record = {}, index) => {
+        {state.formsData.data.map((record = {}, index) => {
           return (
             <FormEntry
               record={record}
               index={index}
               key={`record${index}`}
-              isDarkTheme={isDarkTheme}
-              timezoneOffset={timezoneOffset}
-              user={user}
-              affiliationLookup={affiliationLookup}
               setSnackbarData={setSnackbarData}
-              formName={formName}
-              formType={formType}
             />
           );
         })}
@@ -64,16 +50,8 @@ const RenderFormsData = (props) => {
 };
 
 RenderFormsData.propTypes = {
-  data: PropTypes.array,
   fetching: PropTypes.bool,
-  isDarkTheme: PropTypes.bool,
-  timezoneOffset: PropTypes.number,
-  originalData: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   allowedAccounts: PropTypes.array,
-  user: PropTypes.object,
-  affiliationLookup: PropTypes.object,
   setSnackbarData: PropTypes.func,
-  formName: PropTypes.any,
-  formType: PropTypes.string,
 };
 export default RenderFormsData;

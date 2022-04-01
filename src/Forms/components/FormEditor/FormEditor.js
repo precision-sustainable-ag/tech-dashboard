@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Button, Snackbar } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
 import FormEditorModal from './FormEditorModal';
@@ -7,6 +7,7 @@ import { useAuth0 } from '../../../Auth/react-auth0-spa';
 import MuiAlert from '@material-ui/lab/Alert';
 
 import { callAzureFunction } from '../../../utils/SharedFunctions';
+import { Context } from '../../../Store/Store';
 
 // Helper function
 function Alert(props) {
@@ -14,13 +15,14 @@ function Alert(props) {
 }
 
 const FormEditor = (props) => {
-  let { isDarkTheme, slimRecord, error, formName, uid } = props;
+  let { slimRecord, error, uid } = props;
 
   const { getTokenSilently } = useAuth0();
+  const [state, dispatch] = useContext(Context);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingLists, setEditingLists] = useState([]);
-  const [buttonText, setButtonText] = useState('Edit Form');
+  const [buttonText, setButtonText] = useState('View errors and fix form');
   const [snackbarData, setSnackbarData] = useState({
     open: false,
     text: '',
@@ -28,7 +30,16 @@ const FormEditor = (props) => {
   });
 
   const toggleModalOpen = () => {
-    console.log('toggling modal');
+    dispatch({
+      type: 'UPDATE_SELECTED_FORM_DATA',
+      data: {
+        formType: 'valid',
+        formSlimRecord: slimRecord || [],
+        formError: error || [],
+        formUid: uid || [],
+      },
+    });
+
     setModalOpen(!modalOpen);
   };
 
@@ -60,21 +71,16 @@ const FormEditor = (props) => {
       </Snackbar>
       {modalOpen ? (
         <FormEditorModal
-          isDarkTheme={isDarkTheme}
           modalOpen={modalOpen}
           toggleModalOpen={toggleModalOpen}
-          slimRecord={slimRecord}
           editingLists={editingLists}
           setButtonText={setButtonText}
-          error={error}
-          formName={formName}
           setSnackbarData={setSnackbarData}
-          uid={uid}
         />
       ) : (
         <Button
           variant="contained"
-          color={isDarkTheme ? 'primary' : 'default'}
+          color={state.isDarkTheme ? 'primary' : 'default'}
           aria-label={`All Forms`}
           tooltip="All Forms"
           size="small"
@@ -89,10 +95,8 @@ const FormEditor = (props) => {
 };
 
 FormEditor.propTypes = {
-  isDarkTheme: PropTypes.bool,
   slimRecord: PropTypes.any,
   error: PropTypes.any,
-  formName: PropTypes.string,
   uid: PropTypes.any,
 };
 

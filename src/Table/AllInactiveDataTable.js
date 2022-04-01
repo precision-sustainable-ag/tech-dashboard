@@ -7,15 +7,13 @@ import Loading from 'react-loading';
 import { Grid, Typography, Button, Tooltip, Snackbar } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import MaterialTable from 'material-table';
-import { Edit, DeleteForever, Search, QuestionAnswer } from '@material-ui/icons';
+import { Edit, Search, QuestionAnswer } from '@material-ui/icons';
 
 // Local Imports
 import { Context } from '../Store/Store';
 import { bannedRoles } from '../utils/constants';
 import EditDataModal from './EditDataModal';
-import UnenrollSiteModal from './UnenrollSiteModal';
 import NewIssueModal from './NewIssueModal';
-import ReassignDataModal from './ReassignDataModal';
 import { BannedRoleMessage } from '../utils/CustomComponents';
 import { onfarmAPI } from '../utils/api_secret';
 import { UserIsEditor } from '../utils/SharedFunctions';
@@ -23,9 +21,11 @@ import MapModal from './MapModal';
 import { useAuth0 } from '../Auth/react-auth0-spa';
 import styled from 'styled-components';
 
-const siteInfoAPI_URL = `${onfarmAPI}/raw?output=json&table=site_information${
-  process.env.NODE_ENV === 'development' ? `&options=showtest` : ``
-}`;
+// const siteInfoAPI_URL = `${onfarmAPI}/raw?output=json&table=site_information${
+//   process.env.NODE_ENV === 'development' ? `&options=showtest, include_unenrolled_sites` : ``
+// }`;
+
+const siteInfoAPI_URL = `${onfarmAPI}/raw?output=json&table=site_information&options=include_unenrolled_sites`;
 
 const InnerTable = styled.table`
   border: 0;
@@ -122,7 +122,7 @@ function Alert(props) {
  */
 
 // Default function
-const AllDataTable = () => {
+const AllDataTable2 = () => {
   const [state] = useContext(Context);
   const [showTable, setShowTable] = useState(false);
   const { user } = useAuth0();
@@ -139,11 +139,11 @@ const AllDataTable = () => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editModalData, setEditModalData] = useState({});
 
-  const [reassignSiteModalOpen, setReassignSiteModalOpen] = useState(false);
-  const [reassignSiteModalData, setReassignSiteModalData] = useState({});
+  //   const [reassignSiteModalOpen, setReassignSiteModalOpen] = useState(false);
+  //   const [reassignSiteModalData, setReassignSiteModalData] = useState({});
 
-  const [unenrollRowData, setUnenrollRowData] = useState({});
-  const [unenrollOpen, setUnenrollOpen] = useState(false);
+  //   const [unenrollRowData, setUnenrollRowData] = useState({});
+  //   const [unenrollOpen, setUnenrollOpen] = useState(false);
 
   const [valuesEdited, setValuesEdited] = useState(false);
   // const [siteRemoved, setSiteRemoved] = useState(false);
@@ -153,12 +153,12 @@ const AllDataTable = () => {
   const handleEditModalClose = () => {
     setEditModalOpen(!editModalOpen);
   };
-  const handleUnenrollClose = () => {
-    setUnenrollOpen(!unenrollOpen);
-  };
-  const handleReassignSiteModalClose = () => {
-    setReassignSiteModalOpen(!reassignSiteModalOpen);
-  };
+  //   const handleUnenrollClose = () => {
+  //     setUnenrollOpen(!unenrollOpen);
+  //   };
+  //   const handleReassignSiteModalClose = () => {
+  //     setReassignSiteModalOpen(!reassignSiteModalOpen);
+  //   };
 
   // fetch height from useWindowDimensions hook
   let height = window.innerHeight;
@@ -202,7 +202,6 @@ const AllDataTable = () => {
                   console.log('Check API');
                 }
               });
-            setValuesEdited(false);
           });
         }
       }
@@ -289,7 +288,7 @@ const AllDataTable = () => {
       });
 
       let finalData = modifiedData.filter((data) => {
-        if (data.protocols_enrolled === '-999') {
+        if (data.protocols_enrolled !== '-999') {
           return false;
         } else return true;
       });
@@ -336,44 +335,6 @@ const AllDataTable = () => {
               }}
             >
               Edit Data
-            </Button>
-          </Tooltip>
-        </Grid>
-        <Grid item>
-          <Tooltip title="Reassign a new site">
-            <Button
-              size="small"
-              variant="contained"
-              startIcon={<Edit />}
-              color={state.isDarkTheme ? 'primary' : 'default'}
-              disabled={disabled}
-              onClick={() => {
-                if (!disabled) {
-                  setReassignSiteModalOpen(true);
-                  setReassignSiteModalData(rowData);
-                }
-              }}
-            >
-              Reassign Site
-            </Button>
-          </Tooltip>
-        </Grid>
-        <Grid item>
-          <Tooltip title="Unenroll this site">
-            <Button
-              size="small"
-              variant="contained"
-              startIcon={<DeleteForever />}
-              color={state.isDarkTheme ? 'primary' : 'default'}
-              disabled={disabled}
-              onClick={() => {
-                if (!disabled) {
-                  setUnenrollOpen(true);
-                  setUnenrollRowData(rowData);
-                }
-              }}
-            >
-              Unenroll
             </Button>
           </Tooltip>
         </Grid>
@@ -555,7 +516,7 @@ const AllDataTable = () => {
               ]}
               columns={tableHeaderOptions}
               data={tableData}
-              title="Contact and Location"
+              title="Inactive Sites-Contact and Location"
               options={{
                 defaultExpanded: true,
                 padding: 'default',
@@ -597,18 +558,6 @@ const AllDataTable = () => {
           valuesEdited={valuesEdited}
           setValuesEdited={setValuesEdited}
         />
-        <ReassignDataModal
-          open={reassignSiteModalOpen}
-          handleEditModalClose={handleReassignSiteModalClose}
-          data={reassignSiteModalData}
-          setValuesEdited={setValuesEdited}
-        />
-        <UnenrollSiteModal
-          open={unenrollOpen}
-          data={unenrollRowData}
-          handleUnenrollClose={handleUnenrollClose}
-          setValuesEdited={setValuesEdited}
-        />
         <NewIssueModal
           open={showNewIssueDialog}
           handleNewIssueDialogClose={() => {
@@ -632,4 +581,4 @@ const AllDataTable = () => {
   );
 };
 
-export default AllDataTable;
+export default AllDataTable2;

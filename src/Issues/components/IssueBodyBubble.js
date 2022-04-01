@@ -109,9 +109,6 @@ const IssueBubbleBody = ({ issueData, user }) => {
           </Grid>
           <Grid item>
             <Grid container style={{ padding: 0 }} justifyContent={justify} alignItems={justify}>
-              {/* ${justify} ${
-                    isDarkTheme ? `dark` : `light`
-                  }` */}
               <Grid item>
                 <ChatBubbleBody className={clsx(justify, {})}>
                   <Typography
@@ -162,6 +159,5 @@ export default IssueBubbleBody;
 
 IssueBubbleBody.propTypes = {
   issueData: PropTypes.any,
-  isDarkTheme: PropTypes.bool,
   user: PropTypes.object,
 };

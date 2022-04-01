@@ -10,7 +10,6 @@ import json from 'react-syntax-highlighter/dist/esm/languages/hljs/json';
 import { Link, useHistory } from 'react-router-dom';
 import { Context } from '../../Store/Store';
 import { fetchKoboPasswords } from '../../utils/constants';
-import PropTypes from 'prop-types';
 
 import RenderFormsData from './RenderFormsData';
 import { callAzureFunction } from './../../utils/SharedFunctions';
@@ -22,32 +21,19 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-const timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
-
-const FormData = (props) => {
-  let { isDarkTheme } = props;
-
-  const { user } = useAuth0();
+const FormData = () => {
   const history = useHistory();
 
-  const [data, setData] = useState([]);
-  const [validData, setValidData] = useState([]);
-  const [invalidData, setInvalidData] = useState([]);
-  const [historyData, setHistoryData] = useState([]);
-  const [originalData, setOriginalData] = useState([]);
   const [fetching, setFetching] = useState(false);
-  const [state] = useContext(Context);
+  const [state, dispatch] = useContext(Context);
   const [allowedAccounts, setAllowedAccounts] = useState([]);
   const [activeAccount, setActiveAccount] = useState('all');
   const { getTokenSilently } = useAuth0();
-  const [affiliationLookup, setAffiliationLookup] = useState({});
   const [snackbarData, setSnackbarData] = useState({
     open: false,
     text: '',
     severity: 'success',
   });
-  const [formType, setFormType] = useState('valid');
-  const [formName, setFormName] = useState('');
   const [value, setValue] = React.useState('1');
 
   const getHistory = async () => {
@@ -57,7 +43,12 @@ const FormData = (props) => {
     } else {
       name = '';
     }
-    setFormName(name);
+    dispatch({
+      type: 'UPDATE_FORM_NAME',
+      data: {
+        formName: name,
+      },
+    });
   };
 
   const fetchData = async () => {
@@ -124,14 +115,20 @@ const FormData = (props) => {
                 [],
               )
               .sort();
-            setAffiliationLookup({});
+            let affiliationLookup = {};
             data.forEach(function (item) {
               const kobo_account = item.kobo_account;
               const affiliation = item.state;
 
               let newLookup = affiliationLookup;
               newLookup[kobo_account] = affiliation;
-              setAffiliationLookup(newLookup);
+            });
+
+            dispatch({
+              type: 'SET_AFFILIATION_LOOKUP',
+              data: {
+                affiliationLookup: affiliationLookup,
+              },
             });
 
             setAllowedAccounts(allowedKoboAccounts);
@@ -169,14 +166,14 @@ const FormData = (props) => {
               allowedKoboAccounts.includes(rec.data._submitted_by),
             );
 
-            setData(validFilteredRecords || []);
-            setInvalidData(invalidFilteredRecords || []);
-            setValidData(validFilteredRecords || []);
-            setHistoryData(historyFilteredRecords || []);
-            setOriginalData({
-              validRecords: validFilteredRecords,
-              invalidRecords: invalidFilteredRecords,
-              historyRecords: historyFilteredRecords,
+            dispatch({
+              type: 'SET_FORMS_DATA',
+              data: {
+                formType: 'valid',
+                validFilteredRecords: validFilteredRecords || [],
+                invalidFilteredRecords: invalidFilteredRecords || [],
+                historyFilteredRecords: historyFilteredRecords || [],
+              },
             });
           })
           .then(() => setFetching(false));
@@ -188,22 +185,22 @@ const FormData = (props) => {
   useEffect(() => {
     const recalculate = async () => {
       return new Promise((resolve) => {
-        if (originalData) {
-          if (formType === 'valid') {
-            if (activeAccount === 'all') resolve(originalData.validRecords);
-            const filteredActive = originalData.validRecords.filter(
+        if (state.formsData.originalData) {
+          if (state.formsData.type === 'valid') {
+            if (activeAccount === 'all') resolve(state.formsData.originalData.validRecords);
+            const filteredActive = state.formsData.originalData.validRecords.filter(
               (data) => data.data._submitted_by === activeAccount,
             );
             resolve(filteredActive || []);
-          } else if (formType === 'invalid') {
-            if (activeAccount === 'all') resolve(originalData.invalidRecords);
-            const filteredActive = originalData.invalidRecords.filter(
+          } else if (state.formsData.type === 'invalid') {
+            if (activeAccount === 'all') resolve(state.formsData.originalData.invalidRecords);
+            const filteredActive = state.formsData.originalData.invalidRecords.filter(
               (data) => data.data._submitted_by === activeAccount,
             );
             resolve(filteredActive || []);
           } else {
-            if (activeAccount === 'all') resolve(originalData.historyRecords);
-            const filteredActive = originalData.historyRecords.filter(
+            if (activeAccount === 'all') resolve(state.formsData.originalData.historyRecords);
+            const filteredActive = state.formsData.originalData.historyRecords.filter(
               (data) => data.data._submitted_by === activeAccount,
             );
             resolve(filteredActive || []);
@@ -213,24 +210,45 @@ const FormData = (props) => {
     };
 
     recalculate().then((data) => {
-      setData(data);
+      dispatch({
+        type: 'UPDATE_FORMS_DATA',
+        data: {
+          formType: state.formsData.type,
+          formsData: data,
+        },
+      });
     });
-  }, [activeAccount, originalData, formType]);
+  }, [activeAccount, state.formsData.originalData, state.formsData.type]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
     switch (newValue) {
       case '1':
-        setData(validData);
-        setFormType('valid');
+        dispatch({
+          type: 'UPDATE_FORMS_DATA',
+          data: {
+            formsData: state.formsData.validData,
+            formType: 'valid',
+          },
+        });
         break;
       case '2':
-        setData(invalidData);
-        setFormType('invalid');
+        dispatch({
+          type: 'UPDATE_FORMS_DATA',
+          data: {
+            formsData: state.formsData.invalidData,
+            formType: 'invalid',
+          },
+        });
         break;
       case '3':
-        setData(historyData);
-        setFormType('history');
+        dispatch({
+          type: 'UPDATE_FORMS_DATA',
+          data: {
+            formsData: state.formsData.historyData,
+            formType: 'history',
+          },
+        });
         break;
       default:
         break;
@@ -254,7 +272,7 @@ const FormData = (props) => {
         <Grid item>
           <Button
             variant="contained"
-            color={isDarkTheme ? 'primary' : 'default'}
+            color={state.isDarkTheme ? 'primary' : 'default'}
             aria-label={`All Forms`}
             component={Link}
             tooltip="All Forms"
@@ -291,19 +309,21 @@ const FormData = (props) => {
           )}
         </Grid>
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-          <Typography variant="h5">Form name: {formName}</Typography>
+          <Typography variant="h5">Form name: {state.formsData.name}</Typography>
         </Grid>
-        <Box sx={{ width: '100%', typography: 'body1' }}>
-          <TabContext value={value}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-              <TabList onChange={handleChange} aria-label="lab API tabs example">
-                <Tab label="Valid Forms" value="1" />
-                <Tab label="Please Fix" value="2" />
-                <Tab label="Submission History" value="3" />
-              </TabList>
-            </Box>
-          </TabContext>
-        </Box>
+        {!fetching && (
+          <Box sx={{ width: '100%', typography: 'body1' }}>
+            <TabContext value={value}>
+              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <TabList onChange={handleChange} aria-label="lab API tabs example">
+                  <Tab label="Valid Forms" value="1" />
+                  <Tab label="Please Fix" value="2" />
+                  <Tab label="Submission History" value="3" />
+                </TabList>
+              </Box>
+            </TabContext>
+          </Box>
+        )}
         {state.loadingUser && fetching ? (
           <Grid item xs={12}>
             <Typography variant="h5">Fetching Data...</Typography>
@@ -311,16 +331,8 @@ const FormData = (props) => {
         ) : (
           <RenderFormsData
             fetching={fetching}
-            data={data}
-            originalData={originalData}
-            isDarkTheme={isDarkTheme}
             allowedAccounts={allowedAccounts}
-            user={user}
-            timezoneOffset={timezoneOffset}
-            affiliationLookup={affiliationLookup}
             setSnackbarData={setSnackbarData}
-            formName={formName}
-            formType={formType}
           />
         )}
       </Grid>
@@ -329,7 +341,3 @@ const FormData = (props) => {
 };
 
 export default FormData;
-
-FormData.propTypes = {
-  isDarkTheme: PropTypes.bool,
-};

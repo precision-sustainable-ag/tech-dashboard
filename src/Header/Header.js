@@ -254,7 +254,7 @@ export default function Header(props) {
             PSA Tech Dashboard
           </Typography>
           <IconButton color="inherit" onClick={toggleThemeDarkness}>
-            {props.isDarkTheme ? <BrightnessLow /> : <BrightnessHigh />}
+            {state.isDarkTheme ? <BrightnessLow /> : <BrightnessHigh />}
           </IconButton>
           {!props.isLoggedIn && (
             <IconButton
@@ -388,6 +388,18 @@ export default function Header(props) {
 
               <ListItem
                 button
+                to="/site-information/inactive-sites"
+                component={Link}
+                onClick={() => {
+                  setOpen(false);
+                  handleOpenAllDataNav();
+                }}
+              >
+                <ListItemText inset primary="Inactive Sites" />
+              </ListItem>
+
+              <ListItem
+                button
                 to="/site-information/farm-dates"
                 component={Link}
                 onClick={() => {
@@ -505,20 +517,20 @@ export default function Header(props) {
             {openNav.stressCams ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
           <Collapse in={openNav.stressCams} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-              {" "}
-            <ListItem
-              button
-              to="/devices/stress-cams"
-              component={Link}
-              onClick={() => {
-                setOpen(false);
-                handleOpenDevicesNav();
-              }}
-            >
-              <ListItemText inset primary="Device Status" />
-            </ListItem>
-            <ListItem
+            <List component="div" disablePadding>
+              {' '}
+              <ListItem
+                button
+                to="/devices/stress-cams"
+                component={Link}
+                onClick={() => {
+                  setOpen(false);
+                  handleOpenDevicesNav();
+                }}
+              >
+                <ListItemText inset primary="Device Status" />
+              </ListItem>
+              <ListItem
                 button
                 to="/stress-cam-visuals"
                 component={Link}
@@ -578,6 +590,5 @@ export default function Header(props) {
 
 Header.propTypes = {
   setDarkTheme: PropTypes.func,
-  isDarkTheme: PropTypes.bool,
   isLoggedIn: PropTypes.bool,
 };
