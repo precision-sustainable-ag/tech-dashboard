@@ -27,10 +27,10 @@ export default function SwitchesGroup({ setViewType }) {
   return (
     <FormControl component="fieldset" variant="standard">
       <FormGroup>
-        <div style={{display: 'block ruby'}}>
-            <div><Typography variant="body1">Global</Typography></div>
+        <div style={{display: 'flex'}}>
+            <div style={{padding: '6px'}}><Typography variant="body1">Global View</Typography></div>
             <WhiteSwitch defaultChecked onChange={handleChange} />
-            <div><Typography variant="body1">Home</Typography></div>
+            <div style={{padding: '6px'}}><Typography variant="body1">Home View</Typography></div>
         </div>
         
       </FormGroup>
