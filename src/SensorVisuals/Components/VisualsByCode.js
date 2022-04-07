@@ -349,7 +349,7 @@ const VisualsByCode = () => {
                 rowData={JSON.stringify(issueBody, null, '\t')}
                 dataType="json"
                 setSnackbarData={setSnackbarData}
-                labels={[code, 'tdr', 'water-sensor-visuals', codeData.affiliation]}
+                labels={[code, 'tdr', 'water-sensor-visuals', codeData.affiliation, activeCharts]}
                 getTokenSilently={getTokenSilently}
               />
             ) : (
