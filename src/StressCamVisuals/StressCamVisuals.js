@@ -54,8 +54,6 @@ const StressCamVisuals = (/* props */) => {
   let rep1BareData = stressCamData.filter((ele) => ele.subplot === 1 && ele.treatment === 'bare');
   let rep2BareData = stressCamData.filter((ele) => ele.subplot === 2 && ele.treatment === 'bare');
 
-  console.log(stressCamData);
-
   if (!doneFetching) {
     return (
       <Grid container spacing={3}>
