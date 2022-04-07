@@ -119,7 +119,7 @@ const Comments = (props) => {
 
   useEffect(() => {
     if (removeCommentText) {
-      setNewCommentBody('');
+      setNewCommentBody(defaultText);
       setRemoveCommentText(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
