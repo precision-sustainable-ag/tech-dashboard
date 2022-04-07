@@ -344,6 +344,7 @@ const VisualsByCode = () => {
           {showIssueDialog &&
             (issueBody ? (
               <IssueDialogue
+                defaultText="Make sure to include treatment, rep, which sensor(s)/depth(s) are problematic; etc. Include as much detail as possible."
                 nickname={user.nickname}
                 rowData={JSON.stringify(issueBody, null, '\t')}
                 dataType="json"

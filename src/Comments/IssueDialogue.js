@@ -12,7 +12,15 @@ const IssueDialogue = (props) => {
   });
   const [issueTitle, setIssueTitle] = useState('');
   const { getTokenSilently } = useAuth0();
-  const { nickname, labels, setSnackbarData, setShowNewIssueDialog, rowData, dataType } = props;
+  const {
+    nickname,
+    labels,
+    setSnackbarData,
+    setShowNewIssueDialog,
+    rowData,
+    dataType,
+    defaultText = '',
+  } = props;
 
   const alwaysTaggedPeople = ['brianwdavis', 'saseehav', nickname];
   const [personName] = useState(alwaysTaggedPeople);
@@ -109,6 +117,7 @@ const IssueDialogue = (props) => {
           removeCommentText={removeCommentText}
           setRemoveCommentText={setRemoveCommentText}
           setShowNewIssueDialog={setShowNewIssueDialog}
+          defaultText={defaultText}
         />
       </Grid>
     </Grid>
@@ -124,4 +133,5 @@ IssueDialogue.propTypes = {
   setShowNewIssueDialog: PropTypes.func,
   rowData: PropTypes.any,
   dataType: PropTypes.any,
+  defaultText: PropTypes.string,
 };

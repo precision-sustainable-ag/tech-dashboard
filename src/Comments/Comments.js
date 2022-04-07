@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import MDEditor, { commands } from '@uiw/react-md-editor';
 import React, { useState, useEffect } from 'react';
 import { PersonAdd, QuestionAnswer } from '@material-ui/icons';
@@ -50,7 +49,18 @@ const bodyFormatter = (dataType, rowData, newComment) => {
 };
 
 const Comments = (props) => {
-  const [newComment, setNewComment] = useState('');
+  const {
+    removeCommentText,
+    setRemoveCommentText,
+    dataType,
+    rowData,
+    handleNewComment,
+    buttonDisabled,
+    setShowNewIssueDialog,
+    defaultText,
+  } = props;
+
+  const [newComment, setNewComment] = useState(defaultText);
   const [searchUser, setSearchUser] = useState('');
   const [showUsersDialog, setShowUsersDialog] = useState(false);
   const [githubUsers, setGithubUsers] = useState([]);
@@ -106,7 +116,6 @@ const Comments = (props) => {
       setGithubUsers([]);
     };
   }, []);
-  const { removeCommentText, setRemoveCommentText } = props;
 
   useEffect(() => {
     if (removeCommentText) {
@@ -116,7 +125,7 @@ const Comments = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [removeCommentText]);
 
-  const body = bodyFormatter(props.dataType, props.rowData, newComment);
+  const body = bodyFormatter(dataType, rowData, newComment);
 
   return (
     <Grid container spacing={1}>
@@ -154,23 +163,23 @@ const Comments = (props) => {
                   variant="contained"
                   color="primary"
                   size="small"
-                  disabled={props.buttonDisabled}
+                  disabled={buttonDisabled}
                   onClick={() => {
-                    props.handleNewComment(body);
+                    handleNewComment(body);
                   }}
                 >
-                  {props.buttonDisabled ? 'Creating Comment' : 'Add Comment'}
+                  {buttonDisabled ? 'Creating Comment' : 'Add Comment'}
                 </Button>
               </Grid>
-              {props.setShowNewIssueDialog && (
+              {setShowNewIssueDialog && (
                 <Grid item>
                   <Button
                     variant="contained"
                     color="primary"
                     size="small"
-                    disabled={props.buttonDisabled}
+                    disabled={buttonDisabled}
                     onClick={() => {
-                      props.setShowNewIssueDialog(false);
+                      setShowNewIssueDialog(false);
                     }}
                   >
                     Cancel
@@ -243,4 +252,10 @@ export default Comments;
 Comments.propTypes = {
   removeCommentText: PropTypes.bool,
   setRemoveCommentText: PropTypes.func,
+  dataType: PropTypes.string,
+  rowData: PropTypes.onj,
+  handleNewComment: PropTypes.func,
+  buttonDisabled: PropTypes.bool,
+  setShowNewIssueDialog: PropTypes.func,
+  defaultText: PropTypes.string,
 };
