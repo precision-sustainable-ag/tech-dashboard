@@ -63,7 +63,7 @@ const StressCamVisuals = (/* props */) => {
   } else if (stressCamData.length === 0) {
     return (
       <Grid container spacing={3}>
-        No data available for this site
+        Sorry, no data available!
       </Grid>
     );
   } else {
