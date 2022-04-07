@@ -30,7 +30,7 @@ const Reducer = (state, action) => {
     case 'UPDATE_SNACKBAR_DATA':
       return updateSnackbarData(state, action);
     case 'TOGGLE_IS_DARK_THEME':
-      return toggleIsDarkTheme(state);
+      return toggleIsDarkTheme(state, action);
     default:
       return { ...state };
   }
@@ -159,10 +159,10 @@ const updateSnackbarData = (state, action) => {
   };
 };
 
-const toggleIsDarkTheme = (state) => {
+const toggleIsDarkTheme = (state, action) => {
   return {
     ...state,
-    isDarkTheme: !state.isDarkTheme,
+    isDarkTheme: action.data.isDarkTheme,
   };
 };
 

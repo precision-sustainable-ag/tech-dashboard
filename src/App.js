@@ -215,6 +215,9 @@ function App() {
 
     dispatch({
       type: 'TOGGLE_IS_DARK_THEME',
+      data: {
+        isDarkTheme: newPaletteType === 'light' ? false : true,
+      },
     });
   };
 
