@@ -258,7 +258,7 @@ const SensorVisuals = (props) => {
       setData([]);
       setCodeSearchText('');
     };
-  }, [location]);
+  }, [state.userInfo.apikey, location]);
 
   const activeData = useMemo(() => {
     const activeYear = years.reduce((acc, curr) => {
