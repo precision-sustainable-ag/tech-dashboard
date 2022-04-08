@@ -66,7 +66,6 @@ const TaskTrackerCard = ({ title, table, year, affiliation, code, time, complete
                 map.set(response[item].code, [item, response[item].flag]);
               } else if (response[item].flag == '-1') {
                 map.set(response[item].code, [item, response[item].flag]);
-                console.log(1);
               }
             }
           }
@@ -77,6 +76,27 @@ const TaskTrackerCard = ({ title, table, year, affiliation, code, time, complete
               item--;
             }
           }
+          if( table == 'decomp_biomass_fresh' || table == 'decomp_biomass_dry'){
+            if(time == '0') {
+              if( complete_col == 'empty_bag_wt' || complete_col == 'fresh_biomass_wt') {
+                for (let item = 0; item < response.length; item++) {
+                  if (response[item].protocols.decomp_biomass == 0) {
+                    response.splice(item, 1);
+                    item--;
+                  }
+                }
+              }
+            }
+            else if (time != '0' || time != '') {
+              for (let item = 0; item < response.length; item++) {
+                if (response[item].protocols.decomp_biomass == 0) {
+                  response.splice(item, 1);
+                  item--;
+                }
+              }
+            }
+          }
+
           map.clear();
           setCodes(response);
         })
