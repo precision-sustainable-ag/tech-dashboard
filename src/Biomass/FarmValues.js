@@ -78,14 +78,14 @@ const FarmValues = () => {
       const data = await response.json();
       return data;
     };
-    if (farmValues.length > 0) return false;
+    if (farmValues.length === 0) return;
 
     if (state.userInfo.apikey) {
       setFetching(true);
       fetchData(state.userInfo.apikey)
         .then((response) => {
           setFarmValues(response);
-
+          
           let allYears = response.map((record) => record.year);
           setFarmYears(uniqueYears(allYears));
 
