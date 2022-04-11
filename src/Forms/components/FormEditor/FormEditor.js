@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, Fragment } from 'react';
 import { Button, Snackbar } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
 import FormEditorModal from './FormEditorModal';
@@ -57,7 +57,7 @@ const FormEditor = (props) => {
   };
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Snackbar
         anchorOrigin={{
           vertical: 'bottom',
@@ -77,7 +77,7 @@ const FormEditor = (props) => {
           setButtonText={setButtonText}
           setSnackbarData={setSnackbarData}
         />
-      ) : (
+      ) : state.userInfo.view_type === 'home' ? (
         <Button
           variant="contained"
           color={state.isDarkTheme ? 'primary' : 'default'}
@@ -89,8 +89,10 @@ const FormEditor = (props) => {
         >
           {buttonText}
         </Button>
+      ) : (
+        <Fragment></Fragment>
       )}
-    </React.Fragment>
+    </Fragment>
   );
 };
 
