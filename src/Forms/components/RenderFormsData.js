@@ -16,7 +16,7 @@ const RenderFormsData = (props) => {
         <Typography variant="h5">Fetching Data...</Typography>
       </Grid>
     );
-  else if (state.formsData.data.length === 0 && state.formsData.originalData.length === 0)
+  else if (state.formsData.filteredData.length === 0 && state.formsData.originalData.length === 0)
     return (
       <Grid item xs={12}>
         <Typography variant="h5">
@@ -33,9 +33,9 @@ const RenderFormsData = (props) => {
     return (
       <>
         <Grid item xs={12}>
-          <Typography variant="body1">{state.formsData.data.length} submissions</Typography>
+          <Typography variant="body1">{state.formsData.filteredData.length} submissions</Typography>
         </Grid>
-        {state.formsData.data.map((record = {}, index) => {
+        {state.formsData.filteredData.map((record = {}, index) => {
           return (
             <FormEntry
               record={record}
