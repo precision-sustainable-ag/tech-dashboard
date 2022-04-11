@@ -91,7 +91,10 @@ const ProducerInformation = () => {
     let permissions = state.userInfo.permissions;
     const allowedPermissions = ['edit', 'update', 'all'];
 
-    return permissions.split(',').some((i) => allowedPermissions.includes(i));
+    return (
+      permissions.split(',').some((i) => allowedPermissions.includes(i)) &&
+      state.userInfo.view_type === 'home'
+    );
   };
 
   const { getTokenSilently } = useAuth0();
