@@ -78,14 +78,16 @@ const FarmValues = () => {
       const data = await response.json();
       return data;
     };
-    if (farmValues.length > 0) return false;
 
     if (state.userInfo.apikey) {
       setFetching(true);
       fetchData(state.userInfo.apikey)
         .then((response) => {
+          if (response.length === 0) {
+            throw new Error ('No data');
+          }
           setFarmValues(response);
-
+          
           let allYears = response.map((record) => record.year);
           setFarmYears(uniqueYears(allYears));
 
@@ -107,7 +109,9 @@ const FarmValues = () => {
           );
           setAffiliations(sortedAffiliations);
         })
-        .then(() => setFetching(false))
+        .then(() => {
+          setFetching(false);
+        })
         .catch((e) => {
           console.error(e);
           setFetching(false);

@@ -211,14 +211,14 @@ const FormData = () => {
 
     recalculate().then((data) => {
       dispatch({
-        type: 'UPDATE_FORMS_DATA',
+        type: 'UPDATE_FILTERED_FORMS_DATA',
         data: {
           formType: state.formsData.type,
           formsData: data,
         },
       });
     });
-  }, [activeAccount, state.formsData.originalData, state.formsData.type]);
+  }, [activeAccount, state.formsData.originalData, state.formsData.data, state.formsData.type]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);

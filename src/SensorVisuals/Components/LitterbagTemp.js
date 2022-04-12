@@ -34,7 +34,7 @@ const chartOptions = {
   },
   boost: {
     useGPUTranslations: true,
-    seriesThreshold: 100
+    seriesThreshold: 100,
   },
 
   series: [
@@ -58,7 +58,7 @@ const TempByLbs = () => {
 
   const waterAmbientSensorDataEndpoint =
     onfarmAPI +
-    `/soil_moisture?type=ambient&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,subplot,treatment,t_lb&location=true`;
+    `/soil_moisture?type=ambient&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,subplot,treatment,t_lb`;
 
   useEffect(() => {
     const setNodeData = async (apiKey) => {

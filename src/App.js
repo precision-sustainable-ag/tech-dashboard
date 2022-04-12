@@ -203,6 +203,15 @@ function App() {
   let muiTheme = createTheme(theme);
   muiTheme = responsiveFontSizes(muiTheme);
 
+  useEffect(() => {
+    dispatch({
+      type: 'TOGGLE_IS_DARK_THEME',
+      data: {
+        isDarkTheme: theme.palette.type === 'light' ? false : true,
+      },
+    });
+  }, []);
+
   const toggleThemeDarkness = () => {
     let newPaletteType = theme.palette.type === 'light' ? 'dark' : 'light';
     setTheme({
@@ -215,6 +224,9 @@ function App() {
 
     dispatch({
       type: 'TOGGLE_IS_DARK_THEME',
+      data: {
+        isDarkTheme: newPaletteType === 'light' ? false : true,
+      },
     });
   };
 

@@ -84,7 +84,7 @@ const SensorVisuals = (props) => {
           if (allResponses[key].length === 0) {
             responseArray[index] = {
               ...responseArray[index],
-              code: key,
+              code: key.toUpperCase(),
               color: deviceColors.default,
               lastUpdated: '',
             };
@@ -106,7 +106,7 @@ const SensorVisuals = (props) => {
             if (allResponses[key].length === 1) {
               responseArray[index] = {
                 ...responseArray[index],
-                code: key,
+                code: key.toUpperCase(),
                 color: deviceColors.oneSubplot,
                 lastUpdated: lastUpdatedString,
               };
@@ -124,21 +124,21 @@ const SensorVisuals = (props) => {
                 if (foundSubplotOne && foundSubplotTwo) {
                   responseArray[index] = {
                     ...responseArray[index],
-                    code: key,
+                    code: key.toUpperCase(),
                     color: deviceColors.bothSubplots,
                     lastUpdated: lastUpdatedString,
                   };
                 } else if (foundSubplotOne || foundSubplotTwo) {
                   responseArray[index] = {
                     ...responseArray[index],
-                    code: key,
+                    code: key.toUpperCase(),
                     color: deviceColors.oneSubplot,
                     lastUpdated: lastUpdatedString,
                   };
                 } else {
                   responseArray[index] = {
                     ...responseArray[index],
-                    code: key,
+                    code: key.toUpperCase(),
                     color: deviceColors.default,
                     lastUpdated: ' ',
                   };
@@ -258,7 +258,7 @@ const SensorVisuals = (props) => {
       setData([]);
       setCodeSearchText('');
     };
-  }, [location]);
+  }, [state.userInfo.apikey, location]);
 
   const activeData = useMemo(() => {
     const activeYear = years.reduce((acc, curr) => {

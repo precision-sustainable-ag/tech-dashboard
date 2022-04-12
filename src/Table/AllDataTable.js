@@ -321,23 +321,25 @@ const AllDataTable = () => {
     return (
       <Grid container spacing={3}>
         <Grid item>
-          <Tooltip title="Edit field data">
-            <Button
-              size="small"
-              variant="contained"
-              startIcon={<Edit />}
-              color={state.isDarkTheme ? 'primary' : 'default'}
-              disabled={disabled}
-              onClick={() => {
-                if (!disabled) {
-                  setEditModalOpen(true);
-                  setEditModalData(rowData);
-                }
-              }}
-            >
-              Edit Data
-            </Button>
-          </Tooltip>
+          {state.userInfo.view_type === 'home' && (
+            <Tooltip title="Edit field data">
+              <Button
+                size="small"
+                variant="contained"
+                startIcon={<Edit />}
+                color={state.isDarkTheme ? 'primary' : 'default'}
+                disabled={disabled}
+                onClick={() => {
+                  if (!disabled) {
+                    setEditModalOpen(true);
+                    setEditModalData(rowData);
+                  }
+                }}
+              >
+                Edit Data
+              </Button>
+            </Tooltip>
+          )}
         </Grid>
         <Grid item>
           <Tooltip title="Reassign a new site">

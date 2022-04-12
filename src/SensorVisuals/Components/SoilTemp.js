@@ -46,7 +46,7 @@ const SoilTemp = ({ tdrData }) => {
 
   // const waterSensorDataEndpoint =
   //   onfarmAPI +
-  //   `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,trt&location=true`;
+  //   `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,trt`;
 
   useEffect(() => {
     if (tdrData) {

@@ -19,6 +19,7 @@ import {
   MenuItem,
   Collapse,
   Icon,
+  Snackbar
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import {
@@ -38,6 +39,7 @@ import {
 } from '@material-ui/icons';
 import Axios from 'axios';
 import PropTypes from 'prop-types';
+import SwitchesGroup from './Switch';
 
 // Local Imports
 import { apiPassword, apiUsername, apiURL } from '../utils/api_secret';
@@ -45,6 +47,12 @@ import { Context } from '../Store/Store';
 import { useAuth0 } from '../Auth/react-auth0-spa';
 import { addToTechnicians } from '../utils/SharedFunctions';
 import { debugAdmins } from '../utils/constants';
+import MuiAlert from '@material-ui/lab/Alert';
+
+// Helper function
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 //Global Vars
 const drawerWidth = 240;
@@ -119,6 +127,7 @@ export default function Header(props) {
   const [anchorEl, setAnchorEl] = useState(null);
   const profileMenuOpen = Boolean(anchorEl);
   const [state, dispatch] = useContext(Context);
+  const [viewType, setViewType] = useState('home');
 
   const { logout, user, loginWithRedirect } = useAuth0();
   const [openAllDataNav, setOpenAllDataNav] = useState(false);
@@ -130,6 +139,11 @@ export default function Header(props) {
     devices: false,
     waterSensors: false,
     stressCams: false,
+  });
+  const [snackbarData, setSnackbarData] = useState({
+    open: false,
+    text: '',
+    severity: 'success',
   });
 
   const { getTokenSilently } = useAuth0();
@@ -192,20 +206,26 @@ export default function Header(props) {
       dispatch({
         type: 'UPDATING_USER_INFO',
       });
-      await Axios.get(`${apiURL}/api/users/${user.email}`, {
+      await Axios.get(`${apiURL}/api/users/${user.email}/${viewType}`, {
         auth: {
           username: apiUsername,
           password: apiPassword,
         },
       }).then((response) => {
         let data = response.data;
-        if (data.data === null) {
+        if (data.data === null && viewType === 'home') {
           //  user does not exist.. add record with default role
           let obj = {
             email: user.email,
           };
 
           addUserToDatabase(qs.stringify(obj));
+        } else if (data.data === null && viewType === 'global') {
+          setSnackbarData({
+            open: true,
+            text: `No data available for global view`,
+            severity: 'error',
+          });
         } else {
           if (data.data.state !== 'default') {
             console.log('adding to technicians');
@@ -230,9 +250,21 @@ export default function Header(props) {
     if (user) {
       fetchRole(user);
     }
-  }, [user, getTokenSilently, dispatch]);
+  }, [user, getTokenSilently, viewType, dispatch]);
+
   return (
     <div className={classes.root}>
+      <Snackbar
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            open={snackbarData.open}
+            autoHideDuration={10000}
+            onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
+          >
+            <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
+      </Snackbar>
       <AppBar
         position="fixed"
         className={clsx(classes.appBar, {
@@ -253,6 +285,7 @@ export default function Header(props) {
           <Typography variant="h6" noWrap className={classes.title}>
             PSA Tech Dashboard
           </Typography>
+          <SwitchesGroup setViewType={setViewType} />
           <IconButton color="inherit" onClick={toggleThemeDarkness}>
             {state.isDarkTheme ? <BrightnessLow /> : <BrightnessHigh />}
           </IconButton>

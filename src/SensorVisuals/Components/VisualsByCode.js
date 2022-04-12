@@ -59,7 +59,7 @@ const VisualsByCode = () => {
   const affiliationEndpoint = onfarmAPI + `/raw?table=site_information&code=${code}`;
   const waterSensorDataEndpoint =
     onfarmAPI +
-    `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,treatment,center_depth,soil_temp&location=true`;
+    `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,treatment,center_depth,soil_temp`;
   const [snackbarData, setSnackbarData] = useState({
     open: false,
     text: '',
@@ -344,11 +344,12 @@ const VisualsByCode = () => {
           {showIssueDialog &&
             (issueBody ? (
               <IssueDialogue
+                defaultText="Make sure to include treatment, rep, which sensor(s)/depth(s) are problematic; etc. Include as much detail as possible."
                 nickname={user.nickname}
                 rowData={JSON.stringify(issueBody, null, '\t')}
                 dataType="json"
                 setSnackbarData={setSnackbarData}
-                labels={[code, 'tdr', 'water-sensor-visuals', codeData.affiliation]}
+                labels={[code, 'tdr', 'water-sensor-visuals', codeData.affiliation, activeCharts]}
                 getTokenSilently={getTokenSilently}
               />
             ) : (

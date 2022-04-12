@@ -20,6 +20,7 @@ const initialState = {
     name: '',
     type: '',
     data: [],
+    filteredData: [],
     invalidData: [],
     validData: [],
     historyData: [],

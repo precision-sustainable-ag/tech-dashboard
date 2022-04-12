@@ -22,7 +22,9 @@ const Reducer = (state, action) => {
     case 'SET_FORMS_DATA':
       return setFormData(state, action);
     case 'UPDATE_FORMS_DATA':
-      return updateFormData(state, action);
+      return updateFormsData(state, action);
+    case 'UPDATE_FILTERED_FORMS_DATA':
+      return updateFilteredFormsData(state, action);
     case 'UPDATE_SELECTED_FORM_DATA':
       return updateSelectedFormData(state, action);
     case 'SET_AFFILIATION_LOOKUP':
@@ -30,7 +32,7 @@ const Reducer = (state, action) => {
     case 'UPDATE_SNACKBAR_DATA':
       return updateSnackbarData(state, action);
     case 'TOGGLE_IS_DARK_THEME':
-      return toggleIsDarkTheme(state);
+      return toggleIsDarkTheme(state, action);
     default:
       return { ...state };
   }
@@ -119,7 +121,18 @@ const setFormData = (state, action) => {
   };
 };
 
-const updateFormData = (state, action) => {
+const updateFilteredFormsData = (state, action) => {
+  return {
+    ...state,
+    formsData: {
+      ...state.formsData,
+      filteredData: action.data.formsData,
+      type: action.data.formType,
+    },
+  };
+};
+
+const updateFormsData = (state, action) => {
   return {
     ...state,
     formsData: {
@@ -159,10 +172,10 @@ const updateSnackbarData = (state, action) => {
   };
 };
 
-const toggleIsDarkTheme = (state) => {
+const toggleIsDarkTheme = (state, action) => {
   return {
     ...state,
-    isDarkTheme: !state.isDarkTheme,
+    isDarkTheme: action.data.isDarkTheme,
   };
 };
 
