@@ -292,7 +292,7 @@ const TaskTracker = () => {
       setFetching(true);
       fetchData(state.userInfo.apikey)
         .then((response) => {
-          if (farmValues.length === 0) {
+          if (response.length === 0) {
             throw new Error ('No data');
           }
           setFarmValues(response);
