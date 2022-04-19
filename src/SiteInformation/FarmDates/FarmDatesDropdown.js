@@ -7,10 +7,11 @@ import PropTypes from 'prop-types';
 
 const FarmDatesDropdown = ({ rowData, fetchFromApi, nickname, setSnackbarData }) => {
   const [showIssue, setShowIssue] = useState(false);
+  const expandActualFarmDates = rowData.protocols.decomp_biomass == 1 ? true : false;
 
   return (
     <Fragment>
-      <ActualFarmDates rowData={rowData} fetchFromApi={fetchFromApi} />
+      {expandActualFarmDates ? <ActualFarmDates rowData={rowData} fetchFromApi={fetchFromApi} /> : ''}
       <br />
       {!showIssue && (
         <Tooltip title="Submit a new issue">

@@ -146,40 +146,40 @@ const FarmDatesCalendar = () => {
       });
 
       const t1TargetDate = data.map((record) => {
-        return {
+        return record.protocols.decomp_biomass==1 ? {
           title: `${record.code} - T1 Target`,
           allDay: true,
           start: addDays(new Date(record.biomass_harvest), 14),
           end: addDays(new Date(record.biomass_harvest), 14),
           type: 'target',
-        };
+        } : '';
       });
       const t2TargetDate = data.map((record) => {
-        return {
+        return record.protocols.decomp_biomass==1 ? {
           title: `${record.code} - T2 Target`,
           allDay: true,
           start: addDays(new Date(record.biomass_harvest), 30),
           end: addDays(new Date(record.biomass_harvest), 30),
           type: 'target',
-        };
+        } : '';
       });
       const t3TargetDate = data.map((record) => {
-        return {
+        return record.protocols.decomp_biomass==1 ? {
           title: `${record.code} - T3 Target`,
           allDay: true,
           start: addDays(new Date(record.biomass_harvest), 60),
           end: addDays(new Date(record.biomass_harvest), 60),
           type: 'target',
-        };
+        } : '';
       });
       const t4TargetDate = data.map((record) => {
-        return {
+        return record.protocols.decomp_biomass==1 ? {
           title: `${record.code} - T4 Target`,
           allDay: true,
           start: addDays(new Date(record.biomass_harvest), 90),
           end: addDays(new Date(record.biomass_harvest), 90),
           type: 'target',
-        };
+        } : '';
       });
 
       // check if actual dates are available
