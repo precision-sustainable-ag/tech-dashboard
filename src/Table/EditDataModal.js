@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Grid,
   Button,
@@ -22,7 +22,8 @@ import Axios from 'axios';
 // Local Imports
 import { apiURL, apiUsername, apiPassword } from '../utils/api_secret';
 import Location from '../Location/Location';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
+import { Context } from '../Store/Store';
 
 //Global Vars
 const qs = require('qs');
@@ -52,8 +53,13 @@ function Alert(props) {
 
 const fullWidth = true;
 // Default function
-const EditDataModal = (props) => {
-  const open = props.open;
+const EditDataModal = () => {
+  const [state, dispatch] = useContext(Context);
+  const open = state.editModalOpen;
+  const editModalData = state.editModalData;
+  const handleEditModalClose = () => {
+    state.editModalOpen = !state.editModalOpen;
+  };
   // const classes = useStyles();
 
   const [maxWidth, setMaxWidth] = useState('md');
@@ -72,24 +78,24 @@ const EditDataModal = (props) => {
   }, [locationMsg, locationErr]);
 
   const [newData, setNewData] = useState({
-    cid: props.data.cid,
-    code: props.data.code,
-    year: props.data.year,
-    affiliation: props.data.affiliation,
-    county: props.data.county,
-    longitude: props.data.longitude,
-    latitude: props.data.latitude,
-    notes: props.data.notes,
-    additional_contact: props.data.additional_contact,
-    producer_id: props.data.producer_id,
-    address: props.data.address,
-    state: props.data.state,
-    last_name: props.data.last_name,
-    email: props.data.email,
-    phone: props.data.phone,
-    latlng: props.data.latlng,
+    cid: editModalData.cid,
+    code: editModalData.code,
+    year: editModalData.year,
+    affiliation: editModalData.affiliation,
+    county: editModalData.county,
+    longitude: editModalData.longitude,
+    latitude: editModalData.latitude,
+    notes: editModalData.notes,
+    additional_contact: editModalData.additional_contact,
+    producer_id: editModalData.producer_id,
+    address: editModalData.address,
+    state: editModalData.state,
+    last_name: editModalData.last_name,
+    email: editModalData.email,
+    phone: editModalData.phone,
+    latlng: editModalData.latlng,
     tableData: {
-      id: props.data.tableData ? props.data.tableData.id : 0,
+      id: editModalData.tableData ? editModalData.tableData.id : 0,
     },
   });
 
@@ -154,8 +160,20 @@ const EditDataModal = (props) => {
       //   call update api
       console.log('both');
       postModalUpdate(newData).then(() => {
-        props.handleEditModalClose();
-        props.setValuesEdited(!props.valuesEdited);
+        // props.handleEditModalClose();
+        dispatch({
+          type: 'SET_EDIT_MODAL_OPEN',
+          data: {
+            editModalOpen: !state.editModalOpen,
+          },        
+        });
+        dispatch({
+          type: 'SET_VALUES_EDITED',
+          data: {
+            valuesEdited: !state.valuesEdited,
+          },        
+        });
+        // props.setValuesEdited(!props.valuesEdited);
 
         setNewData({
           cid: '',
@@ -243,24 +261,24 @@ const EditDataModal = (props) => {
   }, [selectedToEditSite]);
   useEffect(() => {
     setNewData({
-      cid: props.data.cid,
-      code: props.data.code,
-      year: props.data.year,
-      affiliation: props.data.affiliation,
-      county: props.data.county,
-      longitude: props.data.longitude,
-      latitude: props.data.latitude,
-      notes: props.data.notes,
-      additional_contact: props.data.additional_contact,
-      producer_id: props.data.producer_id,
-      address: props.data.address,
-      state: props.data.state,
-      last_name: props.data.last_name,
-      email: props.data.email,
-      phone: props.data.phone,
-      latlng: props.data.latlng,
+      cid: editModalData.cid,
+      code: editModalData.code,
+      year: editModalData.year,
+      affiliation: editModalData.affiliation,
+      county: editModalData.county,
+      longitude: editModalData.longitude,
+      latitude: editModalData.latitude,
+      notes: editModalData.notes,
+      additional_contact: editModalData.additional_contact,
+      producer_id: editModalData.producer_id,
+      address: editModalData.address,
+      state: editModalData.state,
+      last_name: editModalData.last_name,
+      email: editModalData.email,
+      phone: editModalData.phone,
+      latlng: editModalData.latlng,
       tableData: {
-        id: props.data.tableData ? props.data.tableData.id : 0,
+        id: editModalData.tableData ? editModalData.tableData.id : 0,
       },
     });
     return () => {
@@ -286,11 +304,11 @@ const EditDataModal = (props) => {
         },
       });
     };
-  }, [open, props.data]);
+  }, [open, editModalData]);
   return (
     <Dialog
       open={open}
-      onClose={props.handleEditModalClose}
+      onClose={handleEditModalClose}
       aria-labelledby="form-dialog-title"
       fullWidth={fullWidth}
       maxWidth={maxWidth}
@@ -299,8 +317,8 @@ const EditDataModal = (props) => {
       <DialogTitle id="form-dialog-title">
         <Grid container justifyContent="space-between">
           <Grid item>
-            Site <mark>{props.data.code}</mark> of producer: <strong>{props.data.last_name}</strong>{' '}
-            [{props.data.producer_id}]
+            Site <mark>{editModalData.code}</mark> of producer: <strong>{editModalData.last_name}</strong>{' '}
+            [{editModalData.producer_id}]
           </Grid>
           <Grid item>
             <Select
@@ -389,7 +407,7 @@ const EditDataModal = (props) => {
               label="County"
               margin="dense"
               name="county"
-              value={newData.county ? newData.county : props.data.county ? props.data.county : ''}
+              value={newData.county ? newData.county : editModalData.county ? editModalData.county : ''}
               type="text"
               fullWidth
               onChange={(e) => {
@@ -402,7 +420,7 @@ const EditDataModal = (props) => {
               label="State"
               margin="dense"
               name="state"
-              value={newData.state ? newData.state : props.data.state ? props.data.state : ''}
+              value={newData.state ? newData.state : editModalData.state ? editModalData.state : ''}
               type="text"
               fullWidth
               onChange={(e) => {
@@ -456,7 +474,7 @@ const EditDataModal = (props) => {
               margin="dense"
               name="address"
               value={
-                newData.address ? newData.address : props.data.address ? props.data.address : ''
+                newData.address ? newData.address : editModalData.address ? editModalData.address : ''
               }
               type="text"
               fullWidth
@@ -474,7 +492,7 @@ const EditDataModal = (props) => {
               multiline
               type="text"
               fullWidth
-              value={newData.notes ? newData.notes : props.data.notes ? props.data.notes : ''}
+              value={newData.notes ? newData.notes : editModalData.notes ? editModalData.notes : ''}
               onChange={(e) => {
                 setNewData({ ...newData, notes: e.target.value });
               }}
@@ -486,8 +504,8 @@ const EditDataModal = (props) => {
               value={
                 newData.additional_contact
                   ? newData.additional_contact
-                  : props.data.additional_contact
-                  ? props.data.additional_contact
+                  : editModalData.additional_contact
+                  ? editModalData.additional_contact
                   : ''
               }
               margin="dense"
@@ -506,7 +524,7 @@ const EditDataModal = (props) => {
               id="editCode"
               margin="dense"
               name="code"
-              value={props.data.code}
+              value={editModalData.code}
               disabled
               label="Code"
               type="text"
@@ -515,7 +533,7 @@ const EditDataModal = (props) => {
           </Grid>
           <Grid item sm={12} lg={12}>
             <TextField
-              value={props.data.year ? props.data.year : ''}
+              value={editModalData.year ? editModalData.year : ''}
               margin="dense"
               name="email"
               label="Year"
@@ -527,7 +545,7 @@ const EditDataModal = (props) => {
           <Grid item sm={12} lg={12}>
             <TextField
               id="editEmail"
-              value={props.data.email ? props.data.email : ''}
+              value={editModalData.email ? editModalData.email : ''}
               margin="dense"
               name="email"
               label="Email Address"
@@ -540,7 +558,7 @@ const EditDataModal = (props) => {
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={props.handleEditModalClose}
+          onClick={handleEditModalClose}
           color="primary"
           variant={window.localStorage.getItem('theme') === 'dark' ? 'contained' : 'text'}
         >
@@ -585,28 +603,28 @@ const postModalUpdate = async (data) => {
 
 export default EditDataModal;
 
-EditDataModal.propTypes = {
-  open: PropTypes.bool.isRequired,
-  data: PropTypes.shape({
-    cid: PropTypes.any,
-    code: PropTypes.any,
-    year: PropTypes.any,
-    affiliation: PropTypes.any,
-    county: PropTypes.any,
-    longitude: PropTypes.any,
-    latitude: PropTypes.any,
-    notes: PropTypes.any,
-    additional_contact: PropTypes.any,
-    address: PropTypes.any,
-    producer_id: PropTypes.any,
-    state: PropTypes.any,
-    last_name: PropTypes.any,
-    email: PropTypes.any,
-    phone: PropTypes.any,
-    latlng: PropTypes.any,
-    tableData: PropTypes.any,
-  }),
-  handleEditModalClose: PropTypes.func,
-  setValuesEdited: PropTypes.func,
-  valuesEdited: PropTypes.bool,
-};
+// EditDataModal.propTypes = {
+//   open: PropTypes.bool.isRequired,
+//   data: PropTypes.shape({
+//     cid: PropTypes.any,
+//     code: PropTypes.any,
+//     year: PropTypes.any,
+//     affiliation: PropTypes.any,
+//     county: PropTypes.any,
+//     longitude: PropTypes.any,
+//     latitude: PropTypes.any,
+//     notes: PropTypes.any,
+//     additional_contact: PropTypes.any,
+//     address: PropTypes.any,
+//     producer_id: PropTypes.any,
+//     state: PropTypes.any,
+//     last_name: PropTypes.any,
+//     email: PropTypes.any,
+//     phone: PropTypes.any,
+//     latlng: PropTypes.any,
+//     tableData: PropTypes.any,
+//   }),
+//   handleEditModalClose: PropTypes.func,
+//   setValuesEdited: PropTypes.func,
+//   valuesEdited: PropTypes.bool,
+// };

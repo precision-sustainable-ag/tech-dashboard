@@ -34,6 +34,17 @@ const initialState = {
     error: [],
     uid: '',
   },
+  valuesEdited: false,
+  editModalOpen: false,
+  editModalData: {},
+  reassignSiteModalOpen: false,
+  reassignSiteModalData: {},
+  unenrollOpen: false,
+  unenrollRowData: {},
+  showNewIssueDialog: false,
+  newIssueData: {},
+  mapModalOpen: false,
+  mapModalData: [35.763197, -78.700187],
 };
 
 // Default function

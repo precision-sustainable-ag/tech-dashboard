@@ -30,7 +30,7 @@ import WaterSensorByGateway from './Devices/WaterSensorData/WaterSensorByGateway
 import SiteEnrollment from './SiteEnrollment/SiteEnrollment';
 import PageNotFound from './PageNotFound';
 import AllDataTable from './Table/AllDataTable';
-import AllDataTable2 from './Table/AllInactiveDataTable';
+import AllInactiveDataTable from './Table/AllInactiveDataTable';
 
 import DeviceComponent from './Devices/Device/Device';
 
@@ -323,7 +323,7 @@ function App() {
 
                 <PrivateRoute
                   path="/site-information/inactive-sites"
-                  render={() => <AllDataTable2 title="Inactive Sites" />}
+                  render={() => <AllInactiveDataTable title="Inactive Sites" />}
                 />
 
                 <PrivateRoute
