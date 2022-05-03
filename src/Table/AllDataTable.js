@@ -97,6 +97,12 @@ const AllDataTable = (props) => {
                   console.log('Check API');
                 }
               });
+              dispatch({
+                type: 'SET_VALUES_EDITED',
+                data: {
+                  valuesEdited: false,
+                },        
+              });
           });
         }
       }
