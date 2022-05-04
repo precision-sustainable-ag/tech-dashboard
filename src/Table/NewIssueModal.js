@@ -19,7 +19,7 @@ import MDEditor from '@uiw/react-md-editor';
 import { githubToken } from '../utils/api_secret';
 import { useAuth0 } from '../Auth/react-auth0-spa';
 import PropTypes from 'prop-types';
-import { createGithubIssue } from '../utils/SharedFunctions';
+import { callAzureFunction } from '../utils/SharedFunctions';
 
 /**
  *  A component to allow users to create "New Issue" in a modal
@@ -95,14 +95,17 @@ const NewIssueModal = (props) => {
         </tbody>
       </table>`;
 
-      const body = tableData + ' <br/> ' + newComment;
+      const data = {
+        title: issueTitle,
+        assignees: assignedPeople,
+        labels: labels,
+        body: tableData + ' <br/> ' + newComment,
+      };
 
-      const issueSet = createGithubIssue(
-        issueTitle,
-        body,
-        labels,
-        assignedPeople,
-        props.nickname,
+      const issueSet = callAzureFunction(
+        data,
+        `precision-sustainable-ag/repos/data_corrections/issues/${props.nickname}`,
+        'POST',
         getTokenSilently,
       );
 

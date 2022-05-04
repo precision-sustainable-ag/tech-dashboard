@@ -587,12 +587,12 @@ const updateSite = async (
       affiliation: affiliation,
     });
     newGrowerPromise.then((resp) => {
-      let newProducerId = resp.data.producerId;
-      let data = {
-        code: code,
-        producer_id: newProducerId,
-      };
-      let apiStatus = callAzureFunction(data, 'UpdateProducer', getTokenSilently);
+      let apiStatus = callAzureFunction(
+        null,
+        `crowndb/site_information/producers/${resp.data.producerId}/${code}`,
+        'POST',
+        getTokenSilently,
+      );
       apiStatus
         .then(() => {
           return 'success';
@@ -602,11 +602,12 @@ const updateSite = async (
         });
     });
   } else {
-    let data = {
-      code: code,
-      producer_id: producerId,
-    };
-    let apiStatus = callAzureFunction(data, 'UpdateProducer', getTokenSilently);
+    let apiStatus = callAzureFunction(
+      null,
+      `crowndb/site_information/producers/${producerId}/${code}`,
+      'POST',
+      getTokenSilently,
+    );
     apiStatus
       .then(() => {
         return 'success';

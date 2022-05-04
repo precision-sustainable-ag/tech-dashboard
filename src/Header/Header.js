@@ -19,7 +19,7 @@ import {
   MenuItem,
   Collapse,
   Icon,
-  Snackbar
+  Snackbar,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import {
@@ -45,7 +45,7 @@ import SwitchesGroup from './Switch';
 import { apiPassword, apiUsername, apiURL } from '../utils/api_secret';
 import { Context } from '../Store/Store';
 import { useAuth0 } from '../Auth/react-auth0-spa';
-import { addToTechnicians } from '../utils/SharedFunctions';
+import { callAzureFunction } from '../utils/SharedFunctions';
 import { debugAdmins } from '../utils/constants';
 import MuiAlert from '@material-ui/lab/Alert';
 
@@ -229,7 +229,12 @@ export default function Header(props) {
         } else {
           if (data.data.state !== 'default') {
             console.log('adding to technicians');
-            addToTechnicians(user.nickname, getTokenSilently);
+            callAzureFunction(
+              null,
+              `precision-sustainable-ag/teams/technicians/${user.nickname}`,
+              'POST',
+              getTokenSilently,
+            ).then((res) => res.jsonResponse);
           }
           dispatch({
             type: 'UPDATE_ROLE',
@@ -255,15 +260,15 @@ export default function Header(props) {
   return (
     <div className={classes.root}>
       <Snackbar
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
-            }}
-            open={snackbarData.open}
-            autoHideDuration={10000}
-            onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-          >
-            <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        open={snackbarData.open}
+        autoHideDuration={10000}
+        onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
+      >
+        <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
       </Snackbar>
       <AppBar
         position="fixed"

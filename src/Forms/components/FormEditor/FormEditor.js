@@ -44,8 +44,12 @@ const FormEditor = (props) => {
   };
 
   const fetchEditableList = async () => {
-    const data = { version: slimRecord.__version__ };
-    const res = await callAzureFunction(data, 'EditableList', getTokenSilently);
+    const res = await callAzureFunction(
+      null,
+      `shadowdb/editable_list/${slimRecord.__version__}`,
+      'GET',
+      getTokenSilently,
+    );
     setEditingLists(res.jsonResponse);
   };
 

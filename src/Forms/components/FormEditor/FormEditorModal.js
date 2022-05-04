@@ -79,7 +79,7 @@ const FormEditorModal = (props) => {
       xform_id_string: editedForm._xform_id_string,
       uid: state.selectedFormData.uid,
     };
-    callAzureFunction(data, 'SubmitNewEntry', getTokenSilently).then((res) => {
+    callAzureFunction(data, 'tech-dashboard/kobo', 'POST', getTokenSilently).then((res) => {
       toggleModalOpen();
       setSubmitText('Submit');
       setEditedForm(state.selectedFormData.slimRecord);
@@ -112,10 +112,12 @@ const FormEditorModal = (props) => {
 
   const handleResolve = () => {
     setRemoveText('Removing form...');
-    let data = {
-      uid: state.selectedFormData.uid,
-    };
-    callAzureFunction(data, 'RemoveForm', getTokenSilently).then((res) => {
+    callAzureFunction(
+      null,
+      `shadowdb/invalid_row_table_pairs/${state.selectedFormData.uid}`,
+      'DELETE',
+      getTokenSilently,
+    ).then((res) => {
       toggleModalOpen();
       setRemoveText('Errors can be dismissed');
 

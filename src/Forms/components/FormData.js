@@ -53,26 +53,22 @@ const FormData = () => {
 
   const fetchData = async () => {
     await getHistory();
-    const token = await getTokenSilently({
-      audience: `https://precision-sustaibale-ag/tech-dashboard`,
-    });
-
-    let data = {
-      token: token,
-      xform_id_string: window.location.pathname.split('/')[2],
-    };
-
-    return callAzureFunction(data, 'Kobo', getTokenSilently).then((res) => res.jsonResponse);
+    return callAzureFunction(
+      null,
+      `tech-dashboard/kobo/${window.location.pathname.split('/')[2]}`,
+      'GET',
+      getTokenSilently,
+    ).then((res) => res.jsonResponse);
   };
 
   useEffect(() => {
     setFetching(true);
     if (Object.keys(state.userInfo).length !== 0) {
       const records = fetchData().then((response) => {
-        if (response === null) throw new Error(response.statusText);
-        let validRecords = response.valid_data || [];
-        let invalidRecords = response.invalid_data || [];
-        let historyRecords = response.uid_history || [];
+        if (response === null) throw new Error('No response from corrections API');
+        let validRecords = response.kobo_forms.valid_data || [];
+        let invalidRecords = response.kobo_forms.invalid_data || [];
+        let historyRecords = response.kobo_forms.uid_history || [];
 
         if (validRecords.length > 0) {
           validRecords = validRecords.sort(
