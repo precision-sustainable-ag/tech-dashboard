@@ -57,8 +57,8 @@ const GrowerInformation = ({
   producerId,
   year,
   affiliation,
-  closeModal,
-  setValuesEdited,
+  // closeModal,
+  // setValuesEdited,
 }) => {
   const [growerType, setGrowerType] = useState('existing');
   const [growerLastNameSearch, setGrowerLastNameSearch] = useState('');
@@ -71,7 +71,7 @@ const GrowerInformation = ({
     text: '',
     severity: 'success',
   });
-  const [state] = useContext(Context);
+  const [state, dispatch] = useContext(Context);
   const { getTokenSilently } = useAuth0();
 
   const handleNewGrowerInfo = () => {
@@ -391,8 +391,20 @@ const GrowerInformation = ({
                     })
                     .finally(() => {
                       setTimeout(() => {
-                        closeModal();
-                        setValuesEdited(true);
+                        dispatch({
+                          type: 'SET_REASSIGN_SITE_MODAL_OPEN',
+                              data: {
+                                reassignSiteModalOpen: !state.reassignSiteModalOpen,
+                              }, 
+                        });
+                        // closeModal();
+                        dispatch({
+                          type: 'SET_VALUES_EDITED',
+                              data: {
+                                valuesEdited: true,
+                              }, 
+                        });
+                        // setValuesEdited(true);
                       }, 2500);
                     });
                 }}
@@ -625,8 +637,8 @@ GrowerInformation.propTypes = {
   code: PropTypes.string,
   year: PropTypes.any,
   affiliation: PropTypes.string,
-  closeModal: PropTypes.func,
-  setValuesEdited: PropTypes.func,
+  // closeModal: PropTypes.func,
+  // setValuesEdited: PropTypes.func,
 };
 
 ExistingGrowersGrid.propTypes = {

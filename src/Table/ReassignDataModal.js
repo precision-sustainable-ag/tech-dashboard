@@ -28,9 +28,9 @@ const ReassignDataModal = () => {
           }, 
     });
   };
-  const setValuesEdited = () => {
-    state.valuesEdited = !state.valuesEdited;
-  };
+  // const setValuesEdited = () => {
+  //   state.valuesEdited = !state.valuesEdited;
+  // };
 
   const [maxWidth, setMaxWidth] = useState('md');
 
@@ -80,8 +80,8 @@ const ReassignDataModal = () => {
           producerId={reassignSiteModalData.producer_id}
           year={reassignSiteModalData.year}
           affiliation={reassignSiteModalData.affiliation}
-          closeModal={handleReassignSiteModalClose}
-          setValuesEdited={setValuesEdited}
+          // closeModal={handleReassignSiteModalClose}
+          // setValuesEdited={setValuesEdited}
         />
       </DialogContent>
       <DialogActions>

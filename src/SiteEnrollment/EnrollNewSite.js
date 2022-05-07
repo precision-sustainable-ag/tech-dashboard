@@ -259,8 +259,8 @@ const EnrollNewSite = (props) => {
             producerId={props.producerId}
             year={props.year}
             affiliation={props.affiliation}
-            closeModal={props.closeModal}
-            setValuesEdited={props.setValuesEdited}
+            // closeModal={props.closeModal}
+            // setValuesEdited={props.setValuesEdited}
           />
         )}
 
@@ -291,8 +291,8 @@ EnrollNewSite.propTypes = {
   producerId: PropTypes.string,
   year: PropTypes.any,
   affiliation: PropTypes.string,
-  closeModal: PropTypes.func,
-  setValuesEdited: PropTypes.func,
+  // closeModal: PropTypes.func,
+  // setValuesEdited: PropTypes.func,
 };
 
 // Helper functions
