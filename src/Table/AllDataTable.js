@@ -40,7 +40,7 @@ function Alert(props) {
 
 // Default function
 const AllDataTable = (props) => {
-  const [state] = useContext(Context);
+  const [state, dispatch] = useContext(Context);
   const [showTable, setShowTable] = useState(false);
   const { user } = useAuth0();
   const [bannedRolesCheckMessage, setBannedRolesCheckMessage] = useState(

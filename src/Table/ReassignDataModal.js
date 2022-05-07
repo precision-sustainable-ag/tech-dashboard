@@ -17,11 +17,16 @@ const fullWidth = true;
 
 const ReassignDataModal = () => {
   // const { open, handleEditModalClose, data, setValuesEdited } = props;
-  const [state] = useContext(Context);
+  const [state, dispatch] = useContext(Context);
   const open = state.reassignSiteModalOpen;
   const reassignSiteModalData = state.reassignSiteModalData;
   const handleReassignSiteModalClose = () => {
-    state.reassignSiteModalOpen = !state.reassignSiteModalOpen;
+    dispatch({
+      type: 'SET_REASSIGN_SITE_MODAL_OPEN',
+          data: {
+            reassignSiteModalOpen: !state.reassignSiteModalOpen,
+          }, 
+    });
   };
   const setValuesEdited = () => {
     state.valuesEdited = !state.valuesEdited;

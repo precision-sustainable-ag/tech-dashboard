@@ -58,7 +58,12 @@ const EditDataModal = () => {
   const open = state.editModalOpen;
   const editModalData = state.editModalData;
   const handleEditModalClose = () => {
-    state.editModalOpen = !state.editModalOpen;
+    dispatch({
+      type: 'SET_EDIT_MODAL_OPEN',
+          data: {
+            editModalOpen: !state.editModalOpen,
+          }, 
+    });
   };
   // const classes = useStyles();
 

@@ -31,13 +31,12 @@ const NewIssueModal = (props) => {
   const [state, dispatch] = useContext(Context);
   const newIssueData = state.newIssueData;
   const handleNewIssueDialogClose = () => {
-    // dispatch({
-    //   type: 'SET_SHOW_NEW_ISSUE_DIALOG',
-    //   data: {
-    //     showNewIssueDialog: !state.showNewIssueDialog,
-    //   },        
-    // });
-    state.showNewIssueDialog = !state.showNewIssueDialog;
+    dispatch({
+      type: 'SET_SHOW_NEW_ISSUE_DIALOG',
+      data: {
+        showNewIssueDialog: !state.showNewIssueDialog,
+      },        
+    });
   };
   const { getTokenSilently } = useAuth0();
 
