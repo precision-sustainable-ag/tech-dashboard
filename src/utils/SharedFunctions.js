@@ -304,3 +304,22 @@ export const uniqueYears = (allYears) => {
       return { active: currentYear === year ? true : false, year: year };
     });
 };
+
+export const isValidJson = (json) => {
+  if (!(json && typeof json === 'string')) {
+    return false;
+  }
+
+  try {
+    JSON.parse(json);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+export const isBase64 = (str = '') => {
+  const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+
+  return base64regex.test(str);
+};

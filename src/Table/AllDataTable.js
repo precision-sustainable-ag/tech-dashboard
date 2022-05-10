@@ -17,7 +17,7 @@ import UnenrollSiteModal from './UnenrollSiteModal';
 import NewIssueModal from './NewIssueModal';
 import ReassignDataModal from './ReassignDataModal';
 import MapModal from './MapModal';
-// import FeatureModal from './FeatureModal'; 
+// import FeatureModal from './FeatureModal';
 import { BannedRoleMessage } from '../utils/CustomComponents';
 import { onfarmAPI } from '../utils/api_secret';
 // import { UserIsEditor } from '../utils/SharedFunctions';
@@ -97,12 +97,12 @@ const AllDataTable = (props) => {
                   console.log('Check API');
                 }
               });
-              dispatch({
-                type: 'SET_VALUES_EDITED',
-                data: {
-                  valuesEdited: false,
-                },        
-              });
+            dispatch({
+              type: 'SET_VALUES_EDITED',
+              data: {
+                valuesEdited: false,
+              },
+            });
           });
         }
       }
@@ -160,12 +160,12 @@ const AllDataTable = (props) => {
         >
           <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
         </Snackbar>
-        <TableModal 
+        <TableModal
           tableData={tableData}
           isDarkTheme={props.isDarkTheme}
           height={height}
           activeSites={true}
-          tableTitle={"Contact and Location"}
+          tableTitle={'Contact and Location'}
         />
         <EditDataModal />
         <ReassignDataModal />
