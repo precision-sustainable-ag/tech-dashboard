@@ -202,12 +202,7 @@ const SensorVisuals = (props) => {
             .sort((a, b) => b - a)
             .map((y) => {
               if (location.state) {
-                if (location.state.previousState.year)
-                  return {
-                    year: y,
-                    active: location.state.previousState.year === y,
-                  };
-                else if (location.state.year)
+                if (location.state.year)
                   return {
                     year: y,
                     active: location.state.year === y,
@@ -303,8 +298,6 @@ const SensorVisuals = (props) => {
       } else return acc;
     }, '');
   }, [years]);
-
-  // console.log('affiliations are -- ', affiliations);
 
   const activeAffiliation = () => {
     return (
