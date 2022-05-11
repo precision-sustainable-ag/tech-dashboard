@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -9,16 +9,31 @@ import {
 } from '@material-ui/core';
 import GoogleMap from '../Location/GoogleMap';
 import { Close } from '@material-ui/icons';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
+import { Context } from '../Store/Store';
 
-const MapModal = ({ open = false, setOpen = () => {}, lat = 35.763197, lng = -78.700187 }) => {
+
+const MapModal = (
+  // { open = false, setOpen = () => {}, lat = 35.763197, lng = -78.700187 }
+  ) => {
+  const [state, dispatch] = useContext(Context);
   const fullWidth = true;
   const maxWidth = 'md';
-
+  const open = state.mapModalOpen;
+  const lat = state.mapModalData[0];
+  const lng = state.mapModalData[1];
+  const setOpen = () => {
+    dispatch({
+      type: 'SET_MAP_MODAL_OPEN',
+      data: {
+        mapModalOpen: false,
+      },        
+    });
+  };
   return (
     <Dialog
       open={open}
-      onClose={() => setOpen(false)}
+      onClose={() => setOpen()}
       aria-labelledby="form-dialog-title"
       fullWidth={fullWidth}
       maxWidth={maxWidth}
@@ -26,7 +41,7 @@ const MapModal = ({ open = false, setOpen = () => {}, lat = 35.763197, lng = -78
       <DialogTitle>
         <Grid container justifyContent="space-between">
           <Typography variant="h4">Field Location</Typography>
-          <IconButton onClick={() => setOpen(false)}>
+          <IconButton onClick={() => setOpen()}>
             <Close />
           </IconButton>
         </Grid>
@@ -44,15 +59,15 @@ const MapModal = ({ open = false, setOpen = () => {}, lat = 35.763197, lng = -78
   );
 };
 
-MapModal.propTypes = {
-  /** Latitude */
-  lat: PropTypes.number,
-  /** Longitude */
-  lng: PropTypes.number,
-  /** Checks if modal needs to be open */
-  open: PropTypes.bool,
-  /** Dispatcher to mutate `open` */
-  setOpen: PropTypes.func,
-};
+// MapModal.propTypes = {
+//   /** Latitude */
+//   lat: PropTypes.number,
+//   /** Longitude */
+//   lng: PropTypes.number,
+//   /** Checks if modal needs to be open */
+//   open: PropTypes.bool,
+//   /** Dispatcher to mutate `open` */
+//   setOpen: PropTypes.func,
+// };
 
 export default MapModal;

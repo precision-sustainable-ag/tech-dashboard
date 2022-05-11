@@ -11,7 +11,7 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Octokit } from '@octokit/rest';
 import MDEditor from '@uiw/react-md-editor';
 
@@ -20,6 +20,7 @@ import { githubToken } from '../utils/api_secret';
 import { useAuth0 } from '../Auth/react-auth0-spa';
 import PropTypes from 'prop-types';
 import { createGithubIssue } from '../utils/SharedFunctions';
+import { Context } from '../Store/Store';
 
 /**
  *  A component to allow users to create "New Issue" in a modal
@@ -27,6 +28,16 @@ import { createGithubIssue } from '../utils/SharedFunctions';
 
 // Default function
 const NewIssueModal = (props) => {
+  const [state, dispatch] = useContext(Context);
+  const newIssueData = state.newIssueData;
+  const handleNewIssueDialogClose = () => {
+    dispatch({
+      type: 'SET_SHOW_NEW_ISSUE_DIALOG',
+      data: {
+        showNewIssueDialog: !state.showNewIssueDialog,
+      },        
+    });
+  };
   const { getTokenSilently } = useAuth0();
 
   const [maxWidth, setMaxWidth] = useState('lg');
@@ -50,7 +61,7 @@ const NewIssueModal = (props) => {
 
       setCheckValidation({ title: false, comment: false });
 
-      const labels = [`${props.data.code}`, `${props.data.affiliation}`, 'site-information'];
+      const labels = [`${newIssueData.code}`, `${newIssueData.affiliation}`, 'site-information'];
 
       const assignedPeople = personName.length > 0 ? personName : [`${props.nickname}`];
 
@@ -58,39 +69,39 @@ const NewIssueModal = (props) => {
         <tbody>
           <tr>
             <td>Code</td>
-            <td>${props.data.code}</td>
+            <td>${newIssueData.code}</td>
           </tr>
           <tr>
             <td>Grower</td>
-            <td>${props.data.last_name}</td>
+            <td>${newIssueData.last_name}</td>
           </tr>
           <tr>
             <td>State</td>
-            <td>${props.data.affiliation}</td>
+            <td>${newIssueData.affiliation}</td>
           </tr>
           <tr>
             <td>County</td>
-            <td>${props.data.county}</td>
+            <td>${newIssueData.county}</td>
           </tr>
           <tr>
             <td>Email</td>
-            <td>${props.data.email}</td>
+            <td>${newIssueData.email}</td>
           </tr>
           <tr>
             <td>Year</td>
-            <td>${props.data.year}</td>
+            <td>${newIssueData.year}</td>
           </tr>
           <tr>
             <td>Address</td>
-            <td>${props.data.address}</td>
+            <td>${newIssueData.address}</td>
           </tr>
           <tr>
             <td>Location</td>
-            <td>${props.data.latlng}</td>
+            <td>${newIssueData.latlng}</td>
           </tr>
           <tr>
             <td>Notes</td>
-            <td>${props.data.notes}</td>
+            <td>${newIssueData.notes}</td>
           </tr>
         </tbody>
       </table>`;
@@ -110,12 +121,18 @@ const NewIssueModal = (props) => {
         setNewComment('');
         setIssueTitle('');
         setButtonDisabled(false);
-        props.handleNewIssueDialogClose();
+        // handleNewIssueDialogClose();
+        dispatch({
+          type: 'SET_SHOW_NEW_ISSUE_DIALOG',
+          data: {
+            showNewIssueDialog: !state.showNewIssueDialog,
+          },        
+        });
         if (res.response) {
           if (res.response.status === 201) {
             props.setSnackbarData({
               open: true,
-              text: `New Issue has been created for ${props.data.code}`,
+              text: `New Issue has been created for ${newIssueData.code}`,
               severity: 'success',
             });
           } else {
@@ -232,8 +249,9 @@ const NewIssueModal = (props) => {
   const [personName] = React.useState(alwaysTaggedPeople);
   return (
     <Dialog
-      open={props.open}
-      onClose={props.handleNewIssueDialogClose}
+      open={state.showNewIssueDialog}
+      // onClose={props.handleNewIssueDialogClose}
+      onClose={handleNewIssueDialogClose}
       aria-labelledby="form-dialog-title"
       fullWidth={true}
       maxWidth={maxWidth}
@@ -303,34 +321,34 @@ const NewIssueModal = (props) => {
                 <tbody>
                   <tr>
                     <td>
-                      <Typography variant="body1">{props.data.code}</Typography>
+                      <Typography variant="body1">{newIssueData.code}</Typography>
                     </td>
                     <td>
-                      <Typography variant="body1">{props.data.year}</Typography>
+                      <Typography variant="body1">{newIssueData.year}</Typography>
                     </td>
                     <td>
-                      <Typography variant="body1">{props.data.last_name}</Typography>
+                      <Typography variant="body1">{newIssueData.last_name}</Typography>
                     </td>
                     <td>
-                      <Typography variant="body1">{props.data.email}</Typography>
+                      <Typography variant="body1">{newIssueData.email}</Typography>
                     </td>
                     <td>
-                      <Typography variant="body1">{props.data.phone}</Typography>
+                      <Typography variant="body1">{newIssueData.phone}</Typography>
                     </td>
                     <td>
-                      <Typography variant="body1">{props.data.affiliation}</Typography>
+                      <Typography variant="body1">{newIssueData.affiliation}</Typography>
                     </td>
                     <td>
-                      <Typography variant="body1">{props.data.county}</Typography>
+                      <Typography variant="body1">{newIssueData.county}</Typography>
                     </td>
                     <td>
-                      <Typography variant="body1">{props.data.address}</Typography>
+                      <Typography variant="body1">{newIssueData.address}</Typography>
                     </td>
                     <td>
-                      <Typography variant="body1">{props.data.latlng}</Typography>
+                      <Typography variant="body1">{newIssueData.latlng}</Typography>
                     </td>
                     <td>
-                      <Typography variant="body1">{props.data.notes}</Typography>
+                      <Typography variant="body1">{newIssueData.notes}</Typography>
                     </td>
                   </tr>
                 </tbody>
@@ -365,7 +383,10 @@ const NewIssueModal = (props) => {
           </Grid>
         </Grid>
         <DialogActions>
-          <Button onClick={props.handleNewIssueDialogClose}>Cancel</Button>
+          <Button onClick={
+            // handleNewIssueDialogClose()
+            handleNewIssueDialogClose
+            }>Cancel</Button>
           <Button
             color="primary"
             onClick={fileNewIssue}
@@ -399,28 +420,28 @@ NewIssueModal.defaultProps = {
 
 NewIssueModal.propTypes = {
   /** Site information data */
-  data: PropTypes.shape({
-    /** Site code */
-    code: PropTypes.string.isRequired,
-    /** Enrollment year */
-    year: PropTypes.number.isRequired,
-    /** Grower's last name */
-    last_name: PropTypes.string.isRequired,
-    /** Grower's email */
-    email: PropTypes.string,
-    /** Grower's phone */
-    phone: PropTypes.string,
-    /** Site affiliation */
-    affiliation: PropTypes.string.isRequired,
-    /** Site county */
-    county: PropTypes.string,
-    /** Site address */
-    address: PropTypes.string,
-    /** Site Lat,Lng */
-    latlng: PropTypes.string,
-    /** Notes or other information recorded about the site */
-    notes: PropTypes.string,
-  }).isRequired,
+  // data: PropTypes.shape({
+  //   /** Site code */
+  //   code: PropTypes.string.isRequired,
+  //   /** Enrollment year */
+  //   year: PropTypes.number.isRequired,
+  //   /** Grower's last name */
+  //   last_name: PropTypes.string.isRequired,
+  //   /** Grower's email */
+  //   email: PropTypes.string,
+  //   /** Grower's phone */
+  //   phone: PropTypes.string,
+  //   /** Site affiliation */
+  //   affiliation: PropTypes.string.isRequired,
+  //   /** Site county */
+  //   county: PropTypes.string,
+  //   /** Site address */
+  //   address: PropTypes.string,
+  //   /** Site Lat,Lng */
+  //   latlng: PropTypes.string,
+  //   /** Notes or other information recorded about the site */
+  //   notes: PropTypes.string,
+  // }).isRequired,
   /** Data displayed in snackbar */
   snackbarData: PropTypes.shape({
     open: PropTypes.bool.isRequired,
@@ -429,9 +450,9 @@ NewIssueModal.propTypes = {
   /** Snackbar dispatcher to be returned from this component */
   setSnackbarData: PropTypes.func.isRequired,
   /** Controls the hide/un-hide property of this component */
-  open: PropTypes.bool.isRequired,
+  // open: PropTypes.bool.isRequired,
   /** Handles the graceful closing of the modal */
-  handleNewIssueDialogClose: PropTypes.func.isRequired,
+  // handleNewIssueDialogClose: PropTypes.func.isRequired,
   /** Logged In user's GitHub nickname */
   nickname: PropTypes.string.isRequired,
 };

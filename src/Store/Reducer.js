@@ -33,6 +33,28 @@ const Reducer = (state, action) => {
       return updateSnackbarData(state, action);
     case 'TOGGLE_IS_DARK_THEME':
       return toggleIsDarkTheme(state, action);
+    case 'SET_VALUES_EDITED':
+      return setValuesEdited(state, action);
+    case 'SET_EDIT_MODAL_OPEN':
+      return setEditModalOpen(state, action);
+    case 'SET_EDIT_MODAL_DATA':
+      return setEditModalData(state, action);
+    case 'SET_REASSIGN_SITE_MODAL_OPEN':
+      return setReassignSiteModalOpen(state, action);
+    case 'SET_REASSIGN_SITE_MODAL_DATA':
+      return setReassignSiteModalData(state, action);
+    case 'SET_UNENROLL_OPEN':
+      return setUnenrollOpen(state, action);
+    case 'SET_UNENROLL_ROWDATA':
+      return setUnenrollRowData(state, action);
+    case 'SET_SHOW_NEW_ISSUE_DIALOG':
+      return setShowNewIssueDialog(state, action);
+    case 'SET_NEW_ISSUE_DATA':
+      return setNewIssueData(state, action);
+    case 'SET_MAP_MODAL_OPEN':
+      return setMapModalOpen(state, action);
+    case 'SET_MAP_MODAL_DATA':
+      return setMapModalData(state, action);
     default:
       return { ...state };
   }
@@ -176,6 +198,76 @@ const toggleIsDarkTheme = (state, action) => {
   return {
     ...state,
     isDarkTheme: action.data.isDarkTheme,
+  };
+};
+
+const setValuesEdited = (state, action) => {
+  return {
+    ...state,
+    valuesEdited: action.data.valuesEdited,
+  };
+};
+const setEditModalOpen = (state, action) => {
+  console.log("modal");
+  return {
+    ...state,
+    editModalOpen: action.data.editModalOpen,
+  };
+};
+const setEditModalData = (state, action) => {
+  console.log(action.data.valuesEdited);
+  return {
+    ...state,
+    editModalData: action.data.editModalData,
+  };
+};
+const setReassignSiteModalOpen = (state, action) => {
+  return {
+    ...state,
+    reassignSiteModalOpen: action.data.reassignSiteModalOpen,
+  };
+};
+const setReassignSiteModalData = (state, action) => {
+  return {
+    ...state,
+    reassignSiteModalData: action.data.reassignSiteModalData,
+  };
+};
+const setUnenrollOpen = (state, action) => {
+  return {
+    ...state,
+    unenrollOpen: action.data.unenrollOpen,
+  };
+};
+const setUnenrollRowData = (state, action) => {
+  return {
+    ...state,
+    unenrollRowData: action.data.unenrollRowData,
+  };
+};
+const setShowNewIssueDialog = (state, action) => {
+  console.log("first");
+  return {
+    ...state,
+    showNewIssueDialog: action.data.showNewIssueDialog,
+  };
+};
+const setNewIssueData = (state, action) => {
+  return {
+    ...state,
+    newIssueData: action.data.newIssueData,
+  };
+};
+const setMapModalOpen = (state, action) => {
+  return {
+    ...state,
+    mapModalOpen: action.data.mapModalOpen,
+  };
+};
+const setMapModalData = (state, action) => {
+  return {
+    ...state,
+    mapModalData: action.data.mapModalData,
   };
 };
 
