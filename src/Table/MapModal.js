@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -10,25 +10,31 @@ import {
 import GoogleMap from '../Location/GoogleMap';
 import { Close } from '@material-ui/icons';
 // import PropTypes from 'prop-types';
-import { Context } from '../Store/Store';
+// import { Context } from '../Store/Store';
+import { useSelector, useDispatch } from "react-redux";
+import { setMapModalOpen } from '../Store/newStore';
 
 
 const MapModal = (
   // { open = false, setOpen = () => {}, lat = 35.763197, lng = -78.700187 }
   ) => {
-  const [state, dispatch] = useContext(Context);
+  // const [state, dispatch] = useContext(Context);
+
+  const dispatch = useDispatch();
+
   const fullWidth = true;
   const maxWidth = 'md';
-  const open = state.mapModalOpen;
-  const lat = state.mapModalData[0];
-  const lng = state.mapModalData[1];
+  const open = useSelector((state) => state.theStore.mapModalOpen);
+  const lat = useSelector((state) => state.theStore.mapModalData[0]);
+  const lng = useSelector((state) => state.theStore.mapModalData[1]);
   const setOpen = () => {
-    dispatch({
-      type: 'SET_MAP_MODAL_OPEN',
-      data: {
-        mapModalOpen: false,
-      },        
-    });
+    // dispatch({
+    //   type: 'SET_MAP_MODAL_OPEN',
+    //   data: {
+    //     mapModalOpen: false,
+    //   },        
+    // });
+    dispatch(setMapModalOpen(false));
   };
   return (
     <Dialog

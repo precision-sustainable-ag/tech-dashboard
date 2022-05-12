@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { Fragment, useContext, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import {
   withStyles,
   Switch,
@@ -13,10 +13,10 @@ import {
   Button,
 } from '@material-ui/core';
 import Loading from 'react-loading';
-
+import { useSelector } from 'react-redux';
 // Local Imports
 import { primaryContactPerson } from './api_secret';
-import { Context } from '../Store/Store';
+// import { Context } from '../Store/Store';
 import YearsChips from './YearsChips';
 import AffiliationsChips from './AffiliationsChips';
 import CodesChips from './CodesChips';
@@ -82,7 +82,8 @@ export const CustomSwitch = withStyles((theme) => ({
 
 // Helper functions
 export const BannedRoleMessage = ({ title }) => {
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const userInfo = useSelector((state) => state.theStore.userInfo);
   return (
     <Box component={Paper} elevation={1} p={2}>
       <Grid
@@ -107,7 +108,7 @@ export const BannedRoleMessage = ({ title }) => {
             variant="contained"
             color="primary"
             target="_top"
-            href={`mailto:${primaryContactPerson.email}?subject=Unable%20to%20view%20${title}%20on%20PSA%20Tech%20Dashboard&body=I%20am%20unable%20to%20view%20${title}.%20Please verify my permissions. My login email for the dashboard is ${state.userInfo.email}`}
+            href={`mailto:${primaryContactPerson.email}?subject=Unable%20to%20view%20${title}%20on%20PSA%20Tech%20Dashboard&body=I%20am%20unable%20to%20view%20${title}.%20Please verify my permissions. My login email for the dashboard is ${userInfo.email}`}
           >
             Report Error
           </Button>

@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect} from 'react';
 import Axios from 'axios';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import json from 'react-syntax-highlighter/dist/esm/languages/hljs/json';
@@ -18,9 +18,10 @@ import Loading from 'react-loading';
 import StressCamButtons from './StressCamButtons';
 import { checkIfDeviceHasNickname } from '../../utils/constants';
 import { any } from 'prop-types';
-import { Context } from '../../Store/Store';
+// import { Context } from '../../Store/Store';
 import { DeviceInfo } from './components/DeviceInfo';
 import { DeviceData } from './components/DeviceData';
+import { useSelector } from 'react-redux';
 
 SyntaxHighlighter.registerLanguage('json', json);
 
@@ -42,7 +43,9 @@ const DeviceComponent = (props) => {
   const [chartRedirectYear, setChartRedirectYear] = useState(0);
   const [siteCode, setSiteCode] = useState('');
 
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const isDarkTheme = useSelector((state) => state.theStore.isDarkTheme);
+
 
   useEffect(() => {
     if (mostRecentData.length > 0) {
@@ -176,7 +179,7 @@ const DeviceComponent = (props) => {
         <Grid item xs={12}>
           <Button
             variant="contained"
-            color={state.isDarkTheme ? 'primary' : 'default'}
+            color={isDarkTheme ? 'primary' : 'default'}
             aria-label={`All Devices`}
             component={Link}
             tooltip="All Devices"

@@ -2,10 +2,11 @@
 import { Button, Grid, Snackbar, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import Axios from 'axios';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 // Local Imports
-import { Context } from '../Store/Store';
+// import { Context } from '../Store/Store';
 import { apiPassword, apiURL, apiUsername } from '../utils/api_secret';
 import { bannedRoles } from '../utils/constants';
 import { BannedRoleMessage, CustomLoader } from '../utils/CustomComponents';
@@ -13,7 +14,8 @@ import EnrollNewSite from './EnrollNewSite';
 
 // Default function
 const SiteEnrollment = (props) => {
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const userInfo = useSelector((state) => state.theStore.userInfo);
   const [totalSitesEnrolled, setTotalSitesEnrolled] = useState(0);
   const [stateSitesEnrolled, setStateSitesEnrolled] = useState(0);
   const [showStateSpecificSites, setShowStateSpecificSites] = useState(false);
@@ -25,20 +27,20 @@ const SiteEnrollment = (props) => {
   const [savedData, setSavedData] = useState(false);
   const [fetchingStats, setFetchingStats] = useState(true);
   useEffect(() => {
-    if (state.userInfo.state) {
-      if (state.userInfo.role) {
-        if (bannedRoles.includes(state.userInfo.role)) {
+    if (userInfo.state) {
+      if (userInfo.role) {
+        if (bannedRoles.includes(userInfo.role)) {
           setShowContent(false);
           setBannedRolesCheckMessage(<BannedRoleMessage title="Site Enrollment" />);
         } else {
           setShowContent(true);
-          if (state.userInfo.state === 'all') {
+          if (userInfo.state === 'all') {
             setShowStateSpecificSites(false);
           } else {
             setShowStateSpecificSites(true);
           }
           setFetchingStats(true);
-          getStats(state.userInfo.state)
+          getStats(userInfo.state)
             .then((data) => {
               setTotalSitesEnrolled(data.total);
               setStateSitesEnrolled(data.state);
@@ -47,7 +49,7 @@ const SiteEnrollment = (props) => {
         }
       }
     }
-  }, [state.userInfo]);
+  }, [userInfo]);
 
   return showContent ? (
     <Grid container spacing={4}>
@@ -76,8 +78,8 @@ const SiteEnrollment = (props) => {
               {showStateSpecificSites && (
                 <Typography variant="body1" gutterBottom>
                   {stateSitesEnrolled} sites enrolled in your team
-                  {state.userInfo.state.split(',').length > 1 ? 's' : ''}:{' '}
-                  {state.userInfo.state.split(',').join(', ')}
+                  {userInfo.state.split(',').length > 1 ? 's' : ''}:{' '}
+                  {userInfo.state.split(',').join(', ')}
                 </Typography>
               )}
               <Typography variant="body1">

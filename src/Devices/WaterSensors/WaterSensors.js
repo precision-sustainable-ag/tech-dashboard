@@ -1,8 +1,9 @@
 // Dependency Imports
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 import qs from 'qs';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 // Local Imports
 
@@ -11,12 +12,13 @@ import { bannedRoles, apiCall, compareStrings } from '../../utils/constants';
 import { apiUsername, apiPassword } from '../../utils/api_secret';
 
 import '../Devices.scss';
-import { Context } from '../../Store/Store';
+// import { Context } from '../../Store/Store';
 import DevicesComponent from '../Devices';
 
 // Default function
 const WaterSensors = () => {
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const userInfo = useSelector((state) => state.theStore.userInfo);
   const [devices, setDevices] = useState([]);
   const [showDevices, setShowDevices] = useState(false);
   const [devicesLoadingState, setDevicesLoadingState] = useState(true);
@@ -25,8 +27,8 @@ const WaterSensors = () => {
   let devicesData = [];
   let finalAPIURL = '';
   useEffect(() => {
-    if (Reflect.ownKeys(state.userInfo).length > 0) {
-      if (bannedRoles.includes(state.userInfo.role)) {
+    if (Reflect.ownKeys(userInfo).length > 0) {
+      if (bannedRoles.includes(userInfo.role)) {
         setShowDevices(false);
       } else {
         // get tag id for
@@ -36,8 +38,8 @@ const WaterSensors = () => {
         let apiParams;
 
         // check if the string has commas and split it into an array
-        if (state.userInfo) {
-          let deviceState = state.userInfo.state;
+        if (userInfo) {
+          let deviceState = userInfo.state;
           deviceState = deviceState.split(',');
 
           if (deviceState[0] === 'all') {
@@ -89,7 +91,7 @@ const WaterSensors = () => {
     //   30 * 1000
     // );
     // return () => clearInterval(interval);
-  }, [state.userInfo]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [userInfo]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getTags = async (apiURL) => {
     let options = Constants.APICreds();
@@ -161,7 +163,7 @@ const WaterSensors = () => {
       devices={devices}
       loading={devicesLoadingState}
       for={'watersensors'}
-      userInfo={state.userInfo}
+      userInfo={userInfo}
       activeTag={location.state ? location.state.activeTag : null}
     />
   );

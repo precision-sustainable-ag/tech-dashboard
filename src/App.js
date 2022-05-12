@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useState, useEffect, Suspense, useContext } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import {
   makeStyles,
   Box,
@@ -69,7 +69,9 @@ import { apiPassword, apiUsername, onfarmAPI, onfarmStaticApiKey } from './utils
 import { apiCorsUrl, APIURL } from './Devices/hologramConstants';
 import QueryString from 'qs';
 import StressCamVisuals from './StressCamVisuals/StressCamVisuals';
-import { Context } from './Store/Store';
+// import { Context } from './Store/Store';
+import { toggleIsDarkTheme } from './Store/newStore';
+import { useDispatch } from 'react-redux';
 
 // Helper function
 
@@ -169,7 +171,8 @@ function App() {
   const { loading, isAuthenticated, loginWithRedirect, getTokenSilently } = useAuth0();
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [, dispatch] = useContext(Context);
+  // const [, dispatch] = useContext(Context);
+  const dispatch = useDispatch();
 
   const [theme, setTheme] = useState({
     palette: {
@@ -204,12 +207,14 @@ function App() {
   muiTheme = responsiveFontSizes(muiTheme);
 
   useEffect(() => {
-    dispatch({
-      type: 'TOGGLE_IS_DARK_THEME',
-      data: {
-        isDarkTheme: theme.palette.type === 'light' ? false : true,
-      },
-    });
+    // dispatch({
+    //   type: 'TOGGLE_IS_DARK_THEME',
+    //   data: {
+    //     isDarkTheme: theme.palette.type === 'light' ? false : true,
+    //   },
+    // });
+    dispatch(toggleIsDarkTheme(theme.palette.type === 'light' ? false : true));
+
   }, []);
 
   const toggleThemeDarkness = () => {
@@ -222,12 +227,14 @@ function App() {
       },
     });
 
-    dispatch({
-      type: 'TOGGLE_IS_DARK_THEME',
-      data: {
-        isDarkTheme: newPaletteType === 'light' ? false : true,
-      },
-    });
+    // dispatch({
+    //   type: 'TOGGLE_IS_DARK_THEME',
+    //   data: {
+    //     isDarkTheme: newPaletteType === 'light' ? false : true,
+    //   },
+    // });
+    dispatch(toggleIsDarkTheme(newPaletteType === 'light' ? false : true));
+
   };
 
   useEffect(() => {

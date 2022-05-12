@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -43,11 +43,13 @@ import SwitchesGroup from './Switch';
 
 // Local Imports
 import { apiPassword, apiUsername, apiURL } from '../utils/api_secret';
-import { Context } from '../Store/Store';
+// import { Context } from '../Store/Store';
 import { useAuth0 } from '../Auth/react-auth0-spa';
 import { addToTechnicians } from '../utils/SharedFunctions';
 import { debugAdmins } from '../utils/constants';
 import MuiAlert from '@material-ui/lab/Alert';
+import { updateRole, updateUserInfo, updatingUserInfo } from '../Store/newStore';
+import { useSelector, useDispatch } from 'react-redux';
 
 // Helper function
 function Alert(props) {
@@ -126,7 +128,10 @@ export default function Header(props) {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const profileMenuOpen = Boolean(anchorEl);
-  const [state, dispatch] = useContext(Context);
+  // const [state, dispatch] = useContext(Context);
+  const dispatch = useDispatch();
+  const isDarkTheme = useSelector((state) => state.theStore.isDarkTheme);
+  const userInfo = useSelector((state) => state.theStore.userInfo);
   const [viewType, setViewType] = useState('home');
 
   const { logout, user, loginWithRedirect } = useAuth0();
@@ -190,12 +195,14 @@ export default function Header(props) {
         }).then((response) => {
           if (response.data.return) {
             // user added
-            dispatch({
-              type: 'UPDATE_ROLE',
-              data: {
-                userRole: 'default',
-              },
-            });
+            // dispatch({
+            //   type: 'UPDATE_ROLE',
+            //   data: {
+            //     userRole: 'default',
+            //   },
+            // });
+            dispatch(updateRole('default'));
+
           }
         });
       } catch (e) {
@@ -203,9 +210,11 @@ export default function Header(props) {
       }
     };
     const fetchRole = async (user) => {
-      dispatch({
-        type: 'UPDATING_USER_INFO',
-      });
+      // dispatch({
+      //   type: 'UPDATING_USER_INFO',
+      // });
+      dispatch(updatingUserInfo());
+
       await Axios.get(`${apiURL}/api/users/${user.email}/${viewType}`, {
         auth: {
           username: apiUsername,
@@ -231,18 +240,21 @@ export default function Header(props) {
             console.log('adding to technicians');
             addToTechnicians(user.nickname, getTokenSilently);
           }
-          dispatch({
-            type: 'UPDATE_ROLE',
-            data: {
-              userRole: data.data.role,
-            },
-          });
-          dispatch({
-            type: 'UPDATE_USER_INFO',
-            data: {
-              userInfo: data.data,
-            },
-          });
+          // dispatch({
+          //   type: 'UPDATE_ROLE',
+          //   data: {
+          //     userRole: data.data.role,
+          //   },
+          // });
+          dispatch(updateRole(data.data.role));
+          
+          // dispatch({
+          //   type: 'UPDATE_USER_INFO',
+          //   data: {
+          //     userInfo: data.data,
+          //   },
+          // });
+          dispatch(updateUserInfo(data.data));
           //update user details to state
         }
       });
@@ -287,7 +299,7 @@ export default function Header(props) {
           </Typography>
           <SwitchesGroup setViewType={setViewType} />
           <IconButton color="inherit" onClick={toggleThemeDarkness}>
-            {state.isDarkTheme ? <BrightnessLow /> : <BrightnessHigh />}
+            {isDarkTheme ? <BrightnessLow /> : <BrightnessHigh />}
           </IconButton>
           {!props.isLoggedIn && (
             <IconButton
@@ -321,7 +333,7 @@ export default function Header(props) {
                 <MenuItem component={Link} to={'/profile'} onClick={handleProfileMenuClose}>
                   Profile
                 </MenuItem>
-                {debugAdmins.includes(state.userInfo.email) && (
+                {debugAdmins.includes(userInfo.email) && (
                   <MenuItem component={Link} to={'/debug'} onClick={handleProfileMenuClose}>
                     Debug
                   </MenuItem>

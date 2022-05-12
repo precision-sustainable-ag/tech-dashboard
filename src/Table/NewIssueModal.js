@@ -11,16 +11,18 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Octokit } from '@octokit/rest';
 import MDEditor from '@uiw/react-md-editor';
+import { useSelector, useDispatch } from "react-redux";
 
 // Local Imports
 import { githubToken } from '../utils/api_secret';
 import { useAuth0 } from '../Auth/react-auth0-spa';
 import PropTypes from 'prop-types';
 import { createGithubIssue } from '../utils/SharedFunctions';
-import { Context } from '../Store/Store';
+import { setShowNewIssueDialog } from '../Store/newStore';
+// import { Context } from '../Store/Store';
 
 /**
  *  A component to allow users to create "New Issue" in a modal
@@ -28,15 +30,18 @@ import { Context } from '../Store/Store';
 
 // Default function
 const NewIssueModal = (props) => {
-  const [state, dispatch] = useContext(Context);
-  const newIssueData = state.newIssueData;
+  // const [state, dispatch] = useContext(Context);
+  const dispatch = useDispatch();
+
+  const newIssueData = useSelector((state) => state.theStore.newIssueData);
   const handleNewIssueDialogClose = () => {
-    dispatch({
-      type: 'SET_SHOW_NEW_ISSUE_DIALOG',
-      data: {
-        showNewIssueDialog: !state.showNewIssueDialog,
-      },        
-    });
+    // dispatch({
+    //   type: 'SET_SHOW_NEW_ISSUE_DIALOG',
+    //   data: {
+    //     showNewIssueDialog: !state.showNewIssueDialog,
+    //   },        
+    // });
+    dispatch(setShowNewIssueDialog(!open));
   };
   const { getTokenSilently } = useAuth0();
 
@@ -122,12 +127,13 @@ const NewIssueModal = (props) => {
         setIssueTitle('');
         setButtonDisabled(false);
         // handleNewIssueDialogClose();
-        dispatch({
-          type: 'SET_SHOW_NEW_ISSUE_DIALOG',
-          data: {
-            showNewIssueDialog: !state.showNewIssueDialog,
-          },        
-        });
+        // dispatch({
+        //   type: 'SET_SHOW_NEW_ISSUE_DIALOG',
+        //   data: {
+        //     showNewIssueDialog: !state.showNewIssueDialog,
+        //   },        
+        // });
+        dispatch(setShowNewIssueDialog(!open));
         if (res.response) {
           if (res.response.status === 201) {
             props.setSnackbarData({
@@ -249,7 +255,7 @@ const NewIssueModal = (props) => {
   const [personName] = React.useState(alwaysTaggedPeople);
   return (
     <Dialog
-      open={state.showNewIssueDialog}
+      open={useSelector((state) => state.theStore.showNewIssueDialog)}
       // onClose={props.handleNewIssueDialogClose}
       onClose={handleNewIssueDialogClose}
       aria-labelledby="form-dialog-title"

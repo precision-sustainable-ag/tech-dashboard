@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 import { Grid, Snackbar } from '@material-ui/core';
 import { onfarmAPI } from '../utils/api_secret';
-import { Context } from '../Store/Store';
+// import { Context } from '../Store/Store';
 import { CustomLoader } from '../utils/CustomComponents';
 import IssueDialogue from '../Comments/IssueDialogue';
 import { useAuth0 } from '../Auth/react-auth0-spa';
 import MaterialTable from 'material-table';
 import Typography from '@material-ui/core/Typography';
 import MuiAlert from '@material-ui/lab/Alert';
-
+import { useSelector } from 'react-redux';
 const _ = require('lodash');
 
 // Helper function
@@ -102,7 +102,8 @@ const tableHeaderOptions = [
 const DecompBag = () => {
   const history = useHistory();
   const originalData = history.location.state.data;
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const userInfo = useSelector((state) => state.theStore.userInfo);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const { getTokenSilently } = useAuth0();
@@ -139,9 +140,9 @@ const DecompBag = () => {
       setLoading(false);
     };
 
-    if (!state.userInfo.apikey) return false;
+    if (!userInfo.apikey) return false;
 
-    fetchData(state.userInfo.apikey);
+    fetchData(userInfo.apikey);
 
     return (() => {
       const location = {

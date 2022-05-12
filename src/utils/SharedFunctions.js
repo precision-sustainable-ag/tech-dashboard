@@ -1,13 +1,16 @@
-import { useContext, useState, useEffect } from 'react';
-import { Context } from '../Store/Store';
+import { useState, useEffect } from 'react';
+// import { Context } from '../Store/Store';
 import { apiPassword, apiURL, apiUsername } from '../utils/api_secret';
 import Axios from 'axios';
 import qs from 'qs';
 import Platform from 'react-platform-js';
+import { useSelector } from 'react-redux';
 
 export const UserIsEditor = (permissions) => {
-  const [state] = useContext(Context);
-  const userPermissions = permissions ? permissions : state.userInfo.permissions;
+  // const [state] = useContext(Context);
+  const userInfo = useSelector((state) => state.theStore.userInfo);
+  console.log(userInfo);
+  const userPermissions = permissions ? permissions : userInfo.permissions;
   if (
     userPermissions.split(',').includes('all') ||
     userPermissions.split(',').includes('edit') ||

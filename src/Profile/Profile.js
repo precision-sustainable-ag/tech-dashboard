@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useContext, useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import {
   Grid,
   Typography,
@@ -18,17 +18,19 @@ import {
 import PropTypes from 'prop-types';
 
 // Local Imports
-import { Context } from '../Store/Store';
+// import { Context } from '../Store/Store';
 import { useAuth0 } from '../Auth/react-auth0-spa';
 import { bannedRoles, fetchKoboPasswords, ucFirst } from '../utils/constants';
 import { BannedRoleMessage } from '../utils/CustomComponents';
+import { useSelector } from 'react-redux';
 
 /**
  * Logged in User's Profile Page
  */
 
 const Profile = () => {
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const userInfo = useSelector((state) => state.theStore.userInfo);
   const { isAuthenticated, user } = useAuth0();
   const [koboDetails, setKoboDetails] = useState({
     data: [],
@@ -36,10 +38,10 @@ const Profile = () => {
   });
 
   useEffect(() => {
-    if (state.userInfo.state) {
+    if (userInfo.state) {
       const response = fetchKoboPasswords({
-        state: state.userInfo.state,
-        showAllStates: state.userInfo.state.toLowerCase() === 'all' ? true : false,
+        state: userInfo.state,
+        showAllStates: userInfo.state.toLowerCase() === 'all' ? true : false,
       });
       response.then(({ status, data, showAllStates }) => {
         if (status === 'success') {
@@ -50,11 +52,11 @@ const Profile = () => {
       });
     }
     return () => {};
-  }, [state.userInfo.state]);
+  }, [userInfo.state]);
 
   return (
     isAuthenticated &&
-    (bannedRoles.includes(state.userInfo.role) || bannedRoles.includes(state.userInfo.state) ? (
+    (bannedRoles.includes(userInfo.role) || bannedRoles.includes(userInfo.state) ? (
       <BannedRoleMessage title="profile page" />
     ) : (
       <Grid container spacing={2}>
@@ -62,7 +64,7 @@ const Profile = () => {
           <Typography variant="h4">Welcome, {user.name || user.nickname}</Typography>
         </Grid>
 
-        {Object.keys(state.userInfo).length > 0 && (
+        {Object.keys(userInfo).length > 0 && (
           <Grid item container xs={12} spacing={3}>
             <Grid item xs={12} md={4}>
               <Card elevation={3}>
@@ -76,7 +78,7 @@ const Profile = () => {
               <Card elevation={3}>
                 <CardHeader title="Account Details" />
                 <CardContent style={{ minHeight: '50vh' }}>
-                  <RenderGeneralInfo userInfo={state.userInfo} />
+                  <RenderGeneralInfo userInfo={userInfo} />
                 </CardContent>
               </Card>
             </Grid>

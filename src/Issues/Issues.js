@@ -1,19 +1,24 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, Slide, Select, MenuItem, Typography } from '@material-ui/core';
-import { Context } from '../Store/Store';
+// import { Context } from '../Store/Store';
 import Loading from 'react-loading';
 import { useHistory } from 'react-router-dom';
 
 import { RenderAllowedStatesTab } from './components/RenderAllowedStatesTab';
 import { RenderIssues } from './components/RenderIssues';
-
+import { useSelector } from 'react-redux';
 /**
  *
  * A wrapper component for Issues that loads the RenderIssues component
  */
 
 const Issues = () => {
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const userInfo = useSelector((state) => state.theStore.userInfo);
+  const loading = useSelector((state) => state.theStore.loading);
+  const loadingUser = useSelector((state) => state.theStore.loadingUser);
+  const userRole = useSelector((state) => state.theStore.userRole);
+
   const [activeState, setActiveState] = useState('');
   const [assignedStates, setAssignedStates] = useState([]);
   const [showLoader, setShowLoader] = useState(true);
@@ -31,18 +36,18 @@ const Issues = () => {
   };
 
   useEffect(() => {
-    if (Object.keys(state.userInfo).length > 0 && state.userInfo.state) {
+    if (Object.keys(userInfo).length > 0 && userInfo.state) {
       setActiveState((activeState) =>
-        activeState ? activeState : state.userInfo.state.split(',')[0],
+        activeState ? activeState : userInfo.state.split(',')[0],
       );
-      setAssignedStates(state.userInfo.state.split(','));
+      setAssignedStates(userInfo.state.split(','));
       setShowLoader(false);
     } else {
       setShowLoader(true);
     }
-  }, [state.userInfo, state.loading]);
+  }, [userInfo, loading]);
 
-  return state.loadingUser && showLoader ? (
+  return loadingUser && showLoader ? (
     <Loading type="bars" width="200px" height="200px" color="#3f51b5" />
   ) : (
     <>
@@ -81,9 +86,9 @@ const Issues = () => {
           </Grid>
         </Grid>
       </Grid>
-      <Slide in={!showLoader || !state.loadingUser} direction="down" timeout={800}>
+      <Slide in={!showLoader || !loadingUser} direction="down" timeout={800}>
         <div style={{ paddingTop: '20px' }}>
-          <RenderIssues stateLabel={activeState} userRole={state.userRole} filter={filter} />
+          <RenderIssues stateLabel={activeState} userRole={userRole} filter={filter} />
         </div>
       </Slide>
     </>

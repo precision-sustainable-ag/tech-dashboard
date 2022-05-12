@@ -15,10 +15,10 @@ import {
 } from '@material-ui/core';
 import { Check, Save } from '@material-ui/icons';
 import Axios from 'axios';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import InputMask from 'react-input-mask';
 import PropTypes from 'prop-types';
-import { Context } from '../Store/Store';
+// import { Context } from '../Store/Store';
 
 // Local Imports
 import { apiPassword, apiURL, apiUsername } from '../utils/api_secret';
@@ -27,6 +27,8 @@ import { NewSiteInfo } from './NewSiteInfo';
 import { callAzureFunction } from '../utils/SharedFunctions';
 import { useAuth0 } from '../Auth/react-auth0-spa';
 import MuiAlert from '@material-ui/lab/Alert';
+import { useDispatch, useSelector } from 'react-redux';
+import { setReassignSiteModalOpen, setValuesEdited } from '../Store/newStore';
 
 // Helper function
 function Alert(props) {
@@ -71,7 +73,11 @@ const GrowerInformation = ({
     text: '',
     severity: 'success',
   });
-  const [state, dispatch] = useContext(Context);
+  // const [state, dispatch] = useContext(Context);
+  const reassignSiteModalOpen = useSelector((state) => state.theStore.reassignSiteModalOpen);
+  const userInfo = useSelector((state) => state.theStore.userInfo);
+  const dispatch = useDispatch();
+
   const { getTokenSilently } = useAuth0();
 
   const handleNewGrowerInfo = () => {
@@ -103,7 +109,7 @@ const GrowerInformation = ({
 
   useEffect(() => {
     if (growerType === 'existing' && growerLastNameSearch !== '') {
-      let lastNamePromise = fetchGrowerByLastName(growerLastNameSearch, state.userInfo.apikey);
+      let lastNamePromise = fetchGrowerByLastName(growerLastNameSearch, userInfo.apikey);
       lastNamePromise.then((resp) => {
         let data = resp;
         if (data.length > 0) {
@@ -391,19 +397,21 @@ const GrowerInformation = ({
                     })
                     .finally(() => {
                       setTimeout(() => {
-                        dispatch({
-                          type: 'SET_REASSIGN_SITE_MODAL_OPEN',
-                              data: {
-                                reassignSiteModalOpen: !state.reassignSiteModalOpen,
-                              }, 
-                        });
+                        // dispatch({
+                        //   type: 'SET_REASSIGN_SITE_MODAL_OPEN',
+                        //       data: {
+                        //         reassignSiteModalOpen: !state.reassignSiteModalOpen,
+                        //       }, 
+                        // });
+                        dispatch(setReassignSiteModalOpen(!reassignSiteModalOpen));
                         // closeModal();
-                        dispatch({
-                          type: 'SET_VALUES_EDITED',
-                              data: {
-                                valuesEdited: true,
-                              }, 
-                        });
+                        // dispatch({
+                        //   type: 'SET_VALUES_EDITED',
+                        //       data: {
+                        //         valuesEdited: true,
+                        //       }, 
+                        // });
+                        dispatch(setValuesEdited(true));
                         // setValuesEdited(true);
                       }, 2500);
                     });

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Grid,
   Button,
@@ -11,22 +11,27 @@ import {
 } from '@material-ui/core';
 // import PropTypes from 'prop-types';
 import EnrollNewSite from '../SiteEnrollment/EnrollNewSite';
-import { Context } from '../Store/Store';
+// import { Context } from '../Store/Store';
+import { useSelector, useDispatch } from "react-redux";
+import { setReassignSiteModalOpen } from '../Store/newStore';
 
 const fullWidth = true;
 
 const ReassignDataModal = () => {
   // const { open, handleEditModalClose, data, setValuesEdited } = props;
-  const [state, dispatch] = useContext(Context);
-  const open = state.reassignSiteModalOpen;
-  const reassignSiteModalData = state.reassignSiteModalData;
+  // const [state, dispatch] = useContext(Context);
+  const dispatch = useDispatch();
+
+  const open = useSelector((state) => state.theStore.reassignSiteModalOpen);
+  const reassignSiteModalData = useSelector((state) => state.theStore.reassignSiteModalData);
   const handleReassignSiteModalClose = () => {
-    dispatch({
-      type: 'SET_REASSIGN_SITE_MODAL_OPEN',
-          data: {
-            reassignSiteModalOpen: !state.reassignSiteModalOpen,
-          }, 
-    });
+    // dispatch({
+    //   type: 'SET_REASSIGN_SITE_MODAL_OPEN',
+    //       data: {
+    //         reassignSiteModalOpen: !state.reassignSiteModalOpen,
+    //       }, 
+    // });
+    dispatch(setReassignSiteModalOpen(!open));
   };
   // const setValuesEdited = () => {
   //   state.valuesEdited = !state.valuesEdited;

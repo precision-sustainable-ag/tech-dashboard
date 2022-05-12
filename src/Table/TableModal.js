@@ -73,7 +73,7 @@ const TableModal = ({ tableData, height, activeSites, tableTitle }) => {
                 tooltip: 'Expand Actions Panel',
 
                 render: (rowData) => {
-                  return <RenderActionModal rowData={rowData} activeSites={activeSites}/>;
+                  return <RenderActionModal rowData={rowData} activeSites={activeSites} />;
                 },
               },
             ]}
@@ -121,8 +121,7 @@ TableModal.propTypes = {
   tableData:PropTypes.array.isRequired,
   height: PropTypes.number.isRequired,
   activeSites: PropTypes.bool.isRequired,
-  tableTitle: PropTypes.bool.isRequired,
-//   isDarkTheme: PropTypes.bool.isRequired,
+  tableTitle: PropTypes.string.isRequired,
 };
 
 export default TableModal;

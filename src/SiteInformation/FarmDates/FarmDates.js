@@ -1,7 +1,7 @@
 /* eslint-disable react/display-name */
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, Typography, Snackbar } from '@material-ui/core';
-import { Context } from '../../Store/Store';
+// import { Context } from '../../Store/Store';
 import MaterialTable from 'material-table';
 import { bannedRoles } from '../../utils/constants';
 import { BannedRoleMessage, CustomLoader } from '../../utils/CustomComponents';
@@ -10,6 +10,7 @@ import { addDays } from 'date-fns';
 import { useAuth0 } from '../../Auth/react-auth0-spa';
 import MuiAlert from '@material-ui/lab/Alert';
 import FarmDatesDropdown from './FarmDatesDropdown';
+import { useSelector } from 'react-redux';
 
 const farmDatesURL = `${onfarmAPI}/dates`;
 
@@ -118,7 +119,8 @@ const tableHeaderOptions = [
 ];
 
 const FarmDates = () => {
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const userInfo = useSelector((state) => state.theStore.userInfo);
   const [farmDatesData, setFarmDatesData] = useState([]);
   const [showBannedMessage, setShowBannedMessage] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -130,13 +132,13 @@ const FarmDates = () => {
   });
 
   useEffect(() => {
-    if (state.userInfo.role && bannedRoles.includes(state.userInfo.role)) {
+    if (userInfo.role && bannedRoles.includes(userInfo.role)) {
       setShowBannedMessage(true);
     } else {
-      if (state.userInfo.apikey) {
+      if (userInfo.apikey) {
         setShowBannedMessage(false);
         setLoading(true);
-        fetchFarmDatesFromApi(state.userInfo.apikey).then((response) => {
+        fetchFarmDatesFromApi(userInfo.apikey).then((response) => {
           makeDateObjects(response)
             .then((response) => {
               let responseWithFilter = response.filter((r) => {
@@ -148,7 +150,7 @@ const FarmDates = () => {
         });
       }
     }
-  }, [state.userInfo]);
+  }, [userInfo]);
 
   let height = window.innerHeight;
 

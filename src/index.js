@@ -4,6 +4,7 @@ import 'react-app-polyfill/stable';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
 
 // Local Imports
 import { Auth0Provider } from './Auth/react-auth0-spa';
@@ -12,7 +13,8 @@ import config from './Auth/auth_config.json';
 import './Styles/index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import Store from './Store/Store';
+// import Store from './Store/Store';
+import store from './Store/newStore';
 
 // a function that routes user to the relevant location after login
 const onRedirectCallback = (appState) => {
@@ -28,11 +30,11 @@ ReactDOM.render(
       onRedirectCallback={onRedirectCallback}
       cacheLocation={config.cacheLocation}
     >
-      <Store>
+      <Provider store={store}>
         <BrowserRouter>
           <App />
         </BrowserRouter>
-      </Store>
+      </Provider>
     </Auth0Provider>
   </React.StrictMode>,
   document.getElementById('root'),

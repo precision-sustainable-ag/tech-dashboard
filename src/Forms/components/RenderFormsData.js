@@ -1,22 +1,23 @@
-import React, { useContext } from 'react';
+import React, { } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 
 import FormEntry from './FormEntry';
-import { Context } from '../../Store/Store';
+// import { Context } from '../../Store/Store';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
 const RenderFormsData = (props) => {
   let { fetching, allowedAccounts, setSnackbarData } = props;
 
-  const [state] = useContext(Context);
-
+  // const [state] = useContext(Context);
+  const formsData = useSelector((state) => state.theStore.formsData);
   if (fetching)
     return (
       <Grid item xs={12}>
         <Typography variant="h5">Fetching Data...</Typography>
       </Grid>
     );
-  else if (state.formsData.filteredData.length === 0 && state.formsData.originalData.length === 0)
+  else if (formsData.filteredData.length === 0 && formsData.originalData.length === 0)
     return (
       <Grid item xs={12}>
         <Typography variant="h5">
@@ -33,9 +34,9 @@ const RenderFormsData = (props) => {
     return (
       <>
         <Grid item xs={12}>
-          <Typography variant="body1">{state.formsData.filteredData.length} submissions</Typography>
+          <Typography variant="body1">{formsData.filteredData.length} submissions</Typography>
         </Grid>
-        {state.formsData.filteredData.map((record = {}, index) => {
+        {formsData.filteredData.map((record = {}, index) => {
           return (
             <FormEntry
               record={record}

@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Grid,
   Button,
@@ -18,12 +18,15 @@ import {
 } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import Axios from 'axios';
+import { useSelector, useDispatch } from "react-redux";
+
 
 // Local Imports
 import { apiURL, apiUsername, apiPassword } from '../utils/api_secret';
 import Location from '../Location/Location';
 // import PropTypes from 'prop-types';
-import { Context } from '../Store/Store';
+// import { Context } from '../Store/Store';
+import { setEditModalOpen, setValuesEdited } from '../Store/newStore';
 
 //Global Vars
 const qs = require('qs');
@@ -54,16 +57,23 @@ function Alert(props) {
 const fullWidth = true;
 // Default function
 const EditDataModal = () => {
-  const [state, dispatch] = useContext(Context);
-  const open = state.editModalOpen;
-  const editModalData = state.editModalData;
+  // const [state, dispatch] = useContext(Context);
+  const dispatch = useDispatch();
+  const valuesEdited = useSelector((state) => state.theStore.valuesEdited);
+  // const open = state.editModalOpen;
+  const open = useSelector((state) => state.theStore.editModalOpen);
+
+  // const editModalData = state.editModalData;
+  const editModalData = useSelector((state) => state.theStore.editModalData);
+
   const handleEditModalClose = () => {
-    dispatch({
-      type: 'SET_EDIT_MODAL_OPEN',
-          data: {
-            editModalOpen: !state.editModalOpen,
-          }, 
-    });
+    // dispatch({
+    //   type: 'SET_EDIT_MODAL_OPEN',
+    //       data: {
+    //         editModalOpen: !state.editModalOpen,
+    //       }, 
+    // });
+    dispatch(setEditModalOpen(!open));
   };
   // const classes = useStyles();
 
@@ -166,18 +176,20 @@ const EditDataModal = () => {
       console.log('both');
       postModalUpdate(newData).then(() => {
         // props.handleEditModalClose();
-        dispatch({
-          type: 'SET_EDIT_MODAL_OPEN',
-          data: {
-            editModalOpen: !state.editModalOpen,
-          },        
-        });
-        dispatch({
-          type: 'SET_VALUES_EDITED',
-          data: {
-            valuesEdited: !state.valuesEdited,
-          },        
-        });
+        // dispatch({
+        //   type: 'SET_EDIT_MODAL_OPEN',
+        //   data: {
+        //     editModalOpen: !state.editModalOpen,
+        //   },        
+        // });
+        dispatch(setEditModalOpen(!open));
+        // dispatch({
+        //   type: 'SET_VALUES_EDITED',
+        //   data: {
+        //     valuesEdited: !state.valuesEdited,
+        //   },        
+        // });
+        dispatch(setValuesEdited(!valuesEdited));
         // props.setValuesEdited(!props.valuesEdited);
 
         setNewData({

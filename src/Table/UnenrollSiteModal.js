@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -15,19 +15,22 @@ import Axios from 'axios';
 // import PropTypes from 'prop-types';
 // Local Imports
 import { apiURL, apiUsername, apiPassword } from '../utils/api_secret';
-import { Context } from '../Store/Store';
+// import { Context } from '../Store/Store';
+import { useSelector, useDispatch } from "react-redux";
+import { setUnenrollOpen, setValuesEdited } from '../Store/newStore';
 
 //Global Vars
 const qs = require('qs');
 
 // Default function
 const UnenrollSiteModal = () => {
-  const [state, dispatch] = useContext(Context);
-  const open = state.unenrollOpen;
-  const unenrollRowData = state.unenrollRowData;
+  // const [state, dispatch] = useContext(Context);
+  const open = useSelector((state) => state.theStore.unenrollOpen);
+  const unenrollRowData = useSelector((state) => state.theStore.unenrollRowData);
+  const valuesEdited = useSelector((state) => state.theStore.valuesEdited);
   const [confirmText, setConfirmText] = useState('');
   const [confirmBtnStatus, setConfirmBtnStatus] = useState('Confirm');
-
+  const dispatch = useDispatch();
   const handleUnenroll = () => {
     // disenroll and close
     setConfirmBtnStatus('Please Wait..');
@@ -50,18 +53,20 @@ const UnenrollSiteModal = () => {
       .then((response) => {
         if (response.data.data) {
           // props.handleUnenrollClose();
-          dispatch({
-            type: 'SET_UNENROLL_OPEN',
-            data: {
-              unenrollOpen: !state.unenrollOpen,
-            },        
-          });
-          dispatch({
-            type: 'SET_VALUES_EDITED',
-            data: {
-              valuesEdited: !state.valuesEdited,
-            },        
-          });
+          // dispatch({
+          //   type: 'SET_UNENROLL_OPEN',
+          //   data: {
+          //     unenrollOpen: !state.unenrollOpen,
+          //   },        
+          // });
+          dispatch(setUnenrollOpen(!open));
+          // dispatch({
+          //   type: 'SET_VALUES_EDITED',
+          //   data: {
+          //     valuesEdited: !state.valuesEdited,
+          //   },        
+          // });
+          dispatch(setValuesEdited(!valuesEdited));
           // props.setValuesEdited(!props.valuesEdited);
         } else {
           console.error(response.data);
@@ -78,12 +83,14 @@ const UnenrollSiteModal = () => {
   const closeModal = () => {
     setConfirmText('');
     // props.handleUnenrollClose();
-    dispatch({
-      type: 'SET_UNENROLL_OPEN',
-      data: {
-        unenrollOpen: !state.unenrollOpen,
-      },        
-    });
+    // dispatch({
+    //   type: 'SET_UNENROLL_OPEN',
+    //   data: {
+    //     unenrollOpen: !state.unenrollOpen,
+    //   },        
+    // });
+    dispatch(setUnenrollOpen(!open));
+
   };
   return (
     <Dialog

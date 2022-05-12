@@ -1,6 +1,6 @@
 import { Grid } from '@material-ui/core';
-import React, { useState, useEffect, useContext } from 'react';
-import { Context } from '../../Store/Store';
+import React, { useState, useEffect } from 'react';
+// import { Context } from '../../Store/Store';
 import { onfarmAPI } from '../../utils/api_secret';
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 
@@ -8,6 +8,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { enUS } from 'date-fns/locale';
 import { blue, green, yellow } from '@material-ui/core/colors';
 import { addDays, format, parse, startOfWeek, getDay } from 'date-fns';
+import { useSelector } from 'react-redux';
 const locales = {
   'en-US': enUS,
 };
@@ -26,7 +27,8 @@ const localizer = dateFnsLocalizer({
 // const currentMonthInt = new Date(Date.now()).getMonth();
 
 const FarmDatesCalendar = () => {
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const userInfo = useSelector((state) => state.theStore.userInfo);
   const [data, setData] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
   //   ?datetimes=unix
@@ -80,10 +82,10 @@ const FarmDatesCalendar = () => {
       }
     };
 
-    if (state.userInfo.apikey) {
-      setRecords(state.userInfo.apikey);
+    if (userInfo.apikey) {
+      setRecords(userInfo.apikey);
     }
-  }, [state.userInfo.apikey]);
+  }, [userInfo.apikey]);
 
   //   const curr = new Date();
   //   const currentYear = dateObj.getFullYear();

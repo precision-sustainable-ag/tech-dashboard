@@ -9,8 +9,8 @@ import {
   AccordionSummary,
 } from '@material-ui/core';
 import { ExpandMore } from '@material-ui/icons';
-import React, { useState, useEffect, useContext, Fragment } from 'react';
-import { Context } from '../Store/Store';
+import React, { useState, useEffect, Fragment } from 'react';
+// import { Context } from '../Store/Store';
 import { onfarmAPI } from '../utils/api_secret';
 import {
   BannedRoleMessage,
@@ -21,7 +21,7 @@ import {
 import { uniqueYears } from '../utils/SharedFunctions';
 import MuiAlert from '@material-ui/lab/Alert';
 import TaskTrackerCard from './TaskTrackerCard';
-
+import { useSelector } from 'react-redux';
 // Helper function
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -208,7 +208,8 @@ let sensorJson = [
   },
 ];
 const TaskTracker = () => {
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const userInfo = useSelector((state) => state.theStore.userInfo);
   const [fetching, setFetching] = useState(true);
   const [farmValues, setFarmValues] = useState([]);
   const [farmYears, setFarmYears] = useState([]);
@@ -288,9 +289,9 @@ const TaskTracker = () => {
       return data;
     };
 
-    if (state.userInfo.apikey) {
+    if (userInfo.apikey) {
       setFetching(true);
-      fetchData(state.userInfo.apikey)
+      fetchData(userInfo.apikey)
         .then((response) => {
           if (response.length === 0) {
             throw new Error ('No data');
@@ -324,7 +325,7 @@ const TaskTracker = () => {
           setFetching(false);
         });
     }
-  }, [state.userInfo.apikey, farmValues.length]);
+  }, [userInfo.apikey, farmValues.length]);
 
   useEffect(() => {
     const fetchData = async (apiKey) => {
@@ -340,9 +341,9 @@ const TaskTracker = () => {
       return data;
     };
 
-    if (state.userInfo.apikey) {
+    if (userInfo.apikey) {
       setFetching(true);
-      fetchData(state.userInfo.apikey)
+      fetchData(userInfo.apikey)
         .then((response) => {
           const codes = response
             .filter((record) => record.code !== undefined)
@@ -367,7 +368,7 @@ const TaskTracker = () => {
           setFetching(false);
         });
     }
-  }, [state.userInfo.apikey, activeAffiliation(), activeFarmYear()]);
+  }, [userInfo.apikey, activeAffiliation(), activeFarmYear()]);
   return (
     <Grid container spacing={3}>
       {fetching ? (

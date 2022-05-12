@@ -1,6 +1,6 @@
 import { Grid, Snackbar } from '@material-ui/core';
-import React, { useState, useEffect, useContext, Fragment } from 'react';
-import { Context } from '../Store/Store';
+import React, { useState, useEffect, Fragment } from 'react';
+// import { Context } from '../Store/Store';
 import { onfarmAPI } from '../utils/api_secret';
 import {
   BannedRoleMessage,
@@ -12,6 +12,7 @@ import { uniqueYears } from '../utils/SharedFunctions';
 import MuiAlert from '@material-ui/lab/Alert';
 
 import FarmValuesTable from './FarmValuesTable';
+import { useSelector } from 'react-redux';
 
 // Helper function
 function Alert(props) {
@@ -20,7 +21,8 @@ function Alert(props) {
 
 const currentYear = new Date().getFullYear();
 const FarmValues = () => {
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const userInfo = useSelector((state) => state.theStore.userInfo);
   const [fetching, setFetching] = useState(true);
   const [farmValues, setFarmValues] = useState([]);
   const [farmYears, setFarmYears] = useState([]);
@@ -79,15 +81,15 @@ const FarmValues = () => {
       return data;
     };
 
-    if (state.userInfo.apikey) {
+    if (userInfo.apikey) {
       setFetching(true);
-      fetchData(state.userInfo.apikey)
+      fetchData(userInfo.apikey)
         .then((response) => {
           if (response.length === 0) {
             throw new Error ('No data');
           }
           setFarmValues(response);
-          
+
           let allYears = response.map((record) => record.year);
           setFarmYears(uniqueYears(allYears));
 
@@ -117,7 +119,7 @@ const FarmValues = () => {
           setFetching(false);
         });
     }
-  }, [state.userInfo.apikey, farmValues.length]);
+  }, [userInfo.apikey, farmValues.length]);
 
   const [units, setUnits] = useState('kg/ha');
 

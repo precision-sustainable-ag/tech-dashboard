@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { } from 'react';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import json from 'react-syntax-highlighter/dist/esm/languages/hljs/json';
 import docco from 'react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light';
@@ -20,7 +20,8 @@ import {
 import moment from 'moment-timezone';
 import { any, boolean } from 'prop-types';
 import { isValidJson, isBase64 } from '../../../utils/SharedFunctions';
-import { Context } from '../../../Store/Store';
+// import { Context } from '../../../Store/Store';
+import { useSelector } from 'react-redux';
 
 SyntaxHighlighter.registerLanguage('json', json);
 
@@ -80,7 +81,8 @@ const RenderTags = ({ chipsArray }) => {
 
 export const DeviceData = ({ mostRecentData, location, userTimezone, isFetching }) => {
   const classes = useStyles();
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const isDarkTheme = useSelector((state) => state.theStore.isDarkTheme);
 
   const getDataFromJSON = (jsonData, type, sensorType) => {
     jsonData = JSON.parse(jsonData);
@@ -136,7 +138,7 @@ export const DeviceData = ({ mostRecentData, location, userTimezone, isFetching 
                           <code>{getDataFromJSON(data.data, 'dataString', location.for)}</code>
                         </Tooltip>
                       ) : (
-                        <SyntaxHighlighter language="json" style={state.isDarkTheme ? dark : docco}>
+                        <SyntaxHighlighter language="json" style={isDarkTheme ? dark : docco}>
                           {getDataFromJSON(data.data, 'dataString', location.for)}
                         </SyntaxHighlighter>
                       )
