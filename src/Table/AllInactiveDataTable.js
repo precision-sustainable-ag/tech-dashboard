@@ -79,6 +79,7 @@ const AllInactiveDataTable = (props) => {
 
           records.then((response) => {
             let res = response.json();
+            console.log(res);
             res
               .then((records) => {
                 return parseXHRResponse({ status: 'success', data: records });

@@ -6,14 +6,14 @@ import React, { useState, useEffect } from 'react';
 import Loading from 'react-loading';
 import { Snackbar } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 // import MaterialTable from 'material-table';
 // import { Edit, DeleteForever, Search, QuestionAnswer, Store } from '@material-ui/icons';
 
 // Local Imports
 // import { Context } from '../Store/Store';
 import { bannedRoles } from '../utils/constants';
-import { setValuesEdited } from '../Store/newStore';
+// import { setValuesEdited } from '../Store/newStore';
 import EditDataModal from './EditDataModal';
 import UnenrollSiteModal from './UnenrollSiteModal';
 import NewIssueModal from './NewIssueModal';
@@ -45,7 +45,7 @@ const AllDataTable = (props) => {
   // const [state, dispatch] = useContext(Context);
   const userInfo = useSelector((state) => state.theStore.userInfo);
   const valuesEdited = useSelector((state) => state.theStore.valuesEdited);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const [showTable, setShowTable] = useState(false);
   const { user } = useAuth0();
@@ -108,7 +108,7 @@ const AllDataTable = (props) => {
             //     valuesEdited: false,
             //   },
             // });
-            dispatch(setValuesEdited(false));
+            // dispatch(setValuesEdited(false));
           });
         }
       }
