@@ -1,35 +1,37 @@
 // Dependency Imports
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Typography, Grid, List, Paper } from '@material-ui/core';
 
 // Local Imports
 import getAllKoboAssets from './KoboFormAuth';
 import FormsLoadingSkeleton from './FormsLoadingSkeleton';
-import { Context } from '../Store/Store';
+// import { Context } from '../Store/Store';
 import { bannedRoles } from '../utils/constants';
 
 import { BannedRoleMessage } from '../utils/CustomComponents';
 
 import FormsStatus from './components/FormsStatus';
+import { useSelector } from 'react-redux';
 
 // Default function
 const Forms = () => {
   const [isPSALoading, setIsPSALoading] = useState(true);
   const [showForms, setShowForms] = useState(false);
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
+  const userRole = useSelector((state) => state.userRole);
 
   const [psaForms, setPsaForms] = useState([]);
 
   useEffect(() => {
     setIsPSALoading(true);
-    if (bannedRoles.includes(state.userRole)) {
+    if (bannedRoles.includes(userRole)) {
       setShowForms(false);
       setIsPSALoading(false);
     } else {
       getAllKoboAssets('psa')
         .then((response) => {
           const allForms = response.data.data.results;
-          console.log(allForms);
           const forms = allForms
             .filter(
               (form) =>
@@ -43,7 +45,7 @@ const Forms = () => {
           setIsPSALoading(false);
         });
     }
-  }, [state.userRole]);
+  }, [userRole]);
 
   // useEffect(() => {
   //   if (state.userInfo) getKoboUsernames(state);
@@ -67,7 +69,7 @@ const Forms = () => {
             {psaForms.map((form, index) =>
               form.name !== '' && form.deployment__active ? (
                 <Grid item xs={12} key={`psa-form-${index}`}>
-                  <Paper elevation={state.isDarkTheme ? 3 : 1}>
+                  <Paper elevation={isDarkTheme ? 3 : 1}>
                     <FormsStatus form={form} />
                   </Paper>
                 </Grid>

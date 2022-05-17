@@ -3,14 +3,14 @@
 import { Button, Card, CardContent, Grid, Slide, Typography, Snackbar } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
 import { Octokit } from '@octokit/rest';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import MDEditor from '@uiw/react-md-editor';
 import MuiAlert from '@material-ui/lab/Alert';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
-
+import { useSelector } from 'react-redux';
 // Local Imports
-import { Context } from '../Store/Store';
+// import { Context } from '../Store/Store';
 import { githubToken } from '../utils/api_secret';
 import { bannedRoles } from '../utils/constants';
 import { Link } from 'react-router-dom';
@@ -35,7 +35,8 @@ const Issue = (props) => {
   const issueNumber = props.match.params.issueNumber
     ? parseInt(props.match.params.issueNumber)
     : null;
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const userRole = useSelector((state) => state.userRole);
   const [showIssue, setShowIssue] = useState(false);
   const [issueBody, setIssueBody] = useState([]);
   const [newComment, setNewComment] = useState('');
@@ -74,12 +75,12 @@ const Issue = (props) => {
   const octokit = new Octokit({ auth: githubToken });
 
   useEffect(() => {
-    if (bannedRoles.includes(state.userRole)) {
+    if (bannedRoles.includes(userRole)) {
       setShowIssue(false);
     } else {
       fetchIssueComments();
     }
-  }, [state.userRole]);
+  }, [userRole]);
 
   const fetchIssueComments = () => {
     getIssueDetails().then((resp) => {
