@@ -83,81 +83,45 @@ export function useWindowDimensions() {
   return dimensions;
 }
 
-export const createGithubIssue = async (
-  issueTitle,
-  body,
-  labels,
-  assignees,
-  nickname,
-  getTokenSilently,
-) => {
-  const data = {
-    action: 'create',
-    user: nickname,
-    title: issueTitle,
-    assignees: assignees,
-    labels: labels,
-    body: body,
-  };
-
-  return callAzureFunction(data, 'GithubIssues', getTokenSilently);
-};
-export const createGithubComment = async (nickname, newComment, number, getTokenSilently) => {
-  const data = {
-    action: 'comment',
-    user: nickname,
-    comment: newComment,
-    number: number,
-  };
-
-  return callAzureFunction(data, 'GithubIssues', getTokenSilently);
-};
-
-export const addToTechnicians = async (nickname, getTokenSilently) => {
-  const data = {
-    action: 'add_to_technicians',
-    user: nickname,
-  };
-
-  return callAzureFunction(data, 'GithubIssues', getTokenSilently);
-};
-
-export const callAzureFunction = async (data, endpoint, getTokenSilently) => {
+export const callAzureFunction = async (data, endpoint, method, getTokenSilently) => {
   let token = await getTokenSilently({
     audience: `https://precision-sustaibale-ag/tech-dashboard`,
   });
-  data = { ...data, token: token };
 
-  const options = {
-    method: 'POST',
+  let options = {
+    method: method,
     headers: {
       'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token,
     },
-    body: JSON.stringify(data),
     mode: 'cors', // no-cors, *cors, same-origin
   };
 
-  let githubIssuesResponse;
+  if (data !== null) {
+    options['body'] = JSON.stringify(data);
+  }
+
+  let correctionsApiResponse;
 
   try {
-    githubIssuesResponse = await fetch(
-      `https://correctionsapi.azurewebsites.net/api/${endpoint}`,
+    correctionsApiResponse = await fetch(
+      `https://devcorrectionsapi.azurewebsites.net/api/${endpoint}`,
       options,
     );
   } catch (err) {
     console.log(err);
-    githubIssuesResponse = null;
+    correctionsApiResponse = null;
   }
 
-  let githubIssuesResponseJSON = null;
+  let correctionsApiResponseJSON = null;
 
-  if (githubIssuesResponse)
-    githubIssuesResponseJSON = await githubIssuesResponse.json().catch((err) => {
+  if (correctionsApiResponse)
+    correctionsApiResponseJSON = await correctionsApiResponse.json().catch((err) => {
       console.log(err);
-      githubIssuesResponseJSON = githubIssuesResponse;
+      correctionsApiResponseJSON = correctionsApiResponse;
     });
 
-  console.log(githubIssuesResponse);
+  console.log(correctionsApiResponse);
 
   const dataString = qs.stringify({
     params: data,
@@ -165,8 +129,8 @@ export const callAzureFunction = async (data, endpoint, getTokenSilently) => {
     osVersion: Platform.OSVersion,
     browser: Platform.Browser,
     browserVersion: Platform.BrowserVersion,
-    githubIssuesResponse: githubIssuesResponseJSON
-      ? githubIssuesResponseJSON
+    correctionsApiResponse: correctionsApiResponseJSON
+      ? correctionsApiResponseJSON
       : 'No response from function likely cors',
   });
 
@@ -186,8 +150,8 @@ export const callAzureFunction = async (data, endpoint, getTokenSilently) => {
   });
 
   return {
-    jsonResponse: githubIssuesResponseJSON,
-    response: githubIssuesResponse,
+    jsonResponse: correctionsApiResponseJSON,
+    response: correctionsApiResponse,
   };
 };
 

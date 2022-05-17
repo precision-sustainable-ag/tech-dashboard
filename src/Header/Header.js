@@ -45,7 +45,7 @@ import SwitchesGroup from './Switch';
 import { apiPassword, apiUsername, apiURL } from '../utils/api_secret';
 // import { Context } from '../Store/Store';
 import { useAuth0 } from '../Auth/react-auth0-spa';
-import { addToTechnicians } from '../utils/SharedFunctions';
+import { callAzureFunction } from '../utils/SharedFunctions';
 import { debugAdmins } from '../utils/constants';
 import MuiAlert from '@material-ui/lab/Alert';
 import { updateRole, updateUserInfo, updatingUserInfo } from '../Store/actions';
@@ -241,7 +241,12 @@ export default function Header(props) {
         } else {
           if (data.data.state !== 'default') {
             console.log('adding to technicians');
-            addToTechnicians(user.nickname, getTokenSilently);
+            callAzureFunction(
+              null,
+              `precision-sustainable-ag/teams/technicians/${user.nickname}`,
+              'POST',
+              getTokenSilently,
+            ).then((res) => res.jsonResponse);
           }
           // dispatch({
           //   type: 'UPDATE_ROLE',

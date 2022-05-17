@@ -17,7 +17,7 @@ import { Link } from 'react-router-dom';
 import { useAuth0 } from '../Auth/react-auth0-spa';
 import IssueBubbleBody from './components/IssueBodyBubble';
 import { SingleIssueBodyBubble } from './components/SingleIssueBodyBubble';
-import { createGithubComment } from '../utils/SharedFunctions';
+import { callAzureFunction } from '../utils/SharedFunctions';
 import Comments from '../Comments/Comments';
 
 // Global vars
@@ -110,7 +110,16 @@ const Issue = (props) => {
   async function handleNewComment(body) {
     setButtonDisabled(true);
 
-    createGithubComment(user.nickname, body, issueNumber, getTokenSilently).then((res) => {
+    const data = {
+      comment: body,
+    };
+
+    callAzureFunction(
+      data,
+      `precision-sustainable-ag/repos/data_corrections/comments/${user.nickname}/${issueNumber}`,
+      'POST',
+      getTokenSilently,
+    ).then((res) => {
       setNewCommentAdded(!newCommentAdded);
       setNewComment('');
       setButtonDisabled(false);
