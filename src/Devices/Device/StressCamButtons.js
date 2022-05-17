@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   TextField,
@@ -17,7 +17,8 @@ import { sendCommandToHologram } from '../../utils/SharedFunctions';
 import { getDeviceMessages } from '../../utils/SharedFunctions';
 import MuiAlert from '@material-ui/lab/Alert';
 import PropTypes from 'prop-types';
-import { Context } from '../../Store/Store';
+// import { Context } from '../../Store/Store';
+import { useSelector } from 'react-redux';
 
 // Helper function
 function Alert(props) {
@@ -42,7 +43,8 @@ const StressCamButtons = (props) => {
     text: '',
     severity: 'success',
   });
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
 
   const handleClose = () => {
     setOpen(false);
@@ -185,7 +187,7 @@ const StressCamButtons = (props) => {
               onClick={() => sendMessage('startCorn')}
               fullWidth
               variant="contained"
-              color={state.isDarkTheme ? 'primary' : 'default'}
+              color={isDarkTheme ? 'primary' : 'default'}
             >
               Start in Corn
             </ButtonWithTooltip>
@@ -201,7 +203,7 @@ const StressCamButtons = (props) => {
               onClick={() => sendMessage('startSoy')}
               fullWidth
               variant="contained"
-              color={state.isDarkTheme ? 'primary' : 'default'}
+              color={isDarkTheme ? 'primary' : 'default'}
             >
               Start in Soybean
             </ButtonWithTooltip>
@@ -211,7 +213,7 @@ const StressCamButtons = (props) => {
               disabled={buttonsDisabled}
               fullWidth
               variant="contained"
-              color={state.isDarkTheme ? 'primary' : 'default'}
+              color={isDarkTheme ? 'primary' : 'default'}
               onClick={() => sendMessage('stop')}
             >
               Stop
@@ -222,7 +224,7 @@ const StressCamButtons = (props) => {
               disabled={buttonsDisabled}
               fullWidth
               variant="contained"
-              color={state.isDarkTheme ? 'primary' : 'default'}
+              color={isDarkTheme ? 'primary' : 'default'}
               onClick={() => sendMessage('shutdown')}
             >
               Shutdown

@@ -1,8 +1,9 @@
 import { CardContent, Divider, Typography, TextField, Chip, Grid } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { onfarmAPI } from '../utils/api_secret';
-import { Context } from '../Store/Store';
+// import { Context } from '../Store/Store';
 
 const TaskTrackerCard = ({ title, table, year, affiliation, code, time, complete_col }) => {
   if (affiliation == 'all') {
@@ -12,7 +13,8 @@ const TaskTrackerCard = ({ title, table, year, affiliation, code, time, complete
     code = '';
   }
 
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const userInfo = useSelector((state) => state.userInfo);
   const [codes, setCodes] = useState([]);
 
   useEffect(() => {
@@ -29,8 +31,8 @@ const TaskTrackerCard = ({ title, table, year, affiliation, code, time, complete
       return data;
     };
 
-    if (state.userInfo.apikey) {
-      fetchData(state.userInfo.apikey)
+    if (userInfo.apikey) {
+      fetchData(userInfo.apikey)
         .then((response) => {
           const map = new Map();
           for (let item = 0; item < response.length; item++) {
@@ -76,9 +78,9 @@ const TaskTrackerCard = ({ title, table, year, affiliation, code, time, complete
               item--;
             }
           }
-          if( table == 'decomp_biomass_fresh' || table == 'decomp_biomass_dry'){
-            if(time == '0') {
-              if( complete_col == 'empty_bag_wt' || complete_col == 'fresh_biomass_wt') {
+          if (table == 'decomp_biomass_fresh' || table == 'decomp_biomass_dry') {
+            if (time == '0') {
+              if (complete_col == 'empty_bag_wt' || complete_col == 'fresh_biomass_wt') {
                 for (let item = 0; item < response.length; item++) {
                   if (response[item].protocols.decomp_biomass == 0) {
                     response.splice(item, 1);
@@ -86,8 +88,7 @@ const TaskTrackerCard = ({ title, table, year, affiliation, code, time, complete
                   }
                 }
               }
-            }
-            else if (time != '0' || time != '') {
+            } else if (time != '0' || time != '') {
               for (let item = 0; item < response.length; item++) {
                 if (response[item].protocols.decomp_biomass == 0) {
                   response.splice(item, 1);
@@ -104,7 +105,7 @@ const TaskTrackerCard = ({ title, table, year, affiliation, code, time, complete
           console.error(e);
         });
     }
-  }, [state.userInfo.apikey, year, affiliation, code]);
+  }, [userInfo.apikey, year, affiliation, code]);
 
   return (
     <>

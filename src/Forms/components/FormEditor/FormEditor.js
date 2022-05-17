@@ -1,4 +1,4 @@
-import React, { useState, useContext, Fragment } from 'react';
+import React, { useState, Fragment } from 'react';
 import { Button, Snackbar } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
 import FormEditorModal from './FormEditorModal';
@@ -7,7 +7,10 @@ import { useAuth0 } from '../../../Auth/react-auth0-spa';
 import MuiAlert from '@material-ui/lab/Alert';
 
 import { callAzureFunction } from '../../../utils/SharedFunctions';
-import { Context } from '../../../Store/Store';
+// import { Context } from '../../../Store/Store';
+import { updateSelectedFormData } from '../../../Store/actions';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 // Helper function
 function Alert(props) {
@@ -18,8 +21,10 @@ const FormEditor = (props) => {
   let { slimRecord, error, uid } = props;
 
   const { getTokenSilently } = useAuth0();
-  const [state, dispatch] = useContext(Context);
-
+  // const [state, dispatch] = useContext(Context);
+  const userInfo = useSelector((state) => state.userInfo);
+  const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
+  const dispatch = useDispatch();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingLists, setEditingLists] = useState([]);
   const [buttonText, setButtonText] = useState('View errors and fix form');
@@ -30,15 +35,22 @@ const FormEditor = (props) => {
   });
 
   const toggleModalOpen = () => {
-    dispatch({
-      type: 'UPDATE_SELECTED_FORM_DATA',
-      data: {
-        formType: 'valid',
-        formSlimRecord: slimRecord || [],
-        formError: error || [],
-        formUid: uid || [],
-      },
-    });
+    // dispatch({
+    //   type: 'UPDATE_SELECTED_FORM_DATA',
+    //   data: {
+    //     formType: 'valid',
+    //     formSlimRecord: slimRecord || [],
+    //     formError: error || [],
+    //     formUid: uid || [],
+    //   },
+    // });
+    dispatch(
+      updateSelectedFormData({
+        slimRecord: slimRecord || [],
+        error: error || [],
+        uid: uid || [],
+      }),
+    );
 
     setModalOpen(!modalOpen);
   };
@@ -77,10 +89,10 @@ const FormEditor = (props) => {
           setButtonText={setButtonText}
           setSnackbarData={setSnackbarData}
         />
-      ) : state.userInfo.view_type === 'home' ? (
+      ) : userInfo.view_type === 'home' ? (
         <Button
           variant="contained"
-          color={state.isDarkTheme ? 'primary' : 'default'}
+          color={isDarkTheme ? 'primary' : 'default'}
           aria-label={`All Forms`}
           tooltip="All Forms"
           size="small"

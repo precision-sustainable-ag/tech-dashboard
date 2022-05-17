@@ -1,8 +1,8 @@
 import { Grid, TextField, Typography } from '@material-ui/core';
-import React, { useState, useEffect, useContext, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { onfarmAPI } from '../utils/api_secret';
-import { Context } from '../Store/Store';
+// import { Context } from '../Store/Store';
 import { CustomLoader } from '../utils/CustomComponents';
 import YearsChips from '../utils/YearsChips';
 import AffiliationsChips from '../utils/AffiliationsChips';
@@ -12,6 +12,7 @@ import { Search } from '@material-ui/icons';
 import { useHistory } from 'react-router-dom';
 import { green, grey } from '@material-ui/core/colors';
 import moment from 'moment-timezone';
+import { useSelector } from 'react-redux';
 
 // const allYears
 
@@ -35,7 +36,8 @@ const SensorVisuals = (props) => {
   const [data, setData] = useState([]);
   const [years, setYears] = useState([]);
   const [affiliations, setAffiliations] = useState(['all']);
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const userInfo = useSelector((state) => state.userInfo);
   const [codeSearchText, setCodeSearchText] = useState('');
 
   // Styles
@@ -184,7 +186,7 @@ const SensorVisuals = (props) => {
             });
 
             if (type === 'watersensors') {
-              getCameraStatus(newData, state.userInfo.apikey);
+              getCameraStatus(newData, userInfo.apikey);
             } else {
               setLoading(false);
               // response.splice(100);
@@ -245,15 +247,15 @@ const SensorVisuals = (props) => {
       }
     };
 
-    fetchData(state.userInfo.apikey);
-  }, [state.userInfo.apikey, type, location.state, data.length]);
+    fetchData(userInfo.apikey);
+  }, [userInfo.apikey, type, location.state, data.length]);
 
   useEffect(() => {
     return () => {
       setData([]);
       setCodeSearchText('');
     };
-  }, [state.userInfo.apikey, location]);
+  }, [userInfo.apikey, location]);
 
   const activeData = useMemo(() => {
     const activeYear = years.reduce((acc, curr) => {
@@ -381,7 +383,7 @@ const SensorVisuals = (props) => {
               lastUpdated={entry.lastUpdated}
               data={data}
               type={type}
-              apiKey={state.userInfo.apikey}
+              apiKey={userInfo.apikey}
             />
             {/* <div>{data.code}</div> */}
           </Grid>

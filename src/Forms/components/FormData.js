@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Chip, Grid, Typography, Snackbar, Box, Tab } from '@material-ui/core';
 import { TabList, TabContext } from '@material-ui/lab';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -8,11 +8,18 @@ import MuiAlert from '@material-ui/lab/Alert';
 
 import json from 'react-syntax-highlighter/dist/esm/languages/hljs/json';
 import { Link, useHistory } from 'react-router-dom';
-import { Context } from '../../Store/Store';
+// import { Context } from '../../Store/Store';
 import { fetchKoboPasswords } from '../../utils/constants';
-
+import { useSelector, useDispatch } from 'react-redux';
 import RenderFormsData from './RenderFormsData';
 import { callAzureFunction } from './../../utils/SharedFunctions';
+import {
+  setFormsData,
+  updateFilteredFormsData,
+  updateFormName,
+  updateFormsData,
+  setAffiliationLookup,
+} from '../../Store/actions';
 
 SyntaxHighlighter.registerLanguage('json', json);
 
@@ -25,7 +32,12 @@ const FormData = () => {
   const history = useHistory();
 
   const [fetching, setFetching] = useState(false);
-  const [state, dispatch] = useContext(Context);
+  // const [state, dispatch] = useContext(Context);
+  const userInfo = useSelector((state) => state.userInfo);
+  const formsData = useSelector((state) => state.formsData);
+  const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
+  const loadingUser = useSelector((state) => state.userInfo.loadingUser);
+  const dispatch = useDispatch();
   const [allowedAccounts, setAllowedAccounts] = useState([]);
   const [activeAccount, setActiveAccount] = useState('all');
   const { getTokenSilently } = useAuth0();
@@ -34,7 +46,7 @@ const FormData = () => {
     text: '',
     severity: 'success',
   });
-  const [value, setValue] = React.useState('1');
+  const [value, setValue] = useState('1');
 
   const getHistory = async () => {
     let name;
@@ -43,12 +55,13 @@ const FormData = () => {
     } else {
       name = '';
     }
-    dispatch({
-      type: 'UPDATE_FORM_NAME',
-      data: {
-        formName: name,
-      },
-    });
+    // dispatch({
+    //   type: 'UPDATE_FORM_NAME',
+    //   data: {
+    //     formName: name,
+    //   },
+    // });
+    dispatch(updateFormName(name));
   };
 
   const fetchData = async () => {
@@ -67,7 +80,7 @@ const FormData = () => {
 
   useEffect(() => {
     setFetching(true);
-    if (Object.keys(state.userInfo).length !== 0) {
+    if (userInfo.state) {
       const records = fetchData().then((response) => {
         if (response === null) throw new Error(response.statusText);
         let validRecords = response.valid_data || [];
@@ -105,7 +118,7 @@ const FormData = () => {
       records.then((recs) => {
         fetchKoboPasswords({
           showAllStates: 'true',
-          state: state.userInfo?.state,
+          state: userInfo?.state,
         })
           .then(({ data }) => {
             const allowedKoboAccounts = data
@@ -124,13 +137,13 @@ const FormData = () => {
               newLookup[kobo_account] = affiliation;
             });
 
-            dispatch({
-              type: 'SET_AFFILIATION_LOOKUP',
-              data: {
-                affiliationLookup: affiliationLookup,
-              },
-            });
-
+            // dispatch({
+            //   type: 'SET_AFFILIATION_LOOKUP',
+            //   data: {
+            //     affiliationLookup: affiliationLookup,
+            //   },
+            // });
+            dispatch(setAffiliationLookup(affiliationLookup));
             setAllowedAccounts(allowedKoboAccounts);
 
             const sortAndParse = (objs) => {
@@ -166,41 +179,50 @@ const FormData = () => {
               allowedKoboAccounts.includes(rec.data._submitted_by),
             );
 
-            dispatch({
-              type: 'SET_FORMS_DATA',
-              data: {
-                formType: 'valid',
-                validFilteredRecords: validFilteredRecords || [],
-                invalidFilteredRecords: invalidFilteredRecords || [],
-                historyFilteredRecords: historyFilteredRecords || [],
-              },
-            });
+            // dispatch({
+            //   type: 'SET_FORMS_DATA',
+            //   data: {
+            //     formType: 'valid',
+            //     validFilteredRecords: validFilteredRecords || [],
+            //     invalidFilteredRecords: invalidFilteredRecords || [],
+            //     historyFilteredRecords: historyFilteredRecords || [],
+            //   },
+            // });
+
+            dispatch(
+              setFormsData({
+                type: 'valid',
+                validForms: validFilteredRecords || [],
+                invalidForms: invalidFilteredRecords || [],
+                historyForms: historyFilteredRecords || [],
+              }),
+            );
           })
           .then(() => setFetching(false));
       });
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }
-  }, [state.userInfo]);
+  }, [userInfo.state]);
 
   useEffect(() => {
     const recalculate = async () => {
       return new Promise((resolve) => {
-        if (state.formsData.originalData) {
-          if (state.formsData.type === 'valid') {
-            if (activeAccount === 'all') resolve(state.formsData.originalData.validRecords);
-            const filteredActive = state.formsData.originalData.validRecords.filter(
+        if (formsData.originalData) {
+          if (formsData.type === 'valid') {
+            if (activeAccount === 'all') resolve(formsData.originalData.validRecords);
+            const filteredActive = formsData.originalData.validRecords.filter(
               (data) => data.data._submitted_by === activeAccount,
             );
             resolve(filteredActive || []);
-          } else if (state.formsData.type === 'invalid') {
-            if (activeAccount === 'all') resolve(state.formsData.originalData.invalidRecords);
-            const filteredActive = state.formsData.originalData.invalidRecords.filter(
+          } else if (formsData.type === 'invalid') {
+            if (activeAccount === 'all') resolve(formsData.originalData.invalidRecords);
+            const filteredActive = formsData.originalData.invalidRecords.filter(
               (data) => data.data._submitted_by === activeAccount,
             );
             resolve(filteredActive || []);
           } else {
-            if (activeAccount === 'all') resolve(state.formsData.originalData.historyRecords);
-            const filteredActive = state.formsData.originalData.historyRecords.filter(
+            if (activeAccount === 'all') resolve(formsData.originalData.historyRecords);
+            const filteredActive = formsData.originalData.historyRecords.filter(
               (data) => data.data._submitted_by === activeAccount,
             );
             resolve(filteredActive || []);
@@ -210,45 +232,64 @@ const FormData = () => {
     };
 
     recalculate().then((data) => {
-      dispatch({
-        type: 'UPDATE_FILTERED_FORMS_DATA',
-        data: {
-          formType: state.formsData.type,
-          formsData: data,
-        },
-      });
+      // dispatch({
+      //   type: 'UPDATE_FILTERED_FORMS_DATA',
+      //   data: {
+      //     formType: formsData.type,
+      //     formsData: data,
+      //   },
+      // });
+      dispatch(updateFilteredFormsData({ type: formsData.type, filteredData: data }));
     });
-  }, [activeAccount, state.formsData.originalData, state.formsData.data, state.formsData.type]);
+  }, [activeAccount, formsData.originalData, formsData.data, formsData.type]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
     switch (newValue) {
       case '1':
-        dispatch({
-          type: 'UPDATE_FORMS_DATA',
-          data: {
-            formsData: state.formsData.validData,
-            formType: 'valid',
-          },
-        });
+        // dispatch({
+        //   type: 'UPDATE_FORMS_DATA',
+        //   data: {
+        //     formsData: formsData.validData,
+        //     formType: 'valid',
+        //   },
+        // });
+        dispatch(
+          updateFormsData({
+            data: formsData.validData,
+            type: 'valid',
+          }),
+        );
         break;
       case '2':
-        dispatch({
-          type: 'UPDATE_FORMS_DATA',
-          data: {
-            formsData: state.formsData.invalidData,
-            formType: 'invalid',
-          },
-        });
+        // dispatch({
+        //   type: 'UPDATE_FORMS_DATA',
+        //   data: {
+        //     formsData: formsData.invalidData,
+        //     formType: 'invalid',
+        //   },
+        // });
+        dispatch(
+          updateFormsData({
+            data: formsData.invalidData,
+            type: 'invalid',
+          }),
+        );
         break;
       case '3':
-        dispatch({
-          type: 'UPDATE_FORMS_DATA',
-          data: {
-            formsData: state.formsData.historyData,
-            formType: 'history',
-          },
-        });
+        // dispatch({
+        //   type: 'UPDATE_FORMS_DATA',
+        //   data: {
+        //     formsData: formsData.historyData,
+        //     formType: 'history',
+        //   },
+        // });
+        dispatch(
+          updateFormsData({
+            data: formsData.historyData,
+            type: 'history',
+          }),
+        );
         break;
       default:
         break;
@@ -272,7 +313,7 @@ const FormData = () => {
         <Grid item>
           <Button
             variant="contained"
-            color={state.isDarkTheme ? 'primary' : 'default'}
+            color={isDarkTheme ? 'primary' : 'default'}
             aria-label={`All Forms`}
             component={Link}
             tooltip="All Forms"
@@ -309,7 +350,7 @@ const FormData = () => {
           )}
         </Grid>
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-          <Typography variant="h5">Form name: {state.formsData.name}</Typography>
+          <Typography variant="h5">Form name: {formsData.name}</Typography>
         </Grid>
         {!fetching && (
           <Box sx={{ width: '100%', typography: 'body1' }}>
@@ -324,7 +365,7 @@ const FormData = () => {
             </TabContext>
           </Box>
         )}
-        {state.loadingUser && fetching ? (
+        {loadingUser && fetching ? (
           <Grid item xs={12}>
             <Typography variant="h5">Fetching Data...</Typography>
           </Grid>

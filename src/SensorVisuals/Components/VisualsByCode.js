@@ -4,8 +4,8 @@ import { TabList, TabContext } from '@material-ui/lab';
 import { apiPassword, apiURL, apiUsername, onfarmAPI } from '../../utils/api_secret';
 import { ArrowBackIos } from '@material-ui/icons';
 import { Link, useHistory, useParams, useLocation } from 'react-router-dom';
-import { useContext, useEffect, useState, Fragment } from 'react';
-import { Context } from '../../Store/Store';
+import { useEffect, useState, Fragment } from 'react';
+// import { Context } from '../../Store/Store';
 import { CustomLoader } from '../../utils/CustomComponents';
 // import GatewayChart from "./GatewayChart";
 import SensorMap from '../../utils/SensorMap';
@@ -14,6 +14,7 @@ import { useAuth0 } from '../../Auth/react-auth0-spa';
 
 import IssueDialogue from '../../Comments/IssueDialogue';
 import TabCharts from './TabCharts';
+import { useSelector } from 'react-redux';
 
 // Helper function
 function Alert(props) {
@@ -23,7 +24,8 @@ function Alert(props) {
 const nicknameURL = apiURL + `/api/hologram/device/nicknames/code`;
 
 const VisualsByCode = () => {
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const userInfo = useSelector((state) => state.userInfo);
   const history = useHistory();
   const { user } = useAuth0();
   const { code, year } = useParams();
@@ -232,13 +234,13 @@ const VisualsByCode = () => {
       setLoading(false);
     };
 
-    fetchData(state.userInfo.apikey);
+    fetchData(userInfo.apikey);
     return () => {
       setLoading(false);
     };
   }, [
     waterGatewayDataEndpoint,
-    state.userInfo.apikey,
+    userInfo.apikey,
     waterNodeDataEndpoint,
     latLongEndpoint,
     waterSensorDataEndpoint,

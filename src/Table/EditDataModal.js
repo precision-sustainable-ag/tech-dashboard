@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Grid,
   Button,
@@ -18,12 +18,14 @@ import {
 } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import Axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
 
 // Local Imports
 import { apiURL, apiUsername, apiPassword } from '../utils/api_secret';
 import Location from '../Location/Location';
 // import PropTypes from 'prop-types';
-import { Context } from '../Store/Store';
+// import { Context } from '../Store/Store';
+import { setEditModalOpen, setValuesEdited } from '../Store/actions';
 
 //Global Vars
 const qs = require('qs');
@@ -54,16 +56,23 @@ function Alert(props) {
 const fullWidth = true;
 // Default function
 const EditDataModal = () => {
-  const [state, dispatch] = useContext(Context);
-  const open = state.editModalOpen;
-  const editModalData = state.editModalData;
+  // const [state, dispatch] = useContext(Context);
+  const dispatch = useDispatch();
+  const valuesEdited = useSelector((state) => state.tableData.valuesEdited);
+  // const open = state.tableData.editModalOpen;
+  const open = useSelector((state) => state.tableData.editModalOpen);
+
+  // const editModalData = state.tableData.editModalData;
+  const editModalData = useSelector((state) => state.tableData.editModalData);
+
   const handleEditModalClose = () => {
-    dispatch({
-      type: 'SET_EDIT_MODAL_OPEN',
-          data: {
-            editModalOpen: !state.editModalOpen,
-          }, 
-    });
+    // dispatch({
+    //   type: 'SET_EDIT_MODAL_OPEN',
+    //       data: {
+    //         editModalOpen: !state.tableData.editModalOpen,
+    //       },
+    // });
+    dispatch(setEditModalOpen(!open));
   };
   // const classes = useStyles();
 
@@ -166,18 +175,21 @@ const EditDataModal = () => {
       console.log('both');
       postModalUpdate(newData).then(() => {
         // props.handleEditModalClose();
-        dispatch({
-          type: 'SET_EDIT_MODAL_OPEN',
-          data: {
-            editModalOpen: !state.editModalOpen,
-          },        
-        });
-        dispatch({
-          type: 'SET_VALUES_EDITED',
-          data: {
-            valuesEdited: !state.valuesEdited,
-          },        
-        });
+        // dispatch({
+        //   type: 'SET_EDIT_MODAL_OPEN',
+        //   data: {
+        //     editModalOpen: !state.tableData.editModalOpen,
+        //   },
+        // });
+        dispatch(setEditModalOpen(!open));
+        // dispatch({
+        //   type: 'SET_VALUES_EDITED',
+        //   data: {
+        //     valuesEdited: !state.tableData.valuesEdited,
+        //   },
+        // });
+        console.log('edit data edited');
+        dispatch(setValuesEdited(!valuesEdited));
         // props.setValuesEdited(!props.valuesEdited);
 
         setNewData({
@@ -322,8 +334,8 @@ const EditDataModal = () => {
       <DialogTitle id="form-dialog-title">
         <Grid container justifyContent="space-between">
           <Grid item>
-            Site <mark>{editModalData.code}</mark> of producer: <strong>{editModalData.last_name}</strong>{' '}
-            [{editModalData.producer_id}]
+            Site <mark>{editModalData.code}</mark> of producer:{' '}
+            <strong>{editModalData.last_name}</strong> [{editModalData.producer_id}]
           </Grid>
           <Grid item>
             <Select
@@ -412,7 +424,9 @@ const EditDataModal = () => {
               label="County"
               margin="dense"
               name="county"
-              value={newData.county ? newData.county : editModalData.county ? editModalData.county : ''}
+              value={
+                newData.county ? newData.county : editModalData.county ? editModalData.county : ''
+              }
               type="text"
               fullWidth
               onChange={(e) => {
@@ -479,7 +493,11 @@ const EditDataModal = () => {
               margin="dense"
               name="address"
               value={
-                newData.address ? newData.address : editModalData.address ? editModalData.address : ''
+                newData.address
+                  ? newData.address
+                  : editModalData.address
+                  ? editModalData.address
+                  : ''
               }
               type="text"
               fullWidth

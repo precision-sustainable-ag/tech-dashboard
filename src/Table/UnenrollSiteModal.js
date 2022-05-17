@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -15,19 +15,22 @@ import Axios from 'axios';
 // import PropTypes from 'prop-types';
 // Local Imports
 import { apiURL, apiUsername, apiPassword } from '../utils/api_secret';
-import { Context } from '../Store/Store';
+// import { Context } from '../Store/Store';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUnenrollOpen, setValuesEdited } from '../Store/actions';
 
 //Global Vars
 const qs = require('qs');
 
 // Default function
 const UnenrollSiteModal = () => {
-  const [state, dispatch] = useContext(Context);
-  const open = state.unenrollOpen;
-  const unenrollRowData = state.unenrollRowData;
+  // const [state, dispatch] = useContext(Context);
+  const open = useSelector((state) => state.tableData.unenrollOpen);
+  const unenrollRowData = useSelector((state) => state.tableData.unenrollRowData);
+  const valuesEdited = useSelector((state) => state.tableData.valuesEdited);
   const [confirmText, setConfirmText] = useState('');
   const [confirmBtnStatus, setConfirmBtnStatus] = useState('Confirm');
-
+  const dispatch = useDispatch();
   const handleUnenroll = () => {
     // disenroll and close
     setConfirmBtnStatus('Please Wait..');
@@ -50,18 +53,21 @@ const UnenrollSiteModal = () => {
       .then((response) => {
         if (response.data.data) {
           // props.handleUnenrollClose();
-          dispatch({
-            type: 'SET_UNENROLL_OPEN',
-            data: {
-              unenrollOpen: !state.unenrollOpen,
-            },        
-          });
-          dispatch({
-            type: 'SET_VALUES_EDITED',
-            data: {
-              valuesEdited: !state.valuesEdited,
-            },        
-          });
+          // dispatch({
+          //   type: 'SET_UNENROLL_OPEN',
+          //   data: {
+          //     unenrollOpen: !state.tableData.unenrollOpen,
+          //   },
+          // });
+          dispatch(setUnenrollOpen(!open));
+          // dispatch({
+          //   type: 'SET_VALUES_EDITED',
+          //   data: {
+          //     valuesEdited: !state.tableData.valuesEdited,
+          //   },
+          // });
+          console.log('unenroll edited');
+          dispatch(setValuesEdited(!valuesEdited));
           // props.setValuesEdited(!props.valuesEdited);
         } else {
           console.error(response.data);
@@ -78,12 +84,13 @@ const UnenrollSiteModal = () => {
   const closeModal = () => {
     setConfirmText('');
     // props.handleUnenrollClose();
-    dispatch({
-      type: 'SET_UNENROLL_OPEN',
-      data: {
-        unenrollOpen: !state.unenrollOpen,
-      },        
-    });
+    // dispatch({
+    //   type: 'SET_UNENROLL_OPEN',
+    //   data: {
+    //     unenrollOpen: !state.tableData.unenrollOpen,
+    //   },
+    // });
+    dispatch(setUnenrollOpen(!open));
   };
   return (
     <Dialog
@@ -97,14 +104,14 @@ const UnenrollSiteModal = () => {
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
           You are about to{' '}
-          {`Disenroll site '${unenrollRowData.code}' for producer '${unenrollRowData.last_name}'`}. Please
-          note that this action can not be undone.
+          {`Disenroll site '${unenrollRowData.code}' for producer '${unenrollRowData.last_name}'`}.
+          Please note that this action can not be undone.
         </DialogContentText>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Typography variant="body1">
-              To disenroll this site please type the site code <strong>{unenrollRowData.code}</strong>{' '}
-              below.
+              To disenroll this site please type the site code{' '}
+              <strong>{unenrollRowData.code}</strong> below.
             </Typography>
           </Grid>
           <Grid item xs={12}>

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 // import Axios from "axios";
 // import Loading from 'react-loading';
 import { Grid, Typography, Button, Tooltip } from '@material-ui/core';
@@ -6,11 +6,24 @@ import { Grid, Typography, Button, Tooltip } from '@material-ui/core';
 // import MaterialTable from 'material-table';
 import { Edit, DeleteForever, Search, QuestionAnswer } from '@material-ui/icons';
 // Local Imports
-import { Context } from '../Store/Store';
+// import { Context } from '../Store/Store';
 import { UserIsEditor } from '../utils/SharedFunctions';
 // import { useAuth0 } from '../Auth/react-auth0-spa';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  setEditModalOpen,
+  setEditModalData,
+  setReassignSiteModalOpen,
+  setReassignSiteModalData,
+  setUnenrollOpen,
+  setUnenrollRowData,
+  setShowNewIssueDialog,
+  setNewIssueData,
+  setMapModalData,
+  setMapModalOpen,
+} from '../Store/actions';
 
 const InnerTable = styled.table`
   border: 0;
@@ -45,25 +58,19 @@ const InnerTableCell = styled.td`
 `;
 
 const RenderActionModal = ({ rowData, activeSites }) => {
-  const [state, dispatch] = useContext(Context);
-
+  // const [state, dispatch] = useContext(Context);
+  const dispatch = useDispatch();
+  const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
+  console.log(rowData);
   const RenderActionItems = ({ rowData }) => {
-
     return UserIsEditor() ? (
-      <ActionItems 
-        rowData={rowData} 
-        disabled={false}
-      />
+      <ActionItems rowData={rowData} disabled={false} />
     ) : (
-      <ActionItems 
-        rowData={rowData} 
-        disabled={true}
-      />
+      <ActionItems rowData={rowData} disabled={true} />
     );
   };
 
-  const ActionItems = ({ disabled = false, rowData}) => {
-  
+  const ActionItems = ({ disabled = false, rowData }) => {
     return (
       <Grid container spacing={3}>
         <Grid item>
@@ -72,23 +79,27 @@ const RenderActionModal = ({ rowData, activeSites }) => {
               size="small"
               variant="contained"
               startIcon={<Edit />}
-              color={state.isDarkTheme ? 'primary' : 'default'}
+              color={isDarkTheme ? 'primary' : 'default'}
               disabled={disabled}
               onClick={() => {
                 if (!disabled) {
-                  dispatch({
-                    type: 'SET_EDIT_MODAL_OPEN',
-                    data: {
-                      editModalOpen: true,
-                    },        
-                  });
+                  // dispatch({
+                  //   type: 'SET_EDIT_MODAL_OPEN',
+                  //   data: {
+                  //     editModalOpen: true,
+                  //   },
+                  // });
+                  dispatch(setEditModalOpen(true));
+
                   // setEditModalOpen(true);
-                  dispatch({
-                    type: 'SET_EDIT_MODAL_DATA',
-                    data: {
-                      editModalData: rowData,
-                    },        
-                  });
+                  // dispatch({
+                  //   type: 'SET_EDIT_MODAL_DATA',
+                  //   data: {
+                  //     editModalData: rowData,
+                  //   },
+                  // });
+                  dispatch(setEditModalData(rowData));
+
                   // setEditModalData(rowData);
                 }
               }}
@@ -97,101 +108,112 @@ const RenderActionModal = ({ rowData, activeSites }) => {
             </Button>
           </Tooltip>
         </Grid>
-        {
-            (activeSites)?
-            <>
+        {activeSites ? (
+          <>
             <Grid item>
-            <Tooltip title="Reassign a new site">
+              <Tooltip title="Reassign a new site">
                 <Button
-                size="small"
-                variant="contained"
-                startIcon={<Edit />}
-                color={state.isDarkTheme ? 'primary' : 'default'}
-                disabled={disabled}
-                onClick={() => {
+                  size="small"
+                  variant="contained"
+                  startIcon={<Edit />}
+                  color={isDarkTheme ? 'primary' : 'default'}
+                  disabled={disabled}
+                  onClick={() => {
                     if (!disabled) {
-                    dispatch({
-                        type: 'SET_REASSIGN_SITE_MODAL_OPEN',
-                        data: {
-                        reassignSiteModalOpen: rowData,
-                        },        
-                    });
-                    // setReassignSiteModalOpen(true);
-                    dispatch({
-                        type: 'SET_REASSIGN_SITE_MODAL_DATA',
-                        data: {
-                        reassignSiteModalData: rowData,
-                        },        
-                    });
-                    // setReassignSiteModalData(rowData);
+                      // dispatch({
+                      //     type: 'SET_REASSIGN_SITE_MODAL_OPEN',
+                      //     data: {
+                      //     reassignSiteModalOpen: rowData,
+                      //     },
+                      // });
+                      dispatch(setReassignSiteModalOpen(rowData));
+
+                      // setReassignSiteModalOpen(true);
+                      // dispatch({
+                      //     type: 'SET_REASSIGN_SITE_MODAL_DATA',
+                      //     data: {
+                      //     reassignSiteModalData: rowData,
+                      //     },
+                      // });
+                      dispatch(setReassignSiteModalData(rowData));
+
+                      // setReassignSiteModalData(rowData);
                     }
-                }}
+                  }}
                 >
-                Reassign Site
+                  Reassign Site
                 </Button>
-            </Tooltip>
+              </Tooltip>
             </Grid>
             <Grid item>
-            <Tooltip title="Unenroll this site">
+              <Tooltip title="Unenroll this site">
                 <Button
-                size="small"
-                variant="contained"
-                startIcon={<DeleteForever />}
-                color={state.isDarkTheme ? 'primary' : 'default'}
-                disabled={disabled}
-                onClick={() => {
+                  size="small"
+                  variant="contained"
+                  startIcon={<DeleteForever />}
+                  color={isDarkTheme ? 'primary' : 'default'}
+                  disabled={disabled}
+                  onClick={() => {
                     if (!disabled) {
-                    dispatch({
-                        type: 'SET_UNENROLL_OPEN',
-                        data: {
-                        unenrollOpen: true,
-                        },        
-                    });
-                    // setUnenrollOpen(true);
-                    dispatch({
-                        type: 'SET_UNENROLL_ROWDATA',
-                        data: {
-                        unenrollRowData: rowData,
-                        },        
-                    });
-                    // setUnenrollRowData(rowData);
+                      // dispatch({
+                      //     type: 'SET_UNENROLL_OPEN',
+                      //     data: {
+                      //     unenrollOpen: true,
+                      //     },
+                      // });
+                      dispatch(setUnenrollOpen(true));
+
+                      // setUnenrollOpen(true);
+                      // dispatch({
+                      //     type: 'SET_UNENROLL_ROWDATA',
+                      //     data: {
+                      //     unenrollRowData: rowData,
+                      //     },
+                      // });
+                      dispatch(setUnenrollRowData(rowData));
+
+                      // setUnenrollRowData(rowData);
                     }
-                }}
+                  }}
                 >
-                Unenroll
+                  Unenroll
                 </Button>
-            </Tooltip>
+              </Tooltip>
             </Grid>
-        </>
-        :<></>
-        }
+          </>
+        ) : (
+          <></>
+        )}
       </Grid>
     );
   };
 
-  const CreateNewIssue = ({ rowData,}) => {
-  
+  const CreateNewIssue = ({ rowData }) => {
     return (
       <Tooltip title="Submit a new issue">
         <Button
           startIcon={<QuestionAnswer />}
           size="small"
           variant="contained"
-          color={state.isDarkTheme ? 'primary' : 'default'}
+          color={isDarkTheme ? 'primary' : 'default'}
           onClick={() => {
-            dispatch({
-              type: 'SET_SHOW_NEW_ISSUE_DIALOG',
-              data: {
-                showNewIssueDialog: true,
-              },        
-            });
+            // dispatch({
+            //   type: 'SET_SHOW_NEW_ISSUE_DIALOG',
+            //   data: {
+            //     showNewIssueDialog: true,
+            //   },
+            // });
+            dispatch(setShowNewIssueDialog(true));
+
             // setShowNewIssueDialog(true);
-            dispatch({
-              type: 'SET_NEW_ISSUE_DATA',
-              data: {
-                newIssueData: rowData,
-              },        
-            });
+            // dispatch({
+            //   type: 'SET_NEW_ISSUE_DATA',
+            //   data: {
+            //     newIssueData: rowData,
+            //   },
+            // });
+            dispatch(setNewIssueData(rowData));
+
             // setNewIssueData(rowData);
           }}
         >
@@ -203,7 +225,7 @@ const RenderActionModal = ({ rowData, activeSites }) => {
 
   const RenderLatLongMap = ({ rowData }) => {
     const latLongNotPresent = rowData.latlng !== '' && rowData.latlng !== '-999' ? false : true;
-  
+
     return (
       <Tooltip
         title={latLongNotPresent ? 'Lat, long data not available' : 'View this field on a map'}
@@ -214,22 +236,28 @@ const RenderActionModal = ({ rowData, activeSites }) => {
             disabled={latLongNotPresent}
             startIcon={<Search />}
             variant="contained"
-            color={state.isDarkTheme ? 'primary' : 'default'}
+            color={isDarkTheme ? 'primary' : 'default'}
             onClick={() => {
               if (!latLongNotPresent) {
-                dispatch({
-                  type: 'SET_MAP_MODAL_DATA',
-                  data: {
-                    mapModalData: [parseFloat(rowData.latitude), parseFloat(rowData.longitude)],
-                  },        
-                });
+                // dispatch({
+                //   type: 'SET_MAP_MODAL_DATA',
+                //   data: {
+                //     mapModalData: [parseFloat(rowData.latitude), parseFloat(rowData.longitude)],
+                //   },
+                // });
+                dispatch(
+                  setMapModalData([parseFloat(rowData.latitude), parseFloat(rowData.longitude)]),
+                );
+
                 // setMapModalData([parseFloat(rowData.latitude), parseFloat(rowData.longitude)]);
-                dispatch({
-                  type: 'SET_MAP_MODAL_OPEN',
-                  data: {
-                    mapModalOpen: true,
-                  },        
-                });
+                // dispatch({
+                //   type: 'SET_MAP_MODAL_OPEN',
+                //   data: {
+                //     mapModalOpen: true,
+                //   },
+                // });
+                dispatch(setMapModalOpen(true));
+
                 // setMapModalOpen(true);
               }
             }}
@@ -282,30 +310,19 @@ const RenderActionModal = ({ rowData, activeSites }) => {
           </InnerTableBody>
         </InnerTable>
       </Grid>
-      <Grid
-        item
-        container
-        spacing={3}
-      >
+      <Grid item container spacing={3}>
         <Grid item>
-          <RenderActionItems 
-            rowData={rowData} 
-          />
+          <RenderActionItems rowData={rowData} />
         </Grid>
         <Grid item>
-          <CreateNewIssue 
-            rowData={rowData} 
-          />
+          <CreateNewIssue rowData={rowData} />
         </Grid>
         <Grid item>
-          <RenderLatLongMap 
-            rowData={rowData}
-          />
+          <RenderLatLongMap rowData={rowData} />
         </Grid>
       </Grid>
     </Grid>
   );
-
 };
 
 RenderActionModal.propTypes = {
@@ -313,7 +330,7 @@ RenderActionModal.propTypes = {
   email: PropTypes.string.isRequired,
   phone: PropTypes.string.isRequired,
   activeSites: PropTypes.bool.isRequired,
-//   isDarkTheme: PropTypes.isRequired,
+  //   isDarkTheme: PropTypes.isRequired,
   disabled: PropTypes.bool,
 };
 

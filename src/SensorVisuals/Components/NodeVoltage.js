@@ -1,12 +1,13 @@
-import React, { useState, useEffect, useContext, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 import { Grid } from '@material-ui/core';
 import { onfarmAPI } from '../../utils/api_secret';
 import { useParams } from 'react-router-dom';
-import { Context } from '../../Store/Store';
+// import { Context } from '../../Store/Store';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
 import { CustomLoader } from '../../utils/CustomComponents';
+import { useSelector } from 'react-redux';
 
 const timezoneOffset = new Date().getTimezoneOffset() * 2;
 
@@ -53,7 +54,8 @@ const chartOptions = {
 };
 
 const NodeVoltage = () => {
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const userInfo = useSelector((state) => state.userInfo);
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -90,13 +92,13 @@ const NodeVoltage = () => {
       }
     };
 
-    if (!state.userInfo.apikey) return;
+    if (!userInfo.apikey) return;
 
-    setNodeData(state.userInfo.apikey).then(() => {
+    setNodeData(userInfo.apikey).then(() => {
       setLoading(false);
     });
     return () => {};
-  }, [state.userInfo.apikey, waterNodeDataEndpoint]);
+  }, [userInfo.apikey, waterNodeDataEndpoint]);
 
   const bareSub1Data = useMemo(() => {
     const filteredData = data.filter((rec) => rec.treatment === 'b' && rec.subplot === 1);

@@ -1,14 +1,15 @@
 // Dependency Imports
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Grid, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
 import Axios from 'axios';
 import { Alert } from '@material-ui/lab';
 import PropTypes from 'prop-types';
 // Local Imports
-import { Context } from '../Store/Store';
+// import { Context } from '../Store/Store';
 import GrowerInformation from './GrowerInformation';
 import { apiPassword, apiURL, apiUsername } from '../utils/api_secret';
+import { useSelector } from 'react-redux';
 
 //Global Vars
 const qs = require('qs');
@@ -21,7 +22,8 @@ const qs = require('qs');
 
 // Default function
 const EnrollNewSite = (props) => {
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const userInfo = useSelector((state) => state.userInfo);
   // const theme = useTheme();
   // const styles = useStyles(theme);
   // const mediumUpScreen = useMediaQuery(theme.breakpoints.up("md"));
@@ -123,10 +125,10 @@ const EnrollNewSite = (props) => {
       .then((res) => {
         let affiliations = res.data.data;
         let permittedAffiliations = [];
-        if (state.userInfo.state === 'all') {
+        if (userInfo.state === 'all') {
           setAllAffiliations(affiliations);
         } else {
-          const dbPermittedAffiliations = state.userInfo.state.split(',');
+          const dbPermittedAffiliations = userInfo.state.split(',');
           dbPermittedAffiliations.forEach((element) => {
             let a = affiliations.filter((data) => data.affiliation === element);
             permittedAffiliations.push(a);
@@ -137,7 +139,7 @@ const EnrollNewSite = (props) => {
       .then(() => {
         setLoading(false);
       });
-  }, [state.userInfo.state]);
+  }, [userInfo.state]);
   const [affiliationError, setAffiliationError] = useState(false);
   const [enrollmentYearError, setEnrollmentYearError] = useState(false);
   return (

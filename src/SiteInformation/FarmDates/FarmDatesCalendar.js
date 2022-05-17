@@ -1,6 +1,6 @@
 import { Grid } from '@material-ui/core';
-import React, { useState, useEffect, useContext } from 'react';
-import { Context } from '../../Store/Store';
+import React, { useState, useEffect } from 'react';
+// import { Context } from '../../Store/Store';
 import { onfarmAPI } from '../../utils/api_secret';
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 
@@ -8,6 +8,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { enUS } from 'date-fns/locale';
 import { blue, green, yellow } from '@material-ui/core/colors';
 import { addDays, format, parse, startOfWeek, getDay } from 'date-fns';
+import { useSelector } from 'react-redux';
 const locales = {
   'en-US': enUS,
 };
@@ -26,7 +27,8 @@ const localizer = dateFnsLocalizer({
 // const currentMonthInt = new Date(Date.now()).getMonth();
 
 const FarmDatesCalendar = () => {
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const userInfo = useSelector((state) => state.userInfo);
   const [data, setData] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
   //   ?datetimes=unix
@@ -80,10 +82,10 @@ const FarmDatesCalendar = () => {
       }
     };
 
-    if (state.userInfo.apikey) {
-      setRecords(state.userInfo.apikey);
+    if (userInfo.apikey) {
+      setRecords(userInfo.apikey);
     }
-  }, [state.userInfo.apikey]);
+  }, [userInfo.apikey]);
 
   //   const curr = new Date();
   //   const currentYear = dateObj.getFullYear();
@@ -146,40 +148,48 @@ const FarmDatesCalendar = () => {
       });
 
       const t1TargetDate = data.map((record) => {
-        return record.protocols.decomp_biomass==1 ? {
-          title: `${record.code} - T1 Target`,
-          allDay: true,
-          start: addDays(new Date(record.biomass_harvest), 14),
-          end: addDays(new Date(record.biomass_harvest), 14),
-          type: 'target',
-        } : '';
+        return record.protocols.decomp_biomass == 1
+          ? {
+              title: `${record.code} - T1 Target`,
+              allDay: true,
+              start: addDays(new Date(record.biomass_harvest), 14),
+              end: addDays(new Date(record.biomass_harvest), 14),
+              type: 'target',
+            }
+          : '';
       });
       const t2TargetDate = data.map((record) => {
-        return record.protocols.decomp_biomass==1 ? {
-          title: `${record.code} - T2 Target`,
-          allDay: true,
-          start: addDays(new Date(record.biomass_harvest), 30),
-          end: addDays(new Date(record.biomass_harvest), 30),
-          type: 'target',
-        } : '';
+        return record.protocols.decomp_biomass == 1
+          ? {
+              title: `${record.code} - T2 Target`,
+              allDay: true,
+              start: addDays(new Date(record.biomass_harvest), 30),
+              end: addDays(new Date(record.biomass_harvest), 30),
+              type: 'target',
+            }
+          : '';
       });
       const t3TargetDate = data.map((record) => {
-        return record.protocols.decomp_biomass==1 ? {
-          title: `${record.code} - T3 Target`,
-          allDay: true,
-          start: addDays(new Date(record.biomass_harvest), 60),
-          end: addDays(new Date(record.biomass_harvest), 60),
-          type: 'target',
-        } : '';
+        return record.protocols.decomp_biomass == 1
+          ? {
+              title: `${record.code} - T3 Target`,
+              allDay: true,
+              start: addDays(new Date(record.biomass_harvest), 60),
+              end: addDays(new Date(record.biomass_harvest), 60),
+              type: 'target',
+            }
+          : '';
       });
       const t4TargetDate = data.map((record) => {
-        return record.protocols.decomp_biomass==1 ? {
-          title: `${record.code} - T4 Target`,
-          allDay: true,
-          start: addDays(new Date(record.biomass_harvest), 90),
-          end: addDays(new Date(record.biomass_harvest), 90),
-          type: 'target',
-        } : '';
+        return record.protocols.decomp_biomass == 1
+          ? {
+              title: `${record.code} - T4 Target`,
+              allDay: true,
+              start: addDays(new Date(record.biomass_harvest), 90),
+              end: addDays(new Date(record.biomass_harvest), 90),
+              type: 'target',
+            }
+          : '';
       });
 
       // check if actual dates are available

@@ -1,13 +1,13 @@
 /* eslint-disable react/display-name */
 /* eslint-disable react/prop-types */
 // Dependency Imports
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 // import Axios from "axios";
 import Loading from 'react-loading';
 import { Snackbar } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 // Local Imports
-import { Context } from '../Store/Store';
+// import { Context } from '../Store/Store';
 import { bannedRoles } from '../utils/constants';
 import EditDataModal from './EditDataModal';
 import NewIssueModal from './NewIssueModal';
@@ -16,6 +16,8 @@ import { BannedRoleMessage } from '../utils/CustomComponents';
 import { onfarmAPI } from '../utils/api_secret';
 import { useAuth0 } from '../Auth/react-auth0-spa';
 import TableModal from './TableModal';
+import { useSelector } from 'react-redux';
+
 const siteInfoAPI_URL = `${onfarmAPI}/raw?output=json&table=site_information${
   process.env.NODE_ENV === 'development' ? `&options=showtest, include_unenrolled_sites` : ``
 }`;
@@ -31,7 +33,12 @@ function Alert(props) {
 
 // Default function
 const AllInactiveDataTable = (props) => {
-  const [state] = useContext(Context);
+  console.log('hi aidt');
+  const abortController = new AbortController();
+  // const [state] = useContext(Context);
+  const userInfo = useSelector((state) => state.userInfo);
+  const valuesEdited = useSelector((state) => state.tableData.valuesEdited);
+
   const [showTable, setShowTable] = useState(false);
   const { user } = useAuth0();
   const [bannedRolesCheckMessage, setBannedRolesCheckMessage] = useState(
@@ -54,21 +61,37 @@ const AllInactiveDataTable = (props) => {
     height -= 200;
   }
 
+  // useEffect(() => {
+  //   console.log('remount');
+  //   return () => {
+  //     console.log('unmount');
+  //     setTableData([]);
+  //     setLoading(true);
+  //     setShowTable(false);
+  //     setSnackbarData({
+  //       open: false,
+  //       text: '',
+  //       severity: 'success',
+  //     });
+  //     setBannedRolesCheckMessage('Checking your permissions..');
+  //   };
+  // }, []);
+
   useEffect(() => {
     const init = () => {
-      if (Object.keys(state.userInfo).length > 0) {
-        if (state.userInfo.role) {
-          if (bannedRoles.includes(state.userInfo.role)) {
+      if (Object.keys(userInfo).length > 0) {
+        if (userInfo.role) {
+          if (bannedRoles.includes(userInfo.role)) {
             setShowTable(false);
             setBannedRolesCheckMessage(<BannedRoleMessage title="All Contact and Location" />);
           } else {
             setShowTable(true);
           }
         }
-        if (state.userInfo.apikey) {
+        if (userInfo.apikey) {
           let records = fetch(siteInfoAPI_URL, {
             headers: {
-              'x-api-key': state.userInfo.apikey,
+              'x-api-key': userInfo.apikey,
             },
           });
 
@@ -92,7 +115,21 @@ const AllInactiveDataTable = (props) => {
     };
 
     init();
-  }, [state.userInfo, state.valuesEdited]);
+
+    return () => {
+      console.log('unmount');
+      abortController.abort();
+      setTableData([]);
+      setLoading(true);
+      setShowTable(false);
+      setSnackbarData({
+        open: false,
+        text: '',
+        severity: 'success',
+      });
+      setBannedRolesCheckMessage('Checking your permissions..');
+    };
+  }, [userInfo, valuesEdited]);
 
   const parseXHRResponse = (data) => {
     if (data.status === 'success') {
@@ -143,12 +180,12 @@ const AllInactiveDataTable = (props) => {
         >
           <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
         </Snackbar>
-        <TableModal 
+        <TableModal
           tableData={tableData}
           isDarkTheme={props.isDarkTheme}
           height={height}
           activeSites={false}
-          tableTitle={"Inactive Sites-Contact and Location"}
+          tableTitle={'Inactive Sites-Contact and Location'}
         />
         <EditDataModal />
         <NewIssueModal
