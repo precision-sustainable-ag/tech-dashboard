@@ -45,7 +45,6 @@ const updatingUserInfo = (state) => {
 
 const updateUserInfo = (state, action) => {
   let newObj = action.payload;
-  console.log(state);
   newObj['isDarkTheme'] = state.isDarkTheme;
   newObj['loadingUser'] = state.loadingUser;
 

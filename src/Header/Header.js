@@ -262,7 +262,6 @@ export default function Header(props) {
           //     userInfo: data.data,
           //   },
           // });
-          console.log('updating role ', data.data);
           dispatch(updateUserInfo(data.data));
           //update user details to state
         }

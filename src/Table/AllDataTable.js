@@ -61,7 +61,6 @@ const AllDataTable = (props) => {
 
   useEffect(() => {
     const init = () => {
-      console.log(userRole, userAPIKey);
       if (userRole && userAPIKey) {
         if (userRole) {
           if (bannedRoles.includes(userRole)) {
@@ -120,7 +119,6 @@ const AllDataTable = (props) => {
     };
 
     parseXHRResponse(XHRResponse).then((resp) => {
-      console.log(resp);
       if (resp) {
         setLoading(false);
       } else {
