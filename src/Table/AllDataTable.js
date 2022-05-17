@@ -18,9 +18,7 @@ import { useAuth0 } from '../Auth/react-auth0-spa';
 import TableModal from './TableModal';
 import PropTypes from 'prop-types';
 
-const siteInfoAPI_URL = `${onfarmAPI}/raw?output=json&table=site_information${
-  process.env.NODE_ENV === 'development' ? `&options=showtest, include_unenrolled_sites` : ``
-}`;
+const siteInfoAPI_URL = `${onfarmAPI}/raw?output=json&table=site_information&options=showtest, include_unenrolled_sites`;
 
 // Helper function
 function Alert(props) {
