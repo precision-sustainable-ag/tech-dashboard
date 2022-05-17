@@ -61,7 +61,6 @@ const RenderActionModal = ({ rowData, activeSites }) => {
   // const [state, dispatch] = useContext(Context);
   const dispatch = useDispatch();
   const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
-  console.log(rowData);
   const RenderActionItems = ({ rowData }) => {
     return UserIsEditor() ? (
       <ActionItems rowData={rowData} disabled={false} />
