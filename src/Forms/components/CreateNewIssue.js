@@ -14,8 +14,9 @@ const CreateNewIssue = (props) => {
 
   const { user } = useAuth0();
   // const [state] = useContext(Context);
-  const formsData = useSelector((state) => state.theStore.formsData);
-  const affiliationLookup = useSelector((state) => state.theStore.affiliationLookup);
+  const formName = useSelector((state) => state.formsData.name);
+  const formType = useSelector((state) => state.formsData.type);
+  const affiliationLookup = useSelector((state) => state.affiliationLookup);
   const [showNewIssueDialog, setShowNewIssueDialog] = useState(false);
   const [newIssueData, setNewIssueData] = useState({});
   const [activeIssueIndex, setActiveIssueIndex] = useState(null);
@@ -48,14 +49,14 @@ const CreateNewIssue = (props) => {
           rowData={JSON.stringify(newIssueData, null, '\t')}
           dataType="json"
           setSnackbarData={setSnackbarData}
-          formName={formsData.name}
+          formName={formName}
           closeDialogue={setShowNewIssueDialog}
           labels={[
             newIssueData._id.toString(),
             affiliationLookup[newIssueData._submitted_by],
-            formsData.name,
+            formName,
             'kobo-forms',
-            formsData.type,
+            formType,
           ]}
           setShowNewIssueDialog={setShowNewIssueDialog}
         />

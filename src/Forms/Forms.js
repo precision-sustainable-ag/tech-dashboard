@@ -18,8 +18,8 @@ const Forms = () => {
   const [isPSALoading, setIsPSALoading] = useState(true);
   const [showForms, setShowForms] = useState(false);
   // const [state] = useContext(Context);
-  const isDarkTheme = useSelector((state) => state.theStore.isDarkTheme);
-  const userRole = useSelector((state) => state.theStore.userRole);
+  const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
+  const userRole = useSelector((state) => state.userRole);
 
   const [psaForms, setPsaForms] = useState([]);
 
@@ -32,7 +32,6 @@ const Forms = () => {
       getAllKoboAssets('psa')
         .then((response) => {
           const allForms = response.data.data.results;
-          console.log(allForms);
           const forms = allForms
             .filter(
               (form) =>

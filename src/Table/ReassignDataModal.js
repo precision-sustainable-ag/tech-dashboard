@@ -12,8 +12,8 @@ import {
 // import PropTypes from 'prop-types';
 import EnrollNewSite from '../SiteEnrollment/EnrollNewSite';
 // import { Context } from '../Store/Store';
-import { useSelector, useDispatch } from "react-redux";
-import { setReassignSiteModalOpen } from '../Store/newStore';
+import { useSelector, useDispatch } from 'react-redux';
+import { setReassignSiteModalOpen } from '../Store/actions';
 
 const fullWidth = true;
 
@@ -22,19 +22,19 @@ const ReassignDataModal = () => {
   // const [state, dispatch] = useContext(Context);
   const dispatch = useDispatch();
 
-  const open = useSelector((state) => state.theStore.reassignSiteModalOpen);
-  const reassignSiteModalData = useSelector((state) => state.theStore.reassignSiteModalData);
+  const open = useSelector((state) => state.tableData.reassignSiteModalOpen);
+  const reassignSiteModalData = useSelector((state) => state.tableData.reassignSiteModalData);
   const handleReassignSiteModalClose = () => {
     // dispatch({
     //   type: 'SET_REASSIGN_SITE_MODAL_OPEN',
     //       data: {
-    //         reassignSiteModalOpen: !state.reassignSiteModalOpen,
-    //       }, 
+    //         reassignSiteModalOpen: !state.tableData.reassignSiteModalOpen,
+    //       },
     // });
     dispatch(setReassignSiteModalOpen(!open));
   };
   // const setValuesEdited = () => {
-  //   state.valuesEdited = !state.valuesEdited;
+  //   state.tableData.valuesEdited = !state.tableData.valuesEdited;
   // };
 
   const [maxWidth, setMaxWidth] = useState('md');
@@ -55,8 +55,8 @@ const ReassignDataModal = () => {
       <DialogTitle id="form-dialog-title">
         <Grid container justifyContent="space-between">
           <Grid item>
-            Site <mark>{reassignSiteModalData.code}</mark> of producer: <strong>{reassignSiteModalData.last_name}</strong> [
-            {reassignSiteModalData.producer_id}]
+            Site <mark>{reassignSiteModalData.code}</mark> of producer:{' '}
+            <strong>{reassignSiteModalData.last_name}</strong> [{reassignSiteModalData.producer_id}]
           </Grid>
           <Grid item>
             <Select

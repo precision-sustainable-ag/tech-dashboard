@@ -14,10 +14,10 @@ import { useSelector } from 'react-redux';
 
 const Issues = () => {
   // const [state] = useContext(Context);
-  const userInfo = useSelector((state) => state.theStore.userInfo);
-  const loading = useSelector((state) => state.theStore.loading);
-  const loadingUser = useSelector((state) => state.theStore.loadingUser);
-  const userRole = useSelector((state) => state.theStore.userRole);
+  const userInfo = useSelector((state) => state.userInfo);
+  const loading = useSelector((state) => state.loading);
+  const loadingUser = useSelector((state) => state.userInfo.loadingUser);
+  const userRole = useSelector((state) => state.userRole);
 
   const [activeState, setActiveState] = useState('');
   const [assignedStates, setAssignedStates] = useState([]);
@@ -37,9 +37,7 @@ const Issues = () => {
 
   useEffect(() => {
     if (Object.keys(userInfo).length > 0 && userInfo.state) {
-      setActiveState((activeState) =>
-        activeState ? activeState : userInfo.state.split(',')[0],
-      );
+      setActiveState((activeState) => (activeState ? activeState : userInfo.state.split(',')[0]));
       setAssignedStates(userInfo.state.split(','));
       setShowLoader(false);
     } else {

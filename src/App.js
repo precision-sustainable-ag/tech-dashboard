@@ -70,7 +70,7 @@ import { apiCorsUrl, APIURL } from './Devices/hologramConstants';
 import QueryString from 'qs';
 import StressCamVisuals from './StressCamVisuals/StressCamVisuals';
 // import { Context } from './Store/Store';
-import { toggleIsDarkTheme } from './Store/newStore';
+import { toggleIsDarkTheme } from './Store/actions';
 import { useDispatch } from 'react-redux';
 
 // Helper function
@@ -214,7 +214,6 @@ function App() {
     //   },
     // });
     dispatch(toggleIsDarkTheme(theme.palette.type === 'light' ? false : true));
-
   }, []);
 
   const toggleThemeDarkness = () => {
@@ -234,7 +233,6 @@ function App() {
     //   },
     // });
     dispatch(toggleIsDarkTheme(newPaletteType === 'light' ? false : true));
-
   };
 
   useEffect(() => {

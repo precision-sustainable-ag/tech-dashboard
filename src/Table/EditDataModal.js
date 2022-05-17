@@ -18,15 +18,14 @@ import {
 } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import Axios from 'axios';
-import { useSelector, useDispatch } from "react-redux";
-
+import { useSelector, useDispatch } from 'react-redux';
 
 // Local Imports
 import { apiURL, apiUsername, apiPassword } from '../utils/api_secret';
 import Location from '../Location/Location';
 // import PropTypes from 'prop-types';
 // import { Context } from '../Store/Store';
-import { setEditModalOpen, setValuesEdited } from '../Store/newStore';
+import { setEditModalOpen, setValuesEdited } from '../Store/actions';
 
 //Global Vars
 const qs = require('qs');
@@ -59,19 +58,19 @@ const fullWidth = true;
 const EditDataModal = () => {
   // const [state, dispatch] = useContext(Context);
   const dispatch = useDispatch();
-  const valuesEdited = useSelector((state) => state.theStore.valuesEdited);
-  // const open = state.editModalOpen;
-  const open = useSelector((state) => state.theStore.editModalOpen);
+  const valuesEdited = useSelector((state) => state.tableData.valuesEdited);
+  // const open = state.tableData.editModalOpen;
+  const open = useSelector((state) => state.tableData.editModalOpen);
 
-  // const editModalData = state.editModalData;
-  const editModalData = useSelector((state) => state.theStore.editModalData);
+  // const editModalData = state.tableData.editModalData;
+  const editModalData = useSelector((state) => state.tableData.editModalData);
 
   const handleEditModalClose = () => {
     // dispatch({
     //   type: 'SET_EDIT_MODAL_OPEN',
     //       data: {
-    //         editModalOpen: !state.editModalOpen,
-    //       }, 
+    //         editModalOpen: !state.tableData.editModalOpen,
+    //       },
     // });
     dispatch(setEditModalOpen(!open));
   };
@@ -179,16 +178,17 @@ const EditDataModal = () => {
         // dispatch({
         //   type: 'SET_EDIT_MODAL_OPEN',
         //   data: {
-        //     editModalOpen: !state.editModalOpen,
-        //   },        
+        //     editModalOpen: !state.tableData.editModalOpen,
+        //   },
         // });
         dispatch(setEditModalOpen(!open));
         // dispatch({
         //   type: 'SET_VALUES_EDITED',
         //   data: {
-        //     valuesEdited: !state.valuesEdited,
-        //   },        
+        //     valuesEdited: !state.tableData.valuesEdited,
+        //   },
         // });
+        console.log('edit data edited');
         dispatch(setValuesEdited(!valuesEdited));
         // props.setValuesEdited(!props.valuesEdited);
 
@@ -334,8 +334,8 @@ const EditDataModal = () => {
       <DialogTitle id="form-dialog-title">
         <Grid container justifyContent="space-between">
           <Grid item>
-            Site <mark>{editModalData.code}</mark> of producer: <strong>{editModalData.last_name}</strong>{' '}
-            [{editModalData.producer_id}]
+            Site <mark>{editModalData.code}</mark> of producer:{' '}
+            <strong>{editModalData.last_name}</strong> [{editModalData.producer_id}]
           </Grid>
           <Grid item>
             <Select
@@ -424,7 +424,9 @@ const EditDataModal = () => {
               label="County"
               margin="dense"
               name="county"
-              value={newData.county ? newData.county : editModalData.county ? editModalData.county : ''}
+              value={
+                newData.county ? newData.county : editModalData.county ? editModalData.county : ''
+              }
               type="text"
               fullWidth
               onChange={(e) => {
@@ -491,7 +493,11 @@ const EditDataModal = () => {
               margin="dense"
               name="address"
               value={
-                newData.address ? newData.address : editModalData.address ? editModalData.address : ''
+                newData.address
+                  ? newData.address
+                  : editModalData.address
+                  ? editModalData.address
+                  : ''
               }
               type="text"
               fullWidth

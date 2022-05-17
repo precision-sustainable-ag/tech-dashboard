@@ -15,7 +15,7 @@ import EnrollNewSite from './EnrollNewSite';
 // Default function
 const SiteEnrollment = (props) => {
   // const [state] = useContext(Context);
-  const userInfo = useSelector((state) => state.theStore.userInfo);
+  const userInfo = useSelector((state) => state.userInfo);
   const [totalSitesEnrolled, setTotalSitesEnrolled] = useState(0);
   const [stateSitesEnrolled, setStateSitesEnrolled] = useState(0);
   const [showStateSpecificSites, setShowStateSpecificSites] = useState(false);
@@ -49,7 +49,7 @@ const SiteEnrollment = (props) => {
         }
       }
     }
-  }, [userInfo]);
+  }, [userInfo.apikey, userInfo.role, userInfo.state]);
 
   return showContent ? (
     <Grid container spacing={4}>

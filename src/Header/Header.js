@@ -19,7 +19,7 @@ import {
   MenuItem,
   Collapse,
   Icon,
-  Snackbar
+  Snackbar,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import {
@@ -48,7 +48,7 @@ import { useAuth0 } from '../Auth/react-auth0-spa';
 import { addToTechnicians } from '../utils/SharedFunctions';
 import { debugAdmins } from '../utils/constants';
 import MuiAlert from '@material-ui/lab/Alert';
-import { updateRole, updateUserInfo, updatingUserInfo } from '../Store/newStore';
+import { updateRole, updateUserInfo, updatingUserInfo } from '../Store/actions';
 import { useSelector, useDispatch } from 'react-redux';
 
 // Helper function
@@ -130,8 +130,8 @@ export default function Header(props) {
   const profileMenuOpen = Boolean(anchorEl);
   // const [state, dispatch] = useContext(Context);
   const dispatch = useDispatch();
-  const isDarkTheme = useSelector((state) => state.theStore.isDarkTheme);
-  const userInfo = useSelector((state) => state.theStore.userInfo);
+  const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
+  const userInfo = useSelector((state) => state.userInfo);
   const [viewType, setViewType] = useState('home');
 
   const { logout, user, loginWithRedirect } = useAuth0();
@@ -178,6 +178,10 @@ export default function Header(props) {
     props.setDarkTheme();
   };
 
+  // useEffect(() => {
+  //   console.log(userInfo);
+  // }, [userInfo]);
+
   useEffect(() => {
     const addUserToDatabase = async (dataString) => {
       try {
@@ -202,7 +206,6 @@ export default function Header(props) {
             //   },
             // });
             dispatch(updateRole('default'));
-
           }
         });
       } catch (e) {
@@ -247,13 +250,14 @@ export default function Header(props) {
           //   },
           // });
           dispatch(updateRole(data.data.role));
-          
+
           // dispatch({
           //   type: 'UPDATE_USER_INFO',
           //   data: {
           //     userInfo: data.data,
           //   },
           // });
+          console.log('updating role ', data.data);
           dispatch(updateUserInfo(data.data));
           //update user details to state
         }
@@ -267,15 +271,15 @@ export default function Header(props) {
   return (
     <div className={classes.root}>
       <Snackbar
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
-            }}
-            open={snackbarData.open}
-            autoHideDuration={10000}
-            onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-          >
-            <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        open={snackbarData.open}
+        autoHideDuration={10000}
+        onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
+      >
+        <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
       </Snackbar>
       <AppBar
         position="fixed"
@@ -333,7 +337,7 @@ export default function Header(props) {
                 <MenuItem component={Link} to={'/profile'} onClick={handleProfileMenuClose}>
                   Profile
                 </MenuItem>
-                {debugAdmins.includes(userInfo.email) && (
+                {debugAdmins.includes(userInfo?.email) && (
                   <MenuItem component={Link} to={'/debug'} onClick={handleProfileMenuClose}>
                     Debug
                   </MenuItem>

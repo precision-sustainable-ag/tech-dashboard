@@ -22,7 +22,7 @@ function Alert(props) {
 const currentYear = new Date().getFullYear();
 const FarmValues = () => {
   // const [state] = useContext(Context);
-  const userInfo = useSelector((state) => state.theStore.userInfo);
+  const userInfo = useSelector((state) => state.userInfo);
   const [fetching, setFetching] = useState(true);
   const [farmValues, setFarmValues] = useState([]);
   const [farmYears, setFarmYears] = useState([]);
@@ -86,7 +86,7 @@ const FarmValues = () => {
       fetchData(userInfo.apikey)
         .then((response) => {
           if (response.length === 0) {
-            throw new Error ('No data');
+            throw new Error('No data');
           }
           setFarmValues(response);
 

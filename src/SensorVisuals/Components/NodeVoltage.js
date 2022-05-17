@@ -55,7 +55,7 @@ const chartOptions = {
 
 const NodeVoltage = () => {
   // const [state] = useContext(Context);
-  const userInfo = useSelector((state) => state.theStore.userInfo);
+  const userInfo = useSelector((state) => state.userInfo);
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);

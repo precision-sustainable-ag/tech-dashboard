@@ -8,7 +8,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 
 import { callAzureFunction } from '../../../utils/SharedFunctions';
 // import { Context } from '../../../Store/Store';
-import { updateSelectedFormData } from '../../../Store/newStore';
+import { updateSelectedFormData } from '../../../Store/actions';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 
@@ -22,8 +22,8 @@ const FormEditor = (props) => {
 
   const { getTokenSilently } = useAuth0();
   // const [state, dispatch] = useContext(Context);
-  const userInfo = useSelector((state) => state.theStore.userInfo);
-  const isDarkTheme = useSelector((state) => state.theStore.isDarkTheme);
+  const userInfo = useSelector((state) => state.userInfo);
+  const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
   const dispatch = useDispatch();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingLists, setEditingLists] = useState([]);
@@ -44,12 +44,13 @@ const FormEditor = (props) => {
     //     formUid: uid || [],
     //   },
     // });
-    dispatch(updateSelectedFormData({        
-      formType: 'valid',
-      formSlimRecord: slimRecord || [],
-      formError: error || [],
-      formUid: uid || [],
-    }));
+    dispatch(
+      updateSelectedFormData({
+        slimRecord: slimRecord || [],
+        error: error || [],
+        uid: uid || [],
+      }),
+    );
 
     setModalOpen(!modalOpen);
   };

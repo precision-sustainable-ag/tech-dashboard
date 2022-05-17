@@ -1,4 +1,4 @@
-import React, { } from 'react';
+import React from 'react';
 import { Typography, Card, CardContent, CardActionArea, useTheme } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -10,7 +10,7 @@ const FarmCodeCard = (props) => {
   let { code, year, affiliation, lastUpdated, data, color, type, apiKey } = props;
   const theme = useTheme();
   // const [state] = useContext(Context);
-  const isDarkTheme = useSelector((state) => state.theStore.isDarkTheme);
+  const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
 
   if (color === 'default') color = isDarkTheme ? grey[700] : 'white';
 

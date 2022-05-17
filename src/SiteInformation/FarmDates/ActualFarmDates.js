@@ -17,7 +17,7 @@ const dryBiomass_url = onfarmAPI + `/raw?table=decomp_biomass_dry`;
 
 const ActualFarmDates = ({ rowData, fetchFromApi }) => {
   // const [state] = useContext(Context);
-  const userInfo = useSelector((state) => state.theStore.userInfo);
+  const userInfo = useSelector((state) => state.userInfo);
   const [datesObject, setDatesObject] = useState({});
 
   const [oldRowData, setOldRowData] = useState({});

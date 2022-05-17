@@ -1,4 +1,4 @@
-import React, { } from 'react';
+import React from 'react';
 
 import Typography from '@material-ui/core/Typography';
 
@@ -17,7 +17,7 @@ export const SingleIssueBodyBubble = ({
   const justify = 'flex-start';
   const updateDate = new Date(updated_at);
   // const [state] = useContext(Context);
-  const isDarkTheme = useSelector((state) => state.theStore.isDarkTheme);
+  const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
 
   return (
     <Grid container justifyContent={justify}>
@@ -37,9 +37,7 @@ export const SingleIssueBodyBubble = ({
           <Grid item>
             <Grid container style={{ padding: 0 }} justifyContent={justify} alignItems={justify}>
               <Grid item>
-                <div
-                  className={`chatBubbleBody ${justify} ${isDarkTheme ? `dark` : `light`}`}
-                >
+                <div className={`chatBubbleBody ${justify} ${isDarkTheme ? `dark` : `light`}`}>
                   <Typography
                     variant="body1"
                     component="div"

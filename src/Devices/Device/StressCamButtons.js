@@ -44,7 +44,7 @@ const StressCamButtons = (props) => {
     severity: 'success',
   });
   // const [state] = useContext(Context);
-  const isDarkTheme = useSelector((state) => state.theStore.isDarkTheme);
+  const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
 
   const handleClose = () => {
     setOpen(false);

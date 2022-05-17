@@ -14,7 +14,15 @@ import './Styles/index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 // import Store from './Store/Store';
-import store from './Store/newStore';
+// import store from './Store/newStore';
+
+import { createStore } from 'redux';
+import { allReducers } from './Store/reducers';
+
+const store = createStore(
+  allReducers,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
+);
 
 // a function that routes user to the relevant location after login
 const onRedirectCallback = (appState) => {

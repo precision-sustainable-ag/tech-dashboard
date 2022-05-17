@@ -6,14 +6,14 @@ import React, { useState, useEffect } from 'react';
 import Loading from 'react-loading';
 import { Snackbar } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from 'react-redux';
 // import MaterialTable from 'material-table';
 // import { Edit, DeleteForever, Search, QuestionAnswer, Store } from '@material-ui/icons';
 
 // Local Imports
 // import { Context } from '../Store/Store';
 import { bannedRoles } from '../utils/constants';
-import { setValuesEdited } from '../Store/newStore';
+// import { setValuesEdited } from '../Store/actions/allDataTableActions';
 import EditDataModal from './EditDataModal';
 import UnenrollSiteModal from './UnenrollSiteModal';
 import NewIssueModal from './NewIssueModal';
@@ -42,10 +42,12 @@ function Alert(props) {
 
 // Default function
 const AllDataTable = (props) => {
+  console.log('hi adt');
+  const abortController = new AbortController();
   // const [state, dispatch] = useContext(Context);
-  const userInfo = useSelector((state) => state.theStore.userInfo);
-  const valuesEdited = useSelector((state) => state.theStore.valuesEdited);
-  const dispatch = useDispatch();
+  const userInfo = useSelector((state) => state.userInfo);
+  const valuesEdited = useSelector((state) => state.tableData.valuesEdited);
+  // const dispatch = useDispatch();
 
   const [showTable, setShowTable] = useState(false);
   const { user } = useAuth0();
@@ -69,6 +71,22 @@ const AllDataTable = (props) => {
     height -= 200;
   }
 
+  // useEffect(() => {
+  //   console.log('remount');
+  //   return () => {
+  //     console.log('unmount');
+  //     setTableData([]);
+  //     setLoading(true);
+  //     setShowTable(false);
+  //     setSnackbarData({
+  //       open: false,
+  //       text: '',
+  //       severity: 'success',
+  //     });
+  //     setBannedRolesCheckMessage('Checking your permissions..');
+  //   };
+  // }, []);
+
   useEffect(() => {
     const init = () => {
       if (Object.keys(userInfo).length > 0) {
@@ -89,14 +107,15 @@ const AllDataTable = (props) => {
 
           records.then((response) => {
             let res = response.json();
-            console.log(res);
             res
               .then((records) => {
+                console.log(res);
                 return parseXHRResponse({ status: 'success', data: records });
               })
               .then((resp) => {
                 if (resp) {
                   setLoading(false);
+                  // dispatch(setValuesEdited(false));
                 } else {
                   setLoading(true);
                   console.log('Check API');
@@ -108,14 +127,29 @@ const AllDataTable = (props) => {
             //     valuesEdited: false,
             //   },
             // });
-            dispatch(setValuesEdited(false));
+            console.log('alldatatable edited');
+            // dispatch(setValuesEdited(false));
           });
         }
       }
     };
 
     init();
-  }, [userInfo, valuesEdited]);
+
+    return () => {
+      console.log('unmount');
+      abortController.abort();
+      setTableData([]);
+      setLoading(true);
+      setShowTable(false);
+      setSnackbarData({
+        open: false,
+        text: '',
+        severity: 'success',
+      });
+      setBannedRolesCheckMessage('Checking your permissions..');
+    };
+  }, [userInfo.apikey, valuesEdited]);
 
   const parseXHRResponse = (data) => {
     if (data.status === 'success') {

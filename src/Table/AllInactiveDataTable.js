@@ -16,7 +16,7 @@ import { BannedRoleMessage } from '../utils/CustomComponents';
 import { onfarmAPI } from '../utils/api_secret';
 import { useAuth0 } from '../Auth/react-auth0-spa';
 import TableModal from './TableModal';
-import { useSelector } from "react-redux";
+import { useSelector } from 'react-redux';
 
 const siteInfoAPI_URL = `${onfarmAPI}/raw?output=json&table=site_information${
   process.env.NODE_ENV === 'development' ? `&options=showtest, include_unenrolled_sites` : ``
@@ -33,9 +33,11 @@ function Alert(props) {
 
 // Default function
 const AllInactiveDataTable = (props) => {
+  console.log('hi aidt');
+  const abortController = new AbortController();
   // const [state] = useContext(Context);
-  const userInfo = useSelector((state) => state.theStore.userInfo);
-  const valuesEdited = useSelector((state) => state.theStore.valuesEdited);
+  const userInfo = useSelector((state) => state.userInfo);
+  const valuesEdited = useSelector((state) => state.tableData.valuesEdited);
 
   const [showTable, setShowTable] = useState(false);
   const { user } = useAuth0();
@@ -58,6 +60,22 @@ const AllInactiveDataTable = (props) => {
   } else if (height < 600) {
     height -= 200;
   }
+
+  // useEffect(() => {
+  //   console.log('remount');
+  //   return () => {
+  //     console.log('unmount');
+  //     setTableData([]);
+  //     setLoading(true);
+  //     setShowTable(false);
+  //     setSnackbarData({
+  //       open: false,
+  //       text: '',
+  //       severity: 'success',
+  //     });
+  //     setBannedRolesCheckMessage('Checking your permissions..');
+  //   };
+  // }, []);
 
   useEffect(() => {
     const init = () => {
@@ -97,6 +115,20 @@ const AllInactiveDataTable = (props) => {
     };
 
     init();
+
+    return () => {
+      console.log('unmount');
+      abortController.abort();
+      setTableData([]);
+      setLoading(true);
+      setShowTable(false);
+      setSnackbarData({
+        open: false,
+        text: '',
+        severity: 'success',
+      });
+      setBannedRolesCheckMessage('Checking your permissions..');
+    };
   }, [userInfo, valuesEdited]);
 
   const parseXHRResponse = (data) => {
@@ -148,12 +180,12 @@ const AllInactiveDataTable = (props) => {
         >
           <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
         </Snackbar>
-        <TableModal 
+        <TableModal
           tableData={tableData}
           isDarkTheme={props.isDarkTheme}
           height={height}
           activeSites={false}
-          tableTitle={"Inactive Sites-Contact and Location"}
+          tableTitle={'Inactive Sites-Contact and Location'}
         />
         <EditDataModal />
         <NewIssueModal

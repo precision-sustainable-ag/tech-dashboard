@@ -28,7 +28,7 @@ import { callAzureFunction } from '../utils/SharedFunctions';
 import { useAuth0 } from '../Auth/react-auth0-spa';
 import MuiAlert from '@material-ui/lab/Alert';
 import { useDispatch, useSelector } from 'react-redux';
-import { setReassignSiteModalOpen, setValuesEdited } from '../Store/newStore';
+import { setReassignSiteModalOpen, setValuesEdited } from '../Store/actions';
 
 // Helper function
 function Alert(props) {
@@ -74,8 +74,8 @@ const GrowerInformation = ({
     severity: 'success',
   });
   // const [state, dispatch] = useContext(Context);
-  const reassignSiteModalOpen = useSelector((state) => state.theStore.reassignSiteModalOpen);
-  const userInfo = useSelector((state) => state.theStore.userInfo);
+  const reassignSiteModalOpen = useSelector((state) => state.tableData.reassignSiteModalOpen);
+  const userInfo = useSelector((state) => state.userInfo);
   const dispatch = useDispatch();
 
   const { getTokenSilently } = useAuth0();
@@ -400,8 +400,8 @@ const GrowerInformation = ({
                         // dispatch({
                         //   type: 'SET_REASSIGN_SITE_MODAL_OPEN',
                         //       data: {
-                        //         reassignSiteModalOpen: !state.reassignSiteModalOpen,
-                        //       }, 
+                        //         reassignSiteModalOpen: !state.tableData.reassignSiteModalOpen,
+                        //       },
                         // });
                         dispatch(setReassignSiteModalOpen(!reassignSiteModalOpen));
                         // closeModal();
@@ -409,8 +409,9 @@ const GrowerInformation = ({
                         //   type: 'SET_VALUES_EDITED',
                         //       data: {
                         //         valuesEdited: true,
-                        //       }, 
+                        //       },
                         // });
+                        console.log('grower edited');
                         dispatch(setValuesEdited(true));
                         // setValuesEdited(true);
                       }, 2500);

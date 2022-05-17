@@ -10,8 +10,7 @@ export const RenderAllowedStatesTab = ({ setActiveState, activeState }) => {
   const [, setLoading] = useState(true);
   const [allAffiliations, setAllAffiliations] = useState([]);
   // const [state] = useContext(Context);
-  const userInfo = useSelector((state) => state.theStore.userInfo);
-
+  const userInfo = useSelector((state) => state.userInfo);
 
   useEffect(() => {
     setLoading(true);

@@ -25,7 +25,7 @@ const nicknameURL = apiURL + `/api/hologram/device/nicknames/code`;
 
 const VisualsByCode = () => {
   // const [state] = useContext(Context);
-  const userInfo = useSelector((state) => state.theStore.userInfo);
+  const userInfo = useSelector((state) => state.userInfo);
   const history = useHistory();
   const { user } = useAuth0();
   const { code, year } = useParams();

@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import json from 'react-syntax-highlighter/dist/esm/languages/hljs/json';
@@ -44,8 +44,8 @@ const DeviceComponent = (props) => {
   const [siteCode, setSiteCode] = useState('');
 
   // const [state] = useContext(Context);
-  const isDarkTheme = useSelector((state) => state.theStore.isDarkTheme);
-
+  const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
+  console.log(isDarkTheme);
 
   useEffect(() => {
     if (mostRecentData.length > 0) {

@@ -13,7 +13,13 @@ import { fetchKoboPasswords } from '../../utils/constants';
 import { useSelector, useDispatch } from 'react-redux';
 import RenderFormsData from './RenderFormsData';
 import { callAzureFunction } from './../../utils/SharedFunctions';
-import { setAffiliationLookup, setFormData, updateFilteredFormsData, updateFormName, updateFormsData } from '../../Store/newStore';
+import {
+  setFormsData,
+  updateFilteredFormsData,
+  updateFormName,
+  updateFormsData,
+  setAffiliationLookup,
+} from '../../Store/actions';
 
 SyntaxHighlighter.registerLanguage('json', json);
 
@@ -27,10 +33,10 @@ const FormData = () => {
 
   const [fetching, setFetching] = useState(false);
   // const [state, dispatch] = useContext(Context);
-  const userInfo = useSelector((state) => state.theStore.userInfo);
-  const formsData = useSelector((state) => state.theStore.formsData);
-  const isDarkTheme = useSelector((state) => state.theStore.isDarkTheme);
-  const loadingUser = useSelector((state) => state.theStore.loadingUser);
+  const userInfo = useSelector((state) => state.userInfo);
+  const formsData = useSelector((state) => state.formsData);
+  const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
+  const loadingUser = useSelector((state) => state.userInfo.loadingUser);
   const dispatch = useDispatch();
   const [allowedAccounts, setAllowedAccounts] = useState([]);
   const [activeAccount, setActiveAccount] = useState('all');
@@ -40,7 +46,7 @@ const FormData = () => {
     text: '',
     severity: 'success',
   });
-  const [value, setValue] = React.useState('1');
+  const [value, setValue] = useState('1');
 
   const getHistory = async () => {
     let name;
@@ -74,7 +80,7 @@ const FormData = () => {
 
   useEffect(() => {
     setFetching(true);
-    if (Object.keys(userInfo).length !== 0) {
+    if (userInfo.state) {
       const records = fetchData().then((response) => {
         if (response === null) throw new Error(response.statusText);
         let validRecords = response.valid_data || [];
@@ -182,18 +188,21 @@ const FormData = () => {
             //     historyFilteredRecords: historyFilteredRecords || [],
             //   },
             // });
-            dispatch(setFormData({
-              formType: 'valid',
-              validFilteredRecords: validFilteredRecords || [],
-              invalidFilteredRecords: invalidFilteredRecords || [],
-              historyFilteredRecords: historyFilteredRecords || [],
-            }));
+
+            dispatch(
+              setFormsData({
+                type: 'valid',
+                validForms: validFilteredRecords || [],
+                invalidForms: invalidFilteredRecords || [],
+                historyForms: historyFilteredRecords || [],
+              }),
+            );
           })
           .then(() => setFetching(false));
       });
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }
-  }, [userInfo]);
+  }, [userInfo.state]);
 
   useEffect(() => {
     const recalculate = async () => {
@@ -230,8 +239,7 @@ const FormData = () => {
       //     formsData: data,
       //   },
       // });
-      dispatch(updateFilteredFormsData({formType: formsData.type,
-        formsData: data}));
+      dispatch(updateFilteredFormsData({ type: formsData.type, filteredData: data }));
     });
   }, [activeAccount, formsData.originalData, formsData.data, formsData.type]);
 
@@ -246,10 +254,12 @@ const FormData = () => {
         //     formType: 'valid',
         //   },
         // });
-        dispatch(updateFormsData({
-          formsData: formsData.validData,
-          formType: 'valid',
-        }));
+        dispatch(
+          updateFormsData({
+            data: formsData.validData,
+            type: 'valid',
+          }),
+        );
         break;
       case '2':
         // dispatch({
@@ -259,10 +269,12 @@ const FormData = () => {
         //     formType: 'invalid',
         //   },
         // });
-        dispatch(updateFormsData({
-          formsData: formsData.invalidData,
-          formType: 'invalid',
-        }));
+        dispatch(
+          updateFormsData({
+            data: formsData.invalidData,
+            type: 'invalid',
+          }),
+        );
         break;
       case '3':
         // dispatch({
@@ -272,10 +284,12 @@ const FormData = () => {
         //     formType: 'history',
         //   },
         // });
-        dispatch(updateFormsData({
-          formsData: formsData.historyData,
-          formType: 'history',
-        }));
+        dispatch(
+          updateFormsData({
+            data: formsData.historyData,
+            type: 'history',
+          }),
+        );
         break;
       default:
         break;

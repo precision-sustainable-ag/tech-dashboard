@@ -1,4 +1,4 @@
-import React, { } from 'react';
+import React from 'react';
 import {
   Dialog,
   DialogContent,
@@ -11,59 +11,58 @@ import GoogleMap from '../Location/GoogleMap';
 import { Close } from '@material-ui/icons';
 // import PropTypes from 'prop-types';
 // import { Context } from '../Store/Store';
-import { useSelector, useDispatch } from "react-redux";
-import { setMapModalOpen } from '../Store/newStore';
+import { useSelector, useDispatch } from 'react-redux';
+import { setMapModalOpen } from '../Store/actions';
 
-
-const MapModal = (
+const MapModal = () =>
   // { open = false, setOpen = () => {}, lat = 35.763197, lng = -78.700187 }
-  ) => {
-  // const [state, dispatch] = useContext(Context);
+  {
+    // const [state, dispatch] = useContext(Context);
 
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
-  const fullWidth = true;
-  const maxWidth = 'md';
-  const open = useSelector((state) => state.theStore.mapModalOpen);
-  const lat = useSelector((state) => state.theStore.mapModalData[0]);
-  const lng = useSelector((state) => state.theStore.mapModalData[1]);
-  const setOpen = () => {
-    // dispatch({
-    //   type: 'SET_MAP_MODAL_OPEN',
-    //   data: {
-    //     mapModalOpen: false,
-    //   },        
-    // });
-    dispatch(setMapModalOpen(false));
-  };
-  return (
-    <Dialog
-      open={open}
-      onClose={() => setOpen()}
-      aria-labelledby="form-dialog-title"
-      fullWidth={fullWidth}
-      maxWidth={maxWidth}
-    >
-      <DialogTitle>
-        <Grid container justifyContent="space-between">
-          <Typography variant="h4">Field Location</Typography>
-          <IconButton onClick={() => setOpen()}>
-            <Close />
-          </IconButton>
-        </Grid>
-      </DialogTitle>
-      <DialogContent>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <div style={{ height: '450px', width: '100%' }}>
-              <GoogleMap from="mapModal" lat={lat} lng={lng} />
-            </div>
+    const fullWidth = true;
+    const maxWidth = 'md';
+    const open = useSelector((state) => state.tableData.mapModalOpen);
+    const lat = useSelector((state) => state.tableData.mapModalData[0]);
+    const lng = useSelector((state) => state.tableData.mapModalData[1]);
+    const setOpen = () => {
+      // dispatch({
+      //   type: 'SET_MAP_MODAL_OPEN',
+      //   data: {
+      //     mapModalOpen: false,
+      //   },
+      // });
+      dispatch(setMapModalOpen(false));
+    };
+    return (
+      <Dialog
+        open={open}
+        onClose={() => setOpen()}
+        aria-labelledby="form-dialog-title"
+        fullWidth={fullWidth}
+        maxWidth={maxWidth}
+      >
+        <DialogTitle>
+          <Grid container justifyContent="space-between">
+            <Typography variant="h4">Field Location</Typography>
+            <IconButton onClick={() => setOpen()}>
+              <Close />
+            </IconButton>
           </Grid>
-        </Grid>
-      </DialogContent>
-    </Dialog>
-  );
-};
+        </DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <div style={{ height: '450px', width: '100%' }}>
+                <GoogleMap from="mapModal" lat={lat} lng={lng} />
+              </div>
+            </Grid>
+          </Grid>
+        </DialogContent>
+      </Dialog>
+    );
+  };
 
 // MapModal.propTypes = {
 //   /** Latitude */

@@ -1,4 +1,4 @@
-import React, { } from 'react';
+import React from 'react';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import json from 'react-syntax-highlighter/dist/esm/languages/hljs/json';
 import docco from 'react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light';
@@ -82,7 +82,7 @@ const RenderTags = ({ chipsArray }) => {
 export const DeviceData = ({ mostRecentData, location, userTimezone, isFetching }) => {
   const classes = useStyles();
   // const [state] = useContext(Context);
-  const isDarkTheme = useSelector((state) => state.theStore.isDarkTheme);
+  const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
 
   const getDataFromJSON = (jsonData, type, sensorType) => {
     jsonData = JSON.parse(jsonData);

@@ -16,8 +16,8 @@ import Axios from 'axios';
 // Local Imports
 import { apiURL, apiUsername, apiPassword } from '../utils/api_secret';
 // import { Context } from '../Store/Store';
-import { useSelector, useDispatch } from "react-redux";
-import { setUnenrollOpen, setValuesEdited } from '../Store/newStore';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUnenrollOpen, setValuesEdited } from '../Store/actions';
 
 //Global Vars
 const qs = require('qs');
@@ -25,9 +25,9 @@ const qs = require('qs');
 // Default function
 const UnenrollSiteModal = () => {
   // const [state, dispatch] = useContext(Context);
-  const open = useSelector((state) => state.theStore.unenrollOpen);
-  const unenrollRowData = useSelector((state) => state.theStore.unenrollRowData);
-  const valuesEdited = useSelector((state) => state.theStore.valuesEdited);
+  const open = useSelector((state) => state.tableData.unenrollOpen);
+  const unenrollRowData = useSelector((state) => state.tableData.unenrollRowData);
+  const valuesEdited = useSelector((state) => state.tableData.valuesEdited);
   const [confirmText, setConfirmText] = useState('');
   const [confirmBtnStatus, setConfirmBtnStatus] = useState('Confirm');
   const dispatch = useDispatch();
@@ -56,16 +56,17 @@ const UnenrollSiteModal = () => {
           // dispatch({
           //   type: 'SET_UNENROLL_OPEN',
           //   data: {
-          //     unenrollOpen: !state.unenrollOpen,
-          //   },        
+          //     unenrollOpen: !state.tableData.unenrollOpen,
+          //   },
           // });
           dispatch(setUnenrollOpen(!open));
           // dispatch({
           //   type: 'SET_VALUES_EDITED',
           //   data: {
-          //     valuesEdited: !state.valuesEdited,
-          //   },        
+          //     valuesEdited: !state.tableData.valuesEdited,
+          //   },
           // });
+          console.log('unenroll edited');
           dispatch(setValuesEdited(!valuesEdited));
           // props.setValuesEdited(!props.valuesEdited);
         } else {
@@ -86,11 +87,10 @@ const UnenrollSiteModal = () => {
     // dispatch({
     //   type: 'SET_UNENROLL_OPEN',
     //   data: {
-    //     unenrollOpen: !state.unenrollOpen,
-    //   },        
+    //     unenrollOpen: !state.tableData.unenrollOpen,
+    //   },
     // });
     dispatch(setUnenrollOpen(!open));
-
   };
   return (
     <Dialog
@@ -104,14 +104,14 @@ const UnenrollSiteModal = () => {
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
           You are about to{' '}
-          {`Disenroll site '${unenrollRowData.code}' for producer '${unenrollRowData.last_name}'`}. Please
-          note that this action can not be undone.
+          {`Disenroll site '${unenrollRowData.code}' for producer '${unenrollRowData.last_name}'`}.
+          Please note that this action can not be undone.
         </DialogContentText>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Typography variant="body1">
-              To disenroll this site please type the site code <strong>{unenrollRowData.code}</strong>{' '}
-              below.
+              To disenroll this site please type the site code{' '}
+              <strong>{unenrollRowData.code}</strong> below.
             </Typography>
           </Grid>
           <Grid item xs={12}>

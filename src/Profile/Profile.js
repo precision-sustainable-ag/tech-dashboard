@@ -30,7 +30,7 @@ import { useSelector } from 'react-redux';
 
 const Profile = () => {
   // const [state] = useContext(Context);
-  const userInfo = useSelector((state) => state.theStore.userInfo);
+  const userInfo = useSelector((state) => state.userInfo);
   const { isAuthenticated, user } = useAuth0();
   const [koboDetails, setKoboDetails] = useState({
     data: [],

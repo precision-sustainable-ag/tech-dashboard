@@ -23,7 +23,7 @@ const qs = require('qs');
 // Default function
 const EnrollNewSite = (props) => {
   // const [state] = useContext(Context);
-  const userInfo = useSelector((state) => state.theStore.userInfo);
+  const userInfo = useSelector((state) => state.userInfo);
   // const theme = useTheme();
   // const styles = useStyles(theme);
   // const mediumUpScreen = useMediaQuery(theme.breakpoints.up("md"));

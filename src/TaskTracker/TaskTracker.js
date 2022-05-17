@@ -209,7 +209,7 @@ let sensorJson = [
 ];
 const TaskTracker = () => {
   // const [state] = useContext(Context);
-  const userInfo = useSelector((state) => state.theStore.userInfo);
+  const userInfo = useSelector((state) => state.userInfo);
   const [fetching, setFetching] = useState(true);
   const [farmValues, setFarmValues] = useState([]);
   const [farmYears, setFarmYears] = useState([]);
@@ -294,7 +294,7 @@ const TaskTracker = () => {
       fetchData(userInfo.apikey)
         .then((response) => {
           if (response.length === 0) {
-            throw new Error ('No data');
+            throw new Error('No data');
           }
           setFarmValues(response);
 
@@ -434,7 +434,15 @@ const TaskTracker = () => {
                 <Grid container xs={12} spacing={3}>
                   {siteEnrollmentJson && siteEnrollmentJson.length > 0
                     ? siteEnrollmentJson.map((siteData, index) => (
-                        <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
+                        <Grid
+                          item
+                          xs={12}
+                          md={4}
+                          lg={3}
+                          sm={6}
+                          spacing={3}
+                          key={`tracker-${index}`}
+                        >
                           <Card variant="elevation" elevation={3} className="deviceDataWrapper">
                             <TaskTrackerCard
                               title={siteData.title}
@@ -469,7 +477,15 @@ const TaskTracker = () => {
                 <Grid container xs={12} spacing={3}>
                   {biomassJson && biomassJson.length > 0
                     ? biomassJson.map((biomassData, index) => (
-                        <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
+                        <Grid
+                          item
+                          xs={12}
+                          md={4}
+                          lg={3}
+                          sm={6}
+                          spacing={3}
+                          key={`tracker-${index}`}
+                        >
                           <Card variant="elevation" elevation={3} className="deviceDataWrapper">
                             <TaskTrackerCard
                               title={biomassData.title}
@@ -487,7 +503,7 @@ const TaskTracker = () => {
                     : ''}
                 </Grid>
               </AccordionDetails>
-            </Accordion> 
+            </Accordion>
           </Grid>
 
           {/* Decomp bag */}
@@ -504,7 +520,15 @@ const TaskTracker = () => {
                 <Grid container xs={12} spacing={3}>
                   {decompBagJson && decompBagJson.length > 0
                     ? decompBagJson.map((decompData, index) => (
-                        <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
+                        <Grid
+                          item
+                          xs={12}
+                          md={4}
+                          lg={3}
+                          sm={6}
+                          spacing={3}
+                          key={`tracker-${index}`}
+                        >
                           <Card variant="elevation" elevation={3} className="deviceDataWrapper">
                             <TaskTrackerCard
                               title={decompData.title}
@@ -539,7 +563,15 @@ const TaskTracker = () => {
                 <Grid container xs={12} spacing={3}>
                   {sensorJson && sensorJson.length > 0
                     ? sensorJson.map((sensorData, index) => (
-                        <Grid item xs={12} md={4} lg={3} sm={6} spacing={3} key={`tracker-${index}`}>
+                        <Grid
+                          item
+                          xs={12}
+                          md={4}
+                          lg={3}
+                          sm={6}
+                          spacing={3}
+                          key={`tracker-${index}`}
+                        >
                           <Card variant="elevation" elevation={3} className="deviceDataWrapper">
                             <TaskTrackerCard
                               title={sensorData.title}

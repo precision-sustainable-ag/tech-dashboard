@@ -36,7 +36,7 @@ const Issue = (props) => {
     ? parseInt(props.match.params.issueNumber)
     : null;
   // const [state] = useContext(Context);
-  const userRole = useSelector((state) => state.theStore.userRole);
+  const userRole = useSelector((state) => state.userRole);
   const [showIssue, setShowIssue] = useState(false);
   const [issueBody, setIssueBody] = useState([]);
   const [newComment, setNewComment] = useState('');

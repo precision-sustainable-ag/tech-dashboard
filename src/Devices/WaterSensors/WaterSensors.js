@@ -18,7 +18,7 @@ import DevicesComponent from '../Devices';
 // Default function
 const WaterSensors = () => {
   // const [state] = useContext(Context);
-  const userInfo = useSelector((state) => state.theStore.userInfo);
+  const userInfo = useSelector((state) => state.userInfo);
   const [devices, setDevices] = useState([]);
   const [showDevices, setShowDevices] = useState(false);
   const [devicesLoadingState, setDevicesLoadingState] = useState(true);
@@ -91,7 +91,7 @@ const WaterSensors = () => {
     //   30 * 1000
     // );
     // return () => clearInterval(interval);
-  }, [userInfo]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [userInfo.apikey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getTags = async (apiURL) => {
     let options = Constants.APICreds();

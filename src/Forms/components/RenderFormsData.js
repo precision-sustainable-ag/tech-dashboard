@@ -1,4 +1,4 @@
-import React, { } from 'react';
+import React from 'react';
 import { Grid, Typography } from '@material-ui/core';
 
 import FormEntry from './FormEntry';
@@ -10,14 +10,14 @@ const RenderFormsData = (props) => {
   let { fetching, allowedAccounts, setSnackbarData } = props;
 
   // const [state] = useContext(Context);
-  const formsData = useSelector((state) => state.theStore.formsData);
+  const filteredData = useSelector((state) => state.formsData.filteredData);
   if (fetching)
     return (
       <Grid item xs={12}>
         <Typography variant="h5">Fetching Data...</Typography>
       </Grid>
     );
-  else if (formsData.filteredData.length === 0 && formsData.originalData.length === 0)
+  else if (filteredData.length === 0)
     return (
       <Grid item xs={12}>
         <Typography variant="h5">
@@ -34,9 +34,9 @@ const RenderFormsData = (props) => {
     return (
       <>
         <Grid item xs={12}>
-          <Typography variant="body1">{formsData.filteredData.length} submissions</Typography>
+          <Typography variant="body1">{filteredData.length} submissions</Typography>
         </Grid>
-        {formsData.filteredData.map((record = {}, index) => {
+        {filteredData.map((record = {}, index) => {
           return (
             <FormEntry
               record={record}

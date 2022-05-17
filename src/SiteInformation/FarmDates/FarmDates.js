@@ -19,108 +19,9 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-const tableHeaderOptions = [
-  {
-    title: 'Code',
-    field: 'code',
-    type: 'string',
-    align: 'justify',
-    searchable: true,
-  },
-  {
-    title: 'Year',
-    field: 'year',
-    type: 'numeric',
-    align: 'justify',
-    defaultGroupOrder: 1,
-    defaultGroupSort: 'desc',
-  },
-  {
-    title: 'Affiliation',
-    field: 'affiliation',
-    type: 'string',
-    align: 'justify',
-    defaultGroupOrder: 0,
-  },
-  {
-    title: 'Cover Crop Planting',
-    field: 'cover_planting',
-    type: 'date',
-    align: 'justify',
-    searchable: false,
-  },
-  {
-    title: 'Biomass Harvest',
-    field: 'biomass_harvest',
-    type: 'date',
-    align: 'justify',
-    searchable: false,
-  },
-  {
-    title: 'Cover Crop Termination',
-    field: 'cover_termination',
-    type: 'date',
-    align: 'justify',
-    searchable: false,
-  },
-  {
-    title: 'Cash Planting',
-    field: 'cash_planting',
-    type: 'date',
-    align: 'justify',
-    searchable: false,
-  },
-  {
-    title: 'T1',
-    field: 't1_target',
-    type: 'date',
-    align: 'justify',
-    searchable: false,
-  },
-
-  {
-    title: 'T2',
-    field: 't2_target',
-    type: 'date',
-    align: 'justify',
-    searchable: false,
-  },
-
-  {
-    title: 'T3',
-    field: 't3_target',
-    type: 'date',
-    align: 'justify',
-    searchable: false,
-  },
-
-  {
-    title: 'T4',
-    field: 't4_target',
-    type: 'date',
-    align: 'justify',
-    searchable: false,
-  },
-
-  {
-    title: 'T5',
-    field: 't5_target',
-    type: 'string',
-    searchable: false,
-  },
-
-  //     {
-  //         title: "Yield Harvest",
-  //     field: "cash_planting",
-  //     type: "date",
-  //     align: "justify",
-  //   },
-  //   {},
-];
-
 const FarmDates = () => {
   // const [state] = useContext(Context);
-  const userInfo = useSelector((state) => state.theStore.userInfo);
+  const userInfo = useSelector((state) => state.userInfo);
   const [farmDatesData, setFarmDatesData] = useState([]);
   const [showBannedMessage, setShowBannedMessage] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -150,7 +51,7 @@ const FarmDates = () => {
         });
       }
     }
-  }, [userInfo]);
+  }, [userInfo.apikey, userInfo.role]);
 
   let height = window.innerHeight;
 
@@ -160,6 +61,160 @@ const FarmDates = () => {
   } else if (height < 600) {
     height -= 200;
   }
+
+  const FarmDatesTable = () => {
+    const tableHeaderOptions = [
+      {
+        title: 'Code',
+        field: 'code',
+        type: 'string',
+        align: 'justify',
+        searchable: true,
+      },
+      {
+        title: 'Year',
+        field: 'year',
+        type: 'numeric',
+        align: 'justify',
+        defaultGroupOrder: 1,
+        defaultGroupSort: 'desc',
+      },
+      {
+        title: 'Affiliation',
+        field: 'affiliation',
+        type: 'string',
+        align: 'justify',
+        defaultGroupOrder: 0,
+      },
+      {
+        title: 'Cover Crop Planting',
+        field: 'cover_planting',
+        type: 'date',
+        align: 'justify',
+        searchable: false,
+      },
+      {
+        title: 'Biomass Harvest',
+        field: 'biomass_harvest',
+        type: 'date',
+        align: 'justify',
+        searchable: false,
+      },
+      {
+        title: 'Cover Crop Termination',
+        field: 'cover_termination',
+        type: 'date',
+        align: 'justify',
+        searchable: false,
+      },
+      {
+        title: 'Cash Planting',
+        field: 'cash_planting',
+        type: 'date',
+        align: 'justify',
+        searchable: false,
+      },
+      {
+        title: 'T1',
+        field: 't1_target',
+        type: 'date',
+        align: 'justify',
+        searchable: false,
+      },
+
+      {
+        title: 'T2',
+        field: 't2_target',
+        type: 'date',
+        align: 'justify',
+        searchable: false,
+      },
+
+      {
+        title: 'T3',
+        field: 't3_target',
+        type: 'date',
+        align: 'justify',
+        searchable: false,
+      },
+
+      {
+        title: 'T4',
+        field: 't4_target',
+        type: 'date',
+        align: 'justify',
+        searchable: false,
+      },
+
+      {
+        title: 'T5',
+        field: 't5_target',
+        type: 'string',
+        searchable: false,
+      },
+
+      //     {
+      //         title: "Yield Harvest",
+      //     field: "cash_planting",
+      //     type: "date",
+      //     align: "justify",
+      //   },
+      //   {},
+    ];
+
+    return (
+      <MaterialTable
+        title={'Farm Dates'}
+        columns={tableHeaderOptions}
+        data={farmDatesData}
+        options={{
+          padding: 'default',
+          defaultExpanded: true,
+          exportButton: true,
+          exportFileName: 'Farm Dates',
+          exportAllData: false,
+          pageSizeOptions: [50, 100, farmDatesData.length],
+          pageSize: farmDatesData.length,
+          groupRowSeparator: '  ',
+          grouping: true,
+          headerStyle: {
+            fontWeight: 'bold',
+            fontFamily: 'Bilo, sans-serif',
+            fontSize: '0.8em',
+            textAlign: 'left',
+            position: 'sticky',
+            top: 0,
+          },
+          rowStyle: {
+            fontFamily: 'Roboto, sans-serif',
+            fontSize: '0.8em',
+            textAlign: 'left',
+          },
+          //   maxBodyHeight: "100vh",
+          selection: false,
+          searchAutoFocus: true,
+          toolbarButtonAlignment: 'left',
+          actionsColumnIndex: 1,
+          maxBodyHeight: height * 0.65,
+        }}
+        detailPanel={[
+          {
+            tooltip: 'View actual dates',
+            render: (rowData) => {
+              return (
+                <FarmDatesDropdown
+                  rowData={rowData}
+                  fetchFromApi={fetchFromApi}
+                  nickname={user.nickname}
+                  setSnackbarData={setSnackbarData}
+                />
+              );
+            },
+          },
+        ]}
+      />
+    );
+  };
 
   return !showBannedMessage ? (
     <Grid container spacing={2}>
@@ -179,56 +234,7 @@ const FarmDates = () => {
             >
               <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
             </Snackbar>
-            <MaterialTable
-              title={'Farm Dates'}
-              columns={tableHeaderOptions}
-              data={farmDatesData}
-              options={{
-                padding: 'default',
-                defaultExpanded: true,
-                exportButton: true,
-                exportFileName: 'Farm Dates',
-                exportAllData: false,
-                pageSizeOptions: [50, 100, farmDatesData.length],
-                pageSize: farmDatesData.length,
-                groupRowSeparator: '  ',
-                grouping: true,
-                headerStyle: {
-                  fontWeight: 'bold',
-                  fontFamily: 'Bilo, sans-serif',
-                  fontSize: '0.8em',
-                  textAlign: 'left',
-                  position: 'sticky',
-                  top: 0,
-                },
-                rowStyle: {
-                  fontFamily: 'Roboto, sans-serif',
-                  fontSize: '0.8em',
-                  textAlign: 'left',
-                },
-                //   maxBodyHeight: "100vh",
-                selection: false,
-                searchAutoFocus: true,
-                toolbarButtonAlignment: 'left',
-                actionsColumnIndex: 1,
-                maxBodyHeight: height * 0.65,
-              }}
-              detailPanel={[
-                {
-                  tooltip: 'View actual dates',
-                  render: (rowData) => {
-                    return (
-                      <FarmDatesDropdown
-                        rowData={rowData}
-                        fetchFromApi={fetchFromApi}
-                        nickname={user.nickname}
-                        setSnackbarData={setSnackbarData}
-                      />
-                    );
-                  },
-                },
-              ]}
-            />
+            <FarmDatesTable />
           </div>
         ) : (
           <Typography variant="body1">No Data</Typography>
@@ -247,15 +253,30 @@ const makeDateObjects = async (response) => {
 
       return {
         ...record,
-        t1_target: (biomassDate && record.protocols.decomp_biomass==1) ? addDays(biomassDate, 14).toLocaleDateString() : '',
+        t1_target:
+          biomassDate && record.protocols.decomp_biomass == 1
+            ? addDays(biomassDate, 14).toLocaleDateString()
+            : '',
         t1_actual: record.t1_actual ? new Date(record.t1_actual).toLocaleDateString() : '',
-        t2_target: (biomassDate && record.protocols.decomp_biomass==1) ? addDays(biomassDate, 30).toLocaleDateString() : '',
+        t2_target:
+          biomassDate && record.protocols.decomp_biomass == 1
+            ? addDays(biomassDate, 30).toLocaleDateString()
+            : '',
         t2_actual: record.t2_actual ? new Date(record.t2_actual).toLocaleDateString() : '',
-        t3_target: (biomassDate && record.protocols.decomp_biomass==1) ? addDays(biomassDate, 60).toLocaleDateString() : '',
+        t3_target:
+          biomassDate && record.protocols.decomp_biomass == 1
+            ? addDays(biomassDate, 60).toLocaleDateString()
+            : '',
         t3_actual: record.t3_actual ? new Date(record.t3_actual).toLocaleDateString() : '',
-        t4_target: (biomassDate && record.protocols.decomp_biomass==1) ? addDays(biomassDate, 90).toLocaleDateString() : '',
+        t4_target:
+          biomassDate && record.protocols.decomp_biomass == 1
+            ? addDays(biomassDate, 90).toLocaleDateString()
+            : '',
         t4_actual: record.t4_actual ? new Date(record.t4_actual).toLocaleDateString() : '',
-        t5_target: (record.t5_target&& record.protocols.decomp_biomass==1) ? new Date(record.t5_target) : 'at hand harvest',
+        t5_target:
+          record.t5_target && record.protocols.decomp_biomass == 1
+            ? new Date(record.t5_target)
+            : 'at hand harvest',
       };
     }),
   );

@@ -14,14 +14,14 @@ import {
 import React, { useState, useEffect } from 'react';
 import { Octokit } from '@octokit/rest';
 import MDEditor from '@uiw/react-md-editor';
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from 'react-redux';
 
 // Local Imports
 import { githubToken } from '../utils/api_secret';
 import { useAuth0 } from '../Auth/react-auth0-spa';
 import PropTypes from 'prop-types';
 import { createGithubIssue } from '../utils/SharedFunctions';
-import { setShowNewIssueDialog } from '../Store/newStore';
+import { setShowNewIssueDialog } from '../Store/actions';
 // import { Context } from '../Store/Store';
 
 /**
@@ -33,13 +33,13 @@ const NewIssueModal = (props) => {
   // const [state, dispatch] = useContext(Context);
   const dispatch = useDispatch();
 
-  const newIssueData = useSelector((state) => state.theStore.newIssueData);
+  const newIssueData = useSelector((state) => state.tableData.newIssueData);
   const handleNewIssueDialogClose = () => {
     // dispatch({
     //   type: 'SET_SHOW_NEW_ISSUE_DIALOG',
     //   data: {
-    //     showNewIssueDialog: !state.showNewIssueDialog,
-    //   },        
+    //     showNewIssueDialog: !state.tableData.showNewIssueDialog,
+    //   },
     // });
     dispatch(setShowNewIssueDialog(!open));
   };
@@ -130,8 +130,8 @@ const NewIssueModal = (props) => {
         // dispatch({
         //   type: 'SET_SHOW_NEW_ISSUE_DIALOG',
         //   data: {
-        //     showNewIssueDialog: !state.showNewIssueDialog,
-        //   },        
+        //     showNewIssueDialog: !state.tableData.showNewIssueDialog,
+        //   },
         // });
         dispatch(setShowNewIssueDialog(!open));
         if (res.response) {
@@ -255,7 +255,7 @@ const NewIssueModal = (props) => {
   const [personName] = React.useState(alwaysTaggedPeople);
   return (
     <Dialog
-      open={useSelector((state) => state.theStore.showNewIssueDialog)}
+      open={useSelector((state) => state.tableData.showNewIssueDialog)}
       // onClose={props.handleNewIssueDialogClose}
       onClose={handleNewIssueDialogClose}
       aria-labelledby="form-dialog-title"
@@ -389,10 +389,14 @@ const NewIssueModal = (props) => {
           </Grid>
         </Grid>
         <DialogActions>
-          <Button onClick={
-            // handleNewIssueDialogClose()
-            handleNewIssueDialogClose
-            }>Cancel</Button>
+          <Button
+            onClick={
+              // handleNewIssueDialogClose()
+              handleNewIssueDialogClose
+            }
+          >
+            Cancel
+          </Button>
           <Button
             color="primary"
             onClick={fileNewIssue}

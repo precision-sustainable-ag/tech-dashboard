@@ -83,7 +83,7 @@ export const CustomSwitch = withStyles((theme) => ({
 // Helper functions
 export const BannedRoleMessage = ({ title }) => {
   // const [state] = useContext(Context);
-  const userInfo = useSelector((state) => state.theStore.userInfo);
+  const userInfo = useSelector((state) => state.userInfo);
   return (
     <Box component={Paper} elevation={1} p={2}>
       <Grid

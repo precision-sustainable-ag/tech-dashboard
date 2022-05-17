@@ -21,7 +21,7 @@ const FormEntry = (props) => {
   const submittedDate = localTime;
   const uid = record.uid;
   // const [state] = useContext(Context);
-  const isDarkTheme = useSelector((state) => state.theStore.isDarkTheme);
+  const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
   return (
     <Grid item container xs={12} spacing={1}>
       <Grid item xs={12}>

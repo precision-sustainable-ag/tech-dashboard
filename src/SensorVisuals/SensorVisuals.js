@@ -37,7 +37,7 @@ const SensorVisuals = (props) => {
   const [years, setYears] = useState([]);
   const [affiliations, setAffiliations] = useState(['all']);
   // const [state] = useContext(Context);
-  const userInfo = useSelector((state) => state.theStore.userInfo);
+  const userInfo = useSelector((state) => state.userInfo);
   const [codeSearchText, setCodeSearchText] = useState('');
 
   // Styles

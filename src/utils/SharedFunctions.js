@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 
 export const UserIsEditor = (permissions) => {
   // const [state] = useContext(Context);
-  const userInfo = useSelector((state) => state.theStore.userInfo);
+  const userInfo = useSelector((state) => state.userInfo);
   console.log(userInfo);
   const userPermissions = permissions ? permissions : userInfo.permissions;
   if (
