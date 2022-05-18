@@ -62,159 +62,104 @@ const FarmDates = () => {
     height -= 200;
   }
 
-  const FarmDatesTable = () => {
-    const tableHeaderOptions = [
-      {
-        title: 'Code',
-        field: 'code',
-        type: 'string',
-        align: 'justify',
-        searchable: true,
-      },
-      {
-        title: 'Year',
-        field: 'year',
-        type: 'numeric',
-        align: 'justify',
-        defaultGroupOrder: 1,
-        defaultGroupSort: 'desc',
-      },
-      {
-        title: 'Affiliation',
-        field: 'affiliation',
-        type: 'string',
-        align: 'justify',
-        defaultGroupOrder: 0,
-      },
-      {
-        title: 'Cover Crop Planting',
-        field: 'cover_planting',
-        type: 'date',
-        align: 'justify',
-        searchable: false,
-      },
-      {
-        title: 'Biomass Harvest',
-        field: 'biomass_harvest',
-        type: 'date',
-        align: 'justify',
-        searchable: false,
-      },
-      {
-        title: 'Cover Crop Termination',
-        field: 'cover_termination',
-        type: 'date',
-        align: 'justify',
-        searchable: false,
-      },
-      {
-        title: 'Cash Planting',
-        field: 'cash_planting',
-        type: 'date',
-        align: 'justify',
-        searchable: false,
-      },
-      {
-        title: 'T1',
-        field: 't1_target',
-        type: 'date',
-        align: 'justify',
-        searchable: false,
-      },
+  const tableHeaderOptions = [
+    {
+      title: 'Code',
+      field: 'code',
+      type: 'string',
+      align: 'justify',
+      searchable: true,
+    },
+    {
+      title: 'Year',
+      field: 'year',
+      type: 'numeric',
+      align: 'justify',
+      defaultGroupOrder: 1,
+      defaultGroupSort: 'desc',
+    },
+    {
+      title: 'Affiliation',
+      field: 'affiliation',
+      type: 'string',
+      align: 'justify',
+      defaultGroupOrder: 0,
+    },
+    {
+      title: 'Cover Crop Planting',
+      field: 'cover_planting',
+      type: 'date',
+      align: 'justify',
+      searchable: false,
+    },
+    {
+      title: 'Biomass Harvest',
+      field: 'biomass_harvest',
+      type: 'date',
+      align: 'justify',
+      searchable: false,
+    },
+    {
+      title: 'Cover Crop Termination',
+      field: 'cover_termination',
+      type: 'date',
+      align: 'justify',
+      searchable: false,
+    },
+    {
+      title: 'Cash Planting',
+      field: 'cash_planting',
+      type: 'date',
+      align: 'justify',
+      searchable: false,
+    },
+    {
+      title: 'T1',
+      field: 't1_target',
+      type: 'date',
+      align: 'justify',
+      searchable: false,
+    },
 
-      {
-        title: 'T2',
-        field: 't2_target',
-        type: 'date',
-        align: 'justify',
-        searchable: false,
-      },
+    {
+      title: 'T2',
+      field: 't2_target',
+      type: 'date',
+      align: 'justify',
+      searchable: false,
+    },
 
-      {
-        title: 'T3',
-        field: 't3_target',
-        type: 'date',
-        align: 'justify',
-        searchable: false,
-      },
+    {
+      title: 'T3',
+      field: 't3_target',
+      type: 'date',
+      align: 'justify',
+      searchable: false,
+    },
 
-      {
-        title: 'T4',
-        field: 't4_target',
-        type: 'date',
-        align: 'justify',
-        searchable: false,
-      },
+    {
+      title: 'T4',
+      field: 't4_target',
+      type: 'date',
+      align: 'justify',
+      searchable: false,
+    },
 
-      {
-        title: 'T5',
-        field: 't5_target',
-        type: 'string',
-        searchable: false,
-      },
+    {
+      title: 'T5',
+      field: 't5_target',
+      type: 'string',
+      searchable: false,
+    },
 
-      //     {
-      //         title: "Yield Harvest",
-      //     field: "cash_planting",
-      //     type: "date",
-      //     align: "justify",
-      //   },
-      //   {},
-    ];
-
-    return (
-      <MaterialTable
-        title={'Farm Dates'}
-        columns={tableHeaderOptions}
-        data={farmDatesData}
-        options={{
-          padding: 'default',
-          defaultExpanded: true,
-          exportButton: true,
-          exportFileName: 'Farm Dates',
-          exportAllData: false,
-          pageSizeOptions: [50, 100, farmDatesData.length],
-          pageSize: farmDatesData.length,
-          groupRowSeparator: '  ',
-          grouping: true,
-          headerStyle: {
-            fontWeight: 'bold',
-            fontFamily: 'Bilo, sans-serif',
-            fontSize: '0.8em',
-            textAlign: 'left',
-            position: 'sticky',
-            top: 0,
-          },
-          rowStyle: {
-            fontFamily: 'Roboto, sans-serif',
-            fontSize: '0.8em',
-            textAlign: 'left',
-          },
-          //   maxBodyHeight: "100vh",
-          selection: false,
-          searchAutoFocus: true,
-          toolbarButtonAlignment: 'left',
-          actionsColumnIndex: 1,
-          maxBodyHeight: height * 0.65,
-        }}
-        detailPanel={[
-          {
-            tooltip: 'View actual dates',
-            render: (rowData) => {
-              return (
-                <FarmDatesDropdown
-                  rowData={rowData}
-                  fetchFromApi={fetchFromApi}
-                  nickname={user.nickname}
-                  setSnackbarData={setSnackbarData}
-                />
-              );
-            },
-          },
-        ]}
-      />
-    );
-  };
+    //     {
+    //         title: "Yield Harvest",
+    //     field: "cash_planting",
+    //     type: "date",
+    //     align: "justify",
+    //   },
+    //   {},
+  ];
 
   return !showBannedMessage ? (
     <Grid container spacing={2}>
@@ -234,7 +179,56 @@ const FarmDates = () => {
             >
               <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
             </Snackbar>
-            <FarmDatesTable />
+            <MaterialTable
+              title={'Farm Dates'}
+              columns={tableHeaderOptions}
+              data={farmDatesData}
+              options={{
+                padding: 'default',
+                defaultExpanded: true,
+                exportButton: true,
+                exportFileName: 'Farm Dates',
+                exportAllData: false,
+                pageSizeOptions: [50, 100, farmDatesData.length],
+                pageSize: farmDatesData.length,
+                groupRowSeparator: '  ',
+                grouping: true,
+                headerStyle: {
+                  fontWeight: 'bold',
+                  fontFamily: 'Bilo, sans-serif',
+                  fontSize: '0.8em',
+                  textAlign: 'left',
+                  position: 'sticky',
+                  top: 0,
+                },
+                rowStyle: {
+                  fontFamily: 'Roboto, sans-serif',
+                  fontSize: '0.8em',
+                  textAlign: 'left',
+                },
+                //   maxBodyHeight: "100vh",
+                selection: false,
+                searchAutoFocus: true,
+                toolbarButtonAlignment: 'left',
+                actionsColumnIndex: 1,
+                maxBodyHeight: height * 0.65,
+              }}
+              detailPanel={[
+                {
+                  tooltip: 'View actual dates',
+                  render: (rowData) => {
+                    return (
+                      <FarmDatesDropdown
+                        rowData={rowData}
+                        fetchFromApi={fetchFromApi}
+                        nickname={user.nickname}
+                        setSnackbarData={setSnackbarData}
+                      />
+                    );
+                  },
+                },
+              ]}
+            />
           </div>
         ) : (
           <Typography variant="body1">No Data</Typography>
