@@ -105,7 +105,7 @@ export const callAzureFunction = async (data, endpoint, method, getTokenSilently
 
   try {
     correctionsApiResponse = await fetch(
-      `https://devcorrectionsapi.azurewebsites.net/api/${endpoint}`,
+      `https://correctionsapi.azurewebsites.net/api/${endpoint}`,
       options,
     );
   } catch (err) {
