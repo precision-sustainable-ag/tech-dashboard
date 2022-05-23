@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useContext, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 import { Grid } from '@material-ui/core';
 import { onfarmAPI } from '../../utils/api_secret';
 import { useParams } from 'react-router-dom';
-import { Context } from '../../Store/Store';
+// import { Context } from '../../Store/Store';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
 import 'highcharts/modules/no-data-to-display';
 import { CustomLoader } from '../../utils/CustomComponents';
+import { useSelector } from 'react-redux';
 const chartOptions = {
   chart: {
     type: 'scatter',
@@ -50,7 +51,8 @@ const chartOptions = {
   lang: { noData: 'Your custom message' },
 };
 const TempByLbs = () => {
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const userInfo = useSelector((state) => state.userInfo);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -82,8 +84,8 @@ const TempByLbs = () => {
       setData(sortedByTimestamp);
     };
 
-    setNodeData(state.userInfo.apikey).then(() => setLoading(false));
-  }, [state.userInfo.apikey, waterAmbientSensorDataEndpoint]);
+    setNodeData(userInfo.apikey).then(() => setLoading(false));
+  }, [userInfo.apikey, waterAmbientSensorDataEndpoint]);
 
   const coverSub1Data = useMemo(() => {
     const filteredData = data.filter((rec) => rec.treatment === 'c' && rec.subplot === 1);

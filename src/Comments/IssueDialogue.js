@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Grid, TextField, Typography } from '@material-ui/core';
 import Comments from './Comments';
 import { useAuth0 } from '../Auth/react-auth0-spa';
-import { createGithubIssue } from '../utils/SharedFunctions';
+import { callAzureFunction } from '../utils/SharedFunctions';
 import PropTypes from 'prop-types';
 
 const IssueDialogue = (props) => {
@@ -35,14 +35,18 @@ const IssueDialogue = (props) => {
 
       const assignedPeople = personName.length > 0 ? personName : [`${nickname}`];
 
-      const body = newComment;
+      const data = {
+        user: nickname,
+        title: issueTitle,
+        assignees: assignedPeople,
+        labels: labels,
+        body: newComment,
+      };
 
-      const issueSet = createGithubIssue(
-        issueTitle,
-        body,
-        labels,
-        assignedPeople,
-        nickname,
+      const issueSet = callAzureFunction(
+        data,
+        `precision-sustainable-ag/repos/data_corrections/issues/${nickname}`,
+        'POST',
         getTokenSilently,
       );
 

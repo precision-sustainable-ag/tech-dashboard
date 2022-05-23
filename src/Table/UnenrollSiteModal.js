@@ -12,23 +12,29 @@ import {
   Typography,
 } from '@material-ui/core';
 import Axios from 'axios';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 // Local Imports
 import { apiURL, apiUsername, apiPassword } from '../utils/api_secret';
+// import { Context } from '../Store/Store';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUnenrollOpen, setValuesEdited } from '../Store/actions';
 
 //Global Vars
 const qs = require('qs');
 
 // Default function
-const UnenrollSiteModal = (props) => {
-  const open = props.open;
+const UnenrollSiteModal = () => {
+  // const [state, dispatch] = useContext(Context);
+  const open = useSelector((state) => state.tableData.unenrollOpen);
+  const unenrollRowData = useSelector((state) => state.tableData.unenrollRowData);
+  const valuesEdited = useSelector((state) => state.tableData.valuesEdited);
   const [confirmText, setConfirmText] = useState('');
   const [confirmBtnStatus, setConfirmBtnStatus] = useState('Confirm');
-
+  const dispatch = useDispatch();
   const handleUnenroll = () => {
     // disenroll and close
     setConfirmBtnStatus('Please Wait..');
-    const site = new SiteEnrollment(props.data);
+    const site = new SiteEnrollment(unenrollRowData);
     site.unenrollSite();
     const dataString = qs.stringify(site);
 
@@ -46,8 +52,23 @@ const UnenrollSiteModal = (props) => {
     })
       .then((response) => {
         if (response.data.data) {
-          props.handleUnenrollClose();
-          props.setValuesEdited(!props.valuesEdited);
+          // props.handleUnenrollClose();
+          // dispatch({
+          //   type: 'SET_UNENROLL_OPEN',
+          //   data: {
+          //     unenrollOpen: !state.tableData.unenrollOpen,
+          //   },
+          // });
+          dispatch(setUnenrollOpen(!open));
+          // dispatch({
+          //   type: 'SET_VALUES_EDITED',
+          //   data: {
+          //     valuesEdited: !state.tableData.valuesEdited,
+          //   },
+          // });
+          console.log('unenroll edited');
+          dispatch(setValuesEdited(!valuesEdited));
+          // props.setValuesEdited(!props.valuesEdited);
         } else {
           console.error(response.data);
         }
@@ -62,7 +83,14 @@ const UnenrollSiteModal = (props) => {
 
   const closeModal = () => {
     setConfirmText('');
-    props.handleUnenrollClose();
+    // props.handleUnenrollClose();
+    // dispatch({
+    //   type: 'SET_UNENROLL_OPEN',
+    //   data: {
+    //     unenrollOpen: !state.tableData.unenrollOpen,
+    //   },
+    // });
+    dispatch(setUnenrollOpen(!open));
   };
   return (
     <Dialog
@@ -76,14 +104,14 @@ const UnenrollSiteModal = (props) => {
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
           You are about to{' '}
-          {`Disenroll site '${props.data.code}' for producer '${props.data.last_name}'`}. Please
-          note that this action can not be undone.
+          {`Disenroll site '${unenrollRowData.code}' for producer '${unenrollRowData.last_name}'`}.
+          Please note that this action can not be undone.
         </DialogContentText>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Typography variant="body1">
-              To disenroll this site please type the site code <strong>{props.data.code}</strong>{' '}
-              below.
+              To disenroll this site please type the site code{' '}
+              <strong>{unenrollRowData.code}</strong> below.
             </Typography>
           </Grid>
           <Grid item xs={12}>
@@ -110,7 +138,7 @@ const UnenrollSiteModal = (props) => {
         <Button
           onClick={handleUnenroll}
           color="primary"
-          disabled={props.data.code === confirmText ? false : true}
+          disabled={unenrollRowData.code === confirmText ? false : true}
           variant={window.localStorage.getItem('theme') === 'dark' ? 'contained' : 'text'}
         >
           {confirmBtnStatus}
@@ -122,13 +150,13 @@ const UnenrollSiteModal = (props) => {
 
 export default UnenrollSiteModal;
 
-UnenrollSiteModal.propTypes = {
-  open: PropTypes.bool,
-  data: PropTypes.any,
-  handleUnenrollClose: PropTypes.func,
-  setValuesEdited: PropTypes.func,
-  valuesEdited: PropTypes.bool,
-};
+// UnenrollSiteModal.propTypes = {
+//   open: PropTypes.bool,
+//   data: PropTypes.any,
+//   handleUnenrollClose: PropTypes.func,
+//   setValuesEdited: PropTypes.func,
+//   valuesEdited: PropTypes.bool,
+// };
 
 class SiteEnrollment {
   constructor(obj) {

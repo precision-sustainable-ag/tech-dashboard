@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { useHistory } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Grid, Snackbar } from '@material-ui/core';
 import { onfarmAPI } from '../utils/api_secret';
-import { Context } from '../Store/Store';
+// import { Context } from '../Store/Store';
 import { CustomLoader } from '../utils/CustomComponents';
 import IssueDialogue from '../Comments/IssueDialogue';
 import { useAuth0 } from '../Auth/react-auth0-spa';
 import MaterialTable from 'material-table';
 import Typography from '@material-ui/core/Typography';
 import MuiAlert from '@material-ui/lab/Alert';
-
+import { useSelector } from 'react-redux';
 const _ = require('lodash');
 
 // Helper function
@@ -17,92 +17,11 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-const tableHeaderOptions = [
-  {
-    title: 'Year',
-    field: 'year',
-    type: 'numeric',
-    align: 'justify',
-  },
-  {
-    title: 'Code',
-    field: 'code',
-    type: 'string',
-    align: 'justify',
-  },
-  {
-    title: 'Rep',
-    field: 'subplot',
-    type: 'string',
-    align: 'justify',
-  },
-  {
-    title: 'Subsample',
-    field: 'subsample',
-    type: 'string',
-    align: 'justify',
-  },
-  {
-    title: 'Pickup #',
-    field: 'time',
-    type: 'string',
-    align: 'justify',
-  },
-  {
-    title: 'Grower',
-    field: 'last_name',
-    type: 'string',
-    align: 'justify',
-  },
-  {
-    title: 'Affiliation',
-    field: 'affiliation',
-    type: 'string',
-    align: 'justify',
-  },
-
-  {
-    title: 'Empty Bag Wt',
-    field: 'empty_bag_wt',
-    type: 'string',
-    align: 'justify',
-  },
-  {
-    title: 'Fresh Biomass Wt',
-    field: 'fresh_biomass_wt',
-    type: 'string',
-    align: 'justify',
-  },
-  {
-    title: 'Dry Biomass Wt',
-    field: 'dry_biomass_wt',
-    type: 'string',
-    align: 'justify',
-  },
-  {
-    title: 'Recovery Date',
-    field: 'recovery_date',
-    type: 'string',
-    align: 'justify',
-  },
-  {
-    title: 'Percent N',
-    field: 'percent_n',
-    type: 'string',
-    align: 'justify',
-  },
-  {
-    title: 'Percent C',
-    field: 'percent_c',
-    type: 'string',
-    align: 'justify',
-  },
-];
-
 const DecompBag = () => {
   const history = useHistory();
   const originalData = history.location.state.data;
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const userInfo = useSelector((state) => state.userInfo);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const { getTokenSilently } = useAuth0();
@@ -116,7 +35,12 @@ const DecompBag = () => {
   useEffect(() => {
     const fetchData = async (apiKey) => {
       setLoading(true);
-      const decompBag_url = onfarmAPI + `/raw?table=decomp_bag&output=json&code=`+originalData.code.toUpperCase()+`&year=`+originalData.year;
+      const decompBag_url =
+        onfarmAPI +
+        `/raw?table=decomp_bag&output=json&code=` +
+        originalData.code.toUpperCase() +
+        `&year=` +
+        originalData.year;
 
       const fetchRecords = async (url) => {
         try {
@@ -139,20 +63,102 @@ const DecompBag = () => {
       setLoading(false);
     };
 
-    if (!state.userInfo.apikey) return false;
+    if (!userInfo.apikey) return false;
 
-    fetchData(state.userInfo.apikey);
+    fetchData(userInfo.apikey);
 
-    return (() => {
+    return () => {
       const location = {
         ...history.location,
-        state: {previousState: originalData}
+        state: { previousState: originalData },
       };
       history.push(location);
-    });
+    };
   }, []);
 
   const height = window.innerHeight;
+
+  const tableHeaderOptions = [
+    {
+      title: 'Year',
+      field: 'year',
+      type: 'numeric',
+      align: 'justify',
+    },
+    {
+      title: 'Code',
+      field: 'code',
+      type: 'string',
+      align: 'justify',
+    },
+    {
+      title: 'Rep',
+      field: 'subplot',
+      type: 'string',
+      align: 'justify',
+    },
+    {
+      title: 'Subsample',
+      field: 'subsample',
+      type: 'string',
+      align: 'justify',
+    },
+    {
+      title: 'Pickup #',
+      field: 'time',
+      type: 'string',
+      align: 'justify',
+    },
+    {
+      title: 'Grower',
+      field: 'last_name',
+      type: 'string',
+      align: 'justify',
+    },
+    {
+      title: 'Affiliation',
+      field: 'affiliation',
+      type: 'string',
+      align: 'justify',
+    },
+    {
+      title: 'Empty Bag Wt',
+      field: 'empty_bag_wt',
+      type: 'string',
+      align: 'justify',
+    },
+    {
+      title: 'Fresh Biomass Wt',
+      field: 'fresh_biomass_wt',
+      type: 'string',
+      align: 'justify',
+    },
+    {
+      title: 'Dry Biomass Wt',
+      field: 'dry_biomass_wt',
+      type: 'string',
+      align: 'justify',
+    },
+    {
+      title: 'Recovery Date',
+      field: 'recovery_date',
+      type: 'string',
+      align: 'justify',
+    },
+    {
+      title: 'Percent N',
+      field: 'percent_n',
+      type: 'string',
+      align: 'justify',
+    },
+    {
+      title: 'Percent C',
+      field: 'percent_c',
+      type: 'string',
+      align: 'justify',
+    },
+  ];
+
   return (
     <Grid container>
       {loading ? (
@@ -229,7 +235,7 @@ const DecompBag = () => {
               searchAutoFocus: true,
               toolbarButtonAlignment: 'left',
               actionsColumnIndex: 1,
-              maxBodyHeight: height * 0.7,         
+              maxBodyHeight: height * 0.7,
             }}
             detailPanel={[
               {

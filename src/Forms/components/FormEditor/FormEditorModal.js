@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useContext } from 'react';
+import React, { useState, Fragment } from 'react';
 import { Button, Dialog, DialogContent, Grid, Typography, TextField } from '@material-ui/core';
 import { PropTypes } from 'prop-types';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -9,16 +9,20 @@ import { Delete } from '@material-ui/icons';
 
 import EditableField from './EditableField';
 import { callAzureFunction } from './../../../utils/SharedFunctions';
-import { Context } from '../../../Store/Store';
+// import { Context } from '../../../Store/Store';
 import { useAuth0 } from '../../../Auth/react-auth0-spa';
+import { useSelector } from 'react-redux';
 
 const FormEditorModal = (props) => {
   let { modalOpen, toggleModalOpen, editingLists, setButtonText, setSnackbarData } = props;
 
   const { getTokenSilently } = useAuth0();
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const selectedFormData = useSelector((state) => state.formsData.selectedFormData);
+  const formName = useSelector((state) => state.formsData.name);
+  const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
 
-  const [editedForm, setEditedForm] = useState({ ...state.selectedFormData.slimRecord });
+  const [editedForm, setEditedForm] = useState({ ...selectedFormData.slimRecord });
   const [submitText, setSubmitText] = useState('Submit');
   const [deleteItem, setDeleteItem] = useState(false);
   const [deleteItemText, setDeleteItemText] = useState('');
@@ -26,7 +30,7 @@ const FormEditorModal = (props) => {
   const [deleteIndex, setDeleteIndex] = useState(0);
   const [removeText, setRemoveText] = useState('Errors can be dismissed');
 
-  const errors = JSON.parse(state.selectedFormData.error[0]);
+  const errors = JSON.parse(selectedFormData.error[0]);
   const failedTables = errors.map((err) => err.split('table ')[1]);
   const noProducer = errors.find((element) => {
     if (element.includes('producer with that email or phone does not exist')) {
@@ -41,7 +45,7 @@ const FormEditorModal = (props) => {
 
   const handleCancel = () => {
     setButtonText('View errors and fix form');
-    setEditedForm({ ...state.selectedFormData.slimRecord });
+    setEditedForm({ ...selectedFormData.slimRecord });
     toggleModalOpen();
   };
 
@@ -74,15 +78,15 @@ const FormEditorModal = (props) => {
     setSubmitText('Submitting form...');
     let data = {
       data: JSON.stringify(editedForm),
-      asset_name: state.formsData.name.split('_').join(' '),
+      asset_name: formName.split('_').join(' '),
       id: editedForm._id,
       xform_id_string: editedForm._xform_id_string,
-      uid: state.selectedFormData.uid,
+      uid: selectedFormData.uid,
     };
-    callAzureFunction(data, 'SubmitNewEntry', getTokenSilently).then((res) => {
+    callAzureFunction(data, 'tech-dashboard/kobo', 'POST', getTokenSilently).then((res) => {
       toggleModalOpen();
       setSubmitText('Submit');
-      setEditedForm(state.selectedFormData.slimRecord);
+      setEditedForm(selectedFormData.slimRecord);
 
       if (res.response) {
         if (res.response.status === 201) {
@@ -112,10 +116,12 @@ const FormEditorModal = (props) => {
 
   const handleResolve = () => {
     setRemoveText('Removing form...');
-    let data = {
-      uid: state.selectedFormData.uid,
-    };
-    callAzureFunction(data, 'RemoveForm', getTokenSilently).then((res) => {
+    callAzureFunction(
+      null,
+      `shadowdb/invalid_row_table_pairs/${selectedFormData.uid}`,
+      'DELETE',
+      getTokenSilently,
+    ).then((res) => {
       toggleModalOpen();
       setRemoveText('Errors can be dismissed');
 
@@ -155,8 +161,8 @@ const FormEditorModal = (props) => {
                 <Typography variant="h4">Original Form</Typography>
               </Grid>
               <Grid item>
-                <SyntaxHighlighter language="json" style={state.isDarkTheme ? dark : docco}>
-                  {JSON.stringify(state.selectedFormData.slimRecord, undefined, 2)}
+                <SyntaxHighlighter language="json" style={isDarkTheme ? dark : docco}>
+                  {JSON.stringify(selectedFormData.slimRecord, undefined, 2)}
                 </SyntaxHighlighter>
               </Grid>
             </Grid>
@@ -223,7 +229,7 @@ const FormEditorModal = (props) => {
                             <Grid item>
                               <Button
                                 variant="contained"
-                                color={state.isDarkTheme ? 'primary' : 'default'}
+                                color={isDarkTheme ? 'primary' : 'default'}
                                 aria-label={`All Forms`}
                                 tooltip="All Forms"
                                 size="small"
@@ -239,7 +245,7 @@ const FormEditorModal = (props) => {
                           <Grid item>
                             <Button
                               variant="contained"
-                              color={state.isDarkTheme ? 'primary' : 'default'}
+                              color={isDarkTheme ? 'primary' : 'default'}
                               aria-label={`All Forms`}
                               tooltip="All Forms"
                               size="small"
@@ -279,7 +285,7 @@ const FormEditorModal = (props) => {
             <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
               <Typography variant="h4">Table Parsing Errors</Typography>
             </Grid>
-            {JSON.parse(state.selectedFormData.error[0]).map((err, index) => {
+            {JSON.parse(selectedFormData.error[0]).map((err, index) => {
               return (
                 <Grid item container spacing={1} key={index}>
                   <Grid item>
@@ -296,7 +302,7 @@ const FormEditorModal = (props) => {
                 <Grid item>
                   <Button
                     variant="contained"
-                    color={state.isDarkTheme ? 'primary' : 'default'}
+                    color={isDarkTheme ? 'primary' : 'default'}
                     aria-label={`All Forms`}
                     tooltip="All Forms"
                     size="small"
@@ -308,7 +314,7 @@ const FormEditorModal = (props) => {
                 <Grid item>
                   <Button
                     variant="contained"
-                    color={state.isDarkTheme ? 'primary' : 'default'}
+                    color={isDarkTheme ? 'primary' : 'default'}
                     aria-label={`All Forms`}
                     tooltip="All Forms"
                     size="small"
@@ -320,7 +326,7 @@ const FormEditorModal = (props) => {
                 <Grid item>
                   <Button
                     variant="contained"
-                    color={state.isDarkTheme ? 'primary' : 'default'}
+                    color={isDarkTheme ? 'primary' : 'default'}
                     aria-label={`All Forms`}
                     tooltip="All Forms"
                     size="small"

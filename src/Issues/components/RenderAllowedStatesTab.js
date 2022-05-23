@@ -1,15 +1,16 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 import { apiPassword, apiURL, apiUsername } from '../../utils/api_secret';
 import Axios from 'axios';
-import { Context } from '../../Store/Store';
+// import { Context } from '../../Store/Store';
 import { YearsAndAffiliations } from '../../utils/CustomComponents';
-
+import { useSelector } from 'react-redux';
 export const RenderAllowedStatesTab = ({ setActiveState, activeState }) => {
   const [, setLoading] = useState(true);
   const [allAffiliations, setAllAffiliations] = useState([]);
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const userInfo = useSelector((state) => state.userInfo);
 
   useEffect(() => {
     setLoading(true);
@@ -20,7 +21,7 @@ export const RenderAllowedStatesTab = ({ setActiveState, activeState }) => {
       .then((res) => {
         let affiliations = res.data.data;
         let permittedAffiliations = [];
-        if (state.userInfo.state === 'all') {
+        if (userInfo.state === 'all') {
           affiliations.map((affiliation) => {
             permittedAffiliations.push({
               affiliation: affiliation.affiliation,
@@ -29,7 +30,7 @@ export const RenderAllowedStatesTab = ({ setActiveState, activeState }) => {
           });
           setAllAffiliations(permittedAffiliations);
         } else {
-          const dbPermittedAffiliations = state.userInfo.state.split(',');
+          const dbPermittedAffiliations = userInfo.state.split(',');
           dbPermittedAffiliations.sort().forEach((element) => {
             let a = affiliations.filter((data) => data.affiliation === element);
             console.log(a);
@@ -46,7 +47,7 @@ export const RenderAllowedStatesTab = ({ setActiveState, activeState }) => {
         setLoading(false);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeState, state.userInfo.state]);
+  }, [activeState, userInfo.state]);
 
   const handleActiveAffiliation = (affiliation = 'all') => {
     const newAffiliations = allAffiliations.map((rec) => {

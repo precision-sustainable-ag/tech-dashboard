@@ -1,7 +1,7 @@
 /* eslint-disable react/display-name */
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, Typography, Snackbar } from '@material-ui/core';
-import { Context } from '../../Store/Store';
+// import { Context } from '../../Store/Store';
 import MaterialTable from 'material-table';
 import { bannedRoles } from '../../utils/constants';
 import { BannedRoleMessage, CustomLoader } from '../../utils/CustomComponents';
@@ -10,6 +10,7 @@ import { addDays } from 'date-fns';
 import { useAuth0 } from '../../Auth/react-auth0-spa';
 import MuiAlert from '@material-ui/lab/Alert';
 import FarmDatesDropdown from './FarmDatesDropdown';
+import { useSelector } from 'react-redux';
 
 const farmDatesURL = `${onfarmAPI}/dates`;
 
@@ -18,107 +19,9 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-const tableHeaderOptions = [
-  {
-    title: 'Code',
-    field: 'code',
-    type: 'string',
-    align: 'justify',
-    searchable: true,
-  },
-  {
-    title: 'Year',
-    field: 'year',
-    type: 'numeric',
-    align: 'justify',
-    defaultGroupOrder: 1,
-    defaultGroupSort: 'desc',
-  },
-  {
-    title: 'Affiliation',
-    field: 'affiliation',
-    type: 'string',
-    align: 'justify',
-    defaultGroupOrder: 0,
-  },
-  {
-    title: 'Cover Crop Planting',
-    field: 'cover_planting',
-    type: 'date',
-    align: 'justify',
-    searchable: false,
-  },
-  {
-    title: 'Biomass Harvest',
-    field: 'biomass_harvest',
-    type: 'date',
-    align: 'justify',
-    searchable: false,
-  },
-  {
-    title: 'Cover Crop Termination',
-    field: 'cover_termination',
-    type: 'date',
-    align: 'justify',
-    searchable: false,
-  },
-  {
-    title: 'Cash Planting',
-    field: 'cash_planting',
-    type: 'date',
-    align: 'justify',
-    searchable: false,
-  },
-  {
-    title: 'T1',
-    field: 't1_target',
-    type: 'date',
-    align: 'justify',
-    searchable: false,
-  },
-
-  {
-    title: 'T2',
-    field: 't2_target',
-    type: 'date',
-    align: 'justify',
-    searchable: false,
-  },
-
-  {
-    title: 'T3',
-    field: 't3_target',
-    type: 'date',
-    align: 'justify',
-    searchable: false,
-  },
-
-  {
-    title: 'T4',
-    field: 't4_target',
-    type: 'date',
-    align: 'justify',
-    searchable: false,
-  },
-
-  {
-    title: 'T5',
-    field: 't5_target',
-    type: 'string',
-    searchable: false,
-  },
-
-  //     {
-  //         title: "Yield Harvest",
-  //     field: "cash_planting",
-  //     type: "date",
-  //     align: "justify",
-  //   },
-  //   {},
-];
-
 const FarmDates = () => {
-  const [state] = useContext(Context);
+  // const [state] = useContext(Context);
+  const userInfo = useSelector((state) => state.userInfo);
   const [farmDatesData, setFarmDatesData] = useState([]);
   const [showBannedMessage, setShowBannedMessage] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -130,13 +33,13 @@ const FarmDates = () => {
   });
 
   useEffect(() => {
-    if (state.userInfo.role && bannedRoles.includes(state.userInfo.role)) {
+    if (userInfo.role && bannedRoles.includes(userInfo.role)) {
       setShowBannedMessage(true);
     } else {
-      if (state.userInfo.apikey) {
+      if (userInfo.apikey) {
         setShowBannedMessage(false);
         setLoading(true);
-        fetchFarmDatesFromApi(state.userInfo.apikey).then((response) => {
+        fetchFarmDatesFromApi(userInfo.apikey).then((response) => {
           makeDateObjects(response)
             .then((response) => {
               let responseWithFilter = response.filter((r) => {
@@ -148,7 +51,7 @@ const FarmDates = () => {
         });
       }
     }
-  }, [state.userInfo]);
+  }, [userInfo.apikey, userInfo.role]);
 
   let height = window.innerHeight;
 
@@ -158,6 +61,105 @@ const FarmDates = () => {
   } else if (height < 600) {
     height -= 200;
   }
+
+  const tableHeaderOptions = [
+    {
+      title: 'Code',
+      field: 'code',
+      type: 'string',
+      align: 'justify',
+      searchable: true,
+    },
+    {
+      title: 'Year',
+      field: 'year',
+      type: 'numeric',
+      align: 'justify',
+      defaultGroupOrder: 1,
+      defaultGroupSort: 'desc',
+    },
+    {
+      title: 'Affiliation',
+      field: 'affiliation',
+      type: 'string',
+      align: 'justify',
+      defaultGroupOrder: 0,
+    },
+    {
+      title: 'Cover Crop Planting',
+      field: 'cover_planting',
+      type: 'date',
+      align: 'justify',
+      searchable: false,
+    },
+    {
+      title: 'Biomass Harvest',
+      field: 'biomass_harvest',
+      type: 'date',
+      align: 'justify',
+      searchable: false,
+    },
+    {
+      title: 'Cover Crop Termination',
+      field: 'cover_termination',
+      type: 'date',
+      align: 'justify',
+      searchable: false,
+    },
+    {
+      title: 'Cash Planting',
+      field: 'cash_planting',
+      type: 'date',
+      align: 'justify',
+      searchable: false,
+    },
+    {
+      title: 'T1',
+      field: 't1_target',
+      type: 'date',
+      align: 'justify',
+      searchable: false,
+    },
+
+    {
+      title: 'T2',
+      field: 't2_target',
+      type: 'date',
+      align: 'justify',
+      searchable: false,
+    },
+
+    {
+      title: 'T3',
+      field: 't3_target',
+      type: 'date',
+      align: 'justify',
+      searchable: false,
+    },
+
+    {
+      title: 'T4',
+      field: 't4_target',
+      type: 'date',
+      align: 'justify',
+      searchable: false,
+    },
+
+    {
+      title: 'T5',
+      field: 't5_target',
+      type: 'string',
+      searchable: false,
+    },
+
+    //     {
+    //         title: "Yield Harvest",
+    //     field: "cash_planting",
+    //     type: "date",
+    //     align: "justify",
+    //   },
+    //   {},
+  ];
 
   return !showBannedMessage ? (
     <Grid container spacing={2}>
@@ -245,15 +247,30 @@ const makeDateObjects = async (response) => {
 
       return {
         ...record,
-        t1_target: (biomassDate && record.protocols.decomp_biomass==1) ? addDays(biomassDate, 14).toLocaleDateString() : '',
+        t1_target:
+          biomassDate && record.protocols.decomp_biomass == 1
+            ? addDays(biomassDate, 14).toLocaleDateString()
+            : '',
         t1_actual: record.t1_actual ? new Date(record.t1_actual).toLocaleDateString() : '',
-        t2_target: (biomassDate && record.protocols.decomp_biomass==1) ? addDays(biomassDate, 30).toLocaleDateString() : '',
+        t2_target:
+          biomassDate && record.protocols.decomp_biomass == 1
+            ? addDays(biomassDate, 30).toLocaleDateString()
+            : '',
         t2_actual: record.t2_actual ? new Date(record.t2_actual).toLocaleDateString() : '',
-        t3_target: (biomassDate && record.protocols.decomp_biomass==1) ? addDays(biomassDate, 60).toLocaleDateString() : '',
+        t3_target:
+          biomassDate && record.protocols.decomp_biomass == 1
+            ? addDays(biomassDate, 60).toLocaleDateString()
+            : '',
         t3_actual: record.t3_actual ? new Date(record.t3_actual).toLocaleDateString() : '',
-        t4_target: (biomassDate && record.protocols.decomp_biomass==1) ? addDays(biomassDate, 90).toLocaleDateString() : '',
+        t4_target:
+          biomassDate && record.protocols.decomp_biomass == 1
+            ? addDays(biomassDate, 90).toLocaleDateString()
+            : '',
         t4_actual: record.t4_actual ? new Date(record.t4_actual).toLocaleDateString() : '',
-        t5_target: (record.t5_target&& record.protocols.decomp_biomass==1) ? new Date(record.t5_target) : 'at hand harvest',
+        t5_target:
+          record.t5_target && record.protocols.decomp_biomass == 1
+            ? new Date(record.t5_target)
+            : 'at hand harvest',
       };
     }),
   );
