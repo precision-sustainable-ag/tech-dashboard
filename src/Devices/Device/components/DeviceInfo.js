@@ -10,10 +10,14 @@ import {
 } from '@material-ui/core';
 import { NetworkCell, Router, CalendarToday } from '@material-ui/icons';
 import moment from 'moment-timezone';
-import { any, number, string } from 'prop-types';
+import { string } from 'prop-types';
 import { DateProvider } from './DateProvider';
+import { useSelector } from 'react-redux';
 
-export const DeviceInfo = ({ timeEnd, setTimeEnd, deviceName, deviceData, userTimezone }) => {
+export const DeviceInfo = ( deviceName ) => {
+  const deviceData = useSelector((state) => state.devicesData.deviceData);
+  const userTimezone = useSelector((state) => state.deviceData.userTimezone);
+
   const { palette } = useTheme();
   return (
     <>
@@ -32,7 +36,7 @@ export const DeviceInfo = ({ timeEnd, setTimeEnd, deviceName, deviceData, userTi
               <ListItemIcon>
                 <CalendarToday />
               </ListItemIcon>
-              <ListItemText primary={<DateProvider timeEnd={timeEnd} setTimeEnd={setTimeEnd} />} />
+              <ListItemText primary={<DateProvider />} />
             </ListItem>
           </List>
         </Grid>
@@ -78,9 +82,9 @@ export const DeviceInfo = ({ timeEnd, setTimeEnd, deviceName, deviceData, userTi
 };
 
 DeviceInfo.propTypes = {
-  timeEnd: number,
-  setTimeEnd: any,
+  // timeEnd: number,
+  // setTimeEnd: any,
   deviceName: string,
-  userTimezone: string,
-  deviceData: any,
+  // userTimezone: string,
+  // deviceData: any,
 };

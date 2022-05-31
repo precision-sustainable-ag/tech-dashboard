@@ -1,9 +1,9 @@
 // Dependency Imports
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Axios from 'axios';
 import qs from 'qs';
 import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 // Local Imports
 
@@ -14,14 +14,16 @@ import { apiUsername, apiPassword } from '../../utils/api_secret';
 import '../Devices.scss';
 // import { Context } from '../../Store/Store';
 import DevicesComponent from '../Devices';
+import { setDevices, setDevicesLoadingState, setShowDevices } from '../../Store/actions/devicesActions';
 
 // Default function
 const WaterSensors = () => {
   // const [state] = useContext(Context);
+  const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.userInfo);
-  const [devices, setDevices] = useState([]);
-  const [showDevices, setShowDevices] = useState(false);
-  const [devicesLoadingState, setDevicesLoadingState] = useState(true);
+  // const [devices, setDevices] = useState([]);
+  // const [showDevices, setShowDevices] = useState(false);
+  // const [devicesLoadingState, setDevicesLoadingState] = useState(true);
   const { location } = useHistory();
 
   let devicesData = [];
@@ -29,7 +31,7 @@ const WaterSensors = () => {
   useEffect(() => {
     if (Reflect.ownKeys(userInfo).length > 0) {
       if (bannedRoles.includes(userInfo.role)) {
-        setShowDevices(false);
+        dispatch(setShowDevices(false));
       } else {
         // get tag id for
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -45,7 +47,7 @@ const WaterSensors = () => {
           if (deviceState[0] === 'all') {
             apiParams = '';
             fetchRecords(`${finalAPIURL}/api/1/devices?withlocation=true${apiParams}`).then(() => {
-              setDevicesLoadingState(false);
+              dispatch(setDevicesLoadingState(false));
             });
           } else {
             getTags(`${finalAPIURL}/api/1/devices/tags?limit=1000&withlocation=true`).then(
@@ -68,7 +70,7 @@ const WaterSensors = () => {
                   fetchRecords(
                     `${finalAPIURL}/api/1/devices?tagid=${tagId}&withlocation=true`,
                   ).then(() => {
-                    setDevicesLoadingState(false);
+                    dispatch(setDevicesLoadingState(false));
                   });
                 });
                 // get tag ids from matched objects
@@ -84,7 +86,7 @@ const WaterSensors = () => {
           // get tag id from hologram for this specific
         }
 
-        setShowDevices(true);
+        dispatch(setShowDevices(true));
       }
     }
 
@@ -126,7 +128,7 @@ const WaterSensors = () => {
           devicesFlatData = devicesData.flat();
           devicesFlatData = devicesFlatData.sort(compareStrings);
 
-          setDevices(devicesFlatData);
+          dispatch(setDevices(devicesFlatData));
         }
       })
       .catch((error) => {
@@ -159,11 +161,11 @@ const WaterSensors = () => {
   };
   return (
     <DevicesComponent
-      showDevices={showDevices}
-      devices={devices}
-      loading={devicesLoadingState}
+      // showDevices={showDevices}
+      // devices={devices}
+      // loading={devicesLoadingState}
       for={'watersensors'}
-      userInfo={userInfo}
+      // userInfo={userInfo}
       activeTag={location.state ? location.state.activeTag : null}
     />
   );

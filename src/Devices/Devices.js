@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { Edit, Search } from '@material-ui/icons';
 import { apiPassword, apiURL, apiUsername } from '../utils/api_secret';
+import { useSelector } from 'react-redux';
 
 const deviceCardStyle = {
   height: '210px',
@@ -20,19 +21,21 @@ const deviceCardStyle = {
 const DevicesComponent = ({
   for: forWhom,
   activeTag: activeTg,
-  devices,
-  userInfo,
   from,
-  showDevices,
-  loading,
+  // userInfo,
 }) => {
+  const showDevices = useSelector((state) => state.devicesData.showDevices);
+  const devices = useSelector((state) => state.devicesData.devices);
+  const loading = useSelector((state) => state.devicesData.devicesLoadingState);
+  const userInfo = useSelector((state) => state.userInfo);
   const [validDevices, setValidDevices] = useState([]);
   const [devicesWithNicknames, setDevicesWithNicknames] = useState([]);
   const [searchedDevices, setSearchedDevices] = useState([]);
   const [deviceTags, setDeviceTags] = useState([]);
   const [deviceSearchText, setDeviceSearchText] = useState('');
   const [activeTag, setActiveTag] = useState('All');
-  const [refreshDevices, setRefreshDevices] = useState(false);
+  // const [refreshDevices, setRefreshDevices] = useState(false);
+  const refreshDevices = useSelector((state) => state.devicesData.refreshDevices);
   const history = useHistory();
 
   useEffect(() => {
@@ -107,7 +110,6 @@ const DevicesComponent = ({
       setSearchedDevices(devicesWithNicknames);
     }
   }, [deviceSearchText, devicesWithNicknames]);
-
   useEffect(() => {
     if (history.location.state) {
       if (history.location.state.activeTag) {
@@ -124,9 +126,11 @@ const DevicesComponent = ({
     if (activeTag === 'All' && devices.length > 0) {
       if (from === 'watersensors') {
         const devicesWithTags = filterAllDevices(devices);
+        console.log(devicesWithTags);
         setValidDevices(devicesWithTags);
       } else {
         setValidDevices(devices);
+        // console.log(devices);
       }
     } else {
       if (devices.length > 0) {
@@ -154,7 +158,6 @@ const DevicesComponent = ({
       setDeviceTags(tags);
     }
   }, [devices]);
-
   return showDevices ? (
     <Grid container>
       {loading ? (
@@ -232,11 +235,11 @@ const DevicesComponent = ({
                   >
                     <DataParser
                       for={forWhom}
-                      key={device.id}
+                      // key={device.id}
                       deviceData={device}
                       lastSession={true}
-                      activeTag={activeTag}
-                      setRefreshDevices={setRefreshDevices}
+                      // activeTag={activeTag}
+                      // setRefreshDevices={setRefreshDevices}
                     />
                   </Card>
                 </Grid>
@@ -250,10 +253,10 @@ const DevicesComponent = ({
                   >
                     <DataParser
                       for={forWhom}
-                      key={device.id}
+                      // key={device.id}
                       deviceData={device}
                       lastSession={false}
-                      setRefreshDevices={setRefreshDevices}
+                      // setRefreshDevices={setRefreshDevices}
                     />
                   </Card>
                 </Grid>
@@ -344,10 +347,10 @@ const filterAllDevices = (devices) => {
 export default DevicesComponent;
 
 DevicesComponent.propTypes = {
-  showDevices: PropTypes.bool.isRequired,
-  loading: PropTypes.bool.isRequired,
-  devices: PropTypes.array.isRequired,
-  userInfo: PropTypes.object,
+  // showDevices: PropTypes.bool.isRequired,
+  // loading: PropTypes.bool.isRequired,
+  // devices: PropTypes.array.isRequired,
+  // userInfo: PropTypes.object,
   activeTag: PropTypes.string,
   for: PropTypes.string,
   from: PropTypes.string,

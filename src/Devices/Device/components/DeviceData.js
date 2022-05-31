@@ -79,11 +79,12 @@ const RenderTags = ({ chipsArray }) => {
   ));
 };
 
-export const DeviceData = ({ mostRecentData, location, userTimezone, isFetching }) => {
+export const DeviceData = ({ location, isFetching }) => {
   const classes = useStyles();
   // const [state] = useContext(Context);
   const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
-
+  const mostRecentData = useSelector((state) => state.devicesData.mostRecentData);
+  const userTimezone = useSelector((state) => state.devicesData.userTimezone);
   const getDataFromJSON = (jsonData, type, sensorType) => {
     jsonData = JSON.parse(jsonData);
 
@@ -176,7 +177,7 @@ export const DeviceData = ({ mostRecentData, location, userTimezone, isFetching 
 
 DeviceData.propTypes = {
   location: any,
-  mostRecentData: any,
-  userTimezone: any,
+  // mostRecentData: any,
+  // userTimezone: any,
   isFetching: boolean,
 };

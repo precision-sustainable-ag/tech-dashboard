@@ -18,6 +18,9 @@ import Axios from 'axios';
 import qs from 'qs';
 import { apiPassword, apiURL, apiUsername } from '../utils/api_secret';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { setRefreshDevices } from '../Store/actions/devicesActions';
+// import { useSelector } from 'react-redux';
 
 // Styles
 const deviceColors = {
@@ -31,6 +34,7 @@ const deviceColors = {
 // Default function
 const DataParser = (props) => {
   const history = useHistory();
+  const dispatch = useDispatch();
   const [deviceId, setDeviceId] = useState(0);
   const [shouldRedirect] = useState(false);
   const [deviceBGColor, setDeviceBGColor] = useState('white');
@@ -39,7 +43,7 @@ const DataParser = (props) => {
   const [dateStringFormatted, setDateStringFormatted] = useState('');
   let device = props.deviceData;
   device.for = props.for;
-  const { lastSession, setRefreshDevices } = props;
+  const { lastSession } = props;
   // console.log("deviceData", props.deviceData);
   const setDeviceState = (deviceId) => {
     setDeviceId(deviceId);
@@ -148,7 +152,7 @@ const DataParser = (props) => {
           device['nickname'] = deviceActualName;
           setIsDeviceNameBeingEdited(false);
           setShowEditBtn(false);
-          setRefreshDevices((status) => !status);
+          dispatch(setRefreshDevices((status) => !status));
         }
       })
       .catch((e) => {
@@ -333,5 +337,5 @@ DataParser.propTypes = {
   lastSession: PropTypes.any,
   deviceData: PropTypes.any,
   for: PropTypes.string,
-  setRefreshDevices: PropTypes.func,
+  // setRefreshDevices: PropTypes.func,
 };

@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Axios from 'axios';
 
 import qs from 'qs';
@@ -15,15 +15,20 @@ import { apiUsername, apiPassword } from '../../utils/api_secret';
 // import "../Devices.scss";
 // import { Context } from '../../Store/Store';
 import DevicesComponent from '../Devices';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { setDevices, setDevicesLoadingState, setShowDevices } from '../../Store/actions/devicesActions';
 
 // Default function
 const StressCams = () => {
   // const [state] = useContext(Context);
+  const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.userInfo);
-  const [devices, setDevices] = useState([]);
-  const [showDevices, setShowDevices] = useState(false);
-  const [devicesLoadingState, setDevicesLoadingState] = useState(true);
+  // const [devices, setDevices] = useState([]);
+  // const devices = useSelector((state) => state.devicesData.devices);
+  // const [showDevices, setShowDevices] = useState(false);
+  // const showDevices = useSelector((state) => state.devicesData.showDevices);
+  // const [devicesLoadingState, setDevicesLoadingState] = useState(true);
+  // const devicesLoadingState = useSelector((state) => state.devicesData.devicesLoadingState);
   const { location } = useHistory();
 
   let devicesData = [];
@@ -31,7 +36,7 @@ const StressCams = () => {
   useEffect(() => {
     if (Reflect.ownKeys(userInfo).length > 0) {
       if (bannedRoles.includes(userInfo.role)) {
-        setShowDevices(false);
+        dispatch(setShowDevices(false));
       } else {
         // get tag id for
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -46,7 +51,7 @@ const StressCams = () => {
           if (deviceState[0] === 'all') {
             apiParams = '';
             fetchRecords(`${finalAPIURL}/api/1/devices?withlocation=true${apiParams}`).then(() => {
-              setDevicesLoadingState(false);
+              dispatch(setDevicesLoadingState(false));
             });
           } else {
             getTags(`${finalAPIURL}/api/1/devices/tags?limit=1000&withlocation=true`).then(
@@ -72,7 +77,7 @@ const StressCams = () => {
                     setDevicesLoadingState(false);
                   });
                 });
-                setDevicesLoadingState(false);
+                dispatch(setDevicesLoadingState(false));
                 // get tag ids from matched objects
               },
             );
@@ -86,7 +91,7 @@ const StressCams = () => {
           // get tag id from hologram for this specific
         }
 
-        setShowDevices(true);
+        dispatch(setShowDevices(true));
       }
     }
 
@@ -128,7 +133,7 @@ const StressCams = () => {
           devicesFlatData = devicesData.flat();
           devicesFlatData = devicesFlatData.sort(compareStrings);
 
-          setDevices(devicesFlatData);
+          dispatch(setDevices(devicesFlatData));
         }
       })
       .catch((error) => {
@@ -161,11 +166,11 @@ const StressCams = () => {
   };
   return (
     <DevicesComponent
-      showDevices={showDevices}
-      devices={devices}
-      loading={devicesLoadingState}
+      // showDevices={showDevices}
+      // devices={devices}
+      // loading={devicesLoadingState}
       for={'stresscams'}
-      userInfo={userInfo}
+      // userInfo={userInfo}
       activeTag={location.state ? location.state.activeTag : null}
     />
   );

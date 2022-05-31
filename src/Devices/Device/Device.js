@@ -21,20 +21,24 @@ import { any } from 'prop-types';
 // import { Context } from '../../Store/Store';
 import { DeviceInfo } from './components/DeviceInfo';
 import { DeviceData } from './components/DeviceData';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { setDeviceData, setMostRecentData, setUserTimezone } from '../../Store/actions/devicesActions';
 
 SyntaxHighlighter.registerLanguage('json', json);
 
 const DeviceComponent = (props) => {
   const { deviceId } = useParams();
   const history = useHistory();
+  const dispatch = useDispatch();
   const activeTag = history.location.state ? history.location.state.activeTag : 'all';
-  const [deviceData, setDeviceData] = useState({ name: '' });
-  const [mostRecentData, setMostRecentData] = useState([]);
-  const [userTimezone, setUserTimezone] = useState('America/New_York');
+  // const [deviceData, setDeviceData] = useState({ name: '' });
+  // const [mostRecentData, setMostRecentData] = useState([]);
+  const mostRecentData = useSelector((state) => state.devicesData.mostRecentData);
+  // const [userTimezone, setUserTimezone] = useState('America/New_York');
   const [pagesLoaded, setPagesLoaded] = useState(0);
   const [loadMoreDataURI, setLoadMoreDataURI] = useState('');
-  const [timeEnd, setTimeEnd] = useState(Math.floor(Date.now() / 1000));
+  // const [timeEnd, setTimeEnd] = useState(Math.floor(Date.now() / 1000));
+  const timeEnd = useSelector((state) => state.devicesData.timeEnd);
   const [hologramApiFunctional, setHologramApiFunctional] = useState(true);
   const [fetchMessage, setFetchMessage] = useState('');
   const [deviceName, setDeviceName] = useState(
@@ -101,10 +105,11 @@ const DeviceComponent = (props) => {
   }, [history, activeTag, props.location.state]);
 
   useEffect(() => {
-    setUserTimezone(moment.tz.guess);
+    dispatch(setUserTimezone(moment.tz.guess));
     if (props.location.state === undefined) {
       // get data from api
-      setDeviceData({ name: 'Loading' });
+      // setDeviceData({ name: 'Loading' });
+      dispatch(setDeviceData({ name: 'Loading' }));
       setIsFetching(true);
       Axios({
         method: 'post',
@@ -123,7 +128,7 @@ const DeviceComponent = (props) => {
       })
         .then((response) => {
           setIsFetching(false);
-          setMostRecentData(response.data.data);
+          dispatch(setMostRecentData(response.data.data));
           if (response.data.continues) {
             setLoadMoreDataURI(response.data.links.next);
             setPagesLoaded((pagesLoaded) => pagesLoaded + 1);
@@ -135,7 +140,8 @@ const DeviceComponent = (props) => {
         });
     } else {
       // data passed from component via prop
-      setDeviceData(props.location.state);
+      // setDeviceData(props.location.state);
+      dispatch(setDeviceData(props.location.state));
       setIsFetching(true);
       Axios({
         method: 'post',
@@ -156,7 +162,7 @@ const DeviceComponent = (props) => {
       })
         .then((response) => {
           setIsFetching(false);
-          setMostRecentData(response.data.data);
+          dispatch(setMostRecentData(response.data.data));
           if (response.data.continues) {
             setLoadMoreDataURI(response.data.links.next);
             setPagesLoaded((pagesLoaded) => pagesLoaded + 1);
@@ -169,7 +175,7 @@ const DeviceComponent = (props) => {
     }
     return () => {
       // clean up the previous state before next re-render
-      setMostRecentData({});
+      dispatch(setMostRecentData({}));
     };
   }, [timeEnd, deviceId, props.location.state]);
 
@@ -234,11 +240,11 @@ const DeviceComponent = (props) => {
     return (
       <Grid container spacing={3}>
         <DeviceInfo
-          timeEnd={timeEnd}
-          setTimeEnd={setTimeEnd}
+          // timeEnd={timeEnd}
+          // setTimeEnd={setTimeEnd}
           deviceName={deviceName}
-          deviceData={deviceData}
-          userTimezone={userTimezone}
+          // deviceData={deviceData}
+          // userTimezone={userTimezone}
         />
 
         {props.location.state ? (
@@ -273,8 +279,8 @@ const DeviceComponent = (props) => {
         <Grid item xs={12}>
           <DeviceData
             location={props.location.state}
-            mostRecentData={mostRecentData}
-            userTimezone={userTimezone}
+            // mostRecentData={mostRecentData}
+            // userTimezone={userTimezone}
             isFetching={isFetching}
           />
         </Grid>
@@ -343,7 +349,7 @@ const DeviceComponent = (props) => {
           deviceDataShadow.push(response.data.data);
 
           let devicesFlatData = deviceDataShadow.flat();
-          setMostRecentData(devicesFlatData);
+          dispatch(setMostRecentData(devicesFlatData));
           if (response.data.continues) {
             setLoadMoreDataURI(response.data.links.next);
             setPagesLoaded(pagesLoaded + 1);

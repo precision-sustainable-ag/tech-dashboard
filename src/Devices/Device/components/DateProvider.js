@@ -1,10 +1,14 @@
 import React from 'react';
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
-import { any } from 'prop-types';
+// import { any } from 'prop-types';
 import DateFnsUtils from '@date-io/date-fns';
 import moment from 'moment-timezone';
+import { useSelector, useDispatch } from 'react-redux';
+import { setTimeEnd } from '../../../Store/actions/devicesActions';
 
-export const DateProvider = ({ timeEnd, setTimeEnd }) => {
+export const DateProvider = () => {
+  const timeEnd = useSelector((state) => state.devicesData.timeEnd);
+  const dispatch = useDispatch();
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <DatePicker
@@ -14,7 +18,7 @@ export const DateProvider = ({ timeEnd, setTimeEnd }) => {
         format="MM/dd/yyyy"
         value={moment.unix(timeEnd)}
         onChange={(date) => {
-          setTimeEnd(moment(date).unix());
+          dispatch(setTimeEnd(moment(date).unix()));
         }}
         animateYearScrolling
       />
@@ -23,6 +27,6 @@ export const DateProvider = ({ timeEnd, setTimeEnd }) => {
 };
 
 DateProvider.propTypes = {
-  timeEnd: any,
-  setTimeEnd: any,
+  // timeEnd: any,
+  // setTimeEnd: any,
 };
