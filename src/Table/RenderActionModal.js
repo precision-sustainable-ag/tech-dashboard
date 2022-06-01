@@ -4,7 +4,7 @@ import React from 'react';
 import { Grid, Typography, Button, Tooltip } from '@material-ui/core';
 // import MuiAlert from '@material-ui/lab/Alert';
 // import MaterialTable from 'material-table';
-import { Edit, DeleteForever, Search, QuestionAnswer } from '@material-ui/icons';
+import { Edit, DeleteForever, Search, QuestionAnswer, CheckBox } from '@material-ui/icons';
 // Local Imports
 // import { Context } from '../Store/Store';
 import { UserIsEditor } from '../utils/SharedFunctions';
@@ -19,6 +19,8 @@ import {
   setReassignSiteModalData,
   setUnenrollOpen,
   setUnenrollRowData,
+  setEditProtocolsModalOpen,
+  setEditProtocolsModalData,
   setShowNewIssueDialog,
   setNewIssueData,
   setMapModalData,
@@ -176,6 +178,25 @@ const RenderActionModal = ({ rowData, activeSites }) => {
                   }}
                 >
                   Unenroll
+                </Button>
+              </Tooltip>
+            </Grid>
+            <Grid item>
+              <Tooltip title="Edit Protocol Enrollments">
+                <Button
+                  size="small"
+                  variant="contained"
+                  startIcon={<CheckBox />}
+                  color={isDarkTheme ? 'primary' : 'default'}
+                  disabled={disabled}
+                  onClick={() => {
+                    if(!disabled){
+                      dispatch(setEditProtocolsModalOpen(true));
+                      dispatch(setEditProtocolsModalData(rowData));
+                    }
+                  }}
+                >
+                  Edit Protocols
                 </Button>
               </Tooltip>
             </Grid>

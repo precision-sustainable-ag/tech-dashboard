@@ -6,6 +6,8 @@ const defaultState = {
   reassignSiteModalData: {},
   unenrollOpen: false,
   unenrollRowData: {},
+  editProtocolsModalOpen: false,
+  editProtocolsModalData: null,
   showNewIssueDialog: false,
   newIssueData: {},
   mapModalOpen: false,
@@ -29,6 +31,10 @@ export const allDataTableReducer = (state = defaultState, action) => {
       return setUnenrollOpen(state, action);
     case 'SET_UNENROLL_ROWDATA':
       return setUnenrollRowData(state, action);
+    case 'SET_EDIT_PROTOCOLS_MODAL_OPEN':
+      return setEditProtocolsModalOpen(state, action);
+    case 'SET_EDIT_PROTOCOLS_MODAL_DATA':
+      return setEditProtocolsModalData(state, action);
     case 'SET_SHOW_NEW_ISSUE_DIALOG':
       return setShowNewIssueDialog(state, action);
     case 'SET_NEW_ISSUE_DATA':
@@ -118,6 +124,18 @@ const setUnenrollRowData = (state, action) => {
   return {
     ...state,
     unenrollRowData: action.payload,
+  };
+};
+const setEditProtocolsModalOpen = (state, action) => {
+  return {
+    ...state,
+    editProtocolsModalOpen: action.payload,
+  };
+};
+const setEditProtocolsModalData = (state, action) => {
+  return {
+    ...state,
+    editProtocolsModalData: action.payload,
   };
 };
 const setShowNewIssueDialog = (state, action) => {

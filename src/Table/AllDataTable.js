@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import { bannedRoles } from '../utils/constants';
 import EditDataModal from './EditDataModal';
 import UnenrollSiteModal from './UnenrollSiteModal';
+import EditProtocolModal from './EditProtocolsModal';
 import NewIssueModal from './NewIssueModal';
 import ReassignDataModal from './ReassignDataModal';
 import MapModal from './MapModal';
@@ -155,6 +156,7 @@ const AllDataTable = (props) => {
         <EditDataModal />
         <ReassignDataModal />
         <UnenrollSiteModal />
+        <EditProtocolModal />
         <NewIssueModal
           setSnackbarData={setSnackbarData}
           snackbarData={snackbarData}
