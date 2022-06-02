@@ -124,6 +124,7 @@ export const callAzureFunction = async (data, endpoint, method, getTokenSilently
   console.log(correctionsApiResponse);
 
   const dataString = qs.stringify({
+    status_code: correctionsApiResponse?.status,
     params: data,
     os: Platform.OS,
     osVersion: Platform.OSVersion,
