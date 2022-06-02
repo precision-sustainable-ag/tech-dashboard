@@ -17,11 +17,11 @@ import MDEditor from '@uiw/react-md-editor';
 import { useSelector, useDispatch } from 'react-redux';
 
 // Local Imports
-import { githubToken } from '../utils/api_secret';
-import { useAuth0 } from '../Auth/react-auth0-spa';
+import { githubToken } from '../../utils/api_secret';
+import { useAuth0 } from '../../Auth/react-auth0-spa';
 import PropTypes from 'prop-types';
-import { callAzureFunction } from '../utils/SharedFunctions';
-import { setShowNewIssueDialog } from '../Store/actions';
+import { callAzureFunction } from '../../utils/SharedFunctions';
+import { setShowNewIssueDialog } from '../../Store/actions';
 
 /**
  *  A component to allow users to create "New Issue" in a modal
@@ -29,35 +29,29 @@ import { setShowNewIssueDialog } from '../Store/actions';
 
 // Default function
 const NewIssueModal = (props) => {
-  // const [state, dispatch] = useContext(Context);
+  const { nickname, setSnackbarData } = props;
   const dispatch = useDispatch();
 
   const newIssueData = useSelector((state) => state.tableData.newIssueData);
-  const handleNewIssueDialogClose = () => {
-    // dispatch({
-    //   type: 'SET_SHOW_NEW_ISSUE_DIALOG',
-    //   data: {
-    //     showNewIssueDialog: !state.tableData.showNewIssueDialog,
-    //   },
-    // });
-    dispatch(setShowNewIssueDialog(!open));
-  };
+
   const { getTokenSilently } = useAuth0();
 
   const [maxWidth, setMaxWidth] = useState('lg');
-  const alwaysTaggedPeople = ['brianwdavis', 'saseehav', props.nickname];
+  const alwaysTaggedPeople = ['brianwdavis', 'saseehav', nickname];
   const [newComment, setNewComment] = useState('');
   const [issueTitle, setIssueTitle] = useState('');
+  const [buttonDisabled, setButtonDisabled] = useState(false);
   const [checkValidation, setCheckValidation] = useState({
     title: false,
     comment: false,
   });
-  // const [collaborators, setCollaborators] = useState([]);
+
   const handleMaxWidthChange = (event) => {
     setMaxWidth(event.target.value);
   };
-
-  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const handleNewIssueDialogClose = () => {
+    dispatch(setShowNewIssueDialog(!open));
+  };
 
   async function fileNewIssue() {
     if (issueTitle && newComment) {
@@ -67,7 +61,7 @@ const NewIssueModal = (props) => {
 
       const labels = [`${newIssueData.code}`, `${newIssueData.affiliation}`, 'site-information'];
 
-      const assignedPeople = personName.length > 0 ? personName : [`${props.nickname}`];
+      const assignedPeople = personName.length > 0 ? personName : [`${nickname}`];
 
       const tableData = `<table>
         <tbody>
@@ -119,7 +113,7 @@ const NewIssueModal = (props) => {
 
       const issueSet = callAzureFunction(
         data,
-        `precision-sustainable-ag/repos/data_corrections/issues/${props.nickname}`,
+        `precision-sustainable-ag/repos/data_corrections/issues/${nickname}`,
         'POST',
         getTokenSilently,
       );
@@ -128,24 +122,17 @@ const NewIssueModal = (props) => {
         setNewComment('');
         setIssueTitle('');
         setButtonDisabled(false);
-        // handleNewIssueDialogClose();
-        // dispatch({
-        //   type: 'SET_SHOW_NEW_ISSUE_DIALOG',
-        //   data: {
-        //     showNewIssueDialog: !state.tableData.showNewIssueDialog,
-        //   },
-        // });
         dispatch(setShowNewIssueDialog(!open));
         if (res.response) {
           if (res.response.status === 201) {
-            props.setSnackbarData({
+            setSnackbarData({
               open: true,
               text: `New Issue has been created for ${newIssueData.code}`,
               severity: 'success',
             });
           } else {
             console.log('Function could not create issue');
-            props.setSnackbarData({
+            setSnackbarData({
               open: true,
               text: `Could not create issue (error code 0)`,
               severity: 'error',
@@ -153,7 +140,7 @@ const NewIssueModal = (props) => {
           }
         } else {
           console.log('No response from function, likely cors');
-          props.setSnackbarData({
+          setSnackbarData({
             open: true,
             text: `Could not create issue (error code 1)`,
             severity: 'error',
@@ -173,7 +160,6 @@ const NewIssueModal = (props) => {
     }
   }
 
-  // const [isNewCollab, setIsNewCollab] = useState(false);
   useEffect(() => {
     const octokit = new Octokit({ auth: githubToken });
     const getGithubResourceLimit = async () => {
@@ -204,27 +190,25 @@ const NewIssueModal = (props) => {
 
     fetchCollabs()
       .then((res) => {
-        // const status = res.status;
         let collaborators = res.data.map((data) => {
           return { username: data.login, picture: data.avatar_url };
         });
 
-        checkIfUserIsCollaborator(props.nickname)
+        checkIfUserIsCollaborator(nickname)
           .then((res) => {
-            // setCollaborators(collaborators);
             if (res.status === 204) {
               // user already exists
               return false;
             } else {
               try {
-                addNewCollaboratorToRepo(props.nickname).catch((e) => {
+                addNewCollaboratorToRepo(nickname).catch((e) => {
                   console.error(e);
                 });
               } catch (e) {
                 console.log(e);
                 collaborators.push({
-                  username: props.nickname,
-                  picture: `https://via.placeholder.com/50x50?text=${props.nickname}`,
+                  username: nickname,
+                  picture: `https://via.placeholder.com/50x50?text=${nickname}`,
                 });
               }
             }
@@ -232,10 +216,9 @@ const NewIssueModal = (props) => {
           .catch((e) => {
             console.error(e);
             collaborators.push({
-              username: props.nickname,
-              picture: `https://via.placeholder.com/50x50?text=${props.nickname}`,
+              username: nickname,
+              picture: `https://via.placeholder.com/50x50?text=${nickname}`,
             });
-            // setCollaborators(collaborators);
           });
       })
       .catch((e) => {
@@ -252,13 +235,12 @@ const NewIssueModal = (props) => {
         });
       });
     return () => {};
-  }, [props.nickname]);
+  }, [nickname]);
 
   const [personName] = React.useState(alwaysTaggedPeople);
   return (
     <Dialog
       open={useSelector((state) => state.tableData.showNewIssueDialog)}
-      // onClose={props.handleNewIssueDialogClose}
       onClose={handleNewIssueDialogClose}
       aria-labelledby="form-dialog-title"
       fullWidth={true}
@@ -414,58 +396,12 @@ const NewIssueModal = (props) => {
 };
 
 NewIssueModal.defaultProps = {
-  data: {
-    code: 'XYZ',
-    year: 2020,
-    last_name: 'Default Name',
-    affiliation: 'NC',
-  },
-  open: false,
   nickname: 'rbandooni',
-  snackbarData: {
-    open: false,
-    text: '',
-  },
   setSnackbarData: () => this.setSnackbarData(),
-  handleNewIssueDialogClose: () => {},
 };
 
 NewIssueModal.propTypes = {
-  /** Site information data */
-  // data: PropTypes.shape({
-  //   /** Site code */
-  //   code: PropTypes.string.isRequired,
-  //   /** Enrollment year */
-  //   year: PropTypes.number.isRequired,
-  //   /** Grower's last name */
-  //   last_name: PropTypes.string.isRequired,
-  //   /** Grower's email */
-  //   email: PropTypes.string,
-  //   /** Grower's phone */
-  //   phone: PropTypes.string,
-  //   /** Site affiliation */
-  //   affiliation: PropTypes.string.isRequired,
-  //   /** Site county */
-  //   county: PropTypes.string,
-  //   /** Site address */
-  //   address: PropTypes.string,
-  //   /** Site Lat,Lng */
-  //   latlng: PropTypes.string,
-  //   /** Notes or other information recorded about the site */
-  //   notes: PropTypes.string,
-  // }).isRequired,
-  /** Data displayed in snackbar */
-  snackbarData: PropTypes.shape({
-    open: PropTypes.bool.isRequired,
-    text: PropTypes.string,
-  }).isRequired,
-  /** Snackbar dispatcher to be returned from this component */
   setSnackbarData: PropTypes.func.isRequired,
-  /** Controls the hide/un-hide property of this component */
-  // open: PropTypes.bool.isRequired,
-  /** Handles the graceful closing of the modal */
-  // handleNewIssueDialogClose: PropTypes.func.isRequired,
-  /** Logged In user's GitHub nickname */
   nickname: PropTypes.string.isRequired,
 };
 

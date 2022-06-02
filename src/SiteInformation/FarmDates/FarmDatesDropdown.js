@@ -5,13 +5,13 @@ import ActualFarmDates from './ActualFarmDates';
 import IssueDialogue from '../../Comments/IssueDialogue';
 import PropTypes from 'prop-types';
 
-const FarmDatesDropdown = ({ rowData, fetchFromApi, nickname, setSnackbarData }) => {
+const FarmDatesDropdown = ({ rowData, nickname, setSnackbarData }) => {
   const [showIssue, setShowIssue] = useState(false);
   const expandActualFarmDates = rowData.protocols.decomp_biomass == 1 ? true : false;
 
   return (
     <Fragment>
-      {expandActualFarmDates ? <ActualFarmDates rowData={rowData} fetchFromApi={fetchFromApi} /> : ''}
+      {expandActualFarmDates ? <ActualFarmDates rowData={rowData} /> : ''}
       <br />
       {!showIssue && (
         <Tooltip title="Submit a new issue">
@@ -21,7 +21,6 @@ const FarmDatesDropdown = ({ rowData, fetchFromApi, nickname, setSnackbarData })
             variant="contained"
             color="primary"
             onClick={() => {
-              console.log('clicked');
               setShowIssue(!showIssue);
             }}
           >
@@ -49,7 +48,6 @@ export default FarmDatesDropdown;
 
 FarmDatesDropdown.propTypes = {
   rowData: PropTypes.any,
-  fetchFromApi: PropTypes.any,
   nickname: PropTypes.string,
   setSnackbarData: PropTypes.func,
 };

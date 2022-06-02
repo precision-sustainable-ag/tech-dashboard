@@ -11,12 +11,11 @@ import {
 } from '@material-ui/core';
 import { onfarmAPI } from '../../utils/api_secret';
 import { useSelector } from 'react-redux';
-// import { Context } from '../../Store/Store';
+import { fetchFromApi } from '../Shared/functions';
 
 const dryBiomass_url = onfarmAPI + `/raw?table=decomp_biomass_dry`;
 
-const ActualFarmDates = ({ rowData, fetchFromApi }) => {
-  // const [state] = useContext(Context);
+const ActualFarmDates = ({ rowData }) => {
   const userInfo = useSelector((state) => state.userInfo);
   const [datesObject, setDatesObject] = useState({});
 
@@ -24,7 +23,6 @@ const ActualFarmDates = ({ rowData, fetchFromApi }) => {
 
   const parseDates = async (rowData) => {
     fetchFromApi(`${dryBiomass_url}&code=${rowData.code}`, userInfo.apikey).then((res) => {
-      // console.log(res)
       let dates = { hasData: false, s1sa: [], s1sb: [], s2sa: [], s2sb: [] };
       res.sort((a, b) => a.subplot - b.subplot || a.subsample - b.subsample || a.time - b.time);
 

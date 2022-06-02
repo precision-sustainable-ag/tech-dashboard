@@ -6,15 +6,15 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { useSelector } from 'react-redux';
 
 // Local Imports
-import { bannedRoles } from '../utils/constants';
-import EditDataModal from './EditDataModal';
+import { bannedRoles } from '../../utils/constants';
+import EditDataModal from '../Shared/EditDataModal';
 import UnenrollSiteModal from './UnenrollSiteModal';
 import NewIssueModal from './NewIssueModal';
 import ReassignDataModal from './ReassignDataModal';
 import MapModal from './MapModal';
-import { BannedRoleMessage } from '../utils/CustomComponents';
-import { onfarmAPI } from '../utils/api_secret';
-import { useAuth0 } from '../Auth/react-auth0-spa';
+import { BannedRoleMessage } from '../../utils/CustomComponents';
+import { onfarmAPI } from '../../utils/api_secret';
+import { useAuth0 } from '../../Auth/react-auth0-spa';
 import TableModal from './TableModal';
 import PropTypes from 'prop-types';
 
@@ -34,7 +34,7 @@ const AllDataTable = (props) => {
   const { active } = props;
   const userRole = useSelector((state) => state.userInfo.role);
   const userAPIKey = useSelector((state) => state.userInfo.apikey);
-  const valuesEdited = useSelector((state) => state.tableData.valuesEdited);
+  const valuesEdited = useSelector((state) => state.sharedSiteInfo.valuesEdited);
 
   const [showTable, setShowTable] = useState(false);
   const { user } = useAuth0();
@@ -152,7 +152,7 @@ const AllDataTable = (props) => {
           activeSites={active}
           tableTitle={active ? 'Contact and Location' : 'Inactive Sites-Contact and Location'}
         />
-        <EditDataModal />
+        <EditDataModal action="update" />
         <ReassignDataModal />
         <UnenrollSiteModal />
         <NewIssueModal

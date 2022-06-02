@@ -73,7 +73,7 @@ Other fields available as read-only are
 
 ### Site Enrollment Component
 
-source: src/SiteEnrollment/SiteEnrollment.js
+source: src/SiteInformation/Enrollment/SiteInformation/Enrollment.js
 
 Enrolls new sites for existing farmers
 

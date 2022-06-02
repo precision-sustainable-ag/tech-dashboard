@@ -27,9 +27,9 @@ import { Check, Clear, Replay, WifiOff } from '@material-ui/icons';
 
 import DeviceEnroll from './Devices/Device-Enroll/DeviceEnroll';
 import WaterSensorByGateway from './Devices/WaterSensorData/WaterSensorByGateway';
-import SiteEnrollment from './SiteEnrollment/SiteEnrollment';
+import SiteEnrollment from './SiteInformation/Enrollment/SiteEnrollment';
 import PageNotFound from './PageNotFound';
-import AllDataTable from './Table/AllDataTable';
+import AllDataTable from './SiteInformation/ContactAndLocation/AllDataTable';
 
 import DeviceComponent from './Devices/Device/Device';
 
@@ -68,7 +68,6 @@ import { apiPassword, apiUsername, onfarmAPI, onfarmStaticApiKey } from './utils
 import { apiCorsUrl, APIURL } from './Devices/hologramConstants';
 import QueryString from 'qs';
 import StressCamVisuals from './StressCamVisuals/StressCamVisuals';
-// import { Context } from './Store/Store';
 import { toggleIsDarkTheme } from './Store/actions';
 import { useDispatch } from 'react-redux';
 
