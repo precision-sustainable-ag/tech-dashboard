@@ -223,13 +223,13 @@ let yieldJson = [
   },
   {
     title: 'Soybean hand-harvest',
-    table: 'yield_soybean',
+    table: 'yield_soybeans',
     complete_col: 'fresh_harvest_wt',
     time: '',
   },
   {
     title: 'Weigh wagon',
-    table: 'yield wagon',
+    table: 'yield_wagon',
     complete_col: 'wagon_area_ft2',
     time: '',
   },
