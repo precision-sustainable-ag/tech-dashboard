@@ -1,14 +1,10 @@
 import React from 'react';
-// import Axios from "axios";
-// import Loading from 'react-loading';
 import { Grid, Typography, Button, Tooltip } from '@material-ui/core';
 // import MuiAlert from '@material-ui/lab/Alert';
 // import MaterialTable from 'material-table';
 import { Edit, DeleteForever, Search, QuestionAnswer, CheckBox } from '@material-ui/icons';
 // Local Imports
-// import { Context } from '../Store/Store';
-import { UserIsEditor } from '../utils/SharedFunctions';
-// import { useAuth0 } from '../Auth/react-auth0-spa';
+import { UserIsEditor } from '../../utils/SharedFunctions';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
@@ -25,7 +21,8 @@ import {
   setNewIssueData,
   setMapModalData,
   setMapModalOpen,
-} from '../Store/actions';
+  setEditSite,
+} from '../../Store/actions';
 
 const InnerTable = styled.table`
   border: 0;
@@ -59,10 +56,11 @@ const InnerTableCell = styled.td`
   padding: 12px 15px;
 `;
 
-const RenderActionModal = ({ rowData, activeSites }) => {
-  // const [state, dispatch] = useContext(Context);
+const RenderActionModal = (props) => {
+  const { rowData, activeSites } = props;
   const dispatch = useDispatch();
   const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
+
   const RenderActionItems = ({ rowData }) => {
     return UserIsEditor() ? (
       <ActionItems rowData={rowData} disabled={false} />
@@ -84,24 +82,8 @@ const RenderActionModal = ({ rowData, activeSites }) => {
               disabled={disabled}
               onClick={() => {
                 if (!disabled) {
-                  // dispatch({
-                  //   type: 'SET_EDIT_MODAL_OPEN',
-                  //   data: {
-                  //     editModalOpen: true,
-                  //   },
-                  // });
                   dispatch(setEditModalOpen(true));
-
-                  // setEditModalOpen(true);
-                  // dispatch({
-                  //   type: 'SET_EDIT_MODAL_DATA',
-                  //   data: {
-                  //     editModalData: rowData,
-                  //   },
-                  // });
                   dispatch(setEditModalData(rowData));
-
-                  // setEditModalData(rowData);
                 }
               }}
             >
@@ -121,24 +103,9 @@ const RenderActionModal = ({ rowData, activeSites }) => {
                   disabled={disabled}
                   onClick={() => {
                     if (!disabled) {
-                      // dispatch({
-                      //     type: 'SET_REASSIGN_SITE_MODAL_OPEN',
-                      //     data: {
-                      //     reassignSiteModalOpen: rowData,
-                      //     },
-                      // });
                       dispatch(setReassignSiteModalOpen(rowData));
-
-                      // setReassignSiteModalOpen(true);
-                      // dispatch({
-                      //     type: 'SET_REASSIGN_SITE_MODAL_DATA',
-                      //     data: {
-                      //     reassignSiteModalData: rowData,
-                      //     },
-                      // });
                       dispatch(setReassignSiteModalData(rowData));
-
-                      // setReassignSiteModalData(rowData);
+                      dispatch(setEditSite(true));
                     }
                   }}
                 >
@@ -156,24 +123,8 @@ const RenderActionModal = ({ rowData, activeSites }) => {
                   disabled={disabled}
                   onClick={() => {
                     if (!disabled) {
-                      // dispatch({
-                      //     type: 'SET_UNENROLL_OPEN',
-                      //     data: {
-                      //     unenrollOpen: true,
-                      //     },
-                      // });
                       dispatch(setUnenrollOpen(true));
-
-                      // setUnenrollOpen(true);
-                      // dispatch({
-                      //     type: 'SET_UNENROLL_ROWDATA',
-                      //     data: {
-                      //     unenrollRowData: rowData,
-                      //     },
-                      // });
                       dispatch(setUnenrollRowData(rowData));
-
-                      // setUnenrollRowData(rowData);
                     }
                   }}
                 >
@@ -190,7 +141,7 @@ const RenderActionModal = ({ rowData, activeSites }) => {
                   color={isDarkTheme ? 'primary' : 'default'}
                   disabled={disabled}
                   onClick={() => {
-                    if(!disabled){
+                    if (!disabled) {
                       dispatch(setEditProtocolsModalOpen(true));
                       dispatch(setEditProtocolsModalData(rowData));
                     }
@@ -217,24 +168,8 @@ const RenderActionModal = ({ rowData, activeSites }) => {
           variant="contained"
           color={isDarkTheme ? 'primary' : 'default'}
           onClick={() => {
-            // dispatch({
-            //   type: 'SET_SHOW_NEW_ISSUE_DIALOG',
-            //   data: {
-            //     showNewIssueDialog: true,
-            //   },
-            // });
             dispatch(setShowNewIssueDialog(true));
-
-            // setShowNewIssueDialog(true);
-            // dispatch({
-            //   type: 'SET_NEW_ISSUE_DATA',
-            //   data: {
-            //     newIssueData: rowData,
-            //   },
-            // });
             dispatch(setNewIssueData(rowData));
-
-            // setNewIssueData(rowData);
           }}
         >
           Comment
@@ -259,26 +194,10 @@ const RenderActionModal = ({ rowData, activeSites }) => {
             color={isDarkTheme ? 'primary' : 'default'}
             onClick={() => {
               if (!latLongNotPresent) {
-                // dispatch({
-                //   type: 'SET_MAP_MODAL_DATA',
-                //   data: {
-                //     mapModalData: [parseFloat(rowData.latitude), parseFloat(rowData.longitude)],
-                //   },
-                // });
                 dispatch(
                   setMapModalData([parseFloat(rowData.latitude), parseFloat(rowData.longitude)]),
                 );
-
-                // setMapModalData([parseFloat(rowData.latitude), parseFloat(rowData.longitude)]);
-                // dispatch({
-                //   type: 'SET_MAP_MODAL_OPEN',
-                //   data: {
-                //     mapModalOpen: true,
-                //   },
-                // });
                 dispatch(setMapModalOpen(true));
-
-                // setMapModalOpen(true);
               }
             }}
           >
@@ -347,10 +266,7 @@ const RenderActionModal = ({ rowData, activeSites }) => {
 
 RenderActionModal.propTypes = {
   rowData: PropTypes.array.isRequired,
-  email: PropTypes.string.isRequired,
-  phone: PropTypes.string.isRequired,
   activeSites: PropTypes.bool.isRequired,
-  //   isDarkTheme: PropTypes.isRequired,
   disabled: PropTypes.bool,
 };
 

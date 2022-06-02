@@ -9,35 +9,22 @@ import {
   Select,
   MenuItem,
 } from '@material-ui/core';
-// import PropTypes from 'prop-types';
-import EnrollNewSite from '../SiteEnrollment/EnrollNewSite';
-// import { Context } from '../Store/Store';
+import EnrollNewSite from '../Shared/EnrollNewSite';
 import { useSelector, useDispatch } from 'react-redux';
-import { setReassignSiteModalOpen } from '../Store/actions';
+import { setReassignSiteModalOpen } from '../../Store/actions';
 
 const fullWidth = true;
 
 const ReassignDataModal = () => {
-  // const { open, handleEditModalClose, data, setValuesEdited } = props;
-  // const [state, dispatch] = useContext(Context);
   const dispatch = useDispatch();
 
   const open = useSelector((state) => state.tableData.reassignSiteModalOpen);
   const reassignSiteModalData = useSelector((state) => state.tableData.reassignSiteModalData);
+  const [maxWidth, setMaxWidth] = useState('md');
+
   const handleReassignSiteModalClose = () => {
-    // dispatch({
-    //   type: 'SET_REASSIGN_SITE_MODAL_OPEN',
-    //       data: {
-    //         reassignSiteModalOpen: !state.tableData.reassignSiteModalOpen,
-    //       },
-    // });
     dispatch(setReassignSiteModalOpen(!open));
   };
-  // const setValuesEdited = () => {
-  //   state.tableData.valuesEdited = !state.tableData.valuesEdited;
-  // };
-
-  const [maxWidth, setMaxWidth] = useState('md');
 
   const handleMaxWidthChange = (event) => {
     setMaxWidth(event.target.value);
@@ -79,15 +66,7 @@ const ReassignDataModal = () => {
         </Grid>
       </DialogTitle>
       <DialogContent>
-        <EnrollNewSite
-          editSite={true}
-          code={reassignSiteModalData.code}
-          producerId={reassignSiteModalData.producer_id}
-          year={reassignSiteModalData.year}
-          affiliation={reassignSiteModalData.affiliation}
-          // closeModal={handleReassignSiteModalClose}
-          // setValuesEdited={setValuesEdited}
-        />
+        <EnrollNewSite editSite={true} />
       </DialogContent>
       <DialogActions>
         <Button
@@ -103,29 +82,3 @@ const ReassignDataModal = () => {
 };
 
 export default ReassignDataModal;
-
-// ReassignDataModal.propTypes = {
-//   open: PropTypes.bool.isRequired,
-//   data: PropTypes.shape({
-//     cid: PropTypes.any,
-//     code: PropTypes.any,
-//     year: PropTypes.any,
-//     affiliation: PropTypes.any,
-//     county: PropTypes.any,
-//     longitude: PropTypes.any,
-//     latitude: PropTypes.any,
-//     notes: PropTypes.any,
-//     additional_contact: PropTypes.any,
-//     address: PropTypes.any,
-//     producer_id: PropTypes.any,
-//     state: PropTypes.any,
-//     last_name: PropTypes.any,
-//     email: PropTypes.any,
-//     phone: PropTypes.any,
-//     latlng: PropTypes.any,
-//     tableData: PropTypes.any,
-//   }),
-//   // handleEditModalClose: PropTypes.func,
-//   setValuesEdited: PropTypes.func,
-//   valuesEdited: PropTypes.bool,
-// };

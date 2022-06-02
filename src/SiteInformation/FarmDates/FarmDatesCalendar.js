@@ -1,6 +1,5 @@
 import { Grid } from '@material-ui/core';
 import React, { useState, useEffect } from 'react';
-// import { Context } from '../../Store/Store';
 import { onfarmAPI } from '../../utils/api_secret';
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 
@@ -20,18 +19,11 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-// const currentMonth = new Date(Date.now()).toLocaleString("en-US", {
-//   month: "short",
-// });
-
-// const currentMonthInt = new Date(Date.now()).getMonth();
-
 const FarmDatesCalendar = () => {
-  // const [state] = useContext(Context);
   const userInfo = useSelector((state) => state.userInfo);
   const [data, setData] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
-  //   ?datetimes=unix
+
   useEffect(() => {
     const setRecords = async (apikey) => {
       try {
@@ -44,39 +36,7 @@ const FarmDatesCalendar = () => {
 
         const records = await response.json();
 
-        // filter data for current year
-        // const currentYear = new Date().getFullYear();
-
         setData(records);
-        // const thisYearData = records.filter(
-        //   (data) => parseInt(data.year) === currentYear
-        // );
-        // const dataWithBiomassDate = thisYearData.filter(
-        //   (record) => record.biomass_harvest
-        // );
-
-        // if (thisYearData.length === 0 || dataWithBiomassDate.length === 0) {
-        //   const prevYearData = records.filter(
-        //     (data) => parseInt(data.year) === currentYear - 1
-        //   );
-        //   const dataWithBiomassDate = prevYearData.filter(
-        //     (record) => record.biomass_harvest
-        //   );
-
-        //   if (prevYearData.length === 0 || dataWithBiomassDate.length === 0) {
-        //     const prevYearData = records.filter(
-        //       (data) => parseInt(data.year) === currentYear - 2
-        //     );
-        //     const dataWithBiomassDate = prevYearData.filter(
-        //       (record) => record.biomass_harvest
-        //     );
-        //     setData(dataWithBiomassDate);
-        //   } else {
-        //     setData(dataWithBiomassDate);
-        //   }
-        // } else {
-        //   setData(dataWithBiomassDate);
-        // }
       } catch (e) {
         console.error(e);
       }
@@ -87,26 +47,8 @@ const FarmDatesCalendar = () => {
     }
   }, [userInfo.apikey]);
 
-  //   const curr = new Date();
-  //   const currentYear = dateObj.getFullYear();
-  //   const day = dateobj.getDay();
-
-  //   const firstDay = curr.getDate() - curr.getDay();
-  //   console.log(curr.getDate());
-
   useEffect(() => {
     if (data.length > 0) {
-      //   const weekdays = getWeekDays();
-
-      //   const currentMonthData = data.filter((record) => {
-      //     const biomassDate = new Date(record.biomass_harvest);
-
-      //     return biomassDate.getMonth() === currentMonthInt;
-      //   });
-      //   get data with biomassDate
-
-      //   console.log(currentMonthData);
-
       const biomassHarvestDates = data.map((record) => {
         return {
           title: `${record.code} - Biomass Harvest`,
@@ -193,7 +135,6 @@ const FarmDatesCalendar = () => {
       });
 
       // check if actual dates are available
-
       const t1actual = data.filter((rec) => rec.t1_actual);
       const t2actual = data.filter((rec) => rec.t2_actual);
       const t3actual = data.filter((rec) => rec.t3_actual);
@@ -252,8 +193,6 @@ const FarmDatesCalendar = () => {
         });
       }
 
-      //   console.log(t1TargetDate);
-
       setAllEvents([
         ...cashPlantingDates,
         ...coverPlantingDates,
@@ -290,8 +229,6 @@ const FarmDatesCalendar = () => {
               backgroundColor: 'lightgrey',
               color: 'black',
               borderRadius: '0px',
-              //   border: "1px solid white",
-              //   boxShadow: "0 0 1px rgba(0,0,0,0.4)",
             };
             if (event.type === 'biomassHarvest') {
               newStyle.backgroundColor = blue[300];
@@ -320,15 +257,5 @@ const FarmDatesCalendar = () => {
     </Grid>
   );
 };
-
-// const getWeekDays = () => {
-//   var baseDate = new Date(Date.UTC(2017, 0, 2)); // just a Monday
-//   var weekDays = [];
-//   for (let i = 0; i < 7; i++) {
-//     weekDays.push(baseDate.toLocaleDateString("en-US", { weekday: "long" }));
-//     baseDate.setDate(baseDate.getDate() + 1);
-//   }
-//   return weekDays;
-// };
 
 export default FarmDatesCalendar;

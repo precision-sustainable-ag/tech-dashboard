@@ -6,62 +6,52 @@ import Axios from 'axios';
 import { Alert } from '@material-ui/lab';
 import PropTypes from 'prop-types';
 // Local Imports
-// import { Context } from '../Store/Store';
 import GrowerInformation from './GrowerInformation';
-import { apiPassword, apiURL, apiUsername } from '../utils/api_secret';
+import { apiPassword, apiURL, apiUsername } from '../../utils/api_secret';
 import { useSelector } from 'react-redux';
+import { setEnrollmentData, setEnrollNewSite, setSavedData } from '../../Store/actions';
+import { useDispatch } from 'react-redux';
+import { fetchSiteAffiliations } from './functions';
 
 //Global Vars
 const qs = require('qs');
 
-// const useStyles = makeStyles(() => ({
-//   labelRoot: {
-//     fontSize: "1.2rem",
-//   },
-// }));
-
 // Default function
 const EnrollNewSite = (props) => {
-  // const [state] = useContext(Context);
+  const { editSite } = props;
+  const dispatch = useDispatch();
+
   const userInfo = useSelector((state) => state.userInfo);
-  // const theme = useTheme();
-  // const styles = useStyles(theme);
-  // const mediumUpScreen = useMediaQuery(theme.breakpoints.up("md"));
+  const enrollNewSite = useSelector((state) => state.enrollmentData.enrollNewSite);
+  const enrollmentData = useSelector((state) => state.enrollmentData.data);
 
   const [loading, setLoading] = useState();
   const currentYear = new Date().getFullYear();
   const [allAffiliations, setAllAffiliations] = useState([]);
-  const [enrollmentData, setEnrollmentData] = useState({
-    year: 'none',
-    affiliation: 'none',
-    growerInfo: {
-      collaborationStatus: 'University',
-      producerId: '',
-      phone: '',
+  const [affiliationError, setAffiliationError] = useState(false);
+  const [enrollmentYearError, setEnrollmentYearError] = useState(false);
 
-      lastName: '',
-      email: '',
-      sites: [],
-    },
-  });
   const history = useHistory();
 
   useEffect(() => {
-    setEnrollmentData({
-      year: 'none',
-      affiliation: 'none',
-      growerInfo: {
-        collaborationStatus: 'University',
-        producerId: '',
-        phone: '',
-        lastName: '',
-        email: '',
-        sites: [],
-      },
-    });
-  }, [props.enrollNewSite]);
+    dispatch(
+      setEnrollmentData({
+        year: 'none',
+        affiliation: 'none',
+        growerInfo: {
+          collaborationStatus: 'University',
+          producerId: '',
+          phone: '',
+          lastName: '',
+          email: '',
+          sites: [],
+        },
+      }),
+    );
+  }, [enrollNewSite]);
+
   const finalConfirm = () => {
-    enrollmentData.growerInfo.sites.forEach((sitesData) => {
+    enrollmentData.growerInfo.sites.forEach((sitesData, index) => {
       let dataObject = {
         producerId: enrollmentData.growerInfo.producerId,
         year: enrollmentData.year,
@@ -76,8 +66,6 @@ const EnrollNewSite = (props) => {
         latitude: sitesData.latitude,
         longitude: sitesData.longitude,
       };
-
-      //   console.log(dataObject);
 
       let dataString = qs.stringify(dataObject);
       Axios.post(`${apiURL}/api/sites/add`, dataString, {
@@ -94,28 +82,31 @@ const EnrollNewSite = (props) => {
         })
         .then(() => {
           // reset everything
-          setEnrollmentData({
-            year: 'none',
-            affiliation: 'none',
-            growerInfo: {
-              collaborationStatus: 'University',
-              producerId: '',
-              phone: '',
-              lastName: '',
-              email: '',
-              sites: [],
-            },
-          });
-          props.setEnrollNewSite(false);
-          props.setSaveData(true);
+          dispatch(
+            setEnrollmentData({
+              year: 'none',
+              affiliation: 'none',
+              growerInfo: {
+                collaborationStatus: 'University',
+                producerId: '',
+                phone: '',
+                lastName: '',
+                email: '',
+                sites: [],
+              },
+            }),
+          );
+          dispatch(setEnrollNewSite(false));
+          dispatch(setSavedData(true));
+          if (index === enrollmentData.growerInfo.sites.length - 1)
+            history.push(`/site-information/contact-enrollment`, {});
         })
         .catch((e) => {
           console.error(e);
         });
     });
-
-    history.push(`/site-information/contact-enrollment`, {});
   };
+
   useEffect(() => {
     setLoading(true);
     // get remote data
@@ -140,25 +131,18 @@ const EnrollNewSite = (props) => {
         setLoading(false);
       });
   }, [userInfo.state]);
-  const [affiliationError, setAffiliationError] = useState(false);
-  const [enrollmentYearError, setEnrollmentYearError] = useState(false);
+
   return (
     <LoadingWrapper loading={loading}>
-      {/* {mediumUpScreen ? ( */}
-
       <Grid container spacing={3} alignItems="center">
-        {!props.editSite && (
+        {!editSite && (
           <>
             <Grid item xs={12}>
               <Typography variant="h4">Basic Information</Typography>
             </Grid>
 
             <Grid item xs={12} md={6}>
-              <InputLabel
-                // classes={{ root: styles.labelRoot }}
-                error={enrollmentYearError}
-                htmlFor="enroll-year"
-              >
+              <InputLabel error={enrollmentYearError} htmlFor="enroll-year">
                 Cash Crop Year
               </InputLabel>
               <Select
@@ -168,7 +152,7 @@ const EnrollNewSite = (props) => {
                 onChange={(e) => {
                   if (e.target.value !== 'none') {
                     setEnrollmentYearError(false);
-                    setEnrollmentData({ ...enrollmentData, year: e.target.value });
+                    dispatch(setEnrollmentData({ ...enrollmentData, year: e.target.value }));
                   } else {
                     setEnrollmentYearError(true);
                   }
@@ -200,10 +184,12 @@ const EnrollNewSite = (props) => {
                 onChange={(e) => {
                   if (e.target.value !== 'none') {
                     setAffiliationError(false);
-                    setEnrollmentData({
-                      ...enrollmentData,
-                      affiliation: e.target.value,
-                    });
+                    dispatch(
+                      setEnrollmentData({
+                        ...enrollmentData,
+                        affiliation: e.target.value,
+                      }),
+                    );
                   } else {
                     setAffiliationError(true);
                   }
@@ -232,41 +218,14 @@ const EnrollNewSite = (props) => {
                 </Alert>
               </Grid>
             ) : (
-              ''
+              <GrowerInformation />
             )}
           </>
         )}
-        {/* Grower Information  */}
-        {enrollmentData.affiliation === 'none' ||
-        enrollmentData.affiliation === '' ||
-        enrollmentData.year === 'none' ? (
-          ''
-        ) : (
-          <GrowerInformation
-            enrollmentData={enrollmentData}
-            setEnrollmentData={setEnrollmentData}
-            editSite={props.editSite}
-            code={props.code}
-            producerId={props.producerId}
-            year={props.year}
-          />
-        )}
 
-        {props.editSite && (
-          <GrowerInformation
-            enrollmentData={enrollmentData}
-            setEnrollmentData={setEnrollmentData}
-            editSite={props.editSite}
-            code={props.code}
-            producerId={props.producerId}
-            year={props.year}
-            affiliation={props.affiliation}
-            // closeModal={props.closeModal}
-            // setValuesEdited={props.setValuesEdited}
-          />
-        )}
+        {editSite && <GrowerInformation />}
 
-        {enrollmentData.growerInfo.sites && enrollmentData.growerInfo.sites.length > 0 ? (
+        {enrollmentData?.growerInfo?.sites && enrollmentData?.growerInfo?.sites?.length > 0 ? (
           <Grid item xs={12}>
             <Grid container justifyContent="center" alignItems="center">
               <Button size="large" variant="contained" color="primary" onClick={finalConfirm}>
@@ -285,16 +244,7 @@ const EnrollNewSite = (props) => {
 export default EnrollNewSite;
 
 EnrollNewSite.propTypes = {
-  setEnrollNewSite: PropTypes.func,
-  setSaveData: PropTypes.func,
-  enrollNewSite: PropTypes.any,
   editSite: PropTypes.bool,
-  code: PropTypes.string,
-  producerId: PropTypes.string,
-  year: PropTypes.any,
-  affiliation: PropTypes.string,
-  // closeModal: PropTypes.func,
-  // setValuesEdited: PropTypes.func,
 };
 
 // Helper functions
@@ -305,13 +255,4 @@ const LoadingWrapper = ({ children, loading }) => {
 LoadingWrapper.propTypes = {
   children: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
   loading: PropTypes.bool,
-};
-
-const fetchSiteAffiliations = async () => {
-  return await Axios.get(`${apiURL}/api/retrieve/grower/affiliation/all`, {
-    auth: {
-      username: apiUsername,
-      password: apiPassword,
-    },
-  });
 };
