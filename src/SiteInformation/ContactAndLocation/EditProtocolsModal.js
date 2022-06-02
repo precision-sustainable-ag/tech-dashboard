@@ -15,9 +15,9 @@ import {
 } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import { useSelector, useDispatch } from 'react-redux';
-import { setEditProtocolsModalOpen } from '../Store/actions';
-import { callAzureFunction } from '../utils/SharedFunctions';
-import { useAuth0 } from '../Auth/react-auth0-spa';
+import { setEditProtocolsModalOpen } from '../../Store/actions';
+import { callAzureFunction } from '../../utils/SharedFunctions';
+import { useAuth0 } from '../../Auth/react-auth0-spa';
 
 // Helper function
 function Alert(props) {
@@ -57,12 +57,12 @@ const EditProtocolModal = () => {
   });
 
   useEffect(() => {
-      if (editProtocolsModalData) {
-        setFarmCode(editProtocolsModalData.code);
-        const protocols = editProtocolsModalData.protocols;
-        setProtocols(protocols);
-        setBackedProtocols(protocols);
-      }
+    if (editProtocolsModalData) {
+      setFarmCode(editProtocolsModalData.code);
+      const protocols = editProtocolsModalData.protocols;
+      setProtocols(protocols);
+      setBackedProtocols(protocols);
+    }
   }, [editProtocolsModalData]);
 
   const handleMaxWidthChange = (event) => {
@@ -82,8 +82,8 @@ const EditProtocolModal = () => {
   };
 
   const handleCancelButton = () => {
-      setProtocols(backedProtocols);
-      handleEditProtocolsModalClose();
+    setProtocols(backedProtocols);
+    handleEditProtocolsModalClose();
   };
 
   const updateProtocolEnrollment = () => {
@@ -97,8 +97,8 @@ const EditProtocolModal = () => {
       getTokenSilently,
     ).then((res) => {
       if (res.response && res.response.status === 201) {
-          setBackedProtocols(protocols);
-          handleEditProtocolsModalClose();
+        setBackedProtocols(protocols);
+        handleEditProtocolsModalClose();
       } else {
         setSnackbarData({
           open: true,
