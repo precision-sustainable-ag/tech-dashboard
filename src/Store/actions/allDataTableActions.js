@@ -26,6 +26,20 @@ export const setUnenrollRowData = (unenrollRowData) => {
   };
 };
 
+export const setEditProtocolsModalOpen = (editProtocolsModalOpen) => {
+  return {
+    type: 'SET_EDIT_PROTOCOLS_MODAL_OPEN',
+    payload: editProtocolsModalOpen,
+  };
+};
+
+export const setEditProtocolsModalData = (editProtocolsModalData) => {
+  return {
+    type: 'SET_EDIT_PROTOCOLS_MODAL_DATA',
+    payload: editProtocolsModalData,
+  };
+}; 
+
 export const setShowNewIssueDialog = (showNewIssueDialog) => {
   return {
     type: 'SET_SHOW_NEW_ISSUE_DIALOG',
