@@ -48,3 +48,5 @@ styleguide.config.js
 jsdoc.conf.json
 
 .env
+
+test

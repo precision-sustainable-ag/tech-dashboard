@@ -12,22 +12,19 @@ import {
   Typography,
 } from '@material-ui/core';
 import Axios from 'axios';
-// import PropTypes from 'prop-types';
 // Local Imports
-import { apiURL, apiUsername, apiPassword } from '../utils/api_secret';
-// import { Context } from '../Store/Store';
+import { apiURL, apiUsername, apiPassword } from '../../utils/api_secret';
 import { useSelector, useDispatch } from 'react-redux';
-import { setUnenrollOpen, setValuesEdited } from '../Store/actions';
+import { setUnenrollOpen, setValuesEdited } from '../../Store/actions';
 
 //Global Vars
 const qs = require('qs');
 
 // Default function
 const UnenrollSiteModal = () => {
-  // const [state, dispatch] = useContext(Context);
   const open = useSelector((state) => state.tableData.unenrollOpen);
   const unenrollRowData = useSelector((state) => state.tableData.unenrollRowData);
-  const valuesEdited = useSelector((state) => state.tableData.valuesEdited);
+  const valuesEdited = useSelector((state) => state.sharedSiteInfo.valuesEdited);
   const [confirmText, setConfirmText] = useState('');
   const [confirmBtnStatus, setConfirmBtnStatus] = useState('Confirm');
   const dispatch = useDispatch();
@@ -52,29 +49,11 @@ const UnenrollSiteModal = () => {
     })
       .then((response) => {
         if (response.data.data) {
-          // props.handleUnenrollClose();
-          // dispatch({
-          //   type: 'SET_UNENROLL_OPEN',
-          //   data: {
-          //     unenrollOpen: !state.tableData.unenrollOpen,
-          //   },
-          // });
           dispatch(setUnenrollOpen(!open));
-          // dispatch({
-          //   type: 'SET_VALUES_EDITED',
-          //   data: {
-          //     valuesEdited: !state.tableData.valuesEdited,
-          //   },
-          // });
-          console.log('unenroll edited');
           dispatch(setValuesEdited(!valuesEdited));
-          // props.setValuesEdited(!props.valuesEdited);
         } else {
           console.error(response.data);
         }
-      })
-      .then(() => {
-        window.location.reload();
       })
       .catch((e) => {
         console.error(e);
@@ -83,15 +62,9 @@ const UnenrollSiteModal = () => {
 
   const closeModal = () => {
     setConfirmText('');
-    // props.handleUnenrollClose();
-    // dispatch({
-    //   type: 'SET_UNENROLL_OPEN',
-    //   data: {
-    //     unenrollOpen: !state.tableData.unenrollOpen,
-    //   },
-    // });
     dispatch(setUnenrollOpen(!open));
   };
+
   return (
     <Dialog
       disableEscapeKeyDown
@@ -149,14 +122,6 @@ const UnenrollSiteModal = () => {
 };
 
 export default UnenrollSiteModal;
-
-// UnenrollSiteModal.propTypes = {
-//   open: PropTypes.bool,
-//   data: PropTypes.any,
-//   handleUnenrollClose: PropTypes.func,
-//   setValuesEdited: PropTypes.func,
-//   valuesEdited: PropTypes.bool,
-// };
 
 class SiteEnrollment {
   constructor(obj) {
