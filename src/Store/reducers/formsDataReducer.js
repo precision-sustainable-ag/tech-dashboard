@@ -14,7 +14,7 @@ const defaultState = {
   affiliationLookup: {},
 };
 
-export const formsDataReducer = (state = defaultState, action) => {
+export const formsDataReducer = (state = defaultState, action = {}) => {
   switch (action.type) {
     case 'UPDATE_FORM_NAME':
       return updateFormName(state, action);

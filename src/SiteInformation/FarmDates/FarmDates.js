@@ -1,18 +1,14 @@
-/* eslint-disable react/display-name */
 import React, { useState, useEffect } from 'react';
 import { Grid, Typography, Snackbar } from '@material-ui/core';
-// import { Context } from '../../Store/Store';
 import MaterialTable from 'material-table';
 import { bannedRoles } from '../../utils/constants';
 import { BannedRoleMessage, CustomLoader } from '../../utils/CustomComponents';
-import { onfarmAPI } from '../../utils/api_secret';
-import { addDays } from 'date-fns';
+
 import { useAuth0 } from '../../Auth/react-auth0-spa';
 import MuiAlert from '@material-ui/lab/Alert';
 import FarmDatesDropdown from './FarmDatesDropdown';
 import { useSelector } from 'react-redux';
-
-const farmDatesURL = `${onfarmAPI}/dates`;
+import { fetchFarmDatesFromApi, makeDateObjects } from '../Shared/functions';
 
 // Helper function
 function Alert(props) {
@@ -20,7 +16,6 @@ function Alert(props) {
 }
 
 const FarmDates = () => {
-  // const [state] = useContext(Context);
   const userInfo = useSelector((state) => state.userInfo);
   const [farmDatesData, setFarmDatesData] = useState([]);
   const [showBannedMessage, setShowBannedMessage] = useState(false);
@@ -151,14 +146,6 @@ const FarmDates = () => {
       type: 'string',
       searchable: false,
     },
-
-    //     {
-    //         title: "Yield Harvest",
-    //     field: "cash_planting",
-    //     type: "date",
-    //     align: "justify",
-    //   },
-    //   {},
   ];
 
   return !showBannedMessage ? (
@@ -206,7 +193,6 @@ const FarmDates = () => {
                   fontSize: '0.8em',
                   textAlign: 'left',
                 },
-                //   maxBodyHeight: "100vh",
                 selection: false,
                 searchAutoFocus: true,
                 toolbarButtonAlignment: 'left',
@@ -220,7 +206,6 @@ const FarmDates = () => {
                     return (
                       <FarmDatesDropdown
                         rowData={rowData}
-                        fetchFromApi={fetchFromApi}
                         nickname={user.nickname}
                         setSnackbarData={setSnackbarData}
                       />
@@ -240,60 +225,4 @@ const FarmDates = () => {
   );
 };
 
-const makeDateObjects = async (response) => {
-  return Promise.all(
-    response.map((record) => {
-      const biomassDate = record.biomass_harvest ? new Date(record.biomass_harvest) : '';
-
-      return {
-        ...record,
-        t1_target:
-          biomassDate && record.protocols.decomp_biomass == 1
-            ? addDays(biomassDate, 14).toLocaleDateString()
-            : '',
-        t1_actual: record.t1_actual ? new Date(record.t1_actual).toLocaleDateString() : '',
-        t2_target:
-          biomassDate && record.protocols.decomp_biomass == 1
-            ? addDays(biomassDate, 30).toLocaleDateString()
-            : '',
-        t2_actual: record.t2_actual ? new Date(record.t2_actual).toLocaleDateString() : '',
-        t3_target:
-          biomassDate && record.protocols.decomp_biomass == 1
-            ? addDays(biomassDate, 60).toLocaleDateString()
-            : '',
-        t3_actual: record.t3_actual ? new Date(record.t3_actual).toLocaleDateString() : '',
-        t4_target:
-          biomassDate && record.protocols.decomp_biomass == 1
-            ? addDays(biomassDate, 90).toLocaleDateString()
-            : '',
-        t4_actual: record.t4_actual ? new Date(record.t4_actual).toLocaleDateString() : '',
-        t5_target:
-          record.t5_target && record.protocols.decomp_biomass == 1
-            ? new Date(record.t5_target)
-            : 'at hand harvest',
-      };
-    }),
-  );
-};
-
-const fetchFarmDatesFromApi = async (apiKey = '') => {
-  let data = [];
-  try {
-    data = await fetchFromApi(farmDatesURL, apiKey);
-  } catch (e) {
-    console.error(e);
-  }
-  return data;
-};
-
-const fetchFromApi = async (url, apiKey) => {
-  let records = await fetch(url, {
-    headers: {
-      'x-api-key': apiKey,
-    },
-  });
-
-  records = await records.json();
-  return records;
-};
 export default FarmDates;

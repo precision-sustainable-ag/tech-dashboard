@@ -13,8 +13,7 @@ const defaultState = {
   loadingUser: true,
 };
 
-export const userInfoReducer = (state = defaultState, action) => {
-  // console.log(action, state);
+export const userInfoReducer = (state = defaultState, action = {}) => {
   switch (action.type) {
     case 'UPDATE_ROLE':
       return updateRole(state, action);
