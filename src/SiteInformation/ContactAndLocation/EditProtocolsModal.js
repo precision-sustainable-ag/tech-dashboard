@@ -18,6 +18,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setEditProtocolsModalOpen } from '../../Store/actions';
 import { callAzureFunction } from '../../utils/SharedFunctions';
 import { useAuth0 } from '../../Auth/react-auth0-spa';
+import PropTypes from 'prop-types';
 
 // Helper function
 function Alert(props) {
@@ -41,7 +42,7 @@ const protocolDict = {
   weed_quadrat_photos_beta: 'weed_quadrat_photos_beta',
 };
 
-const EditProtocolModal = () => {
+const EditProtocolModal = ({ setSnackbarDataGlobal }) => {
   const open = useSelector((state) => state.tableData.editProtocolsModalOpen);
   const editProtocolsModalData = useSelector((state) => state.tableData.editProtocolsModalData);
   const dispatch = useDispatch();
@@ -57,7 +58,7 @@ const EditProtocolModal = () => {
   });
 
   useEffect(() => {
-    if (editProtocolsModalData) {
+    if (Object.keys(editProtocolsModalData).length !== 0) {
       setFarmCode(editProtocolsModalData.code);
       const protocols = editProtocolsModalData.protocols;
       setProtocols(protocols);
@@ -99,6 +100,11 @@ const EditProtocolModal = () => {
       if (res.response && res.response.status === 201) {
         setBackedProtocols(protocols);
         handleEditProtocolsModalClose();
+        setSnackbarDataGlobal({
+          open: true,
+          text: 'Successfully updated protocol_enrollment',
+          severity: 'success',
+        });
       } else {
         setSnackbarData({
           open: true,
@@ -177,6 +183,14 @@ const EditProtocolModal = () => {
       </DialogActions>
     </Dialog>
   );
+};
+
+EditProtocolModal.defaultProps = {
+  setSnackbarDataGlobal: () => this.setSnackbarData(),
+};
+
+EditProtocolModal.propTypes = {
+  setSnackbarDataGlobal: PropTypes.func.isRequired,
 };
 
 export default EditProtocolModal;

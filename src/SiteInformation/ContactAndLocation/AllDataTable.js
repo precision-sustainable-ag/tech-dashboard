@@ -154,9 +154,9 @@ const AllDataTable = (props) => {
           tableTitle={active ? 'Contact and Location' : 'Inactive Sites-Contact and Location'}
         />
         <EditDataModal action="update" />
+        <EditProtocolModal setSnackbarDataGlobal={setSnackbarData} snackbarData={snackbarData} />
         <ReassignDataModal />
         <UnenrollSiteModal />
-        <EditProtocolModal />
         <NewIssueModal
           setSnackbarData={setSnackbarData}
           snackbarData={snackbarData}

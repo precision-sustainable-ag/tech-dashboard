@@ -94,6 +94,25 @@ const RenderActionModal = (props) => {
         {activeSites ? (
           <>
             <Grid item>
+              <Tooltip title="Edit Protocol Enrollments">
+                <Button
+                  size="small"
+                  variant="contained"
+                  startIcon={<CheckBox />}
+                  color={isDarkTheme ? 'primary' : 'default'}
+                  disabled={disabled}
+                  onClick={() => {
+                    if (!disabled) {
+                      dispatch(setEditProtocolsModalOpen(true));
+                      dispatch(setEditProtocolsModalData(rowData));
+                    }
+                  }}
+                >
+                  Edit Protocols
+                </Button>
+              </Tooltip>
+            </Grid>
+            <Grid item>
               <Tooltip title="Reassign a new site">
                 <Button
                   size="small"
@@ -129,25 +148,6 @@ const RenderActionModal = (props) => {
                   }}
                 >
                   Unenroll
-                </Button>
-              </Tooltip>
-            </Grid>
-            <Grid item>
-              <Tooltip title="Edit Protocol Enrollments">
-                <Button
-                  size="small"
-                  variant="contained"
-                  startIcon={<CheckBox />}
-                  color={isDarkTheme ? 'primary' : 'default'}
-                  disabled={disabled}
-                  onClick={() => {
-                    if (!disabled) {
-                      dispatch(setEditProtocolsModalOpen(true));
-                      dispatch(setEditProtocolsModalData(rowData));
-                    }
-                  }}
-                >
-                  Edit Protocols
                 </Button>
               </Tooltip>
             </Grid>

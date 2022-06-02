@@ -7,7 +7,7 @@ const defaultState = {
   unenrollOpen: false,
   unenrollRowData: {},
   editProtocolsModalOpen: false,
-  editProtocolsModalData: null,
+  editProtocolsModalData: {},
   showNewIssueDialog: false,
   newIssueData: {},
   mapModalOpen: false,
