@@ -227,6 +227,12 @@ let yieldJson = [
     complete_col: 'fresh_harvest_wt',
     time: '',
   },
+  {
+    title: 'Weigh Wagon',
+    table: 'wagon_area_ft2',
+    complete_col: 'yield_wagon',
+    time: '',
+  },
 ];
 const TaskTracker = () => {
   // const [state] = useContext(Context);
