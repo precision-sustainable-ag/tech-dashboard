@@ -21,7 +21,6 @@ import {
   setNewIssueData,
   setMapModalData,
   setMapModalOpen,
-  setEditSite,
 } from '../../Store/actions';
 
 const InnerTable = styled.table`
@@ -124,7 +123,6 @@ const RenderActionModal = (props) => {
                     if (!disabled) {
                       dispatch(setReassignSiteModalOpen(rowData));
                       dispatch(setReassignSiteModalData(rowData));
-                      dispatch(setEditSite(true));
                     }
                   }}
                 >
