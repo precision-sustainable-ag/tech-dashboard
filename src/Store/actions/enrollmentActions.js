@@ -12,13 +12,6 @@ export const setSavedData = (savedData) => {
   };
 };
 
-export const setEditSite = (editSite) => {
-  return {
-    type: 'SET_EDIT_SITE',
-    payload: editSite,
-  };
-};
-
 export const setEnrollmentData = (enrollmentData) => {
   return {
     type: 'SET_ENROLLMENT_DATA',

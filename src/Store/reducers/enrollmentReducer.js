@@ -23,8 +23,6 @@ export const enrollmentReducer = (state = defaultState, action = {}) => {
       return setEnrollNewSite(state, action);
     case 'SET_SAVED_DATA':
       return setSavedData(state, action);
-    case 'SET_EDIT_SITE':
-      return setEditSite(state, action);
     case 'SET_ENROLLMENT_DATA':
       return setEnrollmentData(state, action);
     default:
@@ -43,13 +41,6 @@ const setSavedData = (state, action) => {
   return {
     ...state,
     savedData: action.payload,
-  };
-};
-
-const setEditSite = (state, action) => {
-  return {
-    ...state,
-    editSite: action.payload,
   };
 };
 
