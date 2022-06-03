@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { Edit, Search } from '@material-ui/icons';
 import { apiPassword, apiURL, apiUsername } from '../utils/api_secret';
+import { useSelector } from 'react-redux';
 
 const deviceCardStyle = {
   height: '210px',
@@ -20,11 +21,11 @@ const deviceCardStyle = {
 const DevicesComponent = ({
   for: forWhom,
   activeTag: activeTg,
-  devices,
-  userInfo,
+  // devices,
+  // userInfo,
   from,
-  showDevices,
-  loading,
+  // showDevices,
+  // loading,
 }) => {
   const [validDevices, setValidDevices] = useState([]);
   const [devicesWithNicknames, setDevicesWithNicknames] = useState([]);
@@ -32,8 +33,13 @@ const DevicesComponent = ({
   const [deviceTags, setDeviceTags] = useState([]);
   const [deviceSearchText, setDeviceSearchText] = useState('');
   const [activeTag, setActiveTag] = useState('All');
-  const [refreshDevices, setRefreshDevices] = useState(false);
+  // const [refreshDevices, setRefreshDevices] = useState(false);
   const history = useHistory();
+  const showDevices = useSelector((state) => state.devicesData.showDevices);
+  const devices = useSelector((state) => state.devicesData.devices);
+  const userInfo = useSelector((state) => state.userInfo);
+  const loading = useSelector((state) => state.devicesData.devicesLoadingState);
+  const refreshDevices = useSelector((state) => state.devicesData.refreshDevices);
 
   useEffect(() => {
     if (validDevices.length === 0) return false;
@@ -236,7 +242,7 @@ const DevicesComponent = ({
                       deviceData={device}
                       lastSession={true}
                       activeTag={activeTag}
-                      setRefreshDevices={setRefreshDevices}
+                      // setRefreshDevices={setRefreshDevices}
                     />
                   </Card>
                 </Grid>
@@ -253,7 +259,7 @@ const DevicesComponent = ({
                       key={device.id}
                       deviceData={device}
                       lastSession={false}
-                      setRefreshDevices={setRefreshDevices}
+                      // setRefreshDevices={setRefreshDevices}
                     />
                   </Card>
                 </Grid>
@@ -344,10 +350,10 @@ const filterAllDevices = (devices) => {
 export default DevicesComponent;
 
 DevicesComponent.propTypes = {
-  showDevices: PropTypes.bool.isRequired,
-  loading: PropTypes.bool.isRequired,
-  devices: PropTypes.array.isRequired,
-  userInfo: PropTypes.object,
+  // showDevices: PropTypes.bool.isRequired,
+  // loading: PropTypes.bool.isRequired,
+  // devices: PropTypes.array.isRequired,
+  // userInfo: PropTypes.object,
   activeTag: PropTypes.string,
   for: PropTypes.string,
   from: PropTypes.string,
