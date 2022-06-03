@@ -229,8 +229,8 @@ let yieldJson = [
   },
   {
     title: 'Weigh Wagon',
-    table: 'wagon_area_ft2',
-    complete_col: 'yield_wagon',
+    table: 'yield_wagon',
+    complete_col: 'wagon_area_ft2',
     time: '',
   },
 ];
