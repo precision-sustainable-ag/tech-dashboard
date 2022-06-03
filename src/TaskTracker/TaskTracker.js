@@ -232,7 +232,7 @@ let yieldJson = [
     table: 'wagon_area_ft2',
     complete_col: 'yield_wagon',
     time: '',
-  }
+  },
 ];
 const TaskTracker = () => {
   // const [state] = useContext(Context);
