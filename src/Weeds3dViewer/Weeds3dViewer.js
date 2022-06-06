@@ -16,57 +16,6 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-const tableHeaderOptions = [
-  {
-    title: 'Code',
-    field: 'code',
-    type: 'string',
-    align: 'justify',
-  },
-  {
-    title: 'Timing Number',
-    field: 'timing_number',
-    type: 'numeric',
-    align: 'justify',
-  },
-  {
-    title: 'Treatment',
-    field: 'treatment',
-    type: 'string',
-    align: 'justify',
-  },
-  {
-    title: 'Subplot',
-    field: 'subplot',
-    type: 'numeric',
-    align: 'justify',
-  },
-  {
-    title: 'Crop',
-    field: 'crop',
-    type: 'string',
-    align: 'justify',
-  },
-  {
-    title: 'Date',
-    field: 'last_modified',
-    type: 'string',
-    align: 'justify',
-  },
-  {
-    title: 'Video Number',
-    field: 'video_number',
-    type: 'numeric',
-    align: 'justify',
-  },
-  {
-    title: 'File Size',
-    field: 'file_size',
-    type: 'numeric',
-    align: 'justify',
-  },
-];
-
 const fetchCodes = async (apikey) => {
   let listOfCodes = [];
   await axios({
@@ -116,6 +65,57 @@ const Weeds3dViewer = () => {
     severity: 'success',
   });
 
+  const tableHeaderOptions = [
+    {
+      title: 'Code',
+      field: 'code',
+      type: 'string',
+      align: 'justify',
+    },
+    {
+      title: 'Timing Number',
+      field: 'timing_number',
+      type: 'numeric',
+      align: 'justify',
+    },
+    {
+      title: 'Treatment',
+      field: 'treatment',
+      type: 'string',
+      align: 'justify',
+    },
+    {
+      title: 'Subplot',
+      field: 'subplot',
+      type: 'numeric',
+      align: 'justify',
+    },
+    {
+      title: 'Crop',
+      field: 'crop',
+      type: 'string',
+      align: 'justify',
+    },
+    {
+      title: 'Date',
+      field: 'last_modified',
+      type: 'string',
+      align: 'justify',
+    },
+    {
+      title: 'Video Number',
+      field: 'video_number',
+      type: 'numeric',
+      align: 'justify',
+    },
+    {
+      title: 'File Size',
+      field: 'file_size',
+      type: 'numeric',
+      align: 'justify',
+    },
+  ];
+
   useEffect(() => {
     const fetchData = async (apikey) => {
       const codes = await fetchCodes(apikey);
@@ -163,13 +163,13 @@ const Weeds3dViewer = () => {
               </div>
             }
             options={{
+              paging: false,
               defaultExpanded: false,
               padding: 'default',
               exportButton: false,
               exportFileName: 'Weeds 3d Videos',
               addRowPosition: 'last',
               exportAllData: false,
-              pageSize: videos.length,
               groupRowSeparator: '   ',
               grouping: true,
               headerStyle: {
@@ -205,7 +205,7 @@ const Weeds3dViewer = () => {
                       dataType="table"
                       setSnackbarData={setSnackbarData}
                       labels={[
-                        'weeds3Dd',
+                        'weeds3D',
                         rowData.code,
                         rowData.timing_number,
                         rowData.treatment,
