@@ -205,7 +205,7 @@ const Weeds3dViewer = () => {
                       dataType="table"
                       setSnackbarData={setSnackbarData}
                       labels={[
-                        'weeds3D',
+                        'weeds3d',
                         rowData.code,
                         rowData.timing_number,
                         rowData.treatment,
