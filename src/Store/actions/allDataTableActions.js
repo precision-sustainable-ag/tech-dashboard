@@ -1,24 +1,3 @@
-export const setValuesEdited = (valuesEdited) => {
-  return {
-    type: 'SET_VALUES_EDITED',
-    payload: valuesEdited,
-  };
-};
-
-export const setEditModalOpen = (editModalOpen) => {
-  return {
-    type: 'SET_EDIT_MODAL_OPEN',
-    payload: editModalOpen,
-  };
-};
-
-export const setEditModalData = (editModalData) => {
-  return {
-    type: 'SET_EDIT_MODAL_DATA',
-    payload: editModalData,
-  };
-};
-
 export const setReassignSiteModalOpen = (reassignSiteModalOpen) => {
   return {
     type: 'SET_REASSIGN_SITE_MODAL_OPEN',
@@ -46,6 +25,20 @@ export const setUnenrollRowData = (unenrollRowData) => {
     payload: unenrollRowData,
   };
 };
+
+export const setEditProtocolsModalOpen = (editProtocolsModalOpen) => {
+  return {
+    type: 'SET_EDIT_PROTOCOLS_MODAL_OPEN',
+    payload: editProtocolsModalOpen,
+  };
+};
+
+export const setEditProtocolsModalData = (editProtocolsModalData) => {
+  return {
+    type: 'SET_EDIT_PROTOCOLS_MODAL_DATA',
+    payload: editProtocolsModalData,
+  };
+}; 
 
 export const setShowNewIssueDialog = (showNewIssueDialog) => {
   return {

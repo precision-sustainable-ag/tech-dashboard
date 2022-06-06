@@ -36,7 +36,7 @@ let siteEnrollmentJson = [
 
 let biomassJson = [
   { title: 'Fresh weight', table: 'biomass_in_field', complete_col: 'fresh_wt_a', time: '' },
-  { title: 'Legumes', table: 'biomass_in_field', complete_col: 'legumes_40', time: '' },
+  { title: 'Legume percentage', table: 'biomass_in_field', complete_col: 'legumes_40', time: '' },
   { title: 'Planting date', table: 'farm_history', complete_col: 'cc_planting_date', time: '' },
   {
     title: 'Termination date',
@@ -195,15 +195,42 @@ let decompBagJson = [
 
 let sensorJson = [
   {
-    title: 'Bare Node serial no',
+    title: 'Nodes scanned',
     table: 'wsensor_install',
     complete_col: 'bare_node_serial_no',
     time: '',
   },
   {
-    title: 'CashCrop Planting',
+    title: 'Cash crop planting date',
     table: 'farm_history',
     complete_col: 'cash_crop_planting_date',
+    time: '',
+  },
+];
+
+let yieldJson = [
+  {
+    title: 'Corn hand-harvest',
+    table: 'yield_corn',
+    complete_col: 'fresh_harvest_wt',
+    time: '',
+  },
+  {
+    title: 'Cotton hand-harvest',
+    table: 'yield_cotton',
+    complete_col: 'boll_wt',
+    time: '',
+  },
+  {
+    title: 'Soybean hand-harvest',
+    table: 'yield_soybeans',
+    complete_col: 'fresh_harvest_wt',
+    time: '',
+  },
+  {
+    title: 'Weigh Wagon',
+    table: 'yield_wagon',
+    complete_col: 'wagon_area_ft2',
     time: '',
   },
 ];
@@ -582,6 +609,49 @@ const TaskTracker = () => {
                               list_code={codes}
                               complete_col={sensorData.complete_col}
                               time={sensorData.time}
+                            />
+                          </Card>
+                        </Grid>
+                      ))
+                    : ''}
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+          </Grid>
+
+          {/* Yield */}
+          <Grid xs={12}>
+            <Accordion defaultExpanded={true}>
+              <AccordionSummary
+                expandIcon={<ExpandMore />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography variant="h5">Yield</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container xs={12} spacing={3}>
+                  {yieldJson && yieldJson.length > 0
+                    ? yieldJson.map((yieldData, index) => (
+                        <Grid
+                          item
+                          xs={12}
+                          md={4}
+                          lg={3}
+                          sm={6}
+                          spacing={3}
+                          key={`tracker-${index}`}
+                        >
+                          <Card variant="elevation" elevation={3} className="deviceDataWrapper">
+                            <TaskTrackerCard
+                              title={yieldData.title}
+                              table={yieldData.table}
+                              year={activeFarmYear()}
+                              affiliation={activeAffiliation() || ''}
+                              code={activeCode() || ''}
+                              list_code={codes}
+                              complete_col={yieldData.complete_col}
+                              time={yieldData.time}
                             />
                           </Card>
                         </Grid>

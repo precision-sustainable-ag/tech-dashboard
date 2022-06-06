@@ -6,8 +6,6 @@ import MaterialTable from 'material-table';
 import RenderActionModal from './RenderActionModal.js';
 
 const TableModal = ({ tableData, height, activeSites, tableTitle }) => {
-  // const [valuesEdited, setValuesEdited] = useState(false);
-
   const tableHeaderOptions = [
     {
       title: 'Code',
@@ -86,7 +84,6 @@ const TableModal = ({ tableData, height, activeSites, tableTitle }) => {
               exportFileName: 'Contact and Location',
               addRowPosition: 'last',
               exportAllData: false,
-              // pageSizeOptions: [5, 10, 20, 50, tableData.length],
               pageSize: tableData.length,
               groupRowSeparator: '  ',
               grouping: true,
@@ -121,7 +118,6 @@ TableModal.propTypes = {
   height: PropTypes.number.isRequired,
   activeSites: PropTypes.bool.isRequired,
   tableTitle: PropTypes.string.isRequired,
-  tableHeaderOptions: PropTypes.object,
 };
 
 export default TableModal;
