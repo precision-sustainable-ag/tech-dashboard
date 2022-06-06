@@ -70,6 +70,7 @@ import QueryString from 'qs';
 import StressCamVisuals from './StressCamVisuals/StressCamVisuals';
 import { toggleIsDarkTheme } from './Store/actions';
 import { useDispatch } from 'react-redux';
+import Weeds3dViewer from './Weeds3dViewer/Weeds3dViewer';
 
 // Helper function
 
@@ -447,6 +448,11 @@ function App() {
                 />
                 {/* Task Tracker View */}
                 <PrivateRoute path={`/task-tracker`} component={TaskTracker} exact />
+                <PrivateRoute 
+                  path={`/weeds-3d-viewer`}
+                  component={Weeds3dViewer}
+                  exact
+                />
                 <Route path="*">
                   <PageNotFound />
                 </Route>
