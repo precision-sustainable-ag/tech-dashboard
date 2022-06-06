@@ -84,8 +84,7 @@ const TableModal = ({ tableData, height, activeSites, tableTitle }) => {
               exportFileName: 'Contact and Location',
               addRowPosition: 'last',
               exportAllData: false,
-              // pageSize: tableData.length,
-              paging: false,
+              pageSize: tableData.length,
               groupRowSeparator: '  ',
               grouping: true,
               headerStyle: {
