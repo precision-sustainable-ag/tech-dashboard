@@ -3,6 +3,7 @@ import { enrollmentReducer } from './enrollmentReducer';
 import { formsDataReducer } from './formsDataReducer';
 import { sharedSiteInfoReducer } from './sharedSiteInfoReducer';
 import { userInfoReducer } from './userInfoReducer';
+import { devicesReducer } from './devicesReducer';
 
 import { combineReducers } from 'redux';
 
@@ -12,4 +13,5 @@ export const allReducers = combineReducers({
   formsData: formsDataReducer,
   sharedSiteInfo: sharedSiteInfoReducer,
   userInfo: userInfoReducer,
+  devicesData: devicesReducer,
 });

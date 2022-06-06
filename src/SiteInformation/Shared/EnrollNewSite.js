@@ -218,12 +218,12 @@ const EnrollNewSite = (props) => {
                 </Alert>
               </Grid>
             ) : (
-              <GrowerInformation />
+              <GrowerInformation editSite={false} />
             )}
           </>
         )}
 
-        {editSite && <GrowerInformation />}
+        {editSite && <GrowerInformation editSite={true} />}
 
         {enrollmentData?.growerInfo?.sites && enrollmentData?.growerInfo?.sites?.length > 0 ? (
           <Grid item xs={12}>

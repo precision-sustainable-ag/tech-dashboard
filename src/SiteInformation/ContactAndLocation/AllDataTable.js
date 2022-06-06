@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import { bannedRoles } from '../../utils/constants';
 import EditDataModal from '../Shared/EditDataModal';
 import UnenrollSiteModal from './UnenrollSiteModal';
+import EditProtocolModal from './EditProtocolsModal';
 import NewIssueModal from './NewIssueModal';
 import ReassignDataModal from './ReassignDataModal';
 import MapModal from './MapModal';
@@ -153,6 +154,7 @@ const AllDataTable = (props) => {
           tableTitle={active ? 'Contact and Location' : 'Inactive Sites-Contact and Location'}
         />
         <EditDataModal action="update" />
+        <EditProtocolModal setSnackbarDataGlobal={setSnackbarData} snackbarData={snackbarData} />
         <ReassignDataModal />
         <UnenrollSiteModal />
         <NewIssueModal

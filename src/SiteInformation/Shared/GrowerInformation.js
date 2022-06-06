@@ -10,6 +10,7 @@ import {
 import { Save } from '@material-ui/icons';
 import React, { useState, useEffect } from 'react';
 import InputMask from 'react-input-mask';
+import PropTypes from 'prop-types';
 
 // Local Imports
 import { NewSiteInfo } from './NewSiteInfo';
@@ -26,7 +27,7 @@ function Alert(props) {
 }
 
 // Default function
-const GrowerInformation = () => {
+const GrowerInformation = ({ editSite }) => {
   const dispatch = useDispatch();
   const { getTokenSilently } = useAuth0();
 
@@ -44,7 +45,6 @@ const GrowerInformation = () => {
   const reassignSiteModalOpen = useSelector((state) => state.tableData.reassignSiteModalOpen);
   const reassignSiteModalData = useSelector((state) => state.tableData.reassignSiteModalData);
   const enrollmentData = useSelector((state) => state.enrollmentData.data);
-  const editSite = useSelector((state) => state.enrollmentData.editSite);
   const userInfo = useSelector((state) => state.userInfo);
   const valuesEdited = useSelector((state) => state.sharedSiteInfo.valuesEdited);
 
@@ -285,9 +285,9 @@ const GrowerInformation = () => {
                     enrollmentData,
                     getTokenSilently,
                     reassignSiteModalData.code,
-                    enrollmentData.growerInfo.producerId,
-                    enrollmentData.year,
-                    enrollmentData.affiliation,
+                    reassignSiteModalData.producerId,
+                    reassignSiteModalData.year,
+                    reassignSiteModalData.affiliation,
                     growerType,
                   )
                     .then(() => {
@@ -332,3 +332,7 @@ const GrowerInformation = () => {
 };
 
 export default GrowerInformation;
+
+GrowerInformation.propTypes = {
+  editSite: PropTypes.bool,
+};
