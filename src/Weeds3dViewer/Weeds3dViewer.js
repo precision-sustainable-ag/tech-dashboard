@@ -85,7 +85,7 @@ const fetchCodes = async (apikey) => {
       });
     })
     .catch((err) => {
-      console.log('API error' + err);
+      console.log('API error: ' + err);
     });
 
   return listOfCodes;
@@ -99,7 +99,7 @@ const fetchAPIData = async (codes, getTokenSilently, setVideos, setLoading) => {
       setLoading(false);
     })
     .catch((err) => {
-      console.log('API error' + err);
+      console.log('API error: ' + err);
     });
 };
 
