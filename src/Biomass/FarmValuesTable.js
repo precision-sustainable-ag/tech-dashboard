@@ -72,10 +72,10 @@ const useStyles = makeStyles({
   container: {
     maxHeight:
       window.innerHeight < 900 && window.innerHeight > 600
-        ? (window.innerHeight - 230) * 0.7
+        ? (window.innerHeight - 130) * 0.7
         : (window.innerHeight < 600) * 0.7
-        ? (window.innerHeight - 250) * 0.7
-        : (window.innerHeight - 150) * 0.7,
+        ? (window.innerHeight - 200) * 0.7
+        : window.innerHeight * 0.7,
   },
 });
 const FarmValuesTable = ({
