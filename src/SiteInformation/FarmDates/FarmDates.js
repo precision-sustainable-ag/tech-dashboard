@@ -176,8 +176,9 @@ const FarmDates = () => {
                 exportButton: true,
                 exportFileName: 'Farm Dates',
                 exportAllData: false,
-                pageSizeOptions: [50, 100, farmDatesData.length],
-                pageSize: farmDatesData.length,
+                // pageSizeOptions: [50, 100, farmDatesData.length],
+                // pageSize: farmDatesData.length,
+                paging: false,
                 groupRowSeparator: '  ',
                 grouping: true,
                 headerStyle: {
