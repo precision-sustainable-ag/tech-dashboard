@@ -1,12 +1,15 @@
 import React, { Fragment, useState } from 'react';
 import { Button, Tooltip } from '@material-ui/core';
-import { QuestionAnswer } from '@material-ui/icons';
+import { Edit, QuestionAnswer } from '@material-ui/icons';
 import ActualFarmDates from './ActualFarmDates';
 import IssueDialogue from '../../Comments/IssueDialogue';
+import EditDataModal from './EditDataModal';
 import PropTypes from 'prop-types';
 
 const FarmDatesDropdown = ({ rowData, nickname, setSnackbarData }) => {
   const [showIssue, setShowIssue] = useState(false);
+  //do I need to add something in 
+  const [showEditDataModal, setShowEditDataModal] = useState(flase);
   const expandActualFarmDates = rowData.protocols.decomp_biomass == 1 ? true : false;
 
   return (
@@ -38,6 +41,22 @@ const FarmDatesDropdown = ({ rowData, nickname, setSnackbarData }) => {
           labels={['farm-dates']}
           setShowNewIssueDialog={setShowIssue}
         />
+      )}
+      <br />
+      {!showEditDataModal && (
+            <Tooltip title="Edit Data">
+              <Button
+                size="small"
+                variant="contained"
+                color={isDarkTheme ? 'primary' : 'default'}
+                startIcon={<Edit />}
+                onClick={() => {
+                  setShowEditDataModal(true)
+                }}
+              >
+                Edit Protocols
+              </Button>
+            </Tooltip>
       )}
       <br />
     </Fragment>
