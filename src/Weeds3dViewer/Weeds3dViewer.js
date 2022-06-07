@@ -58,7 +58,18 @@ const Weeds3dViewer = () => {
   const userInfo = useSelector((state) => state.userInfo);
   const { getTokenSilently } = useAuth0();
   const { user } = useAuth0();
-  const height = window.innerHeight;
+  //const height = window.innerHeight;
+
+  const [height, setHeight] = useState(window.innerHeight);
+
+  const handleResize = () => {
+    setHeight(window.innerHeight);
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize, false);
+  }, []);
+
   const [snackbarData, setSnackbarData] = useState({
     open: false,
     text: '',
@@ -70,12 +81,6 @@ const Weeds3dViewer = () => {
       title: 'Code',
       field: 'code',
       type: 'string',
-      align: 'justify',
-    },
-    {
-      title: 'Timing Number',
-      field: 'timing_number',
-      type: 'numeric',
       align: 'justify',
     },
     {
@@ -91,15 +96,9 @@ const Weeds3dViewer = () => {
       align: 'justify',
     },
     {
-      title: 'Crop',
-      field: 'crop',
-      type: 'string',
-      align: 'justify',
-    },
-    {
-      title: 'Date',
-      field: 'last_modified',
-      type: 'string',
+      title: 'Timing Number',
+      field: 'timing_number',
+      type: 'numeric',
       align: 'justify',
     },
     {
@@ -109,10 +108,19 @@ const Weeds3dViewer = () => {
       align: 'justify',
     },
     {
+      title: 'Date',
+      field: 'last_modified',
+      type: 'date',
+      align: 'justify',
+    },
+    {
       title: 'File Size',
       field: 'file_size',
       type: 'numeric',
       align: 'justify',
+      render: (rowData) => {
+        return Math.round((rowData.file_size / 1000000) * 10) / 10 + ' MB';
+      },
     },
   ];
 
@@ -189,7 +197,7 @@ const Weeds3dViewer = () => {
               searchAutoFocus: true,
               toolbarButtonAlignment: 'left',
               actionsColumnIndex: 1,
-              maxBodyHeight: height * 0.7,
+              maxBodyHeight: height - 250,
             }}
             detailPanel={[
               {
@@ -197,6 +205,7 @@ const Weeds3dViewer = () => {
                 icon: 'comment',
 
                 openIcon: 'message',
+                // eslint-disable-next-line react/display-name
                 render: (rowData) => {
                   return (
                     <IssueDialogue
@@ -204,14 +213,7 @@ const Weeds3dViewer = () => {
                       rowData={rowData}
                       dataType="table"
                       setSnackbarData={setSnackbarData}
-                      labels={[
-                        'weeds3d',
-                        rowData.code,
-                        rowData.timing_number,
-                        rowData.treatment,
-                        rowData.subplot,
-                        rowData.video_number,
-                      ]}
+                      labels={['weeds3d', rowData.code]}
                       getTokenSilently={getTokenSilently}
                     />
                   );

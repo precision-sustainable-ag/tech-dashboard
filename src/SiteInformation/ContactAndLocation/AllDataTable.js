@@ -51,14 +51,24 @@ const AllDataTable = (props) => {
     severity: 'success',
   });
 
-  let height = window.innerHeight;
+  //let height = window.innerHeight;
+
+  const [height, setHeight] = useState(window.innerHeight);
+
+  const handleResize = () => {
+    setHeight(window.innerHeight);
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize, false);
+  }, []);
 
   // scale height
-  if (height < 900 && height > 600) {
-    height -= 130;
-  } else if (height < 600) {
-    height -= 200;
-  }
+  // if (height < 900 && height > 600) {
+  //   height -= 130;
+  // } else if (height < 600) {
+  //   height -= 200;
+  // }
 
   useEffect(() => {
     const init = () => {
