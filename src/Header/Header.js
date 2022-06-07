@@ -36,6 +36,7 @@ import {
   BugReport,
   Storage,
   Person,
+  OndemandVideo,
 } from '@material-ui/icons';
 import Axios from 'axios';
 import PropTypes from 'prop-types';
@@ -634,6 +635,19 @@ export default function Header(props) {
               <Storage />
             </ListItemIcon>
             <ListItemText primary="Task Tracker" />
+          </ListItem>
+
+          <ListItem
+            onClick={() => setOpen(false)}
+            button
+            key="Weeds 3d Viewer"
+            component={Link}
+            to="/weeds-3d-viewer"
+          >
+            <ListItemIcon>
+              <OndemandVideo />
+            </ListItemIcon>
+            <ListItemText primary="Weeds 3D Viewer" />
           </ListItem>
         </List>
       </Drawer>

@@ -84,7 +84,8 @@ const TableModal = ({ tableData, height, activeSites, tableTitle }) => {
               exportFileName: 'Contact and Location',
               addRowPosition: 'last',
               exportAllData: false,
-              pageSize: tableData.length,
+              //pageSize: tableData.length,
+              paging: false,
               groupRowSeparator: '  ',
               grouping: true,
               headerStyle: {
@@ -104,7 +105,7 @@ const TableModal = ({ tableData, height, activeSites, tableTitle }) => {
               searchAutoFocus: true,
               toolbarButtonAlignment: 'left',
               actionsColumnIndex: 1,
-              maxBodyHeight: height * 0.7,
+              maxBodyHeight: height - 250,
             }}
           />
         </Grid>
