@@ -163,14 +163,15 @@ const ProducerInformation = () => {
     },
   ];
 
-  const tableOptions = (tableData) => ({
+  const tableOptions = () => ({
     padding: 'dense',
     exportButton: true,
     exportFileName: 'Producer Information',
     addRowPosition: 'first',
     exportAllData: false,
-    pageSizeOptions: [5, 10, 20, tableData.length],
-    pageSize: tableData.length,
+    // pageSizeOptions: [5, 10, 20, tableData.length],
+    // pageSize: tableData.length,
+    paging: false,
     groupRowSeparator: '  ',
     grouping: true,
     headerStyle: {
@@ -262,7 +263,7 @@ const ProducerInformation = () => {
               columns={tableHeaderOptions}
               data={tableData}
               title="Producer Information"
-              options={tableOptions(tableData)}
+              options={tableOptions()}
               detailPanel={[
                 {
                   tooltip: 'Add Comments',
