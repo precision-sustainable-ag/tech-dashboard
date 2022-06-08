@@ -177,17 +177,27 @@ const EditCashCropModal = ({ setSnackbarDataGlobal }) => {
       </DialogContent>
       <DialogActions>
         {cashCrop !== null && !showOtherMessage ? null : (
-          <Button onClick={() => handleEditCashCropModalClose(false)}>Close</Button>
+          <Button
+            onClick={() => handleEditCashCropModalClose(false)}
+            color="primary"
+            variant="contained"
+          >
+            Close
+          </Button>
         )}
         <Button
           onClick={() => handleEditCashCropModalClose(true)}
           disabled={cashCrop === null || showOtherMessage}
+          color="primary"
+          variant="contained"
         >
           Cancel
         </Button>
         <Button
           disabled={cashCrop === null || showOtherMessage}
           onClick={() => handleUpdateCashCrop()}
+          color="primary"
+          variant="contained"
         >
           Update
         </Button>
