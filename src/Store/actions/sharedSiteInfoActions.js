@@ -5,16 +5,16 @@ export const setValuesEdited = (valuesEdited) => {
   };
 };
 
-export const setEditModalOpen = (editModalOpen) => {
+export const setEditLocationModalOpen = (editLocationModalOpen) => {
   return {
     type: 'SET_EDIT_MODAL_OPEN',
-    payload: editModalOpen,
+    payload: editLocationModalOpen,
   };
 };
 
-export const setEditModalData = (editModalData) => {
+export const setEditLocationModalData = (editLocationModalData) => {
   return {
     type: 'SET_EDIT_MODAL_DATA',
-    payload: editModalData,
+    payload: editLocationModalData,
   };
 };
