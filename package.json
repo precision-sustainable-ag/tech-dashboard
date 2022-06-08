@@ -18,7 +18,7 @@
     "clsx": "^1.1.1",
     "date-fns": "^2.28.0",
     "google-map-react": "^2.1.10",
-    "highcharts": "^9.3.3",
+    "highcharts": "^10.1.0",
     "highcharts-react-official": "^3.1.0",
     "html-react-parser": "^1.4.6",
     "material-table": "^1.69.3",
