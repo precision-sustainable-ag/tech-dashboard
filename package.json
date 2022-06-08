@@ -28,7 +28,7 @@
     "qs": "^6.10.3",
     "react": "^17.0.2",
     "react-app-polyfill": "^3.0.0",
-    "react-big-calendar": "^0.38.6",
+    "react-big-calendar": "^0.40.1",
     "react-dom": "^17.0.2",
     "react-icons": "^4.2.0",
     "react-input-mask": "^2.0.4",
@@ -80,7 +80,11 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.0",
     "@testing-library/react-hooks": "^8.0.0",
+<<<<<<< HEAD
     "@testing-library/user-event": "^14.2.0",
+=======
+    "@testing-library/user-event": "^13.5.0",
+>>>>>>> dependabot/npm_and_yarn/dev/react-big-calendar-0.40.1
     "@types/react-syntax-highlighter": "^15.5.1",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.6",
     "babel-loader": "^8.2.5",
