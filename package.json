@@ -13,7 +13,7 @@
     "@reduxjs/toolkit": "^1.8.1",
     "@uiw/react-md-editor": "^3.9.4",
     "autosuggest-highlight": "^3.2.0",
-    "axios": "^0.25.0",
+    "axios": "^0.27.2",
     "buffer": "^6.0.3",
     "clsx": "^1.1.1",
     "date-fns": "^2.28.0",
@@ -80,7 +80,11 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.0",
     "@testing-library/react-hooks": "^8.0.0",
+<<<<<<< HEAD
     "@testing-library/user-event": "^14.2.0",
+=======
+    "@testing-library/user-event": "^13.5.0",
+>>>>>>> dependabot/npm_and_yarn/dev/axios-0.27.2
     "@types/react-syntax-highlighter": "^15.5.1",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.6",
     "babel-loader": "^8.2.5",
