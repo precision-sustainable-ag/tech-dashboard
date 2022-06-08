@@ -80,7 +80,7 @@
     "@babel/preset-env": "^7.18.2",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.0",
-    "@testing-library/react-hooks": "^7.0.2",
+    "@testing-library/react-hooks": "^8.0.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/react-syntax-highlighter": "^13.5.2",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.6",
