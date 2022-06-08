@@ -127,7 +127,7 @@ const TaskTrackerCard = ({ title, table, year, affiliation, code, time, complete
           <Grid container spacing={1}>
             {codes && codes.length > 0
               ? codes.map((siteinfo, index) => (
-                  <Grid item spacing={3} key={`newSites-${index}`}>
+                  <Grid item key={`newSites-${index}`}>
                     <Chip
                       label={siteinfo.code}
                       size="small"

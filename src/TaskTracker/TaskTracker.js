@@ -448,7 +448,7 @@ const TaskTracker = () => {
           {/* Tracker cards */}
 
           {/* Site Enrollment */}
-          <Grid xs={12}>
+          <Grid>
             <Accordion defaultExpanded={true}>
               <AccordionSummary
                 expandIcon={<ExpandMore />}
@@ -458,18 +458,10 @@ const TaskTracker = () => {
                 <Typography variant="h5">Site Enrollment</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <Grid container xs={12} spacing={3}>
+                <Grid container spacing={3}>
                   {siteEnrollmentJson && siteEnrollmentJson.length > 0
                     ? siteEnrollmentJson.map((siteData, index) => (
-                        <Grid
-                          item
-                          xs={12}
-                          md={4}
-                          lg={3}
-                          sm={6}
-                          spacing={3}
-                          key={`tracker-${index}`}
-                        >
+                        <Grid item xs={12} md={4} lg={3} sm={6} key={`tracker-${index}`}>
                           <Card variant="elevation" elevation={3} className="deviceDataWrapper">
                             <TaskTrackerCard
                               title={siteData.title}
@@ -491,7 +483,7 @@ const TaskTracker = () => {
           </Grid>
 
           {/* Biomass */}
-          <Grid xs={12}>
+          <Grid>
             <Accordion defaultExpanded={true}>
               <AccordionSummary
                 expandIcon={<ExpandMore />}
@@ -501,18 +493,10 @@ const TaskTracker = () => {
                 <Typography variant="h5">Biomass</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <Grid container xs={12} spacing={3}>
+                <Grid container spacing={3}>
                   {biomassJson && biomassJson.length > 0
                     ? biomassJson.map((biomassData, index) => (
-                        <Grid
-                          item
-                          xs={12}
-                          md={4}
-                          lg={3}
-                          sm={6}
-                          spacing={3}
-                          key={`tracker-${index}`}
-                        >
+                        <Grid item xs={12} md={4} lg={3} sm={6} key={`tracker-${index}`}>
                           <Card variant="elevation" elevation={3} className="deviceDataWrapper">
                             <TaskTrackerCard
                               title={biomassData.title}
@@ -534,7 +518,7 @@ const TaskTracker = () => {
           </Grid>
 
           {/* Decomp bag */}
-          <Grid xs={12}>
+          <Grid>
             <Accordion defaultExpanded={true}>
               <AccordionSummary
                 expandIcon={<ExpandMore />}
@@ -544,18 +528,10 @@ const TaskTracker = () => {
                 <Typography variant="h5">Decomp bag</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <Grid container xs={12} spacing={3}>
+                <Grid container spacing={3}>
                   {decompBagJson && decompBagJson.length > 0
                     ? decompBagJson.map((decompData, index) => (
-                        <Grid
-                          item
-                          xs={12}
-                          md={4}
-                          lg={3}
-                          sm={6}
-                          spacing={3}
-                          key={`tracker-${index}`}
-                        >
+                        <Grid item xs={12} md={4} lg={3} sm={6} key={`tracker-${index}`}>
                           <Card variant="elevation" elevation={3} className="deviceDataWrapper">
                             <TaskTrackerCard
                               title={decompData.title}
@@ -577,7 +553,7 @@ const TaskTracker = () => {
           </Grid>
 
           {/* Sensor Installation */}
-          <Grid xs={12}>
+          <Grid>
             <Accordion defaultExpanded={true}>
               <AccordionSummary
                 expandIcon={<ExpandMore />}
@@ -587,18 +563,10 @@ const TaskTracker = () => {
                 <Typography variant="h5">Sensor Installation</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <Grid container xs={12} spacing={3}>
+                <Grid container spacing={3}>
                   {sensorJson && sensorJson.length > 0
                     ? sensorJson.map((sensorData, index) => (
-                        <Grid
-                          item
-                          xs={12}
-                          md={4}
-                          lg={3}
-                          sm={6}
-                          spacing={3}
-                          key={`tracker-${index}`}
-                        >
+                        <Grid item xs={12} md={4} lg={3} sm={6} key={`tracker-${index}`}>
                           <Card variant="elevation" elevation={3} className="deviceDataWrapper">
                             <TaskTrackerCard
                               title={sensorData.title}
@@ -620,7 +588,7 @@ const TaskTracker = () => {
           </Grid>
 
           {/* Yield */}
-          <Grid xs={12}>
+          <Grid>
             <Accordion defaultExpanded={true}>
               <AccordionSummary
                 expandIcon={<ExpandMore />}
@@ -630,18 +598,10 @@ const TaskTracker = () => {
                 <Typography variant="h5">Yield</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <Grid container xs={12} spacing={3}>
+                <Grid container spacing={3}>
                   {yieldJson && yieldJson.length > 0
                     ? yieldJson.map((yieldData, index) => (
-                        <Grid
-                          item
-                          xs={12}
-                          md={4}
-                          lg={3}
-                          sm={6}
-                          spacing={3}
-                          key={`tracker-${index}`}
-                        >
+                        <Grid item xs={12} md={4} lg={3} sm={6} key={`tracker-${index}`}>
                           <Card variant="elevation" elevation={3} className="deviceDataWrapper">
                             <TaskTrackerCard
                               title={yieldData.title}

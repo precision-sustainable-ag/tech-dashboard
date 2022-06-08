@@ -18,11 +18,10 @@ import {
   Tooltip,
 } from '@material-ui/core';
 import moment from 'moment-timezone';
-import { any, boolean } from 'prop-types';
+import PropTypes from 'prop-types';
 import { isValidJson, isBase64 } from '../../../utils/SharedFunctions';
 // import { Context } from '../../../Store/Store';
 import { useSelector } from 'react-redux';
-
 
 SyntaxHighlighter.registerLanguage('json', json);
 
@@ -178,8 +177,6 @@ export const DeviceData = ({ location, isFetching }) => {
 };
 
 DeviceData.propTypes = {
-  location: any,
-  // mostRecentData: any,
-  // userTimezone: any,
-  isFetching: boolean,
+  location: PropTypes.any,
+  isFetching: PropTypes.bool,
 };

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Loading from 'react-loading';
 import { Card, Chip, Grid, Icon, InputAdornment, Typography, TextField } from '@material-ui/core';
+import { Buffer } from 'buffer';
 
 // Local Imports
 import DataParser from './DataParser';

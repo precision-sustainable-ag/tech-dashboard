@@ -17,7 +17,7 @@ import { ScrollTop, useInfiniteScroll } from '../../utils/CustomComponents';
 import Loading from 'react-loading';
 import StressCamButtons from './StressCamButtons';
 import { checkIfDeviceHasNickname } from '../../utils/constants';
-import { any } from 'prop-types';
+import PropTypes from 'prop-types';
 // import { Context } from '../../Store/Store';
 import { DeviceInfo } from './components/DeviceInfo';
 import { DeviceData } from './components/DeviceData';
@@ -391,6 +391,6 @@ const DeviceComponent = (props) => {
 export default DeviceComponent;
 
 DeviceComponent.propTypes = {
-  location: any,
-  history: any,
+  location: PropTypes.any,
+  history: PropTypes.any,
 };
