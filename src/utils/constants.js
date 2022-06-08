@@ -1,6 +1,7 @@
 // Dependency Imports
 import Axios from 'axios';
 import qs from 'qs';
+import { Buffer } from 'buffer';
 
 // Local Imports
 import { apiUsername, apiPassword, apiURL } from './api_secret';

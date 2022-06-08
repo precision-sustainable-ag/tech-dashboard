@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { apiPassword, apiURL, apiUsername } from '../utils/api_secret';
 import parse, { attributesToProps } from 'html-react-parser';
 import { Link } from 'react-router-dom';
+import { Buffer } from 'buffer';
 
 const Protocols = () => {
   const [htmlData, setHtmlData] = useState('');
