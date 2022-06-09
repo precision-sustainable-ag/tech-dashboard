@@ -19,6 +19,7 @@ import { callAzureFunction } from '../../utils/SharedFunctions';
 import { useAuth0 } from '../../Auth/react-auth0-spa';
 import PropTypes from 'prop-types';
 import IssueDialogue from '../../Comments/IssueDialogue';
+import { setValuesEdited } from '../../Store/actions';
 
 // Helper function
 function Alert(props) {
@@ -75,6 +76,7 @@ const EditCashCropModal = ({ setSnackbarDataGlobal }) => {
 
     callAzureFunction(data, 'crowndb/farm_history', 'POST', getTokenSilently).then((res) => {
       if (res.response && res.response.status === 201) {
+        dispatch(setValuesEdited(data));
         if (cashCrop === 'Other') {
           setShowOtherMessage(true);
           setSnackbarData({
@@ -145,7 +147,7 @@ const EditCashCropModal = ({ setSnackbarDataGlobal }) => {
                 <MenuItem value={'Corn'} disabled={backedCashCrop === 'Corn'}>
                   Corn
                 </MenuItem>
-                <MenuItem value={'Soybeans'} disabled={backedCashCrop === 'SoyBeans'}>
+                <MenuItem value={'Soybeans'} disabled={backedCashCrop === 'Soybeans'}>
                   Soybeans
                 </MenuItem>
                 <MenuItem value={'Cotton'} disabled={backedCashCrop === 'Cotton'}>
@@ -194,7 +196,7 @@ const EditCashCropModal = ({ setSnackbarDataGlobal }) => {
           Cancel
         </Button>
         <Button
-          disabled={cashCrop === null || showOtherMessage}
+          disabled={cashCrop === null || showOtherMessage || cashCrop === backedCashCrop}
           onClick={() => handleUpdateCashCrop()}
           color="primary"
           variant="contained"

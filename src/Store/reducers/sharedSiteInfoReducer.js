@@ -9,9 +9,9 @@ export const sharedSiteInfoReducer = (state = defaultState, action = {}) => {
   switch (action.type) {
     case 'SET_VALUES_EDITED':
       return setValuesEdited(state, action);
-    case 'SET_EDIT_MODAL_OPEN':
+    case 'SET_EDIT_LOCATION_MODAL_OPEN':
       return setEditLocationModalOpen(state, action);
-    case 'SET_EDIT_MODAL_DATA':
+    case 'SET_EDIT_LOCATION_MODAL_DATA':
       return setEditLocationModalData(state, action);
     default:
       return { ...state };

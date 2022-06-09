@@ -1,7 +1,4 @@
 const defaultState = {
-  valuesEdited: false,
-  editLocationModalOpen: false,
-  editLocationModalData: {},
   reassignSiteModalOpen: false,
   reassignSiteModalData: {},
   unenrollOpen: false,
