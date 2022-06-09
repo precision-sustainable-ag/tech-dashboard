@@ -1,13 +1,12 @@
 const defaultState = {
-  valuesEdited: false,
-  editModalOpen: false,
-  editModalData: {},
   reassignSiteModalOpen: false,
   reassignSiteModalData: {},
   unenrollOpen: false,
   unenrollRowData: {},
   editProtocolsModalOpen: false,
   editProtocolsModalData: {},
+  editCashCropModalOpen: false,
+  editCashCropModalData: {},
   showNewIssueDialog: false,
   newIssueData: {},
   mapModalOpen: false,
@@ -29,6 +28,10 @@ export const allDataTableReducer = (state = defaultState, action = {}) => {
       return setEditProtocolsModalOpen(state, action);
     case 'SET_EDIT_PROTOCOLS_MODAL_DATA':
       return setEditProtocolsModalData(state, action);
+    case 'SET_EDIT_CASH_CROP_MODAL_OPEN':
+      return setEditCashCropModalOpen(state, action);
+    case 'SET_EDIT_CASH_CROP_MODAL_DATA':
+      return setEditCashCropModalData(state, action);
     case 'SET_SHOW_NEW_ISSUE_DIALOG':
       return setShowNewIssueDialog(state, action);
     case 'SET_NEW_ISSUE_DATA':
@@ -78,6 +81,20 @@ const setEditProtocolsModalData = (state, action) => {
     editProtocolsModalData: action.payload,
   };
 };
+
+const setEditCashCropModalOpen = (state, action) => {
+  return {
+    ...state,
+    editCashCropModalOpen: action.payload,
+  };
+};
+const setEditCashCropModalData = (state, action) => {
+  return {
+    ...state,
+    editCashCropModalData: action.payload,
+  };
+};
+
 const setShowNewIssueDialog = (state, action) => {
   return {
     ...state,

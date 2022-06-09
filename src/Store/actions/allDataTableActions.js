@@ -40,6 +40,20 @@ export const setEditProtocolsModalData = (editProtocolsModalData) => {
   };
 }; 
 
+export const setEditCashCropModalOpen = (editCashCropModalOpen) => {
+  return {
+    type: 'SET_EDIT_CASH_CROP_MODAL_OPEN',
+    payload: editCashCropModalOpen,
+  };
+};
+
+export const setEditCashCropModalData = (editCashCropModalData) => {
+  return {
+    type: 'SET_EDIT_CASH_CROP_MODAL_DATA',
+    payload: editCashCropModalData,
+  };
+}; 
+
 export const setShowNewIssueDialog = (showNewIssueDialog) => {
   return {
     type: 'SET_SHOW_NEW_ISSUE_DIALOG',

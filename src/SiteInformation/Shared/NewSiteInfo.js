@@ -13,10 +13,10 @@ import {
 } from '@material-ui/core';
 import Axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { setEditModalOpen, setEditModalData } from '../../Store/actions';
+import { setEditLocationModalOpen, setEditLocationModalData } from '../../Store/actions';
 // Local Imports
 import { apiURL, apiUsername, apiPassword } from '../../utils/api_secret';
-import EditDataModal from '../Shared/EditDataModal';
+import EditLocationModal from './EditLocationModal';
 import { useSelector, useDispatch } from 'react-redux';
 import { setEnrollmentData } from '../../Store/actions';
 
@@ -70,9 +70,9 @@ export const NewSiteInfo = () => {
   }, [totalSites, enrollmentData.affiliation, shuffleSites]);
 
   const handleDialogOpen = (siteInfo) => {
-    dispatch(setEditModalOpen(true));
+    dispatch(setEditLocationModalOpen(true));
     dispatch(
-      setEditModalData({
+      setEditLocationModalData({
         county: siteInfo.county,
         state: siteInfo.state,
         latitude: siteInfo.latitude,
@@ -211,7 +211,7 @@ export const NewSiteInfo = () => {
             : ''}
         </Grid>
       </Grid>
-      <EditDataModal action="create" />
+      <EditLocationModal action="create" />
     </Grid>
   );
 };
