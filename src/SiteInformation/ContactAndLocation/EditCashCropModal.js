@@ -81,7 +81,7 @@ const EditCashCropModal = ({ setSnackbarDataGlobal }) => {
           setShowOtherMessage(true);
           setSnackbarData({
             open: true,
-            text: 'Successfully updated Cash Crop, but further explaination needed',
+            text: 'Successfully updated Cash Crop, but further explanation needed',
             severity: 'warning',
           });
         } else {
@@ -130,7 +130,7 @@ const EditCashCropModal = ({ setSnackbarDataGlobal }) => {
           <Grid container justifyContent="center">
             <Grid item>
               <h1>
-                Have you filled out your farm history form yet? If yes, please leave a comment below
+                Have you submitted your farm history form yet? If yes, please leave a comment below
               </h1>
             </Grid>
           </Grid>
