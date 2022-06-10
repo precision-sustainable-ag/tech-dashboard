@@ -50,7 +50,6 @@ const DeviceComponent = (props) => {
 
   // const [state] = useContext(Context);
   const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
-  console.log(isDarkTheme);
 
   useEffect(() => {
     if (mostRecentData.length > 0) {
@@ -61,8 +60,9 @@ const DeviceComponent = (props) => {
 
   useEffect(() => {
     if (deviceName) {
-      if (deviceName.match(/\w{0,3}[A-Z]\w\s/)) {
-        const code = deviceName.split(' ')[0];
+      const match = /[A-Z]{2}[A-Z0-9]/.exec(deviceName);
+      if (match) {
+        const code = deviceName.substring(match.index, match.index + 3);
         setSiteCode(code);
       }
     }
