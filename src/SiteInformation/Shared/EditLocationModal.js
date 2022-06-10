@@ -22,7 +22,7 @@ import PropTypes from 'prop-types';
 // Local Imports
 import { apiURL, apiUsername, apiPassword } from '../../utils/api_secret';
 import Location from '../../Location/Location';
-import { setEditModalOpen, setEnrollmentData, setValuesEdited } from '../../Store/actions';
+import { setEditLocationModalOpen, setEnrollmentData, setValuesEdited } from '../../Store/actions';
 
 //Global Vars
 const qs = require('qs');
@@ -35,16 +35,16 @@ function Alert(props) {
 const fullWidth = true;
 
 // Default function
-const EditDataModal = ({ action }) => {
+const EditLocationModal = ({ action }) => {
   const dispatch = useDispatch();
 
   const valuesEdited = useSelector((state) => state.sharedSiteInfo.valuesEdited);
-  const open = useSelector((state) => state.sharedSiteInfo.editModalOpen);
-  const editModalData = useSelector((state) => state.sharedSiteInfo.editModalData);
+  const open = useSelector((state) => state.sharedSiteInfo.editLocationModalOpen);
+  const editLocationModalData = useSelector((state) => state.sharedSiteInfo.editLocationModalData);
   const enrollmentData = useSelector((state) => state.enrollmentData.data);
 
-  const handleEditModalClose = () => {
-    dispatch(setEditModalOpen(!open));
+  const handleEditLocationModalClose = () => {
+    dispatch(setEditLocationModalOpen(!open));
   };
 
   const [maxWidth, setMaxWidth] = useState('md');
@@ -55,14 +55,14 @@ const EditDataModal = ({ action }) => {
   });
 
   const [newData, setNewData] = useState({
-    county: editModalData.county,
-    state: editModalData.state,
-    latitude: editModalData.latitude,
-    longitude: editModalData.longitude,
-    address: editModalData.address,
-    notes: editModalData.notes,
-    additional_contact: editModalData.additional_contact,
-    irrigation: editModalData.irrigation,
+    county: editLocationModalData.county,
+    state: editLocationModalData.state,
+    latitude: editLocationModalData.latitude,
+    longitude: editLocationModalData.longitude,
+    address: editLocationModalData.address,
+    notes: editLocationModalData.notes,
+    additional_contact: editLocationModalData.additional_contact,
+    irrigation: editLocationModalData.irrigation,
   });
 
   const checkLatitude = (arg) => {
@@ -93,19 +93,19 @@ const EditDataModal = ({ action }) => {
       //   call update api
       const updateData = {
         ...newData,
-        code: editModalData.code,
-        year: editModalData.year,
-        affiliation: editModalData.affiliation,
-        producer_id: editModalData.producer_id,
-        last_name: editModalData.last_name,
-        email: editModalData.email,
-        cid: editModalData.cid,
+        code: editLocationModalData.code,
+        year: editLocationModalData.year,
+        affiliation: editLocationModalData.affiliation,
+        producer_id: editLocationModalData.producer_id,
+        last_name: editLocationModalData.last_name,
+        email: editLocationModalData.email,
+        cid: editLocationModalData.cid,
         latlng:
           newData.latitude && newData.longitude ? `${newData.latitude},${newData.longitude}` : '',
       };
       if (action === 'update')
         updateSite(updateData).then(() => {
-          dispatch(setEditModalOpen(!open));
+          dispatch(setEditLocationModalOpen(!open));
           dispatch(setValuesEdited(!valuesEdited));
 
           setNewData({
@@ -121,14 +121,14 @@ const EditDataModal = ({ action }) => {
         });
       else {
         const updatedData = enrollmentData.growerInfo.sites.map((site) => {
-          if (site.code === editModalData.code) {
+          if (site.code === editLocationModalData.code) {
             return { ...newData, code: site.code };
           } else return site;
         });
         let finalData = enrollmentData;
         finalData.growerInfo.sites = updatedData;
         dispatch(setEnrollmentData(finalData));
-        dispatch(setEditModalOpen(!open));
+        dispatch(setEditLocationModalOpen(!open));
         dispatch(setValuesEdited(!valuesEdited));
       }
     } else {
@@ -163,14 +163,14 @@ const EditDataModal = ({ action }) => {
 
   useEffect(() => {
     setNewData({
-      county: editModalData.county,
-      state: editModalData.state,
-      latitude: editModalData.latitude,
-      longitude: editModalData.longitude,
-      address: editModalData.address,
-      notes: editModalData.notes,
-      additional_contact: editModalData.additional_contact,
-      irrigation: editModalData.irrigation,
+      county: editLocationModalData.county,
+      state: editLocationModalData.state,
+      latitude: editLocationModalData.latitude,
+      longitude: editLocationModalData.longitude,
+      address: editLocationModalData.address,
+      notes: editLocationModalData.notes,
+      additional_contact: editLocationModalData.additional_contact,
+      irrigation: editLocationModalData.irrigation,
     });
     return () => {
       setNewData({
@@ -184,12 +184,12 @@ const EditDataModal = ({ action }) => {
         irrigation: '',
       });
     };
-  }, [open, editModalData]);
+  }, [open, editLocationModalData]);
 
   return (
     <Dialog
       open={open}
-      onClose={handleEditModalClose}
+      onClose={handleEditLocationModalClose}
       aria-labelledby="form-dialog-title"
       fullWidth={fullWidth}
       maxWidth={maxWidth}
@@ -198,8 +198,8 @@ const EditDataModal = ({ action }) => {
       <DialogTitle id="form-dialog-title">
         <Grid container justifyContent="space-between">
           <Grid item>
-            Site <mark>{editModalData.code}</mark> of producer:{' '}
-            <strong>{editModalData.last_name}</strong> [{editModalData.producer_id}]
+            Site <mark>{editLocationModalData.code}</mark> of producer:{' '}
+            <strong>{editLocationModalData.last_name}</strong> [{editLocationModalData.producer_id}]
           </Grid>
           <Grid item>
             <Select
@@ -384,7 +384,7 @@ const EditDataModal = ({ action }) => {
               id="editCode"
               margin="dense"
               name="code"
-              value={editModalData.code || ''}
+              value={editLocationModalData.code || ''}
               disabled
               label="Code"
               type="text"
@@ -393,7 +393,7 @@ const EditDataModal = ({ action }) => {
           </Grid>
           <Grid item sm={12} lg={12}>
             <TextField
-              value={editModalData.year || ''}
+              value={editLocationModalData.year || ''}
               margin="dense"
               name="email"
               label="Year"
@@ -405,7 +405,7 @@ const EditDataModal = ({ action }) => {
           <Grid item sm={12} lg={12}>
             <TextField
               id="editEmail"
-              value={editModalData.email || ''}
+              value={editLocationModalData.email || ''}
               margin="dense"
               name="email"
               label="Email Address"
@@ -418,7 +418,7 @@ const EditDataModal = ({ action }) => {
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={handleEditModalClose}
+          onClick={handleEditLocationModalClose}
           color="primary"
           variant={window.localStorage.getItem('theme') === 'dark' ? 'contained' : 'text'}
         >
@@ -460,8 +460,8 @@ const updateSite = async (data) => {
   }
 };
 
-EditDataModal.propTypes = {
+EditLocationModal.propTypes = {
   action: PropTypes.string,
 };
 
-export default EditDataModal;
+export default EditLocationModal;

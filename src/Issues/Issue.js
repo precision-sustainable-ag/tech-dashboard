@@ -20,9 +20,6 @@ import { SingleIssueBodyBubble } from './components/SingleIssueBodyBubble';
 import { callAzureFunction } from '../utils/SharedFunctions';
 import Comments from '../Comments/Comments';
 
-// Global vars
-var replyParser = require('node-email-reply-parser');
-
 // Helper function
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -95,7 +92,7 @@ const Issue = (props) => {
           mention: hasMention ? data.body.split('<br/> ** From')[1].replace(/\s/g, '') : '',
           body: hasMention ? data.body.split('<br/>')[0] : data.body,
           parsedEmailBody: viaEmail
-            ? replyParser(data.body)
+            ? data.body
             : hasMention
             ? data.body.split('<br/>')[0]
             : data.body,
@@ -104,6 +101,7 @@ const Issue = (props) => {
       var issueBodyRev = [...data];
       setIssueBody(issueBodyRev);
       setShowIssue(true);
+      console.log(issueBody);
     });
   };
 

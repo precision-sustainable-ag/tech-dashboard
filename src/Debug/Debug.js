@@ -8,7 +8,7 @@ import {
   Typography,
   useTheme,
 } from '@material-ui/core';
-
+import { Buffer } from 'buffer';
 import React, { useState } from 'react';
 import { apiPassword, apiUsername } from '../utils/api_secret';
 import { azureDebugURL, githubWebhookDebugURL } from '../utils/constants';

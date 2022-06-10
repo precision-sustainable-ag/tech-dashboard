@@ -91,14 +91,24 @@ const ProducerInformation = () => {
     }
   }, [userInfo.apikey, userInfo.role]);
 
-  let height = window.innerHeight;
+  //let height = window.innerHeight;
+
+  const [height, setHeight] = useState(window.innerHeight);
+
+  const handleResize = () => {
+    setHeight(window.innerHeight);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize, false);
+  },[]);
 
   // scale height
-  if (height < 900 && height > 600) {
-    height -= 130;
-  } else if (height < 600) {
-    height -= 200;
-  }
+  // if (height < 900 && height > 600) {
+  //   height -= 130;
+  // } else if (height < 600) {
+  //   height -= 200;
+  // }
 
   const tableHeaderOptions = [
     {
@@ -153,14 +163,15 @@ const ProducerInformation = () => {
     },
   ];
 
-  const tableOptions = (tableData) => ({
+  const tableOptions = () => ({
     padding: 'dense',
     exportButton: true,
     exportFileName: 'Producer Information',
     addRowPosition: 'first',
     exportAllData: false,
-    pageSizeOptions: [5, 10, 20, tableData.length],
-    pageSize: tableData.length,
+    // pageSizeOptions: [5, 10, 20, tableData.length],
+    // pageSize: tableData.length,
+    paging: false,
     groupRowSeparator: '  ',
     grouping: true,
     headerStyle: {
@@ -180,7 +191,7 @@ const ProducerInformation = () => {
     searchAutoFocus: true,
     toolbarButtonAlignment: 'left',
     actionsColumnIndex: 0,
-    maxBodyHeight: height * 0.7,
+    maxBodyHeight: height - 250,
   });
 
   return isAuthorized ? (
@@ -252,7 +263,7 @@ const ProducerInformation = () => {
               columns={tableHeaderOptions}
               data={tableData}
               title="Producer Information"
-              options={tableOptions(tableData)}
+              options={tableOptions()}
               detailPanel={[
                 {
                   tooltip: 'Add Comments',

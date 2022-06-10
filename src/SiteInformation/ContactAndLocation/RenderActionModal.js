@@ -9,14 +9,16 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  setEditModalOpen,
-  setEditModalData,
+  setEditLocationModalOpen,
+  setEditLocationModalData,
   setReassignSiteModalOpen,
   setReassignSiteModalData,
   setUnenrollOpen,
   setUnenrollRowData,
   setEditProtocolsModalOpen,
   setEditProtocolsModalData,
+  setEditCashCropModalOpen,
+  setEditCashCropModalData,
   setShowNewIssueDialog,
   setNewIssueData,
   setMapModalData,
@@ -81,12 +83,12 @@ const RenderActionModal = (props) => {
               disabled={disabled}
               onClick={() => {
                 if (!disabled) {
-                  dispatch(setEditModalOpen(true));
-                  dispatch(setEditModalData(rowData));
+                  dispatch(setEditLocationModalOpen(true));
+                  dispatch(setEditLocationModalData(rowData));
                 }
               }}
             >
-              Edit Data
+              Edit Location
             </Button>
           </Tooltip>
         </Grid>
@@ -108,6 +110,25 @@ const RenderActionModal = (props) => {
                   }}
                 >
                   Edit Protocols
+                </Button>
+              </Tooltip>
+            </Grid>
+            <Grid item>
+              <Tooltip title="Edit Cash Crops">
+                <Button
+                  size="small"
+                  variant="contained"
+                  startIcon={<Edit />}
+                  color={isDarkTheme ? 'primary' : 'default'}
+                  disabled={disabled}
+                  onClick={() => {
+                    if (!disabled) {
+                      dispatch(setEditCashCropModalOpen(true));
+                      dispatch(setEditCashCropModalData(rowData));
+                    }
+                  }}
+                >
+                  Edit Cash Crop
                 </Button>
               </Tooltip>
             </Grid>

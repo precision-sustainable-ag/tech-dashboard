@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 
 // Local Imports
 import { bannedRoles } from '../../utils/constants';
-import EditDataModal from '../Shared/EditDataModal';
+import EditLocationModal from '../Shared/EditLocationModal';
 import UnenrollSiteModal from './UnenrollSiteModal';
 import EditProtocolModal from './EditProtocolsModal';
 import NewIssueModal from './NewIssueModal';
@@ -18,6 +18,7 @@ import { onfarmAPI } from '../../utils/api_secret';
 import { useAuth0 } from '../../Auth/react-auth0-spa';
 import TableModal from './TableModal';
 import PropTypes from 'prop-types';
+import EditCashCropModal from './EditCashCropModal';
 
 const siteInfoAPI_URL = `${onfarmAPI}/raw?output=json&table=site_information&options=showtest, include_unenrolled_sites`;
 
@@ -51,14 +52,24 @@ const AllDataTable = (props) => {
     severity: 'success',
   });
 
-  let height = window.innerHeight;
+  //let height = window.innerHeight;
+
+  const [height, setHeight] = useState(window.innerHeight);
+
+  const handleResize = () => {
+    setHeight(window.innerHeight);
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize, false);
+  }, []);
 
   // scale height
-  if (height < 900 && height > 600) {
-    height -= 130;
-  } else if (height < 600) {
-    height -= 200;
-  }
+  // if (height < 900 && height > 600) {
+  //   height -= 130;
+  // } else if (height < 600) {
+  //   height -= 200;
+  // }
 
   useEffect(() => {
     const init = () => {
@@ -153,8 +164,9 @@ const AllDataTable = (props) => {
           activeSites={active}
           tableTitle={active ? 'Contact and Location' : 'Inactive Sites-Contact and Location'}
         />
-        <EditDataModal action="update" />
-        <EditProtocolModal setSnackbarDataGlobal={setSnackbarData} snackbarData={snackbarData} />
+        <EditLocationModal action="update" />
+        <EditProtocolModal setSnackbarDataGlobal={setSnackbarData}/>
+        <EditCashCropModal setSnackbarDataGlobal={setSnackbarData}/>
         <ReassignDataModal />
         <UnenrollSiteModal />
         <NewIssueModal
