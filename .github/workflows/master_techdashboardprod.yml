@@ -40,7 +40,7 @@ jobs:
           echo REACT_APP_GOOGLE_API_KEY_DEV=${{ secrets.REACT_APP_GOOGLE_API_KEY_DEV }} >> .env
           echo REACT_APP_GITHUB_AUTH_TOKEN=${{ secrets.REACT_APP_GITHUB_AUTH_TOKEN }} >> .env
           echo REACT_APP_ONFARM_GLOBAL_API_KEY=${{ secrets.REACT_APP_ONFARM_GLOBAL_API_KEY }} >> .env
-          echo CI=false >> .env
+          echo CI='' >> .env
 
           cat .env
 
