@@ -9,7 +9,6 @@ import { Delete } from '@material-ui/icons';
 
 import EditableField from './EditableField';
 import { callAzureFunction } from './../../../utils/SharedFunctions';
-// import { Context } from '../../../Store/Store';
 import { useAuth0 } from '../../../Auth/react-auth0-spa';
 import { useSelector } from 'react-redux';
 
@@ -42,6 +41,15 @@ const FormEditorModal = (props) => {
       return true;
     }
   });
+
+  let entryToIterate = editingLists.entry_to_iterate;
+  if (formName === 'psa_yield_weights') {
+    const entries = ['weigh_wagon_group', 'group_cj5fy08', 'group_ng29s00', 'cotton_001'];
+    const item = entries.filter((entry) => {
+      return editedForm[entry];
+    })[0];
+    entryToIterate = item;
+  }
 
   const handleCancel = () => {
     setButtonText('View errors and fix form');
@@ -188,9 +196,9 @@ const FormEditorModal = (props) => {
             </Grid>
           </Grid>
           <Grid item container>
-            {editingLists.entry_to_iterate && (
+            {entryToIterate && (
               <Grid item container spacing={4}>
-                {editedForm[editingLists.entry_to_iterate].map((iterator_item, iterator_index) => {
+                {editedForm[entryToIterate].map((iterator_item, iterator_index) => {
                   return (
                     <Grid item key={iterator_index}>
                       <Typography variant="h5">List Item {iterator_index}</Typography>
@@ -203,7 +211,7 @@ const FormEditorModal = (props) => {
                               setEditedForm={setEditedForm}
                               key={editable_index}
                               iterator_item={iterator_item}
-                              entry_to_iterate={editingLists.entry_to_iterate}
+                              entry_to_iterate={entryToIterate}
                               iterator_index={iterator_index}
                             />
                           );
@@ -233,9 +241,7 @@ const FormEditorModal = (props) => {
                                 aria-label={`All Forms`}
                                 tooltip="All Forms"
                                 size="small"
-                                onClick={() =>
-                                  handleDelete(iterator_index, editingLists.entry_to_iterate)
-                                }
+                                onClick={() => handleDelete(iterator_index, entryToIterate)}
                               >
                                 {deleteButtonText}
                               </Button>
@@ -249,9 +255,7 @@ const FormEditorModal = (props) => {
                               aria-label={`All Forms`}
                               tooltip="All Forms"
                               size="small"
-                              onClick={() =>
-                                handleDelete(iterator_index, editingLists.entry_to_iterate)
-                              }
+                              onClick={() => handleDelete(iterator_index, entryToIterate)}
                             >
                               Delete this item
                             </Button>
