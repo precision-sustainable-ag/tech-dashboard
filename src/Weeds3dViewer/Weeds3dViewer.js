@@ -17,30 +17,6 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-// const fetchAPIData = async (codes, getTokenSilently, setVideos, setLoading) => {
-//   const data = { codes: codes };
-//   await callAzureFunction(data, '/weeds3d/videos', 'POST', getTokenSilently)
-//     .then((res) => {
-//       setVideos(res.jsonResponse.files);
-//       setLoading(false);
-//     })
-//     .catch((err) => {
-//       console.log('API error: ' + err);
-//     });
-// };
-
-// const fetchYearsAndAffiliations = (videos) => {
-//   console.log(videos);
-//   let param = "";
-//   videos.forEach((video) => {
-//     const code = video.code;
-//     console.log(code);
-//     if(!param.includes(code)) param = param.concat(code + ',');
-//   });
-
-//   console.log(param);
-// };
-
 const Weeds3dViewer = () => {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -68,12 +44,6 @@ const Weeds3dViewer = () => {
 
   const tableHeaderOptions = [
     {
-      title: 'Code',
-      field: 'code',
-      type: 'string',
-      align: 'justify',
-    },
-    {
       title: 'Affiliation',
       align: 'justify',
       render: (rowData) => {
@@ -88,6 +58,12 @@ const Weeds3dViewer = () => {
       render: (rowData) => {
         return yearsAndAffiliations[rowData.code] ? yearsAndAffiliations[rowData.code].year : null;
       },
+    },
+    {
+      title: 'Code',
+      field: 'code',
+      type: 'string',
+      align: 'justify',
     },
     {
       title: 'Treatment',
@@ -134,23 +110,25 @@ const Weeds3dViewer = () => {
       render: (rowData) => {
         return convertToMB(rowData.file_size) < 25 ? (
           <Tooltip title="This file size is too small">
-            <Error style={{ color: '#cc4968' }} />
+            <Error style={{ color: 'red' }} />
           </Tooltip>
         ) : convertToMB(rowData.file_size) > 750 ? (
           <Tooltip title="This file size is good">
-            <CheckCircle style={{ color: '#2F7C31' }} />
+            <CheckCircle style={{ color: 'green' }} />
           </Tooltip>
         ) : (
           <Tooltip title="This file size is informational">
-            <Info style={{ color: '#5e7ee0' }} />
+            <Info style={{ color: 'yellow' }} />
           </Tooltip>
         );
       },
     },
   ];
 
-  const convertToMB = (size) => {
-    return Math.round((size / 1000000) * 10) / 10;
+  const convertToMB = (bytes) => {
+    const bytesToMegaBytes = bytes / 1024 ** 2;
+    return Math.round(bytesToMegaBytes);
+    //Math.round(bytesToMegaBytes * 10 ) / 10;
   };
 
   const fetchCodes = async (apikey) => {
@@ -167,10 +145,20 @@ const Weeds3dViewer = () => {
       //iterates over sites objects and compiles a list of site codes
       .then((res) => {
         let listOfCodes = [];
+        let yearsAndAffiliationsDict = {};
+
         const data = res.data;
         Object.keys(data).forEach((key) => {
           listOfCodes.push(data[key].code);
+
+          yearsAndAffiliationsDict[data[key].code] = {
+            year: data[key].year,
+            affiliation: data[key].affiliation,
+          };
         });
+
+        setYearsAndAffiliations(yearsAndAffiliationsDict);
+
         return listOfCodes;
       })
       // feeds list of site codes to weeds 3d API and gets list of video files, sets state
@@ -179,41 +167,6 @@ const Weeds3dViewer = () => {
         const files = await callAzureFunction(data, '/weeds3d/videos', 'POST', getTokenSilently);
         setVideos(files.jsonResponse.files);
         setLoading(false);
-
-        return files.jsonResponse.files;
-      })
-      //iterates over files and compiles a parameter string of all unique codes, then feeds parameter
-      //string to dates API to get year and affliation information
-      .then(async (res) => {
-        let param = '';
-        res.forEach((video) => {
-          const code = video.code;
-          if (!param.includes(code)) param = param.concat(code + ',');
-        });
-
-        const codeInfo = await axios({
-          method: 'GET',
-          url: onfarmAPI + '/dates?code=' + param,
-          headers: {
-            'x-api-key': apikey,
-          },
-          responseType: 'json',
-          timeout: 5000,
-        });
-
-        return codeInfo.data;
-      })
-      //iterates over date information and compiles a dictionary of year and affilation information, sets state
-      .then((res) => {
-        let yearsAndAffiliationsDict = {};
-        Object.keys(res).forEach((codeData) => {
-          yearsAndAffiliationsDict[res[codeData].code] = {
-            year: res[codeData].year,
-            affiliation: res[codeData].affiliation,
-          };
-        });
-
-        setYearsAndAffiliations(yearsAndAffiliationsDict);
       })
       .catch((err) => {
         console.log('API error: ' + err);
