@@ -117,7 +117,7 @@ const Weeds3dViewer = () => {
             <CheckCircle style={{ color: 'green' }} />
           </Tooltip>
         ) : (
-          <Tooltip title="This file size is informational">
+          <Tooltip title="Is this a file for a plot with no-weeds?">
             <Info style={{ color: 'yellow' }} />
           </Tooltip>
         );
