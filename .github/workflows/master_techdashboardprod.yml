@@ -43,14 +43,11 @@ jobs:
 
           cat .env
 
-      - name: remove old vals
+      - name: npm install, build, and test
         run: |
           CI=''
           rm -rf node_modules
           rm package-lock.json
-
-      - name: npm install, build, and test
-        run: |
           npm install
           npm run build --if-present
 
