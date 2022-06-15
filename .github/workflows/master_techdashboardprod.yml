@@ -47,7 +47,7 @@ jobs:
         run: |
           CI=''
           rm -rf node_modules
-          rm package_lock.json
+          rm package-lock.json
 
       - name: npm install, build, and test
         run: |
