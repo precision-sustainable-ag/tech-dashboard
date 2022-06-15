@@ -43,20 +43,25 @@ jobs:
 
           cat .env
 
+      - name: remove old vals
+        run: |
+          CI=''
+          rm -rf node_modules
+          rm package_lock.json
+
       - name: npm install, build, and test
         run: |
           npm install
-          CI=''
           npm run build --if-present
 
-      # - name: Zip artifact for deployment
-      #   run: zip release.zip ./* -r
+      - name: Zip artifact for deployment
+        run: zip release.zip ./* -r
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: node-app
-          path: .
+          path: release.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -71,8 +76,8 @@ jobs:
         with:
           name: node-app
 
-      # - name: unzip artifact for deployment
-      #   run: unzip release.zip
+      - name: unzip artifact for deployment
+        run: unzip release.zip
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
