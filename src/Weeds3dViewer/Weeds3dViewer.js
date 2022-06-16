@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { callAzureFunction } from '../utils/SharedFunctions';
 import { useAuth0 } from '../Auth/react-auth0-spa';
-import { Grid, Snackbar } from '@material-ui/core';
+import { Grid, Snackbar, Tooltip } from '@material-ui/core';
 import MaterialTable from 'material-table';
 import Typography from '@material-ui/core/Typography';
 import IssueDialogue from '../Comments/IssueDialogue';
@@ -10,51 +10,17 @@ import { useSelector } from 'react-redux';
 import { CustomLoader } from '../utils/CustomComponents';
 import { onfarmAPI } from '../utils/api_secret';
 import MuiAlert from '@material-ui/lab/Alert';
+import { Info, Error, CheckCircle } from '@material-ui/icons';
 
 // Helper function
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-const fetchCodes = async (apikey) => {
-  let listOfCodes = [];
-  await axios({
-    method: 'GET',
-    url: onfarmAPI + '/raw?output=json&table=site_information',
-    headers: {
-      'x-api-key': apikey,
-    },
-    responseType: 'json',
-    timeout: 5000,
-  })
-    .then((res) => {
-      const data = res.data;
-      Object.keys(data).forEach((key) => {
-        listOfCodes.push(data[key].code);
-      });
-    })
-    .catch((err) => {
-      console.log('API error: ' + err);
-    });
-
-  return listOfCodes;
-};
-
-const fetchAPIData = async (codes, getTokenSilently, setVideos, setLoading) => {
-  const data = { codes: codes };
-  await callAzureFunction(data, '/weeds3d/videos', 'POST', getTokenSilently)
-    .then((res) => {
-      setVideos(res.jsonResponse.files);
-      setLoading(false);
-    })
-    .catch((err) => {
-      console.log('API error: ' + err);
-    });
-};
-
 const Weeds3dViewer = () => {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [yearsAndAffiliations, setYearsAndAffiliations] = useState([]);
   const userInfo = useSelector((state) => state.userInfo);
   const { getTokenSilently } = useAuth0();
   const { user } = useAuth0();
@@ -77,6 +43,22 @@ const Weeds3dViewer = () => {
   });
 
   const tableHeaderOptions = [
+    {
+      title: 'Affiliation',
+      align: 'justify',
+      render: (rowData) => {
+        return yearsAndAffiliations[rowData.code]
+          ? yearsAndAffiliations[rowData.code].affiliation
+          : null;
+      },
+    },
+    {
+      title: 'Year',
+      align: 'justify',
+      render: (rowData) => {
+        return yearsAndAffiliations[rowData.code] ? yearsAndAffiliations[rowData.code].year : null;
+      },
+    },
     {
       title: 'Code',
       field: 'code',
@@ -119,20 +101,90 @@ const Weeds3dViewer = () => {
       type: 'numeric',
       align: 'justify',
       render: (rowData) => {
-        return Math.round((rowData.file_size / 1000000) * 10) / 10 + ' MB';
+        return convertToMB(rowData.file_size) + ' MB';
+      },
+    },
+    {
+      title: 'File Info',
+      align: 'justify',
+      render: (rowData) => {
+        return convertToMB(rowData.file_size) < 25 ? (
+          <Tooltip title="This file size is too small">
+            <Error style={{ color: 'red' }} />
+          </Tooltip>
+        ) : convertToMB(rowData.file_size) > 750 ? (
+          <Tooltip title="This file size is good">
+            <CheckCircle style={{ color: 'green' }} />
+          </Tooltip>
+        ) : (
+          <Tooltip title="Is this a file for a plot with no-weeds?">
+            <Info style={{ color: 'yellow' }} />
+          </Tooltip>
+        );
       },
     },
   ];
 
+  const convertToMB = (bytes) => {
+    const bytesToMegaBytes = bytes / 1024 ** 2;
+    return Math.round(bytesToMegaBytes);
+    //Math.round(bytesToMegaBytes * 10 ) / 10;
+  };
+
+  const fetchCodes = async (apikey) => {
+    // calls the site_information API and gets a list of sites
+    await axios({
+      method: 'GET',
+      url: onfarmAPI + '/raw?output=json&table=site_information',
+      headers: {
+        'x-api-key': apikey,
+      },
+      responseType: 'json',
+      timeout: 5000,
+    })
+      //iterates over sites objects and compiles a list of site codes
+      .then((res) => {
+        let listOfCodes = [];
+        let yearsAndAffiliationsDict = {};
+
+        const data = res.data;
+        Object.keys(data).forEach((key) => {
+          listOfCodes.push(data[key].code);
+
+          yearsAndAffiliationsDict[data[key].code] = {
+            year: data[key].year,
+            affiliation: data[key].affiliation,
+          };
+        });
+
+        setYearsAndAffiliations(yearsAndAffiliationsDict);
+
+        return listOfCodes;
+      })
+      // feeds list of site codes to weeds 3d API and gets list of video files, sets state
+      .then(async (res) => {
+        const data = { codes: res };
+        const files = await callAzureFunction(data, '/weeds3d/videos', 'POST', getTokenSilently);
+        setVideos(files.jsonResponse.files);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log('API error: ' + err);
+      });
+  };
+
   useEffect(() => {
     const fetchData = async (apikey) => {
-      const codes = await fetchCodes(apikey);
-      await fetchAPIData(codes, getTokenSilently, setVideos, setLoading);
+      await fetchCodes(apikey);
+      //await fetchAPIData(codes, getTokenSilently, setVideos, setLoading);
+      //await fetchYearsAndAffiliations(videos);
     };
 
     if (!userInfo.apikey) return false;
     fetchData(userInfo.apikey);
   }, [getTokenSilently, userInfo.apikey]);
+
+  console.log(yearsAndAffiliations);
 
   return (
     <Grid container>
@@ -188,11 +240,18 @@ const Weeds3dViewer = () => {
                 position: 'sticky',
                 top: 0,
               },
-              rowStyle: {
+              //rowData as prop
+              rowStyle: () => ({
                 fontFamily: 'Roboto, sans-serif',
                 fontSize: '0.8em',
                 textAlign: 'left',
-              },
+                // backgroundColor:
+                //   convertToMB(rowData.file_size) < 25
+                //     ? '#A61C3C'
+                //     : convertToMB(rowData.file_size) > 750
+                //     ? '#2F7C31'
+                //     : '#1E3888',
+              }),
               selection: false,
               searchAutoFocus: true,
               toolbarButtonAlignment: 'left',
@@ -203,7 +262,6 @@ const Weeds3dViewer = () => {
               {
                 tooltip: 'Add Comments',
                 icon: 'comment',
-
                 openIcon: 'message',
                 // eslint-disable-next-line react/display-name
                 render: (rowData) => {
