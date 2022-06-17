@@ -188,7 +188,12 @@ const FarmValuesDataTable = () => {
               rowData={rowData}
               dataType="table"
               setSnackbarData={setSnackbarData}
-              labels={['farm-values', rowData.code, rowData.subplot, rowData.affiliation]}
+              labels={[
+                'farm-values',
+                rowData[0],
+                'Subplot ' + rowData[1],
+                rowData[3],
+              ]}
               getTokenSilently={getTokenSilently}
             />
           </TableCell>
