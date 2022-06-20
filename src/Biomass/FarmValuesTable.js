@@ -137,7 +137,7 @@ const FarmValuesTable = ({
     width: '100%',
   },
   container: {
-    maxHeight: height - 350,
+    maxHeight: height - 150,
   },
 });
 
