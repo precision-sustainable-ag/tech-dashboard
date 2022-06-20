@@ -1,56 +1,64 @@
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
+import { setEditDatesModalData, setEditDatesModalOpen, setFarmDatesReloadNeeded } from '../../Store/actions';
 import React, { useState, useEffect } from 'react';
-import {Dialog, DialogContent, DialogTitle, DialogContentText, TextField, Button, Grid} from '@material-ui/core';
+import {Dialog, DialogContent, DialogTitle, DialogContentText, TextField, Button, Grid } from '@material-ui/core';
 import { callAzureFunction } from '../../utils/SharedFunctions';
 import { useAuth0 } from '../../Auth/react-auth0-spa';
 import PropTypes from 'prop-types';
 
-//dictionary to hold the dates
-let datesDict = {
-    coverCropPlanting : null,
-    coverCropTermination : null,
-    cashPlanting : null,
-};
-
-//the modal itself
-const EditDatesModal = (props) => {
-    const editDatesModalData = useSelector((state) => state.farmDatesData.editDatesModalData); //redux to hold data
+const EditDatesModal = ({ setSnackbarDataGlobal }) => {
+    const editDatesModalData = useSelector((state) => state.farmDatesData.editDatesModalData);
+    const editDatesModalOpen = useSelector((state) => state.farmDatesData.editDatesModalOpen);
+    const [datesDict, setDatesDict] = useState({
+        coverCropPlanting : 'undefined',
+        coverCropTermination : 'undefined',
+        cashPlanting : 'undefined',
+    });
     const [farmCode, setFarmCode] = useState();
-    const [coverCropPlantingDisabled, setCoverCropPlantingDisabled] = useState(false);
-    const [coverCropTerminationDisabled, setCoverCropTerminationDisabled] = useState(false);
-    const [cashPlantingDisabled, setCashPlantingDisabled] = useState(false);
-    const { getTokenSilently } = useAuth0();
+    const {getTokenSilently} = useAuth0();
+    const dispatch = useDispatch();
 
     //set all values when first loaded
     useEffect(() => {
-        //set farm code and dates values 
-        setFarmCode(editDatesModalData.producer_id);
-        datesDict.coverCropPlanting = editDatesModalData.cover_planting;
-        datesDict.coverCropTermination = editDatesModalData.cover_termination;
-        datesDict.cashPlanting = editDatesModalData.cash_planting;
-        //checks if any imported value is null/undefined and sets the state of the corresponding constant 
-        if (datesDict.coverCropPlanting == null || datesDict.coverCropPlanting === 'undefined'){
-            setCoverCropPlantingDisabled(true);
+        setFarmCode(editDatesModalData.code);
+        setDatesDict({
+            coverCropPlanting: editDatesModalData.cover_planting,
+            coverCropTermination: editDatesModalData.cover_termination,
+            cashPlanting: editDatesModalData.cash_planting,
+        });
+    }, [editDatesModalData]);
+
+    //updates the dictionary with the passed data based on which column is selected
+    //0=coverCropPlanting, 1=coverCropTermination, 2=cashPlanting
+    const updateDate = (col, data) => {
+        if (col == 0) {
+            setDatesDict({
+                ...datesDict,
+                coverCropPlanting: data,
+            });
+        } else if (col == 1){
+            setDatesDict({
+                ...datesDict,
+                coverCropTermination: data,
+            });
+        } else if (col == 2){
+            setDatesDict({
+                ...datesDict,
+                cashPlanting: data,
+            });
+        } else {
+            console.log("Invalid column selected");
         }
-        if (datesDict.coverCropTermination == null || datesDict.coverCropTermination === 'undefined'){
-            setCoverCropTerminationDisabled(true);
-        }
-        if (datesDict.cashPlanting == null || datesDict.cashPlanting === 'undefined'){
-            setCashPlantingDisabled(true);
-        }
-        // console.log("Cover Crop Planting Date Updated to: " + datesDict.coverCropPlanting);
-        // console.log("Cover Crop Termination Updated to: " + datesDict.coverCropTermination);
-        // console.log("Cash Planting Date Updated to: " + datesDict.cashPlanting);
-    }, []);
+    };
 
     //handles closing of the modal
     const handleEditDatesModalClose = () => {
-        props.setShowEditDatesModal(false);
+        dispatch(setEditDatesModalOpen(false));
     };
 
     //handles submit
     const handleEditDatesModalSubmit = () => {
-        //set data to what is in the dates dict
+        //set data to be submitted to API
         const data = {
             "values": {
                 "cc_planting_date": datesDict.coverCropPlanting,
@@ -61,29 +69,34 @@ const EditDatesModal = (props) => {
                 "code": farmCode,
             }
         };
-        //call azure funciton and pass data along to api
-        callAzureFunction( data, 'crowndb/farm_history', 'POST', getTokenSilently);
-        //close modal
-        handleEditDatesModalClose();
-    };
-
-    //updates the dictionary with the passed data based on which column is selected
-    //0=coverCropPlanting, 1=coverCropTermination, 2=cashPlanting
-    const updateDate = (col, data) => {
-        if (col == 0) {
-            datesDict.coverCropPlanting = data;
-        } else if (col == 1){
-            datesDict.coverCropTermination = data;
-        } else if (col == 2){
-            datesDict.cashPlanting = data;
-        } else {
-            console.log("Invalid column selected");
-        }
+        callAzureFunction( data, 'crowndb/farm_history', 'POST', getTokenSilently).then((res) => {
+            if (res.response && res.response.status === 201) {
+              dispatch(setEditDatesModalData({
+                    ...editDatesModalData,
+                    cover_planting: datesDict.coverCropPlanting,
+                    cover_termination: datesDict.coverCropTermination,
+                    cash_planting: datesDict.cashPlanting,
+              }));
+              dispatch(setFarmDatesReloadNeeded(true));
+              setSnackbarDataGlobal({
+                open: true,
+                text: 'Dates Edit Was Successful!',
+                severity: 'success',
+              });
+              handleEditDatesModalClose();
+            } else {
+                setSnackbarDataGlobal({
+                    open: true,
+                    text: 'Dates Edit Was Unsuccessful',
+                    severity: 'error',
+                });
+            }
+        });
     };
 
     return (
        <Dialog 
-        open = {props.showEditDatesModal} 
+        open = {editDatesModalOpen} 
         onClose={handleEditDatesModalClose}
         >
         <DialogTitle>Edit Dates</DialogTitle>
@@ -97,8 +110,8 @@ const EditDatesModal = (props) => {
                 <Grid item xs={4}> 
                     <TextField 
                         color = 'primary' 
-                        value={datesDict.coverCropPlanting}
-                        disabled = {coverCropPlantingDisabled}
+                        defaultValue={datesDict.coverCropPlanting}
+                        disabled = {datesDict.coverCropPlanting == null || datesDict.coverCropPlanting === 'undefined'}
                         onChange={data => updateDate(0, data.target.value)} 
                         type = 'date' 
                         id = 'Cover Crop Planting' 
@@ -110,8 +123,8 @@ const EditDatesModal = (props) => {
                 <Grid item xs={4}> 
                     <TextField 
                         color = 'primary' 
-                        value={datesDict.coverCropTermination}
-                        disabled = {coverCropTerminationDisabled}
+                        defaultValue={datesDict.coverCropTermination}
+                        disabled = {datesDict.coverCropTermination == null || datesDict.coverCropTermination === 'undefined'}
                         onChange={data => updateDate(1, data.target.value)} 
                         type = 'date' 
                         id = 'Cover Crop Termination' 
@@ -124,7 +137,7 @@ const EditDatesModal = (props) => {
                     <TextField 
                         color = 'primary'
                         value={datesDict.cashPlanting}
-                        disabled = {cashPlantingDisabled} 
+                        disabled = {datesDict.cashPlanting == null || datesDict.cashPlanting === 'undefined'} 
                         onChange={data => updateDate(2, data.target.value)} 
                         type = 'date' 
                         id = 'Cash Planting' 
@@ -145,10 +158,8 @@ const EditDatesModal = (props) => {
     );
 };
 
-//set the proptypes
 EditDatesModal.propTypes = {
-    showEditDatesModal: PropTypes.bool,
-    setShowEditDatesModal: PropTypes.func,
+    setSnackbarDataGlobal: PropTypes.func,
 };
 
 export default EditDatesModal;
