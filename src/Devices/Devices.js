@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Loading from 'react-loading';
 import { Card, Chip, Grid, Icon, InputAdornment, Typography, TextField } from '@material-ui/core';
+import { Buffer } from 'buffer';
 
 // Local Imports
 import DataParser from './DataParser';
@@ -223,7 +224,8 @@ const DevicesComponent = ({
             <Typography>
               To rename a device, use the pencil icon <Edit fontSize="small" />. Add your farm code
               in all caps anywhere in the nickname, plus any other info you want. Example: &quot;ABC
-              (Farmer Brown top of the hill)&quot;
+              (Farmer Brown top of the hill)&quot; Avoid using multiple capital letters in the name
+              other than your farm code.
             </Typography>
           </Grid>
           {searchedDevices.length > 0 ? (

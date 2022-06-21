@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import { NetworkCell, Router, CalendarToday } from '@material-ui/icons';
 import moment from 'moment-timezone';
-import { string } from 'prop-types';
+import PropTypes from 'prop-types';
 import { DateProvider } from './DateProvider';
 import { useSelector } from 'react-redux';
 
@@ -84,7 +84,7 @@ export const DeviceInfo = ({ deviceName }) => {
 DeviceInfo.propTypes = {
   // timeEnd: number,
   // setTimeEnd: any,
-  deviceName: string,
+  deviceName: PropTypes.string,
   // userTimezone: string,
   // deviceData: any,
 };

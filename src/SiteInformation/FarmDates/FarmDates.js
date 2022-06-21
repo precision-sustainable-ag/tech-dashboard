@@ -52,14 +52,24 @@ const FarmDates = () => {
     }
   }, [userInfo.apikey, userInfo.role, farmDatesReloadNeeded]);
 
-  let height = window.innerHeight;
+  //let height = window.innerHeight;
+
+  const [height, setHeight] = useState(window.innerHeight);
+
+  const handleResize = () => {
+    setHeight(window.innerHeight);
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize, false);
+  }, []);
 
   // scale height
-  if (height < 900 && height > 600) {
-    height -= 130;
-  } else if (height < 600) {
-    height -= 200;
-  }
+  // if (height < 900 && height > 600) {
+  //   height -= 130;
+  // } else if (height < 600) {
+  //   height -= 200;
+  // }
 
   const tableHeaderOptions = [
     {
@@ -180,8 +190,9 @@ const FarmDates = () => {
                 exportButton: true,
                 exportFileName: 'Farm Dates',
                 exportAllData: false,
-                pageSizeOptions: [50, 100, farmDatesData.length],
-                pageSize: farmDatesData.length,
+                // pageSizeOptions: [50, 100, farmDatesData.length],
+                // pageSize: farmDatesData.length,
+                paging: false,
                 groupRowSeparator: '  ',
                 grouping: true,
                 headerStyle: {
@@ -201,7 +212,7 @@ const FarmDates = () => {
                 searchAutoFocus: true,
                 toolbarButtonAlignment: 'left',
                 actionsColumnIndex: 1,
-                maxBodyHeight: height * 0.65,
+                maxBodyHeight: height - 250,
               }}
               detailPanel={[
                 {

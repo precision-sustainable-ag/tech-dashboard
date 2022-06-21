@@ -9,36 +9,7 @@ import Highcharts from 'highcharts';
 import PropTypes from 'prop-types';
 import { CustomLoader } from '../../utils/CustomComponents';
 
-const chartOptions = {
-  time: {
-    timezoneOffset: new Date().getTimezoneOffset() * 2,
-  },
-  chart: {
-    type: 'scatter',
-    zoomType: 'xy',
-    borderColor: 'black',
-    borderWidth: 1,
-  },
-  title: {
-    text: `Node Voltage - Bare`,
-  },
-  xAxis: {
-    type: 'datetime',
-    startOnTick: true,
-    endOnTick: true,
-    showLastLabel: false,
-    showFirstLabel: false,
-  },
-  yAxis: {
-    title: {
-      text: 'Temperature',
-    },
-    min: -10,
-    max: 40,
-  },
-  series: [],
-};
-const SoilTemp = ({ tdrData }) => {
+const SoilTemp = ({ tdrData, year }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -47,6 +18,37 @@ const SoilTemp = ({ tdrData }) => {
   // const waterSensorDataEndpoint =
   //   onfarmAPI +
   //   `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,trt`;
+
+  const chartOptions = {
+    time: {
+      timezoneOffset: new Date().getTimezoneOffset() * 2,
+    },
+    chart: {
+      type: 'scatter',
+      zoomType: 'xy',
+      borderColor: 'black',
+      borderWidth: 1,
+    },
+    title: {
+      text: `Node Voltage - Bare`,
+    },
+    xAxis: {
+      type: 'datetime',
+      startOnTick: false,
+      endOnTick: false,
+      showLastLabel: false,
+      showFirstLabel: false,
+      max: year === new Date().getFullYear ? Date.now() : null,
+    },
+    yAxis: {
+      title: {
+        text: 'Temperature',
+      },
+      min: -10,
+      max: 40,
+    },
+    series: [],
+  };
 
   useEffect(() => {
     if (tdrData) {
@@ -300,4 +302,5 @@ export default SoilTemp;
 
 SoilTemp.propTypes = {
   tdrData: PropTypes.array,
+  year: PropTypes.any,
 };

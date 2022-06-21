@@ -5,6 +5,7 @@ import { apiPassword, apiURL, apiUsername } from '../../utils/api_secret';
 import { Skeleton } from '@material-ui/lab';
 import parse, { attributesToProps } from 'html-react-parser';
 import { Link } from 'react-router-dom';
+import { Buffer } from 'buffer';
 
 const options = {
   replace: (domNode) => {

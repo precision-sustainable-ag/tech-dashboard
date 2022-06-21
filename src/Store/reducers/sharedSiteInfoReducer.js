@@ -1,7 +1,7 @@
 const defaultState = {
   valuesEdited: false,
-  editModalOpen: false,
-  editModalData: {},
+  editLocationModalOpen: false,
+  editLocationModalData: {},
 };
 
 // Default function
@@ -9,10 +9,10 @@ export const sharedSiteInfoReducer = (state = defaultState, action = {}) => {
   switch (action.type) {
     case 'SET_VALUES_EDITED':
       return setValuesEdited(state, action);
-    case 'SET_EDIT_MODAL_OPEN':
-      return setEditModalOpen(state, action);
-    case 'SET_EDIT_MODAL_DATA':
-      return setEditModalData(state, action);
+    case 'SET_EDIT_LOCATION_MODAL_OPEN':
+      return setEditLocationModalOpen(state, action);
+    case 'SET_EDIT_LOCATION_MODAL_DATA':
+      return setEditLocationModalData(state, action);
     default:
       return { ...state };
   }
@@ -24,15 +24,15 @@ const setValuesEdited = (state, action) => {
     valuesEdited: action.payload,
   };
 };
-const setEditModalOpen = (state, action) => {
+const setEditLocationModalOpen = (state, action) => {
   return {
     ...state,
-    editModalOpen: action.payload,
+    editLocationModalOpen: action.payload,
   };
 };
-const setEditModalData = (state, action) => {
+const setEditLocationModalData = (state, action) => {
   return {
     ...state,
-    editModalData: action.payload,
+    editLocationModalData: action.payload,
   };
 };

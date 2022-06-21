@@ -76,7 +76,17 @@ const DecompBag = () => {
     };
   }, []);
 
-  const height = window.innerHeight;
+  //const height = window.innerHeight;
+
+  const [height, setHeight] = useState(window.innerHeight);
+
+  const handleResize = () => {
+    setHeight(window.innerHeight);
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize, false);
+  }, []);
 
   const tableHeaderOptions = [
     {
@@ -235,7 +245,7 @@ const DecompBag = () => {
               searchAutoFocus: true,
               toolbarButtonAlignment: 'left',
               actionsColumnIndex: 1,
-              maxBodyHeight: height * 0.7,
+              maxBodyHeight: height - 250,
             }}
             detailPanel={[
               {

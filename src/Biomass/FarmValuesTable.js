@@ -11,7 +11,7 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { parseISO, format } from 'date-fns';
 import { Comment } from '@material-ui/icons';
 import { useAuth0 } from '../Auth/react-auth0-spa';
@@ -65,19 +65,6 @@ const colHeaders = (unitType = 'kg/ha') => [
   },
 ];
 
-const useStyles = makeStyles({
-  root: {
-    width: '100%',
-  },
-  container: {
-    maxHeight:
-      window.innerHeight < 900 && window.innerHeight > 600
-        ? (window.innerHeight - 130) * 0.7
-        : (window.innerHeight < 600) * 0.7
-        ? (window.innerHeight - 200) * 0.7
-        : window.innerHeight * 0.7,
-  },
-});
 const FarmValuesTable = ({
   data = [],
   year,
@@ -134,6 +121,26 @@ const FarmValuesTable = ({
   const { user } = useAuth0();
 
   const { getTokenSilently } = useAuth0();
+
+  const [height, setHeight] = useState(window.innerHeight);
+
+  const handleResize = () => {
+    setHeight(window.innerHeight);
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize, false);
+  }, []);
+
+  const useStyles = makeStyles({
+  root: {
+    width: '100%',
+  },
+  container: {
+    maxHeight: height - 150,
+  },
+});
+
   const classes = useStyles();
 
   return record.length > 0 ? (

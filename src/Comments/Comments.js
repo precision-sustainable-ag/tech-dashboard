@@ -253,7 +253,7 @@ Comments.propTypes = {
   removeCommentText: PropTypes.bool,
   setRemoveCommentText: PropTypes.func,
   dataType: PropTypes.string,
-  rowData: PropTypes.onj,
+  rowData: PropTypes.object,
   handleNewComment: PropTypes.func,
   buttonDisabled: PropTypes.bool,
   setShowNewIssueDialog: PropTypes.func,

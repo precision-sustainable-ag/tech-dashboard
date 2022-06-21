@@ -9,47 +9,7 @@ import Highcharts from 'highcharts';
 import 'highcharts/modules/no-data-to-display';
 import { CustomLoader } from '../../utils/CustomComponents';
 import { useSelector } from 'react-redux';
-const chartOptions = {
-  chart: {
-    type: 'scatter',
-    zoomType: 'xy',
-    borderColor: 'black',
-    borderWidth: 1,
-  },
-  title: {
-    text: `Volumetric Water Content`,
-  },
-  xAxis: {
-    type: 'datetime',
-    startOnTick: true,
-    endOnTick: true,
-    showLastLabel: false,
-    showFirstLabel: false,
-  },
-  yAxis: {
-    title: {
-      text: 't_lb',
-    },
-    min: 0,
-    max: 50,
-  },
-  boost: {
-    useGPUTranslations: true,
-    seriesThreshold: 100,
-  },
 
-  series: [
-    {
-      name: 'vwc',
-      data: [],
-      boostThreshold: 100,
-      tooltip: {
-        pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>',
-      },
-    },
-  ],
-  lang: { noData: 'Your custom message' },
-};
 const TempByLbs = () => {
   // const [state] = useContext(Context);
   const userInfo = useSelector((state) => state.userInfo);
@@ -61,6 +21,49 @@ const TempByLbs = () => {
   const waterAmbientSensorDataEndpoint =
     onfarmAPI +
     `/soil_moisture?type=ambient&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,subplot,treatment,t_lb`;
+
+  const chartOptions = {
+    chart: {
+      type: 'scatter',
+      zoomType: 'xy',
+      borderColor: 'black',
+      borderWidth: 1,
+    },
+    title: {
+      text: `Volumetric Water Content`,
+    },
+    xAxis: {
+      type: 'datetime',
+      startOnTick: false,
+      endOnTick: false,
+      showLastLabel: false,
+      showFirstLabel: false,
+      max: year === new Date().getFullYear ? Date.now() : null,
+    },
+    yAxis: {
+      title: {
+        text: 't_lb',
+      },
+      min: 0,
+      max: 50,
+    },
+    boost: {
+      useGPUTranslations: true,
+      seriesThreshold: 100,
+    },
+
+    series: [
+      {
+        name: 'vwc',
+        data: [],
+        boostThreshold: 100,
+        tooltip: {
+          pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>Current: <b>{point.y}</b><br/>',
+        },
+      },
+    ],
+    lang: { noData: 'Your custom message' },
+  };
 
   useEffect(() => {
     const setNodeData = async (apiKey) => {
