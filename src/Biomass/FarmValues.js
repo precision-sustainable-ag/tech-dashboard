@@ -144,6 +144,9 @@ const FarmValues = () => {
                   value={activeAffiliation}
                   onChange={handleSelectChangeAff}
                 >
+                  <MenuItem key={'all'} value={'all'}>
+                    All
+                  </MenuItem>
                   {Object.keys(affiliations).map((aff) => (
                     <MenuItem key={affiliations[aff]} value={affiliations[aff]}>
                       {affiliations[aff]}
@@ -158,6 +161,8 @@ const FarmValues = () => {
                   if (units === 'kg/ha') setUnits('lbs/ac');
                   else setUnits('kg/ha');
                 }}
+                color="primary"
+                variant="contained"
               >
                 {units}
               </Button>
