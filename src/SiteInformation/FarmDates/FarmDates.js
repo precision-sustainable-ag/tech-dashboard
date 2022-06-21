@@ -7,7 +7,7 @@ import { useAuth0 } from '../../Auth/react-auth0-spa';
 import MuiAlert from '@material-ui/lab/Alert';
 import FarmDatesDropdown from './FarmDatesDropdown';
 import { fetchFarmDatesFromApi, makeDateObjects } from '../Shared/functions';
-import {useSelector, useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { setFarmDatesData } from '../../Store/actions';
 
 // Helper function
@@ -18,7 +18,7 @@ function Alert(props) {
 const FarmDates = () => {
   const userInfo = useSelector((state) => state.userInfo);
   const farmDatesData = useSelector((state) => state.farmDatesData.farmDatesData);
-  const farmDatesReloadNeeded = useSelector((state) => state.farmDatesData.farmDatesReloadNeeded);
+  const farmDatesValuesEdited = useSelector((state) => state.farmDatesData.farmDatesValuesEdited);
   const dispatch = useDispatch();
   const [showBannedMessage, setShowBannedMessage] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -30,7 +30,6 @@ const FarmDates = () => {
   });
 
   useEffect(() => {
-    console.log(farmDatesReloadNeeded);
     if (userInfo.role && bannedRoles.includes(userInfo.role)) {
       setShowBannedMessage(true);
     } else {
@@ -44,13 +43,12 @@ const FarmDates = () => {
                 return r.protocols_enrolled !== '-999';
               });
               dispatch(setFarmDatesData(responseWithFilter));
-              console.log(farmDatesData);
             })
             .finally(() => setLoading(false));
         });
       }
     }
-  }, [userInfo.apikey, userInfo.role, farmDatesReloadNeeded]);
+  }, [userInfo.apikey, userInfo.role, farmDatesValuesEdited]);
 
   //let height = window.innerHeight;
 

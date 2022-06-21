@@ -22,7 +22,11 @@ import PropTypes from 'prop-types';
 // Local Imports
 import { apiURL, apiUsername, apiPassword } from '../../utils/api_secret';
 import Location from '../../Location/Location';
-import { setEditLocationModalOpen, setEnrollmentData, setValuesEdited } from '../../Store/actions';
+import {
+  setEditLocationModalOpen,
+  setEnrollmentData,
+  setEnrollmentValuesEdited,
+} from '../../Store/actions';
 
 //Global Vars
 const qs = require('qs');
@@ -38,7 +42,9 @@ const fullWidth = true;
 const EditLocationModal = ({ action }) => {
   const dispatch = useDispatch();
 
-  const valuesEdited = useSelector((state) => state.sharedSiteInfo.valuesEdited);
+  const enrollmentValuesEdited = useSelector(
+    (state) => state.sharedSiteInfo.enrollmentValuesEdited,
+  );
   const open = useSelector((state) => state.sharedSiteInfo.editLocationModalOpen);
   const editLocationModalData = useSelector((state) => state.sharedSiteInfo.editLocationModalData);
   const enrollmentData = useSelector((state) => state.enrollmentData.data);
@@ -106,7 +112,7 @@ const EditLocationModal = ({ action }) => {
       if (action === 'update')
         updateSite(updateData).then(() => {
           dispatch(setEditLocationModalOpen(!open));
-          dispatch(setValuesEdited(!valuesEdited));
+          dispatch(setEnrollmentValuesEdited(!enrollmentValuesEdited));
 
           setNewData({
             county: '',
@@ -129,7 +135,7 @@ const EditLocationModal = ({ action }) => {
         finalData.growerInfo.sites = updatedData;
         dispatch(setEnrollmentData(finalData));
         dispatch(setEditLocationModalOpen(!open));
-        dispatch(setValuesEdited(!valuesEdited));
+        dispatch(setEnrollmentValuesEdited(!enrollmentValuesEdited));
       }
     } else {
       if (

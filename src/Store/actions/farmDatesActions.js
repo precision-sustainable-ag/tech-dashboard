@@ -1,27 +1,27 @@
 export const setEditDatesModalOpen = (editDatesModalOpen) => {
   return {
     type: 'SET_EDIT_DATES_MODAL_OPEN',
-    payload: editDatesModalOpen, 
+    payload: editDatesModalOpen,
   };
 };
 
 export const setEditDatesModalData = (editDatesModalData) => {
   return {
     type: 'SET_EDIT_DATES_MODAL_DATA',
-    payload: editDatesModalData, 
+    payload: editDatesModalData,
   };
 };
 
 export const setFarmDatesData = (farmDatesData) => {
   return {
     type: 'SET_FARM_DATES_DATA',
-    payload: farmDatesData, 
+    payload: farmDatesData,
   };
 };
 
-export const setFarmDatesReloadNeeded = (farmDatesReloadNeeded) => {
+export const setFarmDatesValuesEdited = (farmDatesValuesEdited) => {
   return {
-    type: 'SET_FARM_DATES_RELOAD_NEEDED',
-    payload: farmDatesReloadNeeded, 
+    type: 'SET_FARM_DATES_VALUES_EDITED',
+    payload: farmDatesValuesEdited,
   };
 };

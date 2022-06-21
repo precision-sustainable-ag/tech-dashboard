@@ -36,7 +36,9 @@ const AllDataTable = (props) => {
   const { active } = props;
   const userRole = useSelector((state) => state.userInfo.role);
   const userAPIKey = useSelector((state) => state.userInfo.apikey);
-  const valuesEdited = useSelector((state) => state.sharedSiteInfo.valuesEdited);
+  const enrollmentValuesEdited = useSelector(
+    (state) => state.sharedSiteInfo.enrollmentValuesEdited,
+  );
 
   const [showTable, setShowTable] = useState(false);
   const { user } = useAuth0();
@@ -100,7 +102,7 @@ const AllDataTable = (props) => {
     };
 
     init();
-  }, [userAPIKey, userRole, valuesEdited]);
+  }, [userAPIKey, userRole, enrollmentValuesEdited]);
 
   useEffect(() => {
     const parseXHRResponse = async (data) => {
@@ -165,8 +167,8 @@ const AllDataTable = (props) => {
           tableTitle={active ? 'Contact and Location' : 'Inactive Sites-Contact and Location'}
         />
         <EditLocationModal action="update" />
-        <EditProtocolModal setSnackbarDataGlobal={setSnackbarData}/>
-        <EditCashCropModal setSnackbarDataGlobal={setSnackbarData}/>
+        <EditProtocolModal setSnackbarDataGlobal={setSnackbarData} />
+        <EditCashCropModal setSnackbarDataGlobal={setSnackbarData} />
         <ReassignDataModal />
         <UnenrollSiteModal />
         <NewIssueModal
