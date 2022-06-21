@@ -403,6 +403,7 @@ const VisualsByCode = () => {
                 activeCharts={activeCharts}
                 nodeData={nodeData}
                 tdrData={tdrData}
+                year={year}
               />
             </Grid>
           )}

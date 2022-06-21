@@ -7,50 +7,51 @@ import Highcharts from 'highcharts';
 import PropTypes from 'prop-types';
 import { CustomLoader } from '../../utils/CustomComponents';
 
-const chartOptions = {
-  time: {
-    timezoneOffset: new Date().getTimezoneOffset() * 2,
-  },
-  chart: {
-    type: 'scatter',
-    zoomType: 'xy',
-    borderColor: 'black',
-    borderWidth: 1,
-  },
-  title: {
-    text: `Volumetric Water Content`,
-  },
-  xAxis: {
-    type: 'datetime',
-    startOnTick: true,
-    endOnTick: true,
-    showLastLabel: false,
-    showFirstLabel: false,
-  },
-  yAxis: {
-    title: {
-      text: 'VWC',
-    },
-    min: 0,
-    max: 100,
-  },
-
-  series: [
-    {
-      name: 'vwc',
-      data: [],
-      tooltip: {
-        pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>',
-      },
-    },
-  ],
-};
-
-const VolumetricWater = ({ tdrData }) => {
+const VolumetricWater = ({ tdrData, year }) => {
   // const [state] = useContext(Context);
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const chartOptions = {
+    time: {
+      timezoneOffset: new Date().getTimezoneOffset() * 2,
+    },
+    chart: {
+      type: 'scatter',
+      zoomType: 'xy',
+      borderColor: 'black',
+      borderWidth: 1,
+    },
+    title: {
+      text: `Volumetric Water Content`,
+    },
+    xAxis: {
+      type: 'datetime',
+      startOnTick: false,
+      endOnTick: false,
+      showLastLabel: false,
+      showFirstLabel: false,
+      max: year === new Date().getFullYear ? Date.now() : null,
+    },
+    yAxis: {
+      title: {
+        text: 'VWC',
+      },
+      min: 0,
+      max: 100,
+    },
+
+    series: [
+      {
+        name: 'vwc',
+        data: [],
+        tooltip: {
+          pointFormat: 'Date: <b>{point.x:%Y-%m-%d %H:%M}</b><br/>vwc: <b>{point.y}</b><br/>',
+        },
+      },
+    ],
+  };
 
   // const { code, year } = useParams();
 
@@ -314,4 +315,5 @@ export default VolumetricWater;
 
 VolumetricWater.propTypes = {
   tdrData: PropTypes.array,
+  year: PropTypes.any,
 };
