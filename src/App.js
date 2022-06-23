@@ -48,7 +48,6 @@ import DevicesWrapper from './Devices/components/DevicesWrapper/DevicesWrapper';
 import FormData from './Forms/components/FormData/FormData';
 import FarmDates from './SiteInformation/FarmDates/FarmDates';
 import FarmValues from './Biomass/FarmValues/FarmValues';
-import FarmValuesDataTable from './Biomass/FarmValues/components/FarmValuesDataTable/FarmValuesDataTable';
 import SensorVisuals from './SensorVisuals/SensorVisuals';
 import VisualsByCode from './SensorVisuals/components/VisualsByCode/VisualsByCode';
 // import FarmDatesCalendar from "./SiteInformation/FarmDates/FarmDatesCalendar";
@@ -446,11 +445,6 @@ function App() {
                 <PrivateRoute
                   path={`/biomass/farm-values`}
                   render={(props) => <FarmValues {...props} />}
-                />
-                <PrivateRoute
-                  path={`/biomass/farm-values-datatable`}
-                  component={FarmValuesDataTable}
-                  exact
                 />
                 {/* Task Tracker View */}
                 <PrivateRoute path={`/task-tracker`} component={TaskTracker} exact />
