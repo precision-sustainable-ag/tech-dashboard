@@ -4,6 +4,7 @@ import { formsDataReducer } from './formsDataReducer';
 import { sharedSiteInfoReducer } from './sharedSiteInfoReducer';
 import { userInfoReducer } from './userInfoReducer';
 import { devicesReducer } from './devicesReducer';
+import { farmDatesReducer } from './farmDatesReducer';
 
 import { combineReducers } from 'redux';
 
@@ -14,4 +15,5 @@ export const allReducers = combineReducers({
   sharedSiteInfo: sharedSiteInfoReducer,
   userInfo: userInfoReducer,
   devicesData: devicesReducer,
+  farmDatesData: farmDatesReducer,
 });
