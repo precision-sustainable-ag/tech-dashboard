@@ -4,8 +4,8 @@ import { Grid, Slide, Select, MenuItem, Typography } from '@material-ui/core';
 import Loading from 'react-loading';
 import { useHistory } from 'react-router-dom';
 
-import { RenderAllowedStatesTab } from './components/RenderAllowedStatesTab';
-import { RenderIssues } from './components/RenderIssues';
+import { RenderAllowedStatesTab } from './components/RenderAllowedStatesTab/RenderAllowedStatesTab';
+import { RenderIssues } from './components/RenderIssues/RenderIssues';
 import { useSelector } from 'react-redux';
 /**
  *

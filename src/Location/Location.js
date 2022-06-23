@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 // Local Imports
 import './marker.scss';
 import { googleApiKey } from '../utils/api_secret';
-import SearchBox from './SearchBox';
+import SearchBox from './components/SearchBox/SearchBox';
 
 // Default function
 const Location = ({

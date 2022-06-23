@@ -5,7 +5,7 @@ import { Card, Chip, Grid, Icon, InputAdornment, Typography, TextField } from '@
 import { Buffer } from 'buffer';
 
 // Local Imports
-import DataParser from './DataParser';
+import DataParser from './components/DataParser/DataParser';
 import { BannedRoleMessage } from '../utils/CustomComponents';
 // import "./Devices.scss";
 import PropTypes from 'prop-types';

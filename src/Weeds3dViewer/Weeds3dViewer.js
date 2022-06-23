@@ -5,7 +5,7 @@ import { useAuth0 } from '../Auth/react-auth0-spa';
 import { Grid, Snackbar, Tooltip } from '@material-ui/core';
 import MaterialTable from 'material-table';
 import Typography from '@material-ui/core/Typography';
-import IssueDialogue from '../Comments/IssueDialogue';
+import IssueDialogue from '../Comments/components/IssueDialogue/IssueDialogue';
 import { useSelector } from 'react-redux';
 import { CustomLoader } from '../utils/CustomComponents';
 import { onfarmAPI } from '../utils/api_secret';

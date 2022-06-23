@@ -5,7 +5,7 @@ import { Buffer } from 'buffer';
 
 // Local Imports
 import { apiUsername, apiPassword, apiURL } from './api_secret';
-import { apiCorsUrl } from '../Devices/hologramConstants';
+import { apiCorsUrl } from '../Devices/shared/hologramConstants';
 
 // anyone with these roles are not supposed to view anything !
 export const bannedRoles = ['default', 'Default', 'none', ''];
