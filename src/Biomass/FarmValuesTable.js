@@ -1,128 +1,65 @@
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  withStyles,
-  IconButton,
-  makeStyles,
-} from '@material-ui/core';
+import React, { useState, useEffect } from 'react';
+import MaterialTable from 'material-table';
 import PropTypes from 'prop-types';
-import { useMemo, useEffect } from 'react';
-import { parseISO, format } from 'date-fns';
-import { Comment } from '@material-ui/icons';
+import {
+  Grid,
+  Snackbar,
+  Tooltip,
+  Select,
+  MenuItem,
+  Button,
+  OutlinedInput,
+  Checkbox,
+  ListItemText,
+  FormControl,
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import MuiAlert from '@material-ui/lab/Alert';
+import IssueDialogue from '../Comments/IssueDialogue';
 import { useAuth0 } from '../Auth/react-auth0-spa';
-import React, { useState } from 'react';
-import IssueDialogue from './../Comments/IssueDialogue';
+import Typography from '@material-ui/core/Typography';
+import styled from 'styled-components';
+import { Build } from '@material-ui/icons';
 
-const colHeaders = (unitType = 'kg/ha') => [
-  {
-    name: 'Code',
-    size: '60px',
-  },
-  {
-    name: 'Rep',
-    size: '55px',
-  },
-  {
-    name: 'Termination Date',
-    size: '135px',
-  },
-  {
-    name: 'Cover Crop Species',
-    size: '',
-  },
-  {
-    name: `Uncorrected Dry Weight (${unitType})`,
-    size: '',
-  },
-  {
-    name: `Ash-Free Dry Weight (${unitType})`,
-    size: '',
-  },
-  {
-    name: '%N by NIR',
-    size: '',
-  },
-  {
-    name: 'C:N',
-    size: '',
-  },
-  {
-    name: 'Carbohydrates %',
-    size: '',
-  },
-  {
-    name: 'Cellulose %',
-    size: '',
-  },
-  {
-    name: 'Lignin %',
-    size: '',
-  },
-];
+// Helper function
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
-const FarmValuesTable = ({
-  data = [],
-  year,
-  affiliation = 'all',
-  setSnackbarData,
-  units = 'kg/ha',
-}) => {
-  // let height = window.innerHeight;
+const CustomSelect = styled(Select)`
+  max-width: 200px;
+`;
 
-  // if (height < 900 && height > 600) {
-  //   height -= 130;
-  // } else if (height < 600) {
-  //   height -= 200;
-  // }
+const FilterGroup = styled.div`
+  height: fit-content;
+  width: fit-content;
+  padding: 5px 15px;
+  background: transparent;
+  border: solid;
+  border-width: 2px;
+  border-color: #2f7c31;
+  display: flex;
+  border-radius: 20px;
+  align-items: center;
+`;
 
-  // console.log(height);
+const useStyles = makeStyles(() => ({
+  list: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr 1fr 1fr',
+  },
+}));
 
-  const record = useMemo(() => {
-    return data
-      .filter((rec) => {
-        if (affiliation !== 'all') {
-          return parseInt(rec.year) === year && rec.affiliation === affiliation;
-        } else return parseInt(rec.year) === year;
-      })
-      .map((rec) => ({
-        ...rec,
-        uncorrected_cc_dry_biomass_kg_ha: Math.round(rec.uncorrected_cc_dry_biomass_kg_ha) || 'N/A',
-        uncorrected_cc_dry_biomass_lb_ac:
-          Math.round(rec.uncorrected_cc_dry_biomass_kg_ha * 0.8922) || 'N/A',
-        ash_corrected_cc_dry_biomass_kg_ha:
-          Math.round(rec.ash_corrected_cc_dry_biomass_kg_ha) || 'N/A',
-        ash_corrected_cc_dry_biomass_lb_ac:
-          Math.round(rec.ash_corrected_cc_dry_biomass_kg_ha * 0.8922) || 'N/A',
-        percent_n_nir: rec.percent_n_nir || 'N/A',
-        c_n_ratio: rec.CN_ratio ? parseFloat(rec.CN_ratio).toFixed(2) : 'N/A',
-        percent_carbohydrates: rec.percent_carbohydrates || 'N/A',
-        percent_cellulose: rec.percent_cellulose || 'N/A',
-        percent_lignin: rec.percent_lignin || 'N/A',
-      }))
-      .filter((data) => {
-        if (data.protocols_enrolled === '-999') {
-          return false;
-        } else return true;
-      })
-      .sort((a, b) => {
-        return b.cc_termination_date && a.cc_termination_date
-          ? new Date(b.cc_termination_date) - new Date(a.cc_termination_date)
-          : 0;
-      });
-  }, [year, data, affiliation]);
-  const [open, setOpen] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(null);
-
-  const { user } = useAuth0();
-
+const FarmValuesTable = (props) => {
+  const { data, setSnackbarData, affiliations, farmYears, snackbarData } = props;
+  const [tableData, setTableData] = useState(data);
   const { getTokenSilently } = useAuth0();
-
+  const { user } = useAuth0();
+  const [units, setUnits] = useState('kg/ha');
+  const [pickedYears, setPickedYears] = useState(['2022']);
+  const [pickedAff, setPickedAff] = useState(['All']);
   const [height, setHeight] = useState(window.innerHeight);
+  const classes = useStyles();
 
   const handleResize = () => {
     setHeight(window.innerHeight);
@@ -132,174 +69,347 @@ const FarmValuesTable = ({
     window.addEventListener('resize', handleResize, false);
   }, []);
 
-  const useStyles = makeStyles({
-  root: {
-    width: '100%',
-  },
-  container: {
-    maxHeight: height - 150,
-  },
-});
+  useEffect(() => {
+    setTableData(filterData());
+  }, [pickedYears, pickedAff]);
 
-  const classes = useStyles();
+  const tableHeaderOptions = [
+    {
+      title: 'Code',
+      field: 'code',
+      type: 'string',
+      align: 'justify',
+    },
+    {
+      field: 'subplot',
+      title: 'Rep',
+      type: 'numeric',
+    },
+    {
+      field: 'cc_termination_date',
+      title: 'Termination Date',
+      type: 'date',
+      render: (rowData) => {
+        return rowData.cc_termination_date
+          ? new Date(rowData.cc_termination_date).toLocaleDateString()
+          : 'N/A';
+      },
+    },
+    {
+      field: 'cc_species',
+      title: 'Cover Crop Species',
+      type: 'string',
+      render: (rowData) => {
+        return rowData.cc_species ? truncateCoverCrop(rowData.cc_species) : 'No Data';
+      },
+    },
+    {
+      field: 'uncorrected_cc_dry_biomass_kg_ha',
+      title: 'Uncorrected Dry Weight',
+      type: 'numeric',
+      render: (rowData) => {
+        return rowData.uncorrected_cc_dry_biomass_kg_ha
+          ? units === 'kg/ha'
+            ? Math.round(rowData.uncorrected_cc_dry_biomass_kg_ha)
+            : Math.round(rowData.uncorrected_cc_dry_biomass_kg_ha * 0.8922)
+          : 'N/A';
+      },
+    },
+    {
+      field: 'ash_corrected_cc_dry_biomass_kg_ha',
+      title: 'Ash-Free Dry Weight',
+      type: 'numeric',
+      render: (rowData) => {
+        return rowData.ash_corrected_cc_dry_biomass_kg_ha
+          ? units === 'kg/ha'
+            ? Math.round(rowData.ash_corrected_cc_dry_biomass_kg_ha)
+            : Math.round(rowData.ash_corrected_cc_dry_biomass_kg_ha * 0.8922)
+          : 'N/A';
+      },
+    },
+    {
+      field: 'percent_n_nir',
+      title: '%N by NIR',
+      type: 'numeric',
+      render: (rowData) => {
+        return rowData.percent_n_nir ? Math.round(rowData.percent_n_nir * 100) / 100 : 'N/A';
+      },
+    },
+    {
+      field: 'CN_ratio',
+      title: 'C:N',
+      type: 'numeric',
+      render: (rowData) => {
+        return rowData.CN_ratio ? Math.round(rowData.CN_ratio * 100) / 100 : 'N/A';
+      },
+    },
+    {
+      field: 'percent_carbohydrates',
+      title: 'Carb %',
+      type: 'numeric',
+      render: (rowData) => {
+        return rowData.percent_carbohydrates
+          ? Math.round(rowData.percent_carbohydrates * 100) / 100
+          : 'N/A';
+      },
+    },
+    {
+      field: 'percent_cellulose',
+      title: 'Cellulose %',
+      type: 'numeric',
+      render: (rowData) => {
+        return rowData.percent_cellulose
+          ? Math.round(rowData.percent_cellulose * 100) / 100
+          : 'N/A';
+      },
+    },
+    {
+      field: 'percent_lignin',
+      title: 'Lignin %',
+      type: 'numeric',
+      render: (rowData) => {
+        return rowData.percent_lignin ? Math.round(rowData.percent_lignin * 100) / 100 : 'N/A';
+      },
+    },
+  ];
 
-  return record.length > 0 ? (
-    <>
-      <TableContainer
-        aria-label="Biomass farm values"
-        component={Paper}
-        className={classes.container}
+  const truncateCoverCrop = (name) => {
+    return name.length <= 10 ? (
+      name
+    ) : (
+      <Tooltip title={name}>
+        <div>{name.substring(0, 10) + '...'}</div>
+      </Tooltip>
+    );
+  };
+
+  const filterData = () => {
+    const filteredYears = data.filter((row) => pickedYears.includes(row.year));
+
+    return pickedAff.includes('All')
+      ? filteredYears
+      : filteredYears.filter((row) => pickedAff.includes(row.affiliation));
+  };
+
+  const handleChangeYears = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setPickedYears(typeof value === 'string' ? value.split(',') : value);
+  };
+
+  const handleChangeAff = (event) => {
+    const {
+      target: { value },
+    } = event;
+    const pick = event.target.value[event.target.value.length - 1];
+
+    if (pick === 'All') {
+      setPickedAff(['All']);
+    } else if (pick != 'All' && value.includes('All')) {
+      const removeAll = value.filter((aff) => aff !== 'All');
+      setPickedAff(removeAll);
+    } else {
+      setPickedAff(typeof value === 'string' ? value.split(',') : value);
+    }
+  };
+
+  return (
+    <Grid item lg={12}>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        open={snackbarData.open}
+        autoHideDuration={10000}
+        onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
       >
-        <Table size="medium" stickyHeader>
-          <colgroup>
-            <col />
-            {colHeaders().map((col, index) => (
-              <col key={index} style={{ width: col.size }} />
-            ))}
-          </colgroup>
-          <RenderTableHeader units={units} />
-
-          <TableBody>
-            {record.map((record, index) => (
-              <React.Fragment key={index}>
-                <CustomTableRow>
-                  <TableCell>
-                    <IconButton
-                      aria-label="expand row"
-                      size="small"
-                      onClick={() => {
-                        !(index !== currentIndex && open) && setOpen(!open);
-                        setCurrentIndex(index);
-                      }}
-                    >
-                      {open ? <Comment /> : <Comment />}
-                    </IconButton>
-                  </TableCell>
-                  <TableCell align="left">{record.code}</TableCell>
-                  <TableCell align="right">{record.subplot}</TableCell>
-                  <TableCell align="center">
-                    {record.cc_termination_date
-                      ? format(parseISO(record.cc_termination_date), 'PP')
-                      : 'N/A'}
-                  </TableCell>
-                  <TableCell align="center">{record.cc_species || 'No Data'}</TableCell>
-                  <TableCell
-                    align="center"
-                    title={`Uncorrected cover crop dry biomass in ${units}`}
-                  >
-                    {units === 'kg/ha'
-                      ? record.uncorrected_cc_dry_biomass_kg_ha
-                      : record.uncorrected_cc_dry_biomass_lb_ac}
-                  </TableCell>
-                  <TableCell
-                    align="center"
-                    title={`Ash corrected cover crop dry biomass in ${units}`}
-                  >
-                    {units === 'kg/ha'
-                      ? record.ash_corrected_cc_dry_biomass_kg_ha
-                      : record.ash_corrected_cc_dry_biomass_lb_ac}
-                  </TableCell>
-                  <TableCell align="center">{record.percent_n_nir}</TableCell>
-                  <TableCell align="center">{record.c_n_ratio}</TableCell>
-                  <TableCell align="center">{record.percent_carbohydrates}</TableCell>
-                  <TableCell align="center">{record.percent_cellulose}</TableCell>
-                  <TableCell align="center">{record.percent_lignin}</TableCell>
-                </CustomTableRow>
-
-                {index === currentIndex && open && (
-                  <CustomTableRow key={`issue${index}`}>
-                    <TableCell colSpan="12" style={{ textAlign: 'center' }}>
-                      <IssueDialogue
-                        nickname={user.nickname}
-                        rowData={record}
-                        dataType="table"
-                        setSnackbarData={setSnackbarData}
-                        labels={[
-                          'farm-values',
-                          record.code,
-                          'Subplot ' + record.subplot.toString(),
-                          record.affiliation,
-                        ]}
-                        getTokenSilently={getTokenSilently}
-                      />
-                    </TableCell>
-                  </CustomTableRow>
-                )}
-              </React.Fragment>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </>
-  ) : (
-    <RenderEmptyTable />
+        <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
+      </Snackbar>
+      <MaterialTable
+        columns={tableHeaderOptions}
+        title={
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ paddingRight: '20px' }}>
+              <Typography
+                variant={'h6'}
+                style={{
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {'Farm Values'}
+              </Typography>
+            </div>
+            <FilterGroup>
+              <Grid container spacing={2} alignItems="center">
+                <Grid item>
+                  <Grid container spacing={1} alignItems="center">
+                    <Grid item>
+                      <Build style={{ marginTop: '5px' }} />
+                    </Grid>
+                    <Grid item>
+                      <Typography
+                        style={{
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
+                        {'Years: '}
+                      </Typography>
+                    </Grid>
+                    <Grid item>
+                      <FormControl size="small">
+                        <CustomSelect
+                          id="demo-mutiple-checkbox"
+                          multiple
+                          value={pickedYears}
+                          onChange={handleChangeYears}
+                          input={<OutlinedInput label="Tag" />}
+                          renderValue={(selected) => selected.join(', ')}
+                          MenuProps={{ classes: { list: classes.list } }}
+                        >
+                          {farmYears.map((year) => (
+                            <MenuItem key={year} value={year}>
+                              <Checkbox checked={pickedYears.includes(year)} />
+                              <ListItemText primary={year} />
+                            </MenuItem>
+                          ))}
+                        </CustomSelect>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                </Grid>
+                <Grid item>
+                  <Grid container spacing={1} alignItems="center">
+                    <Grid item>
+                      <Typography
+                        style={{
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
+                        {'Affiliations: '}
+                      </Typography>
+                    </Grid>
+                    <Grid item>
+                      <FormControl size="small">
+                        <CustomSelect
+                          id="demo-mutiple-checkbox"
+                          multiple
+                          value={pickedAff}
+                          onChange={handleChangeAff}
+                          input={<OutlinedInput label="Tag" />}
+                          renderValue={(selected) => selected.join(', ')}
+                          MenuProps={{ classes: { list: classes.list } }}
+                        >
+                          {affiliations.map((aff) => (
+                            <MenuItem key={aff} value={aff} className={aff}>
+                              <Checkbox checked={pickedAff.includes(aff)} className={aff} />
+                              <ListItemText primary={aff} />
+                            </MenuItem>
+                          ))}
+                        </CustomSelect>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                </Grid>
+                <Grid item>
+                  <Grid container spacing={1} alignItems="center">
+                    <Grid item>
+                      <Typography
+                        style={{
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
+                        {'Units: '}
+                      </Typography>
+                    </Grid>
+                    <Grid item>
+                      <Button
+                        onClick={() => {
+                          if (units === 'kg/ha') setUnits('lbs/ac');
+                          else setUnits('kg/ha');
+                        }}
+                      >
+                        {units}
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </FilterGroup>
+          </div>
+        }
+        data={tableData}
+        options={{
+          paging: false,
+          defaultExpanded: false,
+          padding: 'dense',
+          exportButton: false,
+          addRowPosition: 'last',
+          exportAllData: false,
+          groupRowSeparator: '   ',
+          grouping: true,
+          headerStyle: {
+            fontWeight: 'bold',
+            fontFamily: 'Bilo, sans-serif',
+            fontSize: '0.8em',
+            textAlign: 'left',
+            position: 'sticky',
+            top: 0,
+          },
+          rowStyle: () => ({
+            fontFamily: 'Roboto, sans-serif',
+            fontSize: '0.8em',
+            textAlign: 'left',
+          }),
+          selection: false,
+          searchAutoFocus: true,
+          toolbarButtonAlignment: 'left',
+          actionsColumnIndex: 1,
+          maxBodyHeight: height - 170,
+        }}
+        detailPanel={[
+          {
+            tooltip: 'Add Comments',
+            icon: 'comment',
+            openIcon: 'message',
+            // eslint-disable-next-line react/display-name
+            render: (rowData) => {
+              return (
+                <IssueDialogue
+                  nickname={user.nickname}
+                  rowData={rowData}
+                  dataType="table"
+                  setSnackbarData={setSnackbarData}
+                  labels={['weeds3d', rowData.code]}
+                  getTokenSilently={getTokenSilently}
+                />
+              );
+            },
+          },
+        ]}
+        components={{
+          Groupbar: () => <></>,
+        }}
+      />
+    </Grid>
   );
 };
 
-/**
- *
- * @returns Table Header
- * @param String units
- */
-
-const RenderTableHeader = ({ units = 'kg/ha' }) => (
-  <TableHead>
-    <TableRow>
-      <TableCell align="right"></TableCell>
-      {colHeaders(units).map((col, index) => (
-        <TableCell key={index} align="center">
-          {col.name}
-        </TableCell>
-      ))}
-    </TableRow>
-  </TableHead>
-);
-
-/**
- *
- * @returns Empty table
- */
-const RenderEmptyTable = () => (
-  <TableContainer component={Paper} aria-label="Empty Biomass farm values">
-    <Table size="medium">
-      <caption>No data available from API</caption>
-      <RenderTableHeader units={'kg/ha'} />
-      <TableBody>
-        <TableRow>
-          <TableCell colSpan="11" align="center" variant="body">
-            No Data
-          </TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
-  </TableContainer>
-);
-
-const CustomTableRow = withStyles((theme) => ({
-  root: {
-    // "&:nth-of-type(even)": {
-    //   backgroundColor: theme.palette.action.hover,
-    // },
-    transition: 'all 0.2s linear',
-    '&:hover': {
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
-}))(TableRow);
-
-RenderTableHeader.defaultProps = {
-  units: 'kg/ha',
-};
-RenderTableHeader.propTypes = {
-  units: PropTypes.oneOf(['kg/ha', 'lbs/ac']),
-};
+export default FarmValuesTable;
 
 FarmValuesTable.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.object).isRequired,
-  year: PropTypes.number.isRequired,
-  affiliation: PropTypes.string,
-  setSnackbarData: PropTypes.func,
-  units: PropTypes.oneOf(['kg/ha', 'lbs/ac']),
+  data: PropTypes.array,
+  farmYears: PropTypes.array,
+  affiliations: PropTypes.array,
+  setSnackbarData: PropTypes.any,
+  snackbarData: PropTypes.any,
 };
-
-export default FarmValuesTable;

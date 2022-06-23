@@ -499,18 +499,6 @@ export default function Header(props) {
               >
                 <ListItemText inset primary={'Farm Values'} />
               </ListItem>
-              <ListItem
-                onClick={() => {
-                  setOpenNav({ ...openNav, biomass: !openNav.biomass });
-                  setOpen(false);
-                }}
-                button
-                key={'Farm Values Datatable'}
-                component={Link}
-                to="/biomass/farm-values-datatable"
-              >
-                <ListItemText inset primary={'Farm Values Datatable'} />
-              </ListItem>
             </List>
           </Collapse>
           <ListItem
