@@ -15,6 +15,7 @@ const TabCharts = (props) => {
     activeCharts,
     // nodeData,
     tdrData,
+    year,
   } = props;
 
   if (activeCharts === 'gateway') {
@@ -31,7 +32,7 @@ const TabCharts = (props) => {
               <NodeVoltage />
               {gatewayData.length > 0 && (
                 <Grid item xs={12}>
-                  <GatewayChart data={gatewayData} />
+                  <GatewayChart data={gatewayData} year={year} />
                 </Grid>
               )}
             </Grid>
@@ -52,7 +53,7 @@ const TabCharts = (props) => {
                   VWC
                 </Typography>
               </Grid>
-              <VolumetricWater tdrData={tdrData} />
+              <VolumetricWater tdrData={tdrData} year={year} />
             </Grid>
           </Grid>
         ) : (
@@ -71,7 +72,7 @@ const TabCharts = (props) => {
                   Soil Temperature
                 </Typography>
               </Grid>
-              <SoilTemp tdrData={tdrData} />
+              <SoilTemp tdrData={tdrData} year={year} />
             </Grid>
 
             <Grid item container spacing={3}>
@@ -100,6 +101,7 @@ TabCharts.propTypes = {
   activeCharts: PropTypes.string,
   nodeData: PropTypes.array,
   tdrData: PropTypes.array,
+  year: PropTypes.any,
 };
 
 export default TabCharts;

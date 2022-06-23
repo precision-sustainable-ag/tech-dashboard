@@ -15,7 +15,7 @@ import Axios from 'axios';
 // Local Imports
 import { apiURL, apiUsername, apiPassword } from '../../utils/api_secret';
 import { useSelector, useDispatch } from 'react-redux';
-import { setUnenrollOpen, setValuesEdited } from '../../Store/actions';
+import { setUnenrollOpen, setEnrollmentValuesEdited } from '../../Store/actions';
 
 //Global Vars
 const qs = require('qs');
@@ -24,7 +24,9 @@ const qs = require('qs');
 const UnenrollSiteModal = () => {
   const open = useSelector((state) => state.tableData.unenrollOpen);
   const unenrollRowData = useSelector((state) => state.tableData.unenrollRowData);
-  const valuesEdited = useSelector((state) => state.sharedSiteInfo.valuesEdited);
+  const enrollmentValuesEdited = useSelector(
+    (state) => state.sharedSiteInfo.enrollmentValuesEdited,
+  );
   const [confirmText, setConfirmText] = useState('');
   const [confirmBtnStatus, setConfirmBtnStatus] = useState('Confirm');
   const dispatch = useDispatch();
@@ -50,7 +52,7 @@ const UnenrollSiteModal = () => {
       .then((response) => {
         if (response.data.data) {
           dispatch(setUnenrollOpen(!open));
-          dispatch(setValuesEdited(!valuesEdited));
+          dispatch(setEnrollmentValuesEdited(!enrollmentValuesEdited));
         } else {
           console.error(response.data);
         }

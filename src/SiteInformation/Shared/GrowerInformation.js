@@ -17,7 +17,11 @@ import { NewSiteInfo } from './NewSiteInfo';
 import { useAuth0 } from '../../Auth/react-auth0-spa';
 import MuiAlert from '@material-ui/lab/Alert';
 import { useDispatch, useSelector } from 'react-redux';
-import { setReassignSiteModalOpen, setValuesEdited, setEnrollmentData } from '../../Store/actions';
+import {
+  setReassignSiteModalOpen,
+  setEnrollmentValuesEdited,
+  setEnrollmentData,
+} from '../../Store/actions';
 import ExistingGrowersGrid from './ExistingGrowersGrid';
 import { saveNewGrowerAndFetchProducerId, fetchGrowerByLastName, updateSite } from './functions';
 
@@ -46,7 +50,9 @@ const GrowerInformation = ({ editSite }) => {
   const reassignSiteModalData = useSelector((state) => state.tableData.reassignSiteModalData);
   const enrollmentData = useSelector((state) => state.enrollmentData.data);
   const userInfo = useSelector((state) => state.userInfo);
-  const valuesEdited = useSelector((state) => state.sharedSiteInfo.valuesEdited);
+  const enrollmentValuesEdited = useSelector(
+    (state) => state.sharedSiteInfo.enrollmentValuesEdited,
+  );
 
   const handleNewGrowerInfo = () => {
     if (window.confirm('Are you sure you want to save this grower?')) {
@@ -307,7 +313,7 @@ const GrowerInformation = ({ editSite }) => {
                     .finally(() => {
                       setTimeout(() => {
                         dispatch(setReassignSiteModalOpen(!reassignSiteModalOpen));
-                        dispatch(setValuesEdited(!valuesEdited));
+                        dispatch(setEnrollmentValuesEdited(!enrollmentValuesEdited));
                       }, 2500);
                     });
                 }}
