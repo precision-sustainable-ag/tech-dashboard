@@ -3,7 +3,7 @@ import { Grid, Snackbar } from '@material-ui/core';
 // import { Context } from '../Store/Store';
 import MaterialTable from 'material-table';
 import { bannedRoles } from '../utils/constants';
-import IssueDialogue from '../Comments/IssueDialogue';
+import IssueDialogue from '../Comments/components/IssueDialogue/IssueDialogue';
 import { BannedRoleMessage, CustomLoader } from '../utils/CustomComponents';
 import { apiPassword, apiURL, apiUsername, onfarmAPI } from '../utils/api_secret';
 import { useAuth0 } from '../Auth/react-auth0-spa';
@@ -100,8 +100,8 @@ const ProducerInformation = () => {
   };
 
   useEffect(() => {
-    window.addEventListener("resize", handleResize, false);
-  },[]);
+    window.addEventListener('resize', handleResize, false);
+  }, []);
 
   // scale height
   // if (height < 900 && height > 600) {

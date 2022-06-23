@@ -3,14 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { Typography, Grid, List, Paper } from '@material-ui/core';
 
 // Local Imports
-import getAllKoboAssets from './KoboFormAuth';
-import FormsLoadingSkeleton from './FormsLoadingSkeleton';
+import getAllKoboAssets from './components/KoboFormAuth/KoboFormAuth';
+import FormsLoadingSkeleton from './components/FormsLoadingSkeleton/FormsLoadingSkeleton';
 // import { Context } from '../Store/Store';
 import { bannedRoles } from '../utils/constants';
 
 import { BannedRoleMessage } from '../utils/CustomComponents';
 
-import FormsStatus from './components/FormsStatus';
+import FormsStatus from './components/FormsStatus/FormsStatus';
 import { useSelector } from 'react-redux';
 
 // Default function

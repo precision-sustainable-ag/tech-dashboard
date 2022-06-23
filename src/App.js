@@ -25,36 +25,36 @@ import { Switch, Route } from 'react-router-dom';
 
 import { Check, Clear, Replay, WifiOff } from '@material-ui/icons';
 
-import DeviceEnroll from './Devices/Device-Enroll/DeviceEnroll';
-import WaterSensorByGateway from './Devices/WaterSensorData/WaterSensorByGateway';
+import DeviceEnroll from './Devices/components/DeviceEnroll/DeviceEnroll';
+import WaterSensorByGateway from './Devices/components/WaterSensorByGateway/WaterSensorByGateway';
 import SiteEnrollment from './SiteInformation/Enrollment/SiteEnrollment';
 import PageNotFound from './PageNotFound';
 import AllDataTable from './SiteInformation/ContactAndLocation/AllDataTable';
 
-import DeviceComponent from './Devices/Device/Device';
+import DeviceComponent from './Devices/components/Device/Device';
 
 import Header from './Header/Header';
 
 import Issues from './Issues/Issues';
-import Issue from './Issues/Issue';
+import Issue from './Issues/components/Issue/Issue';
 import Forms from './Forms/Forms';
 
 // const Forms = lazy(() => "./Forms/Forms");
 
-import StressCams from './Devices/StressCams/StressCams';
-import WaterSensors from './Devices/WaterSensors/WaterSensors';
-import DevicesWrapper from './Devices/DevicesWrapper/DevicesWrapper';
+import StressCams from './Devices/components/StressCams/StressCams';
+import WaterSensors from './Devices/components/WaterSensors/WaterSensors';
+import DevicesWrapper from './Devices/components/DevicesWrapper/DevicesWrapper';
 
-import FormData from './Forms/components/FormData';
+import FormData from './Forms/components/FormData/FormData';
 import FarmDates from './SiteInformation/FarmDates/FarmDates';
-import FarmValues from './Biomass/FarmValues';
-import FarmValuesDataTable from './Biomass/FarmValuesDataTable';
+import FarmValues from './Biomass/FarmValues/FarmValues';
+import FarmValuesDataTable from './Biomass/FarmValues/components/FarmValuesDataTable/FarmValuesDataTable';
 import SensorVisuals from './SensorVisuals/SensorVisuals';
-import VisualsByCode from './SensorVisuals/Components/VisualsByCode';
+import VisualsByCode from './SensorVisuals/components/VisualsByCode/VisualsByCode';
 // import FarmDatesCalendar from "./SiteInformation/FarmDates/FarmDatesCalendar";
 import Profile from './Profile/Profile';
 
-import FarmDatesCalendar from './SiteInformation/FarmDates/FarmDatesCalendar';
+import FarmDatesCalendar from './SiteInformation/FarmDates/components/FarmDatesCalendar/FarmDatesCalendar';
 
 import ProducerInformation from './ProducerInformation/ProducerInformation';
 
@@ -66,7 +66,7 @@ import DecompBag from './DecompBag/DecompBag';
 import Debug from './Debug/Debug';
 import axios from 'axios';
 import { apiPassword, apiUsername, onfarmAPI, onfarmStaticApiKey } from './utils/api_secret';
-import { apiCorsUrl, APIURL } from './Devices/hologramConstants';
+import { apiCorsUrl, APIURL } from './Devices/shared/hologramConstants';
 import QueryString from 'qs';
 import StressCamVisuals from './StressCamVisuals/StressCamVisuals';
 import { toggleIsDarkTheme } from './Store/actions';
@@ -447,7 +447,11 @@ function App() {
                   path={`/biomass/farm-values`}
                   render={(props) => <FarmValues {...props} />}
                 />
-                <PrivateRoute path={`/biomass/farm-values-datatable`} component={FarmValuesDataTable} exact />
+                <PrivateRoute
+                  path={`/biomass/farm-values-datatable`}
+                  component={FarmValuesDataTable}
+                  exact
+                />
                 {/* Task Tracker View */}
                 <PrivateRoute path={`/task-tracker`} component={TaskTracker} exact />
                 <PrivateRoute path={`/weeds-3d-viewer`} component={Weeds3dViewer} exact />

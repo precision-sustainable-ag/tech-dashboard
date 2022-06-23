@@ -1,7 +1,7 @@
 import React, { useState, Fragment } from 'react';
 import { Button, Snackbar } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
-import FormEditorModal from './FormEditorModal';
+import FormEditorModal from '../FormEditorModal/FormEditorModal';
 import { PropTypes } from 'prop-types';
 import { useAuth0 } from '../../../Auth/react-auth0-spa';
 import MuiAlert from '@material-ui/lab/Alert';

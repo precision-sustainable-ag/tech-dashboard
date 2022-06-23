@@ -40,7 +40,7 @@ import {
 } from '@material-ui/icons';
 import Axios from 'axios';
 import PropTypes from 'prop-types';
-import SwitchesGroup from './Switch';
+import SwitchesGroup from './components/Switch/Switch';
 
 // Local Imports
 import { apiPassword, apiUsername, apiURL } from '../utils/api_secret';

@@ -7,18 +7,18 @@ import { useSelector } from 'react-redux';
 
 // Local Imports
 import { bannedRoles } from '../../utils/constants';
-import EditLocationModal from '../Shared/EditLocationModal';
-import UnenrollSiteModal from './UnenrollSiteModal';
-import EditProtocolModal from './EditProtocolsModal';
-import NewIssueModal from './NewIssueModal';
-import ReassignDataModal from './ReassignDataModal';
-import MapModal from './MapModal';
+import EditLocationModal from '../Shared/EditLocationModal/EditLocationModal';
+import UnenrollSiteModal from './components/UnenrollSiteModal/UnenrollSiteModal';
+import EditProtocolModal from './components/EditProtocolsModal/EditProtocolsModal';
+import NewIssueModal from './components/NewIssueModal/NewIssueModal';
+import ReassignDataModal from './components/ReassignDataModal/ReassignDataModal';
+import MapModal from './components/MapModal/MapModal';
 import { BannedRoleMessage } from '../../utils/CustomComponents';
 import { onfarmAPI } from '../../utils/api_secret';
 import { useAuth0 } from '../../Auth/react-auth0-spa';
-import TableModal from './TableModal';
+import TableModal from './components/TableModal/TableModal';
 import PropTypes from 'prop-types';
-import EditCashCropModal from './EditCashCropModal';
+import EditCashCropModal from './components/EditCashCropModal/EditCashCropModal';
 
 const siteInfoAPI_URL = `${onfarmAPI}/raw?output=json&table=site_information&options=showtest, include_unenrolled_sites`;
 
