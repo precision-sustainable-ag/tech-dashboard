@@ -20,10 +20,12 @@ const EditDatesModal = ({ setSnackbarDataGlobal }) => {
   const editDatesModalOpen = useSelector((state) => state.farmDatesData.editDatesModalOpen);
   const [datesDict, setDatesDict] = useState({
     coverCropPlanting: 'undefined',
+    biomassHarvest: 'undefined',
     coverCropTermination: 'undefined',
     cashPlanting: 'undefined',
   });
   const [farmCode, setFarmCode] = useState();
+  //const [updatesSuccessful, setUpdatesSuccessful] = useState(false);
   const { getTokenSilently } = useAuth0();
   const dispatch = useDispatch();
 
@@ -32,6 +34,7 @@ const EditDatesModal = ({ setSnackbarDataGlobal }) => {
     setFarmCode(editDatesModalData.code);
     setDatesDict({
       coverCropPlanting: editDatesModalData.cover_planting,
+      biomassHarvest: editDatesModalData.biomass_harvest,
       coverCropTermination: editDatesModalData.cover_termination,
       cashPlanting: editDatesModalData.cash_planting,
     });
@@ -50,10 +53,16 @@ const EditDatesModal = ({ setSnackbarDataGlobal }) => {
       case 1:
         setDatesDict({
           ...datesDict,
-          coverCropTermination: data,
+          biomassHarvest: data,
         });
         break;
       case 2:
+        setDatesDict({
+          ...datesDict,
+          coverCropTermination: data,
+        });
+        break;
+      case 3:
         setDatesDict({
           ...datesDict,
           cashPlanting: data,
@@ -71,8 +80,56 @@ const EditDatesModal = ({ setSnackbarDataGlobal }) => {
 
   //handles submit
   const handleEditDatesModalSubmit = () => {
-    //set data to be submitted to API
-    const data = {
+    setSnackbarDataGlobal({
+      open: true,
+      text: 'Submitting...',
+      severity: 'info',
+    });
+    const biomassData1A = {
+      values: {
+        recovery_date: datesDict.biomassHarvest,
+      },
+      conditions: {
+        code: farmCode,
+        subplot: 1,
+        subsample: 'A',
+        time: 0,
+      },
+    };
+    const biomassData1B = {
+      values: {
+        recovery_date: datesDict.biomassHarvest,
+      },
+      conditions: {
+        code: farmCode,
+        subplot: 1,
+        subsample: 'B',
+        time: 0,
+      },
+    };
+    const biomassData2A = {
+      values: {
+        recovery_date: datesDict.biomassHarvest,
+      },
+      conditions: {
+        code: farmCode,
+        subplot: 2,
+        subsample: 'A',
+        time: 0,
+      },
+    };
+    const biomassData2B = {
+      values: {
+        recovery_date: datesDict.biomassHarvest,
+      },
+      conditions: {
+        code: farmCode,
+        subplot: 2,
+        subsample: 'B',
+        time: 0,
+      },
+    };
+    const farmHistoryData = {
       values: {
         cc_planting_date: datesDict.coverCropPlanting,
         cc_termination_date: datesDict.coverCropTermination,
@@ -82,19 +139,59 @@ const EditDatesModal = ({ setSnackbarDataGlobal }) => {
         code: farmCode,
       },
     };
-    callAzureFunction(data, 'crowndb/farm_history', 'POST', getTokenSilently).then((res) => {
-      if (res.response && res.response.status === 201) {
-        dispatch(setFarmDatesValuesEdited(!farmDatesValuesEdited));
-        setSnackbarDataGlobal({
-          open: true,
-          text: 'Dates Edit Was Successful!',
-          severity: 'success',
-        });
-        handleEditDatesModalClose();
+
+    Promise.all([
+      callAzureFunction(biomassData1A, 'crowndb/decomp_biomass_dry', 'POST', getTokenSilently),
+      callAzureFunction(biomassData1B, 'crowndb/decomp_biomass_dry', 'POST', getTokenSilently),
+      callAzureFunction(biomassData2A, 'crowndb/decomp_biomass_dry', 'POST', getTokenSilently),
+      callAzureFunction(biomassData2B, 'crowndb/decomp_biomass_dry', 'POST', getTokenSilently),
+      callAzureFunction(farmHistoryData, 'crowndb/farm_history', 'POST', getTokenSilently),
+    ]).then((values) => {
+      if (values[0].response && values[0].response.status === 201) {
+        if (values[1].response && values[1].response.status === 201) {
+          if (values[2].response && values[2].response.status === 201) {
+            if (values[3].response && values[3].response.status === 201) {
+              if (values[4].response && values[4].response.status === 201) {
+                setSnackbarDataGlobal({
+                  open: true,
+                  text: 'Dates Edit Was Successful!',
+                  severity: 'success',
+                });
+                dispatch(setFarmDatesValuesEdited(!farmDatesValuesEdited));
+                console.log(farmDatesValuesEdited);
+                handleEditDatesModalClose();
+              } else {
+                setSnackbarDataGlobal({
+                  open: true,
+                  text: 'ERROR. All biomass dates added. Update failed at farm history dates',
+                  severity: 'error',
+                });
+              }
+            } else {
+              setSnackbarDataGlobal({
+                open: true,
+                text: 'ERROR. Biomass subplots/subtables 1A,1B,2A added. Update failed at subplot/subtable 2B',
+                severity: 'error',
+              });
+            }
+          } else {
+            setSnackbarDataGlobal({
+              open: true,
+              text: 'ERROR. Biomass subplots/subtables 1A,1B added. Update failed at subplot/subtable 2A',
+              severity: 'error',
+            });
+          }
+        } else {
+          setSnackbarDataGlobal({
+            open: true,
+            text: 'ERROR. Biomass subplot/subtable 1A added. Update failed at subplot/subtable 1B',
+            severity: 'error',
+          });
+        }
       } else {
         setSnackbarDataGlobal({
           open: true,
-          text: 'Dates Edit Was Unsuccessful',
+          text: 'ERROR. No dates added. Update failed at biomass subplot/subtable 1A',
           severity: 'error',
         });
       }
@@ -112,7 +209,7 @@ const EditDatesModal = ({ setSnackbarDataGlobal }) => {
               Planting in the text fields below.
             </DialogContentText>
           </Grid>
-          <Grid item xs={12} sm={12} md={4} lg={4}>
+          <Grid item xs={12} sm={12} md={3} lg={3}>
             <TextField
               color="primary"
               value={datesDict.coverCropPlanting}
@@ -127,7 +224,22 @@ const EditDatesModal = ({ setSnackbarDataGlobal }) => {
               InputLabelProps={{ shrink: true }}
             />
           </Grid>
-          <Grid item xs={12} sm={12} md={4} lg={4}>
+          <Grid item xs={12} sm={12} md={3} lg={3}>
+            <TextField
+              color="primary"
+              value={datesDict.biomassHarvest}
+              disabled={
+                datesDict.biomassHarvest == null || datesDict.biomassHarvest === 'undefined'
+              }
+              onChange={(data) => updateDate(1, data.target.value)}
+              type="date"
+              id="Biomass Harvest"
+              label="Biomass Harvest"
+              variant="outlined"
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={12} md={3} lg={3}>
             <TextField
               color="primary"
               value={datesDict.coverCropTermination}
@@ -135,7 +247,7 @@ const EditDatesModal = ({ setSnackbarDataGlobal }) => {
                 datesDict.coverCropTermination == null ||
                 datesDict.coverCropTermination === 'undefined'
               }
-              onChange={(data) => updateDate(1, data.target.value)}
+              onChange={(data) => updateDate(2, data.target.value)}
               type="date"
               id="Cover Crop Termination"
               label="Cover Crop Temination"
@@ -143,12 +255,12 @@ const EditDatesModal = ({ setSnackbarDataGlobal }) => {
               InputLabelProps={{ shrink: true }}
             />
           </Grid>
-          <Grid item xs={12} sm={12} md={4} lg={4}>
+          <Grid item xs={12} sm={12} md={3} lg={3}>
             <TextField
               color="primary"
               value={datesDict.cashPlanting}
               disabled={datesDict.cashPlanting == null || datesDict.cashPlanting === 'undefined'}
-              onChange={(data) => updateDate(2, data.target.value)}
+              onChange={(data) => updateDate(3, data.target.value)}
               type="date"
               id="Cash Planting"
               label="Cash Planting"
