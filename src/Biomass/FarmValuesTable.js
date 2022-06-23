@@ -111,7 +111,7 @@ const FarmValuesTable = (props) => {
         return rowData.uncorrected_cc_dry_biomass_kg_ha
           ? units === 'kg/ha'
             ? Math.round(rowData.uncorrected_cc_dry_biomass_kg_ha)
-            : Math.round(rowData.uncorrected_cc_dry_biomass_kg_ha * 0.892179)
+            : Math.round(rowData.uncorrected_cc_dry_biomass_kg_ha * 0.8922)
           : 'N/A';
       },
     },
@@ -123,7 +123,7 @@ const FarmValuesTable = (props) => {
         return rowData.ash_corrected_cc_dry_biomass_kg_ha
           ? units === 'kg/ha'
             ? Math.round(rowData.ash_corrected_cc_dry_biomass_kg_ha)
-            : Math.round(rowData.ash_corrected_cc_dry_biomass_kg_ha * 0.892179)
+            : Math.round(rowData.ash_corrected_cc_dry_biomass_kg_ha * 0.8922)
           : 'N/A';
       },
     },
@@ -202,7 +202,16 @@ const FarmValuesTable = (props) => {
     const {
       target: { value },
     } = event;
-    setPickedAff(typeof value === 'string' ? value.split(',') : value);
+    const pick = event.target.value[event.target.value.length - 1];
+
+    if (pick === 'All') {
+      setPickedAff(['All']);
+    } else if (pick != 'All' && value.includes('All')) {
+      const removeAll = value.filter((aff) => aff !== 'All');
+      setPickedAff(removeAll);
+    } else {
+      setPickedAff(typeof value === 'string' ? value.split(',') : value);
+    }
   };
 
   return (
@@ -299,12 +308,8 @@ const FarmValuesTable = (props) => {
                           MenuProps={{ classes: { list: classes.list } }}
                         >
                           {affiliations.map((aff) => (
-                            <MenuItem
-                              key={aff}
-                              value={aff}
-                              disabled={aff !== 'All' && pickedAff.includes('All')}
-                            >
-                              <Checkbox checked={pickedAff.includes(aff)} />
+                            <MenuItem key={aff} value={aff} className={aff}>
+                              <Checkbox checked={pickedAff.includes(aff)} className={aff} />
                               <ListItemText primary={aff} />
                             </MenuItem>
                           ))}
