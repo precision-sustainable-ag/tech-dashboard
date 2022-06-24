@@ -41,7 +41,7 @@ const EditDatesModal = ({ setSnackbarDataGlobal }) => {
   }, [editDatesModalData]);
 
   //updates the dictionary with the passed data based on which column is selected
-  //0=coverCropPlanting, 1=coverCropTermination, 2=cashPlanting
+  //0=coverCropPlanting, 1=biomassHarvest, 2=coverCropTermination, 3=cashPlanting
   const updateDate = (col, data) => {
     switch (col) {
       case 0:
@@ -158,7 +158,6 @@ const EditDatesModal = ({ setSnackbarDataGlobal }) => {
                   severity: 'success',
                 });
                 dispatch(setFarmDatesValuesEdited(!farmDatesValuesEdited));
-                console.log(farmDatesValuesEdited);
                 handleEditDatesModalClose();
               } else {
                 setSnackbarDataGlobal({
@@ -205,8 +204,9 @@ const EditDatesModal = ({ setSnackbarDataGlobal }) => {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <DialogContentText>
-              Please enter the new dates for Cover Crop Planting, Cover Crop Termination, and Cash
-              Planting in the text fields below.
+              Please enter the new dates for Cover Crop Planting, Biomass Harvest, Cover Crop
+              Termination, and Cash Planting in the text fields below. If you need to change a bag
+              pickup timing, leave a comment.
             </DialogContentText>
           </Grid>
           <Grid item xs={12} sm={12} md={3} lg={3}>
