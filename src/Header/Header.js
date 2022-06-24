@@ -40,7 +40,7 @@ import {
 } from '@material-ui/icons';
 import Axios from 'axios';
 import PropTypes from 'prop-types';
-import SwitchesGroup from './Switch';
+import SwitchesGroup from './components/Switch/Switch';
 
 // Local Imports
 import { apiPassword, apiUsername, apiURL } from '../utils/api_secret';
@@ -498,18 +498,6 @@ export default function Header(props) {
                 to="/biomass/farm-values"
               >
                 <ListItemText inset primary={'Farm Values'} />
-              </ListItem>
-              <ListItem
-                onClick={() => {
-                  setOpenNav({ ...openNav, biomass: !openNav.biomass });
-                  setOpen(false);
-                }}
-                button
-                key={'Farm Values Datatable'}
-                component={Link}
-                to="/biomass/farm-values-datatable"
-              >
-                <ListItemText inset primary={'Farm Values Datatable'} />
               </ListItem>
             </List>
           </Collapse>

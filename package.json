@@ -28,7 +28,6 @@
     "material-table": "^1.69.3",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.34",
-    "mui-datatables": "^3.8.2",
     "nth-check": "^2.1.1",
     "path": "^0.12.7",
     "qs": "^6.10.3",
@@ -49,7 +48,7 @@
     "styled-components": "^5.3.3"
   },
   "scripts": {
-    "start": "GENERATE_SOURCEMAP=false react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom --coverage",
     "eject": "react-scripts eject",

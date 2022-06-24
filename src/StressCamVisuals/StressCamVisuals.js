@@ -4,9 +4,9 @@ import { Grid, Box, Tab, Typography } from '@material-ui/core';
 import { TabList, TabContext } from '@material-ui/lab';
 import { useHistory } from 'react-router-dom';
 import { onfarmAPI } from '../utils/api_secret';
-import CPUHealthChart from './CPUHealthChart';
-import SDSpaceChart from './SDSpaceChart';
-import ProbabilitiesChart from './ProbabilitiesChart';
+import CPUHealthChart from './components/CPUHealthChart/CPUHealthChart';
+import SDSpaceChart from './components/SDSpaceChart/SDSpaceChart';
+import ProbabilitiesChart from './components/ProbabilitiesChart/ProbabilitiesChart';
 
 const StressCamVisuals = (/* props */) => {
   const history = useHistory();

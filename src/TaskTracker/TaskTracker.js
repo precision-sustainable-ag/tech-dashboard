@@ -10,7 +10,6 @@ import {
 } from '@material-ui/core';
 import { ExpandMore } from '@material-ui/icons';
 import React, { useState, useEffect, Fragment } from 'react';
-// import { Context } from '../Store/Store';
 import { onfarmAPI } from '../utils/api_secret';
 import {
   BannedRoleMessage,
@@ -20,8 +19,9 @@ import {
 } from '../utils/CustomComponents';
 import { uniqueYears } from '../utils/SharedFunctions';
 import MuiAlert from '@material-ui/lab/Alert';
-import TaskTrackerCard from './TaskTrackerCard';
+import TaskTrackerCard from './components/TaskTrackerCard/TaskTrackerCard';
 import { useSelector } from 'react-redux';
+
 // Helper function
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
