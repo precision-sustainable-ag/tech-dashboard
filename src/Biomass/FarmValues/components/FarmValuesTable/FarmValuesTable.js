@@ -13,7 +13,7 @@ import {
   FormControl,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import IssueDialogue from '../../../../Comments/components/IssueDialogue/IssueDialogue.js';
+import IssueDialogue from '../../../../Comments/components/IssueDialogue/IssueDialogue';
 import { useAuth0 } from '../../../../Auth/react-auth0-spa';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
