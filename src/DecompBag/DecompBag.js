@@ -4,7 +4,7 @@ import { Grid, Snackbar } from '@material-ui/core';
 import { onfarmAPI } from '../utils/api_secret';
 // import { Context } from '../Store/Store';
 import { CustomLoader } from '../utils/CustomComponents';
-import IssueDialogue from '../Comments/IssueDialogue';
+import IssueDialogue from '../Comments/components/IssueDialogue/IssueDialogue';
 import { useAuth0 } from '../Auth/react-auth0-spa';
 import MaterialTable from 'material-table';
 import Typography from '@material-ui/core/Typography';

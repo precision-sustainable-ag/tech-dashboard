@@ -1,7 +1,7 @@
-export const setValuesEdited = (valuesEdited) => {
+export const setEnrollmentValuesEdited = (enrollmentValuesEdited) => {
   return {
-    type: 'SET_VALUES_EDITED',
-    payload: valuesEdited,
+    type: 'SET_ENROLLMENT_VALUES_EDITED',
+    payload: enrollmentValuesEdited,
   };
 };
 
