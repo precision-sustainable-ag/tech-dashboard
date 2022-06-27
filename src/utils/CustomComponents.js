@@ -12,8 +12,9 @@ import {
   Grid,
   Button,
 } from '@material-ui/core';
-import Loading from 'react-loading';
+//import Loading from 'react-loading';
 import { useSelector } from 'react-redux';
+import PSALoader from './PSALoader';
 // Local Imports
 import { primaryContactPerson } from './api_secret';
 // import { Context } from '../Store/Store';
@@ -127,8 +128,12 @@ BannedRoleMessage.propTypes = {
   title: PropTypes.string.isRequired,
 };
 
-export const CustomLoader = ({ width, height, color }) => {
-  return <Loading type="bars" width={width} height={height} color={color} />;
+// export const CustomLoader = ({ width, height, color }) => {
+//   return <Loading type="bars" width={width} height={height} color={color} />;
+// };
+
+export const CustomLoader = () => {
+  return <PSALoader />;
 };
 
 CustomLoader.propTypes = {

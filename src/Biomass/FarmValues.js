@@ -93,7 +93,6 @@ const FarmValues = () => {
           <Grid item container xs={12}>
             <FarmValuesTable
               data={farmValues}
-              snackbarData={snackbarData}
               setSnackbarData={setSnackbarData}
               farmYears={farmYears}
               affiliations={affiliations}
