@@ -7,7 +7,7 @@ import { CustomLoader } from '../utils/CustomComponents';
 import YearsChips from '../utils/YearsChips';
 import AffiliationsChips from '../utils/AffiliationsChips';
 import { groupBy } from '../utils/constants';
-import FarmCodeCard from './components/FarmCodeCard/FarmCodeCard';
+import FarmCodeCard from './components/FarmCodeCard';
 import { Search } from '@material-ui/icons';
 import { useHistory } from 'react-router-dom';
 import { green, grey } from '@material-ui/core/colors';
