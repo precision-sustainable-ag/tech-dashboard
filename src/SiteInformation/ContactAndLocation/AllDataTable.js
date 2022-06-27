@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 
 // Local Imports
 import { bannedRoles } from '../../utils/constants';
-import EditLocationModal from '../shared/EditLocationModal/EditLocationModal';
+import EditLocationModal from '../Shared/EditLocationModal/EditLocationModal';
 import UnenrollSiteModal from './components/UnenrollSiteModal/UnenrollSiteModal';
 import EditProtocolModal from './components/EditProtocolsModal/EditProtocolsModal';
 import NewIssueModal from './components/NewIssueModal/NewIssueModal';

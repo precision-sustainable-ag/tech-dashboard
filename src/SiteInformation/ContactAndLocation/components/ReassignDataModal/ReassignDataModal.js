@@ -9,7 +9,7 @@ import {
   Select,
   MenuItem,
 } from '@material-ui/core';
-import EnrollNewSite from '../../../shared/EnrollNewSite/EnrollNewSite';
+import EnrollNewSite from '../../../Shared/EnrollNewSite/EnrollNewSite';
 import { useSelector, useDispatch } from 'react-redux';
 import { setReassignSiteModalOpen } from '../../../../Store/actions';
 

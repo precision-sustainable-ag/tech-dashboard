@@ -8,8 +8,8 @@ import { setEnrollNewSite, setSavedData } from '../../Store/actions';
 // Local Imports
 import { bannedRoles } from '../../utils/constants';
 import { BannedRoleMessage, CustomLoader } from '../../utils/CustomComponents';
-import EnrollNewSite from '../shared/EnrollNewSite/EnrollNewSite';
-import { getStats } from '../shared/functions';
+import EnrollNewSite from '../Shared/EnrollNewSite/EnrollNewSite';
+import { getStats } from '../Shared/functions';
 
 // Default function
 const SiteEnrollment = () => {
