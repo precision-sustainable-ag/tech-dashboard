@@ -16,7 +16,7 @@ const CreateNewIssue = (props) => {
   // const [state] = useContext(Context);
   const formName = useSelector((state) => state.formsData.name);
   const formType = useSelector((state) => state.formsData.type);
-  const affiliationLookup = useSelector((state) => state.affiliationLookup);
+  const affiliationLookup = useSelector((state) => state.formsData.affiliationLookup);
   const [showNewIssueDialog, setShowNewIssueDialog] = useState(false);
   const [newIssueData, setNewIssueData] = useState({});
   const [activeIssueIndex, setActiveIssueIndex] = useState(null);
