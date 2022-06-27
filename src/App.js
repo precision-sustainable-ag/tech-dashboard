@@ -49,7 +49,7 @@ import FormData from './Forms/components/FormData/FormData';
 import FarmDates from './SiteInformation/FarmDates/FarmDates';
 import FarmValues from './Biomass/FarmValues/FarmValues';
 import SensorVisuals from './SensorVisuals/SensorVisuals';
-import VisualsByCode from './SensorVisuals/Components/VisualsByCode/VisualsByCode';
+import VisualsByCode from './SensorVisuals/components/VisualsByCode/VisualsByCode';
 // import FarmDatesCalendar from "./SiteInformation/FarmDates/FarmDatesCalendar";
 import Profile from './Profile/Profile';
 

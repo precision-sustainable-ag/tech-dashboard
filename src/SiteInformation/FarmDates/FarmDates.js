@@ -6,7 +6,7 @@ import { BannedRoleMessage, CustomLoader } from '../../utils/CustomComponents';
 import { useAuth0 } from '../../Auth/react-auth0-spa';
 import MuiAlert from '@material-ui/lab/Alert';
 import FarmDatesDropdown from './components/FarmDatesDropdown/FarmDatesDropdown';
-import { fetchFarmDatesFromApi, makeDateObjects } from '../Shared/functions';
+import { fetchFarmDatesFromApi, makeDateObjects } from '../shared/functions';
 import { useSelector, useDispatch } from 'react-redux';
 import { setFarmDatesData } from '../../Store/actions';
 

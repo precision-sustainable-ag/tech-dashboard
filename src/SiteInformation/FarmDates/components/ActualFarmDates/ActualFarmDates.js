@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import { onfarmAPI } from '../../../../utils/api_secret';
 import { useSelector } from 'react-redux';
-import { fetchFromApi } from '../../../Shared/functions';
+import { fetchFromApi } from '../../../shared/functions';
 
 const dryBiomass_url = onfarmAPI + `/raw?table=decomp_biomass_dry`;
 
