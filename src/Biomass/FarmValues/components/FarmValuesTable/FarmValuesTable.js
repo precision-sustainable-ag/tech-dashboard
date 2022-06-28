@@ -6,27 +6,27 @@ import {
   Tooltip,
   Select,
   MenuItem,
-  Button,
   OutlinedInput,
   Checkbox,
   ListItemText,
   FormControl,
+  Switch,
+  FormGroup,
+  FormControlLabel,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import IssueDialogue from '../../../../Comments/components/IssueDialogue/IssueDialogue';
 import { useAuth0 } from '../../../../Auth/react-auth0-spa';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
-import { Build, MoreHoriz } from '@material-ui/icons';
+//import { MoreHoriz } from '@material-ui/icons';
 
 const CustomSelect = styled(Select)`
   max-width: 200px;
 `;
 
 const FilterGroup = styled.div`
-  height: fit-content;
-  width: fit-content;
-  padding: 5px 15px;
+  padding: 0px 15px;
   background: transparent;
   border: solid;
   border-width: 2px;
@@ -34,6 +34,7 @@ const FilterGroup = styled.div`
   display: flex;
   border-radius: 20px;
   align-items: center;
+  overflow: visible;
 `;
 
 const useStyles = makeStyles(() => ({
@@ -202,9 +203,10 @@ const FarmValuesTable = (props) => {
     } else {
       return (
         <Tooltip title={name}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ display: 'flex' }}>{name.substring(0, 10)}</div>
-            <MoreHoriz size="small" style={{ color: '#3da641' }} />
+          <div>
+            {/* <div style={{ display: 'flex' }}>{name.substring(0, 10) + "..."}</div> */}
+            {/* <MoreHoriz size="small" style={{ color: '#3da641' }} /> */}
+            {name.substring(0, 10) + '...'}
           </div>
         </Tooltip>
       );
@@ -256,9 +258,6 @@ const FarmValuesTable = (props) => {
                 <Grid item>
                   <Grid container spacing={1} alignItems="center">
                     <Grid item>
-                      <Build style={{ marginTop: '5px' }} />
-                    </Grid>
-                    <Grid item>
                       <Typography>{'Years: '}</Typography>
                     </Grid>
                     <Grid item>
@@ -274,7 +273,10 @@ const FarmValuesTable = (props) => {
                         >
                           {farmYears.map((year) => (
                             <MenuItem key={year} value={year}>
-                              <Checkbox checked={pickedYears.includes(year)} color="primary" />
+                              <Checkbox
+                                checked={pickedYears.includes(year)}
+                                style={{ color: '#3da641' }}
+                              />
                               <ListItemText primary={year} />
                             </MenuItem>
                           ))}
@@ -304,7 +306,7 @@ const FarmValuesTable = (props) => {
                               <Checkbox
                                 checked={pickedAff.includes(aff)}
                                 className={aff}
-                                color="primary"
+                                style={{ color: '#3da641' }}
                               />
                               <ListItemText primary={aff} />
                             </MenuItem>
@@ -315,44 +317,35 @@ const FarmValuesTable = (props) => {
                   </Grid>
                 </Grid>
                 <Grid item>
-                  <Grid container spacing={1} alignItems="center">
-                    <Grid item>
-                      <Typography>{'View: '}</Typography>
-                    </Grid>
-                    <Grid item>
-                      <Button
-                        onClick={() => {
-                          setSimpleView(!simpleView);
-                        }}
-                        color="primary"
-                        variant="contained"
-                      >
-                        {simpleView ? 'Simple' : 'Advanced'}
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </Grid>
-                {!simpleView && (
-                  <Grid item>
-                    <Grid container spacing={1} alignItems="center">
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          size="small"
+                          color="primary"
+                          checked={!simpleView}
+                          onChange={() => setSimpleView(!simpleView)}
+                        />
+                      }
+                      label="Advanced View"
+                    />
+                    <Grid component="label" container alignItems="center" spacing={1}>
+                      <Grid item>kg/ha</Grid>
                       <Grid item>
-                        <Typography>{'Units: '}</Typography>
-                      </Grid>
-                      <Grid item>
-                        <Button
-                          onClick={() => {
+                        <Switch
+                          size="small"
+                          color="primary"
+                          checked={units === 'lbs/ac'}
+                          onChange={() => {
                             if (units === 'kg/ha') setUnits('lbs/ac');
                             else setUnits('kg/ha');
                           }}
-                          color="primary"
-                          variant="contained"
-                        >
-                          {units}
-                        </Button>
+                        />
                       </Grid>
+                      <Grid item>lbs/ac</Grid>
                     </Grid>
-                  </Grid>
-                )}
+                  </FormGroup>
+                </Grid>
               </Grid>
             </FilterGroup>
           </div>
