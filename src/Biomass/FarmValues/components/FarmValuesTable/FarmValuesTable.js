@@ -13,6 +13,7 @@ import {
   Switch,
   FormGroup,
   FormControlLabel,
+  Button,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import IssueDialogue from '../../../../Comments/components/IssueDialogue/IssueDialogue';
@@ -35,6 +36,18 @@ const FilterGroup = styled.div`
   border-radius: 20px;
   align-items: center;
   overflow: visible;
+`;
+
+const UnitButton = styled(Button)`
+  height: 15px;
+  width: 68px;
+  margin-left: -4px;
+  margin-bottom: 5px;
+  background: ${({ units, thisUnit }) => (units === thisUnit ? '#2F7C31' : 'none')};
+`;
+
+const UnitButtonText = styled.div`
+  font-size: 0.7em;
 `;
 
 const useStyles = makeStyles(() => ({
@@ -329,7 +342,7 @@ const FarmValuesTable = (props) => {
                       }
                       label="Advanced View"
                     />
-                    <Grid component="label" container alignItems="center" spacing={1}>
+                    {/* <Grid component="label" container alignItems="center" spacing={1}>
                       <Grid item>kg/ha</Grid>
                       <Grid item>
                         <Switch
@@ -343,8 +356,20 @@ const FarmValuesTable = (props) => {
                         />
                       </Grid>
                       <Grid item>lbs/ac</Grid>
-                    </Grid>
+                    </Grid> */}
                   </FormGroup>
+                  <Grid item>
+                    <UnitButton onClick={() => setUnits('kg/ha')} units={units} thisUnit={'kg/ha'}>
+                      <UnitButtonText>Kg/Ha</UnitButtonText>
+                    </UnitButton>
+                    <UnitButton
+                      onClick={() => setUnits('lbs/ac')}
+                      units={units}
+                      thisUnit={'lbs/ac'}
+                    >
+                      <UnitButtonText>Lbs/ac</UnitButtonText>
+                    </UnitButton>
+                  </Grid>
                 </Grid>
               </Grid>
             </FilterGroup>
