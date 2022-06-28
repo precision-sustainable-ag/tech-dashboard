@@ -12,7 +12,9 @@ const FarmDatesDropdown = ({ rowData, nickname, setSnackbarData }) => {
   const [showIssue, setShowIssue] = useState(false);
   const dispatch = useDispatch();
   const expandActualFarmDates =
-    rowData.protocols.decomp_biomass != 0 || rowData.protocols.decomp_biomass != -999
+    rowData.protocols.decomp_biomass != null ||
+    rowData.protocols.decomp_biomass != 0 ||
+    rowData.protocols.decomp_biomass != -999
       ? true
       : false;
 
