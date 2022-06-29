@@ -198,95 +198,112 @@ const EditDatesModal = ({ setSnackbarDataGlobal }) => {
   };
 
   return (
-    <Dialog open={editDatesModalOpen} onClose={handleEditDatesModalClose}>
+    <Dialog open={editDatesModalOpen} onClose={handleEditDatesModalClose} fullWidth maxWidth="md">
       <DialogTitle>Edit Dates</DialogTitle>
       <DialogContent>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <DialogContentText>
-              Please enter the new dates for Cover Crop Planting, Biomass Harvest, Cover Crop
-              Termination, and Cash Planting in the text fields below. If you need to change a bag
-              pickup timing, leave a comment.
-            </DialogContentText>
+        <Grid container spacing={1}>
+          <Grid container item xs={12} md={12} lg={12} xl={12} spacing={1}>
+            <Grid item xs={12} sm={12} md={12} lg={12}>
+              <DialogContentText>
+                Please enter the new dates for Cover Crop Planting, Biomass Harvest, Cover Crop
+                Termination, and Cash Planting in the text fields below. If you need to change a bag
+                pickup timing, leave a comment.
+              </DialogContentText>
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={12} md={3} lg={3}>
-            <TextField
-              color="primary"
-              value={datesDict.coverCropPlanting}
-              disabled={
-                datesDict.coverCropPlanting == null || datesDict.coverCropPlanting === 'undefined'
-              }
-              onChange={(data) => updateDate(0, data.target.value)}
-              type="date"
-              id="Cover Crop Planting"
-              label="Cover Crop Planting"
-              variant="outlined"
-              InputLabelProps={{ shrink: true }}
-            />
+          <Grid
+            container
+            item
+            xs={12}
+            md={12}
+            lg={12}
+            xl={12}
+            spacing={1}
+            direction="row"
+            justifyContent="space-evenly"
+            alignItems="center"
+          >
+            <Grid item>
+              <TextField
+                color="primary"
+                value={datesDict.coverCropPlanting}
+                disabled={
+                  datesDict.coverCropPlanting == null || datesDict.coverCropPlanting === 'undefined'
+                }
+                onChange={(data) => updateDate(0, data.target.value)}
+                type="date"
+                id="Cover Crop Planting"
+                label="Cover Crop Planting"
+                variant="outlined"
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                color="primary"
+                value={datesDict.biomassHarvest}
+                disabled={
+                  datesDict.biomassHarvest == null || datesDict.biomassHarvest === 'undefined'
+                }
+                onChange={(data) => updateDate(1, data.target.value)}
+                type="date"
+                id="Biomass Harvest"
+                label="Biomass Harvest"
+                variant="outlined"
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                color="primary"
+                value={datesDict.coverCropTermination}
+                disabled={
+                  datesDict.coverCropTermination == null ||
+                  datesDict.coverCropTermination === 'undefined'
+                }
+                onChange={(data) => updateDate(2, data.target.value)}
+                type="date"
+                id="Cover Crop Termination"
+                label="Cover Crop Temination"
+                variant="outlined"
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                color="primary"
+                value={datesDict.cashPlanting}
+                disabled={datesDict.cashPlanting == null || datesDict.cashPlanting === 'undefined'}
+                onChange={(data) => updateDate(3, data.target.value)}
+                type="date"
+                id="Cash Planting"
+                label="Cash Planting"
+                variant="outlined"
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={12} md={3} lg={3}>
-            <TextField
-              color="primary"
-              value={datesDict.biomassHarvest}
-              disabled={
-                datesDict.biomassHarvest == null || datesDict.biomassHarvest === 'undefined'
-              }
-              onChange={(data) => updateDate(1, data.target.value)}
-              type="date"
-              id="Biomass Harvest"
-              label="Biomass Harvest"
-              variant="outlined"
-              InputLabelProps={{ shrink: true }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} md={3} lg={3}>
-            <TextField
-              color="primary"
-              value={datesDict.coverCropTermination}
-              disabled={
-                datesDict.coverCropTermination == null ||
-                datesDict.coverCropTermination === 'undefined'
-              }
-              onChange={(data) => updateDate(2, data.target.value)}
-              type="date"
-              id="Cover Crop Termination"
-              label="Cover Crop Temination"
-              variant="outlined"
-              InputLabelProps={{ shrink: true }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} md={3} lg={3}>
-            <TextField
-              color="primary"
-              value={datesDict.cashPlanting}
-              disabled={datesDict.cashPlanting == null || datesDict.cashPlanting === 'undefined'}
-              onChange={(data) => updateDate(3, data.target.value)}
-              type="date"
-              id="Cash Planting"
-              label="Cash Planting"
-              variant="outlined"
-              InputLabelProps={{ shrink: true }}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <Button
-              onClick={handleEditDatesModalClose}
-              color="primary"
-              variant="contained"
-              fullWidth={true}
-            >
-              Cancel
-            </Button>
-          </Grid>
-          <Grid item xs={6}>
-            <Button
-              onClick={handleEditDatesModalSubmit}
-              color="primary"
-              variant="contained"
-              fullWidth={true}
-            >
-              Update
-            </Button>
+          <Grid container item xs={12} md={12} lg={12} xl={12} spacing={1}>
+            <Grid item xs={6} sm={6} md={6} lg={6}>
+              <Button
+                onClick={handleEditDatesModalClose}
+                color="primary"
+                variant="contained"
+                fullWidth={true}
+              >
+                Cancel
+              </Button>
+            </Grid>
+            <Grid item xs={6} sm={6} md={6} lg={6}>
+              <Button
+                onClick={handleEditDatesModalSubmit}
+                color="primary"
+                variant="contained"
+                fullWidth={true}
+              >
+                Update
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
       </DialogContent>
