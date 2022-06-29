@@ -8,52 +8,55 @@ import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
 import { CustomLoader } from '../../../utils/CustomComponents';
 import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
 const timezoneOffset = new Date().getTimezoneOffset() * 2;
 
-const chartOptions = {
-  time: {
-    timezoneOffset: timezoneOffset,
-  },
-  chart: {
-    type: 'scatter',
-    zoomType: 'xy',
-    borderColor: 'black',
-    borderWidth: 1,
-  },
-  title: {
-    text: `Node Health - `,
-  },
-  xAxis: {
-    type: 'datetime',
-    startOnTick: true,
-    endOnTick: true,
-    showLastLabel: false,
-    showFirstLabel: false,
-  },
-  yAxis: {
+const NodeVoltage = ({ axisMinMaxGateway }) => {
+  const chartOptions = {
+    time: {
+      timezoneOffset: timezoneOffset,
+    },
+    chart: {
+      type: 'scatter',
+      zoomType: 'xy',
+      borderColor: 'black',
+      borderWidth: 1,
+    },
     title: {
-      text: 'Voltage',
+      text: `Node Health - `,
     },
-    type: 'linear',
-  },
-  series: [
-    {
-      name: 'Solar Voltage',
-      data: [],
+    xAxis: {
+      type: 'datetime',
+      startOnTick: false,
+      endOnTick: false,
+      showLastLabel: true,
+      showFirstLabel: true,
+      max: new Date(axisMinMaxGateway.max.split(' ').join('T')).getTime(),
+      min: new Date(axisMinMaxGateway.min.split(' ').join('T')).getTime(),
     },
-    {
-      name: 'Battery Voltage',
-      data: [],
+    yAxis: {
+      title: {
+        text: 'Voltage',
+      },
+      type: 'linear',
     },
-    {
-      name: 'Signal Strength',
-      data: [],
-    },
-  ],
-};
+    series: [
+      {
+        name: 'Solar Voltage',
+        data: [],
+      },
+      {
+        name: 'Battery Voltage',
+        data: [],
+      },
+      {
+        name: 'Signal Strength',
+        data: [],
+      },
+    ],
+  };
 
-const NodeVoltage = () => {
   // const [state] = useContext(Context);
   const userInfo = useSelector((state) => state.userInfo);
 
@@ -334,3 +337,7 @@ const NodeVoltage = () => {
 };
 
 export default NodeVoltage;
+
+NodeVoltage.propTypes = {
+  axisMinMaxGateway: PropTypes.any,
+};

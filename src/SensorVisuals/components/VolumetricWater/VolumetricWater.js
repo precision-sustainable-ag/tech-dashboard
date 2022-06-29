@@ -7,7 +7,7 @@ import Highcharts from 'highcharts';
 import PropTypes from 'prop-types';
 import { CustomLoader } from '../../../utils/CustomComponents';
 
-const VolumetricWater = ({ tdrData, year }) => {
+const VolumetricWater = ({ tdrData, axisMinMaxTdr }) => {
   // const [state] = useContext(Context);
 
   const [data, setData] = useState([]);
@@ -30,9 +30,10 @@ const VolumetricWater = ({ tdrData, year }) => {
       type: 'datetime',
       startOnTick: false,
       endOnTick: false,
-      showLastLabel: false,
-      showFirstLabel: false,
-      max: year === new Date().getFullYear ? Date.now() : null,
+      showLastLabel: true,
+      showFirstLabel: true,
+      max: axisMinMaxTdr.max ? new Date(axisMinMaxTdr.max.split(' ').join('T')).getTime() : null,
+      min: axisMinMaxTdr.min ? new Date(axisMinMaxTdr.min.split(' ').join('T')).getTime() : null,
     },
     yAxis: {
       title: {
@@ -315,5 +316,5 @@ export default VolumetricWater;
 
 VolumetricWater.propTypes = {
   tdrData: PropTypes.array,
-  year: PropTypes.any,
+  axisMinMaxTdr: PropTypes.any,
 };
