@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { lazy } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 import PropTypes from 'prop-types';
@@ -9,7 +9,18 @@ const SoilTemp = lazy(() => import('../SoilTemp/SoilTemp'));
 const TempByLbs = lazy(() => import('../LitterbagTemp/LitterbagTemp'));
 const VolumetricWater = lazy(() => import('../VolumetricWater/VolumetricWater'));
 
+export const convertEpochtoDatetime = (epoch) => {
+  var date = new Date(epoch - new Date().getTimezoneOffset() * 60000);
+  // eslint-disable-next-line
+  var iso = date.toISOString().match(/(\d{4}\-\d{2}\-\d{2})T(\d{2}:\d{2}:\d{2})/);
+  return iso[1] + ' ' + iso[2];
+};
+
+const now = convertEpochtoDatetime(Date.now());
+
 const TabCharts = (props) => {
+  const [axisMinMaxGateway, setAxisMinMaxGateway] = useState([{ min: now }, { max: now }]);
+  const [axisMinMaxTdr, setAxisMinMaxTdr] = useState([{ min: now }, { max: now }]);
   let {
     gatewayData,
     activeCharts,
@@ -17,6 +28,26 @@ const TabCharts = (props) => {
     tdrData,
     year,
   } = props;
+
+  useEffect(() => {
+    const timestampsGateway = gatewayData.map((data) => new Date(data.timestamp).getTime());
+    setAxisMinMaxGateway({
+      min: convertEpochtoDatetime(new Date(Math.min(...timestampsGateway))),
+      max:
+        new Date().getFullYear().toString() === year
+          ? now
+          : convertEpochtoDatetime(new Date(Math.max(...timestampsGateway))),
+    });
+
+    const timestampsTdr = tdrData.map((data) => new Date(data.timestamp).getTime());
+    setAxisMinMaxTdr({
+      min: convertEpochtoDatetime(new Date(Math.min(...timestampsTdr))),
+      max:
+        new Date().getFullYear().toString() === year
+          ? now
+          : convertEpochtoDatetime(new Date(Math.max(...timestampsTdr))),
+    });
+  }, []);
 
   if (activeCharts === 'gateway') {
     return (
@@ -29,10 +60,10 @@ const TabCharts = (props) => {
                   Node Health
                 </Typography>
               </Grid>
-              <NodeVoltage />
+              <NodeVoltage axisMinMaxGateway={axisMinMaxGateway} />
               {gatewayData.length > 0 && (
                 <Grid item xs={12}>
-                  <GatewayChart data={gatewayData} year={year} />
+                  <GatewayChart data={gatewayData} axisMinMaxGateway={axisMinMaxGateway} />
                 </Grid>
               )}
             </Grid>
@@ -53,7 +84,7 @@ const TabCharts = (props) => {
                   VWC
                 </Typography>
               </Grid>
-              <VolumetricWater tdrData={tdrData} year={year} />
+              <VolumetricWater tdrData={tdrData} axisMinMaxTdr={axisMinMaxTdr} />
             </Grid>
           </Grid>
         ) : (
@@ -72,7 +103,7 @@ const TabCharts = (props) => {
                   Soil Temperature
                 </Typography>
               </Grid>
-              <SoilTemp tdrData={tdrData} year={year} />
+              <SoilTemp tdrData={tdrData} axisMinMaxTdr={axisMinMaxTdr} />
             </Grid>
 
             <Grid item container spacing={3}>

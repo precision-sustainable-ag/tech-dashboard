@@ -15,7 +15,7 @@ import PropTypes from 'prop-types';
 //   },
 // }));
 const GatewayChart = (props) => {
-  const { data, year } = props;
+  const { data, axisMinMaxGateway } = props;
 
   const serials = data.map((r) => r.serial);
   const uniqueSerials = [...new Set(serials)];
@@ -72,9 +72,10 @@ const GatewayChart = (props) => {
       type: 'datetime',
       startOnTick: false,
       endOnTick: false,
-      showLastLabel: false,
-      showFirstLabel: false,
-      max: year === new Date().getFullYear ? Date.now() : null,
+      showLastLabel: true,
+      showFirstLabel: true,
+      max: new Date(axisMinMaxGateway.max.split(' ').join('T')).getTime(),
+      min: new Date(axisMinMaxGateway.min.split(' ').join('T')).getTime(),
     },
     yAxis: {
       //   title: {
@@ -188,5 +189,5 @@ GatewayChart.defaultProps = {
 GatewayChart.propTypes = {
   code: PropTypes.string,
   data: PropTypes.array,
-  year: PropTypes.any,
+  axisMinMaxGateway: PropTypes.any,
 };
