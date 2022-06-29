@@ -5,9 +5,12 @@ const PSALoader = () => {
   return (
     <LoaderContainer>
       <Loader>
-        <HexTop />
-        <HexMiddle />
-        <HexBottom />
+        <svg height="208" width="239.74">
+          <polygon
+            points="59.87 0,179.87 0,239.74 104,179.87 208,59.87 208,0 104,59.87 0"
+            fill="#2F7C31"
+          />
+        </svg>
       </Loader>
       <LeavesContainer>
         <Stem bottom={true} />
@@ -67,27 +70,28 @@ const Loader = styled.div`
   animation-duration: 5s;
   animation-iteration-count: infinite;
   position: absolute;
+  transform: rotate(30deg);
 `;
 
-const HexTop = styled.div`
-  width: 0;
-  border-bottom: 60px solid #2f7c31;
-  border-left: 104px solid transparent;
-  border-right: 104px solid transparent;
-`;
+// const HexTop = styled.div`
+//   width: 0;
+//   border-bottom: 60px solid #2f7c31;
+//   border-left: 104px solid transparent;
+//   border-right: 104px solid transparent;
+// `;
 
-const HexMiddle = styled.div`
-  width: 208px;
-  height: 120px;
-  background-color: #2f7c31;
-`;
+// const HexMiddle = styled.div`
+//   width: 208px;
+//   height: 120px;
+//   background-color: #2f7c31;
+// `;
 
-const HexBottom = styled.div`
-  width: 0;
-  border-top: 60px solid #2f7c31;
-  border-left: 104px solid transparent;
-  border-right: 104px solid transparent;
-`;
+// const HexBottom = styled.div`
+//   width: 0;
+//   border-top: 60px solid #2f7c31;
+//   border-left: 104px solid transparent;
+//   border-right: 104px solid transparent;
+// `;
 
 const LeafLeft = styled.div`
   width: 30px;

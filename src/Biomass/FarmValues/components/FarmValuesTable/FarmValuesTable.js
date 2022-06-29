@@ -6,26 +6,27 @@ import {
   Tooltip,
   Select,
   MenuItem,
-  Button,
   OutlinedInput,
   Checkbox,
   ListItemText,
   FormControl,
+  Switch,
+  // FormGroup,
+  // FormControlLabel,
+  Button,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import IssueDialogue from '../../../../Comments/components/IssueDialogue/IssueDialogue';
 import { useAuth0 } from '../../../../Auth/react-auth0-spa';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
-import { Build, MoreHoriz } from '@material-ui/icons';
+//import { MoreHoriz } from '@material-ui/icons';
 
 const CustomSelect = styled(Select)`
   max-width: 200px;
 `;
 
 const FilterGroup = styled.div`
-  height: fit-content;
-  width: fit-content;
   padding: 5px 15px;
   background: transparent;
   border: solid;
@@ -34,6 +35,17 @@ const FilterGroup = styled.div`
   display: flex;
   border-radius: 20px;
   align-items: center;
+  overflow: visible;
+`;
+
+const UnitButton = styled(Button)`
+  height: 20px;
+  width: 70px;
+  background: ${({ units, thisUnit }) => (units === thisUnit ? '#2F7C31' : 'none')};
+`;
+
+const UnitButtonText = styled.div`
+  font-size: 0.8em;
 `;
 
 const useStyles = makeStyles(() => ({
@@ -202,9 +214,10 @@ const FarmValuesTable = (props) => {
     } else {
       return (
         <Tooltip title={name}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ display: 'flex' }}>{name.substring(0, 10)}</div>
-            <MoreHoriz size="small" style={{ color: '#3da641' }} />
+          <div>
+            {/* <div style={{ display: 'flex' }}>{name.substring(0, 10) + "..."}</div> */}
+            {/* <MoreHoriz size="small" style={{ color: '#3da641' }} /> */}
+            {name.substring(0, 10) + '...'}
           </div>
         </Tooltip>
       );
@@ -256,9 +269,6 @@ const FarmValuesTable = (props) => {
                 <Grid item>
                   <Grid container spacing={1} alignItems="center">
                     <Grid item>
-                      <Build style={{ marginTop: '5px' }} />
-                    </Grid>
-                    <Grid item>
                       <Typography>{'Years: '}</Typography>
                     </Grid>
                     <Grid item>
@@ -274,7 +284,10 @@ const FarmValuesTable = (props) => {
                         >
                           {farmYears.map((year) => (
                             <MenuItem key={year} value={year}>
-                              <Checkbox checked={pickedYears.includes(year)} color="primary" />
+                              <Checkbox
+                                checked={pickedYears.includes(year)}
+                                style={{ color: '#3da641' }}
+                              />
                               <ListItemText primary={year} />
                             </MenuItem>
                           ))}
@@ -304,7 +317,7 @@ const FarmValuesTable = (props) => {
                               <Checkbox
                                 checked={pickedAff.includes(aff)}
                                 className={aff}
-                                color="primary"
+                                style={{ color: '#3da641' }}
                               />
                               <ListItemText primary={aff} />
                             </MenuItem>
@@ -315,44 +328,41 @@ const FarmValuesTable = (props) => {
                   </Grid>
                 </Grid>
                 <Grid item>
-                  <Grid container spacing={1} alignItems="center">
-                    <Grid item>
-                      <Typography>{'View: '}</Typography>
-                    </Grid>
-                    <Grid item>
-                      <Button
-                        onClick={() => {
-                          setSimpleView(!simpleView);
-                        }}
-                        color="primary"
-                        variant="contained"
-                      >
-                        {simpleView ? 'Simple' : 'Advanced'}
-                      </Button>
-                    </Grid>
-                  </Grid>
+                  <div style={{ display: 'grid' }}>
+                    <UnitButton onClick={() => setUnits('kg/ha')} units={units} thisUnit={'kg/ha'}>
+                      <UnitButtonText>Kg/Ha</UnitButtonText>
+                    </UnitButton>
+                    <UnitButton
+                      onClick={() => setUnits('lbs/ac')}
+                      units={units}
+                      thisUnit={'lbs/ac'}
+                    >
+                      <UnitButtonText>Lbs/ac</UnitButtonText>
+                    </UnitButton>
+                  </div>
                 </Grid>
-                {!simpleView && (
-                  <Grid item>
-                    <Grid container spacing={1} alignItems="center">
-                      <Grid item>
-                        <Typography>{'Units: '}</Typography>
-                      </Grid>
-                      <Grid item>
-                        <Button
-                          onClick={() => {
-                            if (units === 'kg/ha') setUnits('lbs/ac');
-                            else setUnits('kg/ha');
-                          }}
-                          color="primary"
-                          variant="contained"
-                        >
-                          {units}
-                        </Button>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                )}
+                <Grid item>
+                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Switch
+                      size="small"
+                      color="primary"
+                      checked={!simpleView}
+                      onChange={() => setSimpleView(!simpleView)}
+                    />
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'start',
+                        marginLeft: '5px',
+                      }}
+                    >
+                      <div style={{ fontSize: '0.9em' }}>Advanced</div>
+                      <div style={{ fontSize: '0.9em' }}>View</div>
+                    </div>
+                  </div>
+                </Grid>
               </Grid>
             </FilterGroup>
           </div>
