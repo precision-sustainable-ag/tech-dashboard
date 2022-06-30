@@ -97,6 +97,22 @@ const TaskTrackerCard = ({ title, table, year, affiliation, code, time, complete
               }
             }
           }
+          if (
+            title == 'Fresh weight' &&
+            table == 'biomass_in_field' &&
+            complete_col == 'fresh_wt_a' &&
+            time == ''
+          ) {
+            for (let item = 0; item < response.length; item++) {
+              if (
+                response[item].protocols.cash_crop_yield == 0 ||
+                response[item].protocols.cash_crop_yield == -999
+              ) {
+                response.splice(item, 1);
+                item--;
+              }
+            }
+          }
 
           map.clear();
           setCodes(response);
