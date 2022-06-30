@@ -32,12 +32,17 @@ let siteEnrollmentJson = [
   { title: 'Address', table: 'site_information', complete_col: 'address', time: '' },
   { title: 'Site coordinates', table: 'site_information', complete_col: 'latitude', time: '' },
   { title: 'GPS corners', table: 'gps_corners', complete_col: 'latitude', time: '' },
+  {
+    title: 'Cover Crop Planting Date',
+    table: 'farm_history',
+    complete_col: 'cc_planting_date',
+    time: '',
+  },
 ];
 
 let biomassJson = [
   { title: 'Fresh weight', table: 'biomass_in_field', complete_col: 'fresh_wt_a', time: '' },
   { title: 'Legume percentage', table: 'biomass_in_field', complete_col: 'legumes_40', time: '' },
-  { title: 'Planting date', table: 'farm_history', complete_col: 'cc_planting_date', time: '' },
   {
     title: 'Termination date',
     table: 'farm_history',
