@@ -69,7 +69,6 @@ const UnenrollSiteModal = () => {
 
   return (
     <Dialog
-      disableEscapeKeyDown
       open={open}
       onClose={closeModal}
       aria-labelledby="alert-dialog-title"
