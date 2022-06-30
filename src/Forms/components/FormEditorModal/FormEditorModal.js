@@ -160,7 +160,13 @@ const FormEditorModal = (props) => {
   };
 
   return typeof modalOpen === 'boolean' && modalOpen ? (
-    <Dialog open={modalOpen} aria-labelledby="form-dialog-title" fullWidth={true} maxWidth="xl">
+    <Dialog
+      open={modalOpen}
+      onClose={handleCancel}
+      aria-labelledby="form-dialog-title"
+      fullWidth={true}
+      maxWidth="xl"
+    >
       <DialogContent>
         <Grid container direction="row" spacing={2}>
           <Grid item>
