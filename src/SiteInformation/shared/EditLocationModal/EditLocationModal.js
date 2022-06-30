@@ -199,7 +199,6 @@ const EditLocationModal = ({ action }) => {
       aria-labelledby="form-dialog-title"
       fullWidth={fullWidth}
       maxWidth={maxWidth}
-      disableEscapeKeyDown
     >
       <DialogTitle id="form-dialog-title">
         <Grid container justifyContent="space-between">

@@ -205,17 +205,17 @@ const EditDatesModal = ({ setSnackbarDataGlobal }) => {
           container
           spacing={1}
           direction="row"
-          justifyContent="space-evenly"
+          justifyContent="space-around"
           alignItems="center"
         >
-          <Grid item xs={12} sm={12} md={12} lg={12}>
+          <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
             <DialogContentText>
               Please enter the new dates for Cover Crop Planting, Biomass Harvest, Cover Crop
               Termination, and Cash Planting in the text fields below. If you need to change a bag
               pickup timing, leave a comment.
             </DialogContentText>
           </Grid>
-          <Grid item>
+          <Grid item xs={6} sm={6} md={3} lg={3} xl={3}>
             <TextField
               color="primary"
               value={datesDict.coverCropPlanting}
@@ -230,7 +230,7 @@ const EditDatesModal = ({ setSnackbarDataGlobal }) => {
               InputLabelProps={{ shrink: true }}
             />
           </Grid>
-          <Grid item>
+          <Grid item xs={6} sm={6} md={3} lg={3} xl={3}>
             <TextField
               color="primary"
               value={datesDict.biomassHarvest}
@@ -245,7 +245,7 @@ const EditDatesModal = ({ setSnackbarDataGlobal }) => {
               InputLabelProps={{ shrink: true }}
             />
           </Grid>
-          <Grid item>
+          <Grid item xs={6} sm={6} md={3} lg={3} xl={3}>
             <TextField
               color="primary"
               value={datesDict.coverCropTermination}
@@ -261,7 +261,7 @@ const EditDatesModal = ({ setSnackbarDataGlobal }) => {
               InputLabelProps={{ shrink: true }}
             />
           </Grid>
-          <Grid item>
+          <Grid item xs={6} sm={6} md={3} lg={3} xl={3}>
             <TextField
               color="primary"
               value={datesDict.cashPlanting}
@@ -274,7 +274,7 @@ const EditDatesModal = ({ setSnackbarDataGlobal }) => {
               InputLabelProps={{ shrink: true }}
             />
           </Grid>
-          <Grid item xs={6} sm={6} md={6} lg={6}>
+          <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
             <Button
               onClick={handleEditDatesModalClose}
               color="primary"
@@ -284,7 +284,7 @@ const EditDatesModal = ({ setSnackbarDataGlobal }) => {
               Cancel
             </Button>
           </Grid>
-          <Grid item xs={6} sm={6} md={6} lg={6}>
+          <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
             <Button
               onClick={handleEditDatesModalSubmit}
               color="primary"
