@@ -199,7 +199,7 @@ const EditDatesModal = ({ setSnackbarDataGlobal }) => {
 
   return (
     <Dialog open={editDatesModalOpen} onClose={handleEditDatesModalClose} fullWidth maxWidth="md">
-      <DialogTitle>Edit Dates</DialogTitle>
+      <DialogTitle>Edit Dates for {farmCode} </DialogTitle>
       <DialogContent>
         <Grid
           container
