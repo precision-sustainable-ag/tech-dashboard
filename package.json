@@ -99,7 +99,7 @@
     "eslint-plugin-react-hooks": "^4.3.0",
     "flow-babel-webpack-plugin": "^1.1.1",
     "jsdoc": "^3.6.10",
-    "prettier": "^2.4.1",
+    "prettier": "^2.7.1",
     "react-scripts": "^5.0.1",
     "react-test-renderer": "^17.0.2",
     "webpack": "^5.73.0"
