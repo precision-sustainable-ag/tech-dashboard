@@ -82,7 +82,11 @@ const TaskTrackerCard = ({ title, table, year, affiliation, code, time, complete
             if (time == '0') {
               if (complete_col == 'empty_bag_wt' || complete_col == 'fresh_biomass_wt') {
                 for (let item = 0; item < response.length; item++) {
-                  if (response[item].protocols.decomp_biomass == 0) {
+                  if (
+                    response[item].protocols.decomp_biomass == null ||
+                    response[item].protocols.decomp_biomass == 0 ||
+                    response[item].protocols.decomp_biomass == -999
+                  ) {
                     response.splice(item, 1);
                     item--;
                   }
@@ -90,10 +94,60 @@ const TaskTrackerCard = ({ title, table, year, affiliation, code, time, complete
               }
             } else if (time != '0' || time != '') {
               for (let item = 0; item < response.length; item++) {
-                if (response[item].protocols.decomp_biomass == 0) {
+                if (
+                  response[item].protocols.decomp_biomass == null ||
+                  response[item].protocols.decomp_biomass == 0 ||
+                  response[item].protocols.decomp_biomass == -999
+                ) {
                   response.splice(item, 1);
                   item--;
                 }
+              }
+            }
+          }
+          if (
+            title == 'Fresh weight' &&
+            table == 'biomass_in_field' &&
+            complete_col == 'fresh_wt_a' &&
+            time == ''
+          ) {
+            for (let item = 0; item < response.length; item++) {
+              if (
+                response[item].protocols.decomp_biomass == null ||
+                response[item].protocols.decomp_biomass == 0 ||
+                response[item].protocols.decomp_biomass == -999
+              ) {
+                response.splice(item, 1);
+                item--;
+              }
+            }
+          }
+          if (
+            (title == 'Corn hand-harvest' &&
+              table == 'yield_corn' &&
+              complete_col == 'fresh_harvest_wt' &&
+              time == '') ||
+            (title == 'Cotton hand-harvest' &&
+              table == 'yield_cotton' &&
+              complete_col == 'boll_wt' &&
+              time == '') ||
+            (title == 'Soybean hand-harvest' &&
+              table == 'yield_soybeans' &&
+              complete_col == 'fresh_harvest_wt' &&
+              time == '') ||
+            (title == 'Weigh Wagon' &&
+              table == 'yield_wagon' &&
+              complete_col == 'wagon_area_ft2' &&
+              time == '')
+          ) {
+            for (let item = 0; item < response.length; item++) {
+              if (
+                response[item].protocols.cash_crop_yield == null ||
+                response[item].protocols.cash_crop_yield == 0 ||
+                response[item].protocols.cash_crop_yield == -999
+              ) {
+                response.splice(item, 1);
+                item--;
               }
             }
           }

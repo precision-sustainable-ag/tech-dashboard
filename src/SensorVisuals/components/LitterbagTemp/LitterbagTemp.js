@@ -9,12 +9,15 @@ import Highcharts from 'highcharts';
 import 'highcharts/modules/no-data-to-display';
 import { CustomLoader } from '../../../utils/CustomComponents';
 import { useSelector } from 'react-redux';
+import { convertEpochtoDatetime } from '../TabCharts/TabCharts';
 
 const TempByLbs = () => {
   // const [state] = useContext(Context);
   const userInfo = useSelector((state) => state.userInfo);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const now = convertEpochtoDatetime(Date.now());
+  const [axisMinMax, setAxisMinMax] = useState([{ min: null }, { max: null }]);
 
   const { code, year } = useParams();
 
@@ -36,9 +39,10 @@ const TempByLbs = () => {
       type: 'datetime',
       startOnTick: false,
       endOnTick: false,
-      showLastLabel: false,
-      showFirstLabel: false,
-      max: year === new Date().getFullYear ? Date.now() : null,
+      showLastLabel: true,
+      showFirstLabel: true,
+      max: axisMinMax.max ? new Date(axisMinMax.max.split(' ').join('T')).getTime() : null,
+      min: axisMinMax.min ? new Date(axisMinMax.min.split(' ').join('T')).getTime() : null,
     },
     yAxis: {
       title: {
@@ -64,6 +68,19 @@ const TempByLbs = () => {
     ],
     lang: { noData: 'Your custom message' },
   };
+
+  useEffect(() => {
+    if (Object.keys(data).length !== 0) {
+      const timestamps = data.map((d) => d.timestamp);
+      setAxisMinMax({
+        min: convertEpochtoDatetime(new Date(Math.min(...timestamps))),
+        max:
+          new Date().getFullYear().toString() === year
+            ? now
+            : convertEpochtoDatetime(new Date(Math.max(...timestamps))),
+      });
+    }
+  }, [data]);
 
   useEffect(() => {
     const setNodeData = async (apiKey) => {
@@ -161,3 +178,8 @@ const TempByLbs = () => {
 };
 
 export default TempByLbs;
+
+// LitterbagTemp.propTypes = {
+//   tdrData: PropTypes.array,
+//   axisMinMaxTdr: PropTypes.any,
+// };

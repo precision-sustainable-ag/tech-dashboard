@@ -3,36 +3,30 @@ import MaterialTable from 'material-table';
 import PropTypes from 'prop-types';
 import {
   Grid,
-  Snackbar,
   Tooltip,
   Select,
   MenuItem,
-  Button,
   OutlinedInput,
   Checkbox,
   ListItemText,
   FormControl,
+  Switch,
+  // FormGroup,
+  // FormControlLabel,
+  Button,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import MuiAlert from '@material-ui/lab/Alert';
 import IssueDialogue from '../../../../Comments/components/IssueDialogue/IssueDialogue';
 import { useAuth0 } from '../../../../Auth/react-auth0-spa';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
-import { Build } from '@material-ui/icons';
-
-// Helper function
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+//import { MoreHoriz } from '@material-ui/icons';
 
 const CustomSelect = styled(Select)`
   max-width: 200px;
 `;
 
 const FilterGroup = styled.div`
-  height: fit-content;
-  width: fit-content;
   padding: 5px 15px;
   background: transparent;
   border: solid;
@@ -41,6 +35,17 @@ const FilterGroup = styled.div`
   display: flex;
   border-radius: 20px;
   align-items: center;
+  overflow: visible;
+`;
+
+const UnitButton = styled(Button)`
+  height: 20px;
+  width: 70px;
+  background: ${({ units, thisUnit }) => (units === thisUnit ? '#2F7C31' : 'none')};
+`;
+
+const UnitButtonText = styled.div`
+  font-size: 0.8em;
 `;
 
 const useStyles = makeStyles(() => ({
@@ -51,7 +56,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const FarmValuesTable = (props) => {
-  const { data, setSnackbarData, affiliations, farmYears, snackbarData } = props;
+  const { data, setSnackbarData, affiliations, farmYears } = props;
   const [tableData, setTableData] = useState(data);
   const { getTokenSilently } = useAuth0();
   const { user } = useAuth0();
@@ -59,6 +64,7 @@ const FarmValuesTable = (props) => {
   const [pickedYears, setPickedYears] = useState(['2022']);
   const [pickedAff, setPickedAff] = useState(['All']);
   const [height, setHeight] = useState(window.innerHeight);
+  const [simpleView, setSimpleView] = useState(true);
   const classes = useStyles();
 
   const handleResize = () => {
@@ -75,20 +81,34 @@ const FarmValuesTable = (props) => {
 
   const tableHeaderOptions = [
     {
+      field: 'year',
+      defaultSort: 'desc',
+      hidden: true,
+    },
+    {
+      field: 'affiliation',
+      defaultSort: 'asc',
+      hidden: true,
+    },
+    {
       title: 'Code',
       field: 'code',
       type: 'string',
       align: 'justify',
+      defaultSort: 'asc',
     },
     {
       field: 'subplot',
       title: 'Rep',
       type: 'numeric',
+      align: 'justify',
+      defaultSort: 'asc',
     },
     {
       field: 'cc_termination_date',
-      title: 'Termination Date',
+      title: 'Biomass Harvest',
       type: 'date',
+      align: 'justify',
       render: (rowData) => {
         return rowData.cc_termination_date
           ? new Date(rowData.cc_termination_date).toLocaleDateString()
@@ -97,16 +117,19 @@ const FarmValuesTable = (props) => {
     },
     {
       field: 'cc_species',
-      title: 'Cover Crop Species',
+      title: 'Cover Crops',
       type: 'string',
+      align: 'justify',
       render: (rowData) => {
         return rowData.cc_species ? truncateCoverCrop(rowData.cc_species) : 'No Data';
       },
+      width: '100%',
     },
     {
       field: 'uncorrected_cc_dry_biomass_kg_ha',
-      title: 'Uncorrected Dry Weight',
+      title: 'Dry Weight',
       type: 'numeric',
+      align: 'justify',
       render: (rowData) => {
         return rowData.uncorrected_cc_dry_biomass_kg_ha
           ? units === 'kg/ha'
@@ -117,8 +140,10 @@ const FarmValuesTable = (props) => {
     },
     {
       field: 'ash_corrected_cc_dry_biomass_kg_ha',
-      title: 'Ash-Free Dry Weight',
+      title: 'Ash-Free Wt.',
       type: 'numeric',
+      align: 'justify',
+      hidden: simpleView,
       render: (rowData) => {
         return rowData.ash_corrected_cc_dry_biomass_kg_ha
           ? units === 'kg/ha'
@@ -131,6 +156,8 @@ const FarmValuesTable = (props) => {
       field: 'percent_n_nir',
       title: '%N by NIR',
       type: 'numeric',
+      align: 'justify',
+      hidden: simpleView,
       render: (rowData) => {
         return rowData.percent_n_nir ? Math.round(rowData.percent_n_nir * 100) / 100 : 'N/A';
       },
@@ -139,6 +166,8 @@ const FarmValuesTable = (props) => {
       field: 'CN_ratio',
       title: 'C:N',
       type: 'numeric',
+      align: 'justify',
+      hidden: simpleView,
       render: (rowData) => {
         return rowData.CN_ratio ? Math.round(rowData.CN_ratio * 100) / 100 : 'N/A';
       },
@@ -147,6 +176,8 @@ const FarmValuesTable = (props) => {
       field: 'percent_carbohydrates',
       title: 'Carb %',
       type: 'numeric',
+      align: 'justify',
+      hidden: simpleView,
       render: (rowData) => {
         return rowData.percent_carbohydrates
           ? Math.round(rowData.percent_carbohydrates * 100) / 100
@@ -157,6 +188,8 @@ const FarmValuesTable = (props) => {
       field: 'percent_cellulose',
       title: 'Cellulose %',
       type: 'numeric',
+      align: 'justify',
+      hidden: simpleView,
       render: (rowData) => {
         return rowData.percent_cellulose
           ? Math.round(rowData.percent_cellulose * 100) / 100
@@ -167,6 +200,8 @@ const FarmValuesTable = (props) => {
       field: 'percent_lignin',
       title: 'Lignin %',
       type: 'numeric',
+      align: 'justify',
+      hidden: simpleView,
       render: (rowData) => {
         return rowData.percent_lignin ? Math.round(rowData.percent_lignin * 100) / 100 : 'N/A';
       },
@@ -174,13 +209,19 @@ const FarmValuesTable = (props) => {
   ];
 
   const truncateCoverCrop = (name) => {
-    return name.length <= 10 ? (
-      name
-    ) : (
-      <Tooltip title={name}>
-        <div>{name.substring(0, 10) + '...'}</div>
-      </Tooltip>
-    );
+    if (simpleView || name.length <= 10) {
+      return name;
+    } else {
+      return (
+        <Tooltip title={name}>
+          <div>
+            {/* <div style={{ display: 'flex' }}>{name.substring(0, 10) + "..."}</div> */}
+            {/* <MoreHoriz size="small" style={{ color: '#3da641' }} /> */}
+            {name.substring(0, 10) + '...'}
+          </div>
+        </Tooltip>
+      );
+    }
   };
 
   const filterData = () => {
@@ -202,7 +243,7 @@ const FarmValuesTable = (props) => {
     const {
       target: { value },
     } = event;
-    const pick = event.target.value[event.target.value.length - 1];
+    const pick = value[value.length - 1];
 
     if (pick === 'All') {
       setPickedAff(['All']);
@@ -216,50 +257,19 @@ const FarmValuesTable = (props) => {
 
   return (
     <Grid item lg={12}>
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        open={snackbarData.open}
-        autoHideDuration={10000}
-        onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-      >
-        <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-      </Snackbar>
       <MaterialTable
         columns={tableHeaderOptions}
         title={
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <div style={{ paddingRight: '20px' }}>
-              <Typography
-                variant={'h6'}
-                style={{
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-              >
-                {'Farm Values'}
-              </Typography>
+              <Typography variant={'h6'}>{'Farm Values'}</Typography>
             </div>
             <FilterGroup>
               <Grid container spacing={2} alignItems="center">
                 <Grid item>
                   <Grid container spacing={1} alignItems="center">
                     <Grid item>
-                      <Build style={{ marginTop: '5px' }} />
-                    </Grid>
-                    <Grid item>
-                      <Typography
-                        style={{
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                        }}
-                      >
-                        {'Years: '}
-                      </Typography>
+                      <Typography>{'Years: '}</Typography>
                     </Grid>
                     <Grid item>
                       <FormControl size="small">
@@ -274,7 +284,10 @@ const FarmValuesTable = (props) => {
                         >
                           {farmYears.map((year) => (
                             <MenuItem key={year} value={year}>
-                              <Checkbox checked={pickedYears.includes(year)} />
+                              <Checkbox
+                                checked={pickedYears.includes(year)}
+                                style={{ color: '#3da641' }}
+                              />
                               <ListItemText primary={year} />
                             </MenuItem>
                           ))}
@@ -286,15 +299,7 @@ const FarmValuesTable = (props) => {
                 <Grid item>
                   <Grid container spacing={1} alignItems="center">
                     <Grid item>
-                      <Typography
-                        style={{
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                        }}
-                      >
-                        {'Affiliations: '}
-                      </Typography>
+                      <Typography>{'Affiliations: '}</Typography>
                     </Grid>
                     <Grid item>
                       <FormControl size="small">
@@ -309,7 +314,11 @@ const FarmValuesTable = (props) => {
                         >
                           {affiliations.map((aff) => (
                             <MenuItem key={aff} value={aff} className={aff}>
-                              <Checkbox checked={pickedAff.includes(aff)} className={aff} />
+                              <Checkbox
+                                checked={pickedAff.includes(aff)}
+                                className={aff}
+                                style={{ color: '#3da641' }}
+                              />
                               <ListItemText primary={aff} />
                             </MenuItem>
                           ))}
@@ -319,29 +328,40 @@ const FarmValuesTable = (props) => {
                   </Grid>
                 </Grid>
                 <Grid item>
-                  <Grid container spacing={1} alignItems="center">
-                    <Grid item>
-                      <Typography
-                        style={{
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                        }}
-                      >
-                        {'Units: '}
-                      </Typography>
-                    </Grid>
-                    <Grid item>
-                      <Button
-                        onClick={() => {
-                          if (units === 'kg/ha') setUnits('lbs/ac');
-                          else setUnits('kg/ha');
-                        }}
-                      >
-                        {units}
-                      </Button>
-                    </Grid>
-                  </Grid>
+                  <div style={{ display: 'grid' }}>
+                    <UnitButton onClick={() => setUnits('kg/ha')} units={units} thisUnit={'kg/ha'}>
+                      <UnitButtonText>Kg/Ha</UnitButtonText>
+                    </UnitButton>
+                    <UnitButton
+                      onClick={() => setUnits('lbs/ac')}
+                      units={units}
+                      thisUnit={'lbs/ac'}
+                    >
+                      <UnitButtonText>Lbs/ac</UnitButtonText>
+                    </UnitButton>
+                  </div>
+                </Grid>
+                <Grid item>
+                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Switch
+                      size="small"
+                      color="primary"
+                      checked={!simpleView}
+                      onChange={() => setSimpleView(!simpleView)}
+                    />
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'start',
+                        marginLeft: '5px',
+                      }}
+                    >
+                      <div style={{ fontSize: '0.9em' }}>Advanced</div>
+                      <div style={{ fontSize: '0.9em' }}>View</div>
+                    </div>
+                  </div>
                 </Grid>
               </Grid>
             </FilterGroup>
@@ -355,8 +375,8 @@ const FarmValuesTable = (props) => {
           exportButton: false,
           addRowPosition: 'last',
           exportAllData: false,
-          groupRowSeparator: '   ',
           grouping: true,
+          tableLayout: 'auto',
           headerStyle: {
             fontWeight: 'bold',
             fontFamily: 'Bilo, sans-serif',
@@ -364,11 +384,13 @@ const FarmValuesTable = (props) => {
             textAlign: 'left',
             position: 'sticky',
             top: 0,
+            //padding: '5px 0px',
           },
           rowStyle: () => ({
             fontFamily: 'Roboto, sans-serif',
             fontSize: '0.8em',
-            textAlign: 'left',
+            //textAlign: 'left',
+            overflowWrap: 'break-word',
           }),
           selection: false,
           searchAutoFocus: true,
@@ -389,7 +411,7 @@ const FarmValuesTable = (props) => {
                   rowData={rowData}
                   dataType="table"
                   setSnackbarData={setSnackbarData}
-                  labels={['weeds3d', rowData.code]}
+                  labels={['farm-values', rowData.code]}
                   getTokenSilently={getTokenSilently}
                 />
               );

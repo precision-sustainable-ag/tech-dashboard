@@ -9,7 +9,7 @@ import Highcharts from 'highcharts';
 import PropTypes from 'prop-types';
 import { CustomLoader } from '../../../utils/CustomComponents';
 
-const SoilTemp = ({ tdrData, year }) => {
+const SoilTemp = ({ tdrData, axisMinMaxTdr }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -36,9 +36,10 @@ const SoilTemp = ({ tdrData, year }) => {
       type: 'datetime',
       startOnTick: false,
       endOnTick: false,
-      showLastLabel: false,
-      showFirstLabel: false,
-      max: year === new Date().getFullYear ? Date.now() : null,
+      showLastLabel: true,
+      showFirstLabel: true,
+      max: new Date(axisMinMaxTdr.max.split(' ').join('T')).getTime(),
+      min: new Date(axisMinMaxTdr.min.split(' ').join('T')).getTime(),
     },
     yAxis: {
       title: {
@@ -302,5 +303,5 @@ export default SoilTemp;
 
 SoilTemp.propTypes = {
   tdrData: PropTypes.array,
-  year: PropTypes.any,
+  axisMinMaxTdr: PropTypes.any,
 };
