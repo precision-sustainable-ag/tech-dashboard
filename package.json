@@ -16,7 +16,7 @@
     "@octokit/rest": "^18.10.0",
     "@reduxjs/toolkit": "^1.8.1",
     "@uiw/react-md-editor": "^3.14.4",
-    "autosuggest-highlight": "^3.2.0",
+    "autosuggest-highlight": "^3.3.0",
     "axios": "^0.27.2",
     "buffer": "^6.0.3",
     "clsx": "^1.1.1",
