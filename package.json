@@ -30,7 +30,7 @@
     "moment-timezone": "^0.5.34",
     "nth-check": "^2.1.1",
     "path": "^0.12.7",
-    "qs": "^6.10.3",
+    "qs": "^6.11.0",
     "react": "^17.0.2",
     "react-app-polyfill": "^3.0.0",
     "react-big-calendar": "^0.40.7",
