@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Grid } from '@material-ui/core';
-
 import PropTypes from 'prop-types';
 import MaterialTable from 'material-table';
 import RenderActionModal from '../RenderActionModal/RenderActionModal';
+import SharedToolbar from '../../../../TableComponents/SharedToolbar';
+import { filterData } from '../../../../TableComponents/SharedTableFunctions';
+import SharedTableOptions from '../../../../TableComponents/SharedTableOptions';
 
-const TableModal = ({ tableData, height, activeSites, tableTitle }) => {
+const TableModal = ({ data, height, activeSites, tableTitle, farmYears, affiliations }) => {
+  const [tableData, setTableData] = useState(data);
+  const [pickedYears, setPickedYears] = useState([2022]);
+  const [pickedAff, setPickedAff] = useState(['All']);
+  
   const tableHeaderOptions = [
     {
       title: 'Code',
@@ -30,7 +36,6 @@ const TableModal = ({ tableData, height, activeSites, tableTitle }) => {
       field: 'affiliation',
       type: 'string',
       align: 'justify',
-      defaultGroupOrder: 0,
     },
     {
       title: 'County',
@@ -43,7 +48,6 @@ const TableModal = ({ tableData, height, activeSites, tableTitle }) => {
       field: 'year',
       type: 'numeric',
       align: 'justify',
-      defaultGroupOrder: 1,
       defaultGroupSort: 'desc',
     },
     {
@@ -59,6 +63,10 @@ const TableModal = ({ tableData, height, activeSites, tableTitle }) => {
       align: 'justify',
     },
   ];
+
+  useEffect(() => {
+    setTableData(filterData(data, pickedYears, pickedAff));
+  }, [pickedYears, pickedAff]);
 
   return (
     <>
@@ -76,36 +84,20 @@ const TableModal = ({ tableData, height, activeSites, tableTitle }) => {
             ]}
             columns={tableHeaderOptions}
             data={tableData}
-            title={tableTitle}
-            options={{
-              defaultExpanded: true,
-              padding: 'default',
-              exportButton: false,
-              exportFileName: 'Contact and Location',
-              addRowPosition: 'last',
-              exportAllData: false,
-              //pageSize: tableData.length,
-              paging: false,
-              groupRowSeparator: '  ',
-              grouping: true,
-              headerStyle: {
-                fontWeight: 'bold',
-                fontFamily: 'Bilo, sans-serif',
-                fontSize: '0.8em',
-                textAlign: 'left',
-                position: 'sticky',
-                top: 0,
-              },
-              rowStyle: {
-                fontFamily: 'Roboto, sans-serif',
-                fontSize: '0.8em',
-                textAlign: 'left',
-              },
-              selection: false,
-              searchAutoFocus: true,
-              toolbarButtonAlignment: 'left',
-              actionsColumnIndex: 1,
-              maxBodyHeight: height - 250,
+            title={
+                <SharedToolbar
+                  farmYears={farmYears}
+                  affiliations={affiliations}
+                  pickedYears={pickedYears}
+                  pickedAff={pickedAff}
+                  setPickedAff={setPickedAff}
+                  setPickedYears={setPickedYears}
+                  name={tableTitle}
+                />
+            }
+            options={SharedTableOptions(height, 'Contact and Location', false)}
+            components={{
+              Groupbar: () => <></>,
             }}
           />
         </Grid>
@@ -115,10 +107,12 @@ const TableModal = ({ tableData, height, activeSites, tableTitle }) => {
 };
 
 TableModal.propTypes = {
-  tableData: PropTypes.array.isRequired,
+  data: PropTypes.array.isRequired,
   height: PropTypes.number.isRequired,
   activeSites: PropTypes.bool.isRequired,
   tableTitle: PropTypes.string.isRequired,
+  farmYears: PropTypes.array,
+  affiliations: PropTypes.array,
 };
 
 export default TableModal;

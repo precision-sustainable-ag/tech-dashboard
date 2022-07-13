@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { Grid, Snackbar } from '@material-ui/core';
-// import { Context } from '../Store/Store';
 import MaterialTable from 'material-table';
 import { bannedRoles } from '../utils/constants';
 import IssueDialogue from '../Comments/components/IssueDialogue/IssueDialogue';
@@ -8,7 +7,7 @@ import { BannedRoleMessage, CustomLoader } from '../utils/CustomComponents';
 import { apiPassword, apiURL, apiUsername, onfarmAPI } from '../utils/api_secret';
 import { useAuth0 } from '../Auth/react-auth0-spa';
 import MuiAlert from '@material-ui/lab/Alert';
-
+import SharedToolbar from '../TableComponents/SharedToolbar';
 import axios from 'axios';
 import QueryString from 'qs';
 import { useSelector } from 'react-redux';
@@ -26,6 +25,10 @@ const ProducerInformation = () => {
   const [tableData, setTableData] = useState([]);
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [farmYears, setFarmYears] = useState([]);
+  const [affiliations, setAffiliations] = useState([]);
+  const [pickedYears, setPickedYears] = useState(['2022']);
+  const [pickedAff, setPickedAff] = useState(['All']);
 
   // const [state] = useContext(Context);
   const userInfo = useSelector((state) => state.userInfo);
@@ -75,6 +78,25 @@ const ProducerInformation = () => {
               };
             });
 
+            let allYearsArr = [],
+              allAffArr = [];
+
+            modRes.map((record) => {
+              const allYears = record.years.split(/[, ]+/);
+              allYearsArr = allYearsArr.concat(allYears);
+              record.yearArr = allYears;
+              const findAff = record.producer_id.match(/[a-zA-Z]+/)[0];
+              if (findAff && findAff != 'nonenone') {
+                record.affiliation = findAff;
+                allAffArr = allAffArr.concat(findAff);
+              }
+            });
+            const allYearsUniqueAndSorted = [...new Set(allYearsArr)].sort();
+            const allAffUniqueAndSorted = [...new Set(allAffArr)].sort();
+            allAffUniqueAndSorted.unshift('All');
+
+            setFarmYears(allYearsUniqueAndSorted);
+            setAffiliations(allAffUniqueAndSorted);
             setTableData(modRes);
           })
           .then(() => {
@@ -91,8 +113,6 @@ const ProducerInformation = () => {
     }
   }, [userInfo.apikey, userInfo.role]);
 
-  //let height = window.innerHeight;
-
   const [height, setHeight] = useState(window.innerHeight);
 
   const handleResize = () => {
@@ -103,12 +123,19 @@ const ProducerInformation = () => {
     window.addEventListener('resize', handleResize, false);
   }, []);
 
-  // scale height
-  // if (height < 900 && height > 600) {
-  //   height -= 130;
-  // } else if (height < 600) {
-  //   height -= 200;
-  // }
+  const filterData = () => {
+    const yearsOverlap = (arr1, arr2) => {
+      return arr1.some((item) => arr2.includes(item));
+    };
+
+    const filteredYears = tableData.filter((row) => yearsOverlap(pickedYears, row.years));
+
+    const filteredAff = pickedAff.includes('All')
+      ? filteredYears
+      : filteredYears.filter((row) => pickedAff.includes(row.affiliation));
+
+    return filteredAff;
+  };
 
   const tableHeaderOptions = [
     {
@@ -169,8 +196,6 @@ const ProducerInformation = () => {
     exportFileName: 'Producer Information',
     addRowPosition: 'first',
     exportAllData: false,
-    // pageSizeOptions: [5, 10, 20, tableData.length],
-    // pageSize: tableData.length,
     paging: false,
     groupRowSeparator: '  ',
     grouping: true,
@@ -191,7 +216,7 @@ const ProducerInformation = () => {
     searchAutoFocus: true,
     toolbarButtonAlignment: 'left',
     actionsColumnIndex: 0,
-    maxBodyHeight: height - 250,
+    maxBodyHeight: height - 170,
   });
 
   return isAuthorized ? (
@@ -221,7 +246,6 @@ const ProducerInformation = () => {
                     return new Promise((resolve, reject) => {
                       const { producer_id } = oldData;
                       const { email, last_name, phone, first_name } = newData;
-                      // const filteredData = tableData.filter((records) => records.producer_id !== producer_id);
                       if (!producer_id) {
                         reject('Producer id missing');
                       } else {
@@ -261,8 +285,18 @@ const ProducerInformation = () => {
                 }
               }
               columns={tableHeaderOptions}
-              data={tableData}
-              title="Producer Information"
+              data={filterData()}
+              title={
+                  <SharedToolbar
+                    farmYears={farmYears}
+                    affiliations={affiliations}
+                    pickedYears={pickedYears}
+                    pickedAff={pickedAff}
+                    setPickedAff={setPickedAff}
+                    setPickedYears={setPickedYears}
+                    name={"Producer Information"}
+                  />
+              }
               options={tableOptions()}
               detailPanel={[
                 {
@@ -287,6 +321,9 @@ const ProducerInformation = () => {
                   },
                 },
               ]}
+              components={{
+                Groupbar: () => <></>,
+              }}
             />
           </Grid>
         </Fragment>

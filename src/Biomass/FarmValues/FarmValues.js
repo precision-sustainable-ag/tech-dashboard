@@ -5,6 +5,7 @@ import { BannedRoleMessage, CustomLoader } from '../../utils/CustomComponents';
 import MuiAlert from '@material-ui/lab/Alert';
 import FarmValuesTable from './components/FarmValuesTable/FarmValuesTable';
 import { useSelector } from 'react-redux';
+import { cleanYears, cleanAff } from '../../TableComponents/SharedTableFunctions';
 
 // Helper function
 function Alert(props) {
@@ -43,20 +44,9 @@ const FarmValues = () => {
             throw new Error('No data');
           }
           setFarmValues(response);
+          setFarmYears(cleanYears(response));
+          setAffiliations(cleanAff(response));
 
-          let allYears = response.map((record) => record.year);
-          setFarmYears([...new Set(allYears)]);
-
-          let allAffiliations = response
-            .filter((record) => record.affiliation !== undefined)
-            .reduce(
-              (prev, curr) =>
-                !prev.includes(curr.affiliation) ? [...prev, curr.affiliation] : [...prev],
-              [],
-            );
-          allAffiliations.sort();
-          allAffiliations.unshift('All');
-          setAffiliations(allAffiliations);
         })
         .then(() => {
           setFetching(false);
