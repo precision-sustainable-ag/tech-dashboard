@@ -88,10 +88,7 @@ const TaskTrackerCard = ({
             }
           }
 
-          if (
-            exclusion_protocol !== '' &&
-            (exclusion_protocol === 'decomp_biomass' || exclusion_protocol === 'cash_crop_yield')
-          ) {
+          if (exclusion_protocol !== '') {
             for (let item = 0; item < response.length; item++) {
               if (
                 response[item].protocols[exclusion_protocol] == null ||
