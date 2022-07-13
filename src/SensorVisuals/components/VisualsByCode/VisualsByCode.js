@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Grid, Typography, Snackbar, Box, Tab } from '@material-ui/core';
+import { Button, Grid, Typography, Box, Tab } from '@material-ui/core';
 import { TabList, TabContext } from '@material-ui/lab';
 import { apiPassword, apiURL, apiUsername, onfarmAPI } from '../../../utils/api_secret';
 import { ArrowBackIos } from '@material-ui/icons';
@@ -9,17 +9,11 @@ import { useEffect, useState, Fragment } from 'react';
 import { CustomLoader } from '../../../utils/CustomComponents';
 // import GatewayChart from "./GatewayChart";
 import SensorMap from '../../../utils/SensorMap';
-import MuiAlert from '@material-ui/lab/Alert';
 import { useAuth0 } from '../../../Auth/react-auth0-spa';
 
 import IssueDialogue from '../../../Comments/components/IssueDialogue/IssueDialogue';
 import TabCharts from '../TabCharts/TabCharts';
 import { useSelector } from 'react-redux';
-
-// Helper function
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 const nicknameURL = apiURL + `/api/hologram/device/nicknames/code`;
 
@@ -62,11 +56,6 @@ const VisualsByCode = () => {
   const waterSensorDataEndpoint =
     onfarmAPI +
     `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,treatment,center_depth,soil_temp`;
-  const [snackbarData, setSnackbarData] = useState({
-    open: false,
-    text: '',
-    severity: 'success',
-  });
   const [showIssueDialog, setShowIssueDialog] = useState(false);
   const [issueBody, setIssueBody] = useState(null);
 
@@ -271,17 +260,6 @@ const VisualsByCode = () => {
 
   return (
     <Fragment>
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        open={snackbarData.open}
-        autoHideDuration={2000}
-        onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-      >
-        <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-      </Snackbar>
       <Grid container spacing={3} alignItems="center">
         <Grid item>
           <Button
@@ -350,7 +328,6 @@ const VisualsByCode = () => {
                 nickname={user.nickname}
                 rowData={JSON.stringify(issueBody, null, '\t')}
                 dataType="json"
-                setSnackbarData={setSnackbarData}
                 labels={[code, 'tdr', 'water-sensor-visuals', codeData.affiliation, activeCharts]}
                 getTokenSilently={getTokenSilently}
               />

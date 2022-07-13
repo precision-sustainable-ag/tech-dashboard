@@ -1,6 +1,5 @@
 import {
   Grid,
-  Snackbar,
   Card,
   Typography,
   Chip,
@@ -18,14 +17,8 @@ import {
   Codes,
 } from '../utils/CustomComponents';
 import { uniqueYears } from '../utils/SharedFunctions';
-import MuiAlert from '@material-ui/lab/Alert';
 import TaskTrackerCard from './components/TaskTrackerCard/TaskTrackerCard';
 import { useSelector } from 'react-redux';
-
-// Helper function
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 // Data for the respective cards
 let siteEnrollmentJson = [
@@ -307,11 +300,6 @@ const TaskTracker = () => {
   const [farmYears, setFarmYears] = useState([]);
   const [affiliations, setAffiliations] = useState([]);
   const [codes, setCodes] = useState([]);
-  const [snackbarData, setSnackbarData] = useState({
-    open: false,
-    text: '',
-    severity: 'success',
-  });
 
   const activeFarmYear = () => {
     const activeYear = farmYears.filter((rec) => rec.active).map((rec) => rec.year);
@@ -471,17 +459,6 @@ const TaskTracker = () => {
         </Grid>
       ) : (
         <Fragment>
-          <Snackbar
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
-            }}
-            open={snackbarData.open}
-            autoHideDuration={10000}
-            onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-          >
-            <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-          </Snackbar>
           {/* Years and Affiliation */}
           <Grid item lg={9} sm={12}>
             <Grid container spacing={3}>

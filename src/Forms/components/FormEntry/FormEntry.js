@@ -14,7 +14,7 @@ import { useSelector } from 'react-redux';
 SyntaxHighlighter.registerLanguage('json', json);
 
 const FormEntry = (props) => {
-  let { record, index, setSnackbarData } = props;
+  let { record, index } = props;
   let slimRecord = record.data;
   const timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
   let localTime = new Date(Date.parse(record.data._submission_time) - timezoneOffset);
@@ -42,11 +42,7 @@ const FormEntry = (props) => {
       <Grid item container spacing={1} direction="column">
         <Grid item container direction="row" spacing={2}>
           <Grid item>
-            <CreateNewIssue
-              issueData={record.data}
-              index={index}
-              setSnackbarData={setSnackbarData}
-            />
+            <CreateNewIssue issueData={record.data} index={index} />
           </Grid>
           {record.errs ? (
             <Fragment>
@@ -65,6 +61,5 @@ FormEntry.propTypes = {
   record: PropTypes.object,
   index: PropTypes.number,
   CreateNewIssue: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
-  setSnackbarData: PropTypes.func,
 };
 export default FormEntry;

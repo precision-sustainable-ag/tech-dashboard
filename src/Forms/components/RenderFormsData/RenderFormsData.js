@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 const RenderFormsData = (props) => {
-  let { fetching, allowedAccounts, setSnackbarData } = props;
+  let { fetching, allowedAccounts } = props;
 
   // const [state] = useContext(Context);
   const filteredData = useSelector((state) => state.formsData.filteredData);
@@ -37,14 +37,7 @@ const RenderFormsData = (props) => {
           <Typography variant="body1">{filteredData.length} submissions</Typography>
         </Grid>
         {filteredData.map((record = {}, index) => {
-          return (
-            <FormEntry
-              record={record}
-              index={index}
-              key={`record${index}`}
-              setSnackbarData={setSnackbarData}
-            />
-          );
+          return <FormEntry record={record} index={index} key={`record${index}`} />;
         })}
       </>
     );
@@ -53,6 +46,5 @@ const RenderFormsData = (props) => {
 RenderFormsData.propTypes = {
   fetching: PropTypes.bool,
   allowedAccounts: PropTypes.array,
-  setSnackbarData: PropTypes.func,
 };
 export default RenderFormsData;

@@ -56,7 +56,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const FarmValuesTable = (props) => {
-  const { data, setSnackbarData, affiliations, farmYears } = props;
+  const { data, affiliations, farmYears } = props;
   const [tableData, setTableData] = useState(data);
   const { getTokenSilently } = useAuth0();
   const { user } = useAuth0();
@@ -410,7 +410,6 @@ const FarmValuesTable = (props) => {
                   nickname={user.nickname}
                   rowData={rowData}
                   dataType="table"
-                  setSnackbarData={setSnackbarData}
                   labels={['farm-values', rowData.code]}
                   getTokenSilently={getTokenSilently}
                 />
@@ -432,6 +431,4 @@ FarmValuesTable.propTypes = {
   data: PropTypes.array,
   farmYears: PropTypes.array,
   affiliations: PropTypes.array,
-  setSnackbarData: PropTypes.any,
-  snackbarData: PropTypes.any,
 };

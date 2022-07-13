@@ -3,17 +3,11 @@ import MUIDataTable from 'mui-datatables';
 import { onfarmAPI } from '../../../../utils/api_secret';
 import { useSelector } from 'react-redux';
 import IssueDialogue from '../../../../Comments/components/IssueDialogue/IssueDialogue';
-import { Snackbar, Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { useAuth0 } from '../../../../Auth/react-auth0-spa';
-import MuiAlert from '@material-ui/lab/Alert';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import { CustomLoader } from '../../../../utils/CustomComponents';
-
-// Helper function
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 const FarmValuesDataTable = () => {
   const userInfo = useSelector((state) => state.userInfo);
@@ -22,11 +16,6 @@ const FarmValuesDataTable = () => {
   const { getTokenSilently } = useAuth0();
   const [loading, setLoading] = useState(true);
   const [height, setHeight] = useState(window.innerHeight);
-  const [snackbarData, setSnackbarData] = useState({
-    open: false,
-    text: '',
-    severity: 'success',
-  });
   const [units, setUnits] = useState('kg/ha');
 
   const handleResize = () => {
@@ -187,7 +176,6 @@ const FarmValuesDataTable = () => {
               nickname={user.nickname}
               rowData={rowData}
               dataType="table"
-              setSnackbarData={setSnackbarData}
               labels={['farm-values', rowData[0], 'Subplot ' + rowData[1], rowData[3]]}
               getTokenSilently={getTokenSilently}
             />
@@ -256,17 +244,6 @@ const FarmValuesDataTable = () => {
         <CustomLoader />
       ) : (
         <>
-          <Snackbar
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
-            }}
-            open={snackbarData.open}
-            autoHideDuration={10000}
-            onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-          >
-            <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-          </Snackbar>
           <MUIDataTable
             title={'Farm Values'}
             data={farmValues}

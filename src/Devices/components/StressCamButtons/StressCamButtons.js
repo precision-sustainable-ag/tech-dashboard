@@ -3,7 +3,6 @@ import {
   Button,
   TextField,
   Dialog,
-  Snackbar,
   Grid,
   DialogTitle,
   DialogContent,
@@ -15,15 +14,10 @@ import {
 } from '@material-ui/core';
 import { sendCommandToHologram } from '../../../utils/SharedFunctions';
 import { getDeviceMessages } from '../../../utils/SharedFunctions';
-import MuiAlert from '@material-ui/lab/Alert';
 import PropTypes from 'prop-types';
 // import { Context } from '../../../Store/Store';
-import { useSelector } from 'react-redux';
-
-// Helper function
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+import { useSelector, useDispatch } from 'react-redux';
+import { setSnackbarData } from '../../../Store/actions';
 
 const StyledButton = withStyles({
   root: {
@@ -37,12 +31,8 @@ const StressCamButtons = (props) => {
   const [farmCode, setFarmCode] = useState('');
   const [rep, setRep] = useState('');
   const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
-  const [snackbarData, setSnackbarData] = useState({
-    open: false,
-    text: '',
-    severity: 'success',
-  });
   // const [state] = useContext(Context);
   const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
 
@@ -65,27 +55,31 @@ const StressCamButtons = (props) => {
           'Attempting to send message to your device ' +
           (60 - count).toString() +
           ' attempts remaining';
-        setSnackbarData({ open: true, text: snackbarText, severity: 'info' });
+        dispatch(setSnackbarData({ open: true, text: snackbarText, severity: 'info' }));
         const messages = JSON.parse(res.data.data);
 
         if (messages.data[0].tags.includes('_SMS_DT_DELIVERED_')) {
           console.log('contains');
           setButtonsDisabled(false);
           clearInterval(interval);
-          setSnackbarData({
-            open: true,
-            text: 'Successfully sent message',
-            severity: 'success',
-          });
+          dispatch(
+            setSnackbarData({
+              open: true,
+              text: 'Successfully sent message',
+              severity: 'success',
+            }),
+          );
         } else if (count >= 60) {
           console.log('does not contain');
           setButtonsDisabled(false);
           clearInterval(interval);
-          setSnackbarData({
-            open: true,
-            text: 'Could not send message. Your device is not connected to 3G/4G',
-            severity: 'error',
-          });
+          dispatch(
+            setSnackbarData({
+              open: true,
+              text: 'Could not send message. Your device is not connected to 3G/4G',
+              severity: 'error',
+            }),
+          );
         }
         count++;
         return messages;
@@ -129,17 +123,6 @@ const StressCamButtons = (props) => {
   };
   return (
     <>
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        open={snackbarData.open}
-        autoHideDuration={10000}
-        onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-      >
-        <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-      </Snackbar>
       <Grid item>
         <Typography variant="h5">
           Make sure your camera is connected to 2G/3G before sending commands

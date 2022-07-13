@@ -15,7 +15,7 @@ import React, { useState, useEffect } from 'react';
 import { Octokit } from '@octokit/rest';
 import MDEditor from '@uiw/react-md-editor';
 import { useSelector, useDispatch } from 'react-redux';
-
+import { setSnackbarData } from '../../../../Store/actions';
 // Local Imports
 import { githubToken } from '../../../../utils/api_secret';
 import { useAuth0 } from '../../../../Auth/react-auth0-spa';
@@ -29,7 +29,7 @@ import { setShowNewIssueDialog } from '../../../../Store/actions';
 
 // Default function
 const NewIssueModal = (props) => {
-  const { nickname, setSnackbarData } = props;
+  const { nickname } = props;
   const dispatch = useDispatch();
 
   const newIssueData = useSelector((state) => state.tableData.newIssueData);
@@ -125,26 +125,32 @@ const NewIssueModal = (props) => {
         dispatch(setShowNewIssueDialog(!open));
         if (res.response) {
           if (res.response.status === 201) {
-            setSnackbarData({
-              open: true,
-              text: `New Issue has been created for ${newIssueData.code}`,
-              severity: 'success',
-            });
+            dispatch(
+              setSnackbarData({
+                open: true,
+                text: `New Issue has been created for ${newIssueData.code}`,
+                severity: 'success',
+              }),
+            );
           } else {
             console.log('Function could not create issue');
-            setSnackbarData({
-              open: true,
-              text: `Could not create issue (error code 0)`,
-              severity: 'error',
-            });
+            dispatch(
+              setSnackbarData({
+                open: true,
+                text: `Could not create issue (error code 0)`,
+                severity: 'error',
+              }),
+            );
           }
         } else {
           console.log('No response from function, likely cors');
-          setSnackbarData({
-            open: true,
-            text: `Could not create issue (error code 1)`,
-            severity: 'error',
-          });
+          dispatch(
+            setSnackbarData({
+              open: true,
+              text: `Could not create issue (error code 1)`,
+              severity: 'error',
+            }),
+          );
         }
       });
     } else {
@@ -397,11 +403,9 @@ const NewIssueModal = (props) => {
 
 NewIssueModal.defaultProps = {
   nickname: 'rbandooni',
-  setSnackbarData: () => this.setSnackbarData(),
 };
 
 NewIssueModal.propTypes = {
-  setSnackbarData: PropTypes.func.isRequired,
   nickname: PropTypes.string.isRequired,
 };
 

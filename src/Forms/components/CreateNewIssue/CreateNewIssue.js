@@ -10,7 +10,7 @@ import IssueDialogue from '../../../Comments/components/IssueDialogue/IssueDialo
 import { useSelector } from 'react-redux';
 
 const CreateNewIssue = (props) => {
-  let { issueData, index, setSnackbarData } = props;
+  let { issueData, index } = props;
 
   const { user } = useAuth0();
   // const [state] = useContext(Context);
@@ -48,7 +48,6 @@ const CreateNewIssue = (props) => {
           nickname={user.nickname}
           rowData={JSON.stringify(newIssueData, null, '\t')}
           dataType="json"
-          setSnackbarData={setSnackbarData}
           formName={formName}
           closeDialogue={setShowNewIssueDialog}
           labels={[
@@ -70,6 +69,5 @@ const CreateNewIssue = (props) => {
 CreateNewIssue.propTypes = {
   issueData: PropTypes.any,
   index: PropTypes.number,
-  setSnackbarData: PropTypes.func,
 };
 export default CreateNewIssue;
