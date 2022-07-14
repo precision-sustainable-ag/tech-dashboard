@@ -8,7 +8,7 @@ import EditDatesModal from '../EditDatesModal/EditDatesModal';
 import { setEditDatesModalData, setEditDatesModalOpen } from '../../../../Store/actions';
 import PropTypes from 'prop-types';
 
-const FarmDatesDropdown = ({ rowData, nickname, setSnackbarData }) => {
+const FarmDatesDropdown = ({ rowData, nickname }) => {
   const [showIssue, setShowIssue] = useState(false);
   const dispatch = useDispatch();
   const expandActualFarmDates =
@@ -51,7 +51,6 @@ const FarmDatesDropdown = ({ rowData, nickname, setSnackbarData }) => {
             nickname={nickname}
             rowData={rowData}
             dataType="table"
-            setSnackbarData={setSnackbarData}
             labels={['farm-dates']}
             setShowNewIssueDialog={setShowIssue}
           />
@@ -74,7 +73,7 @@ const FarmDatesDropdown = ({ rowData, nickname, setSnackbarData }) => {
         </Tooltip>
       </Grid>
       <Grid item>
-        <EditDatesModal setSnackbarDataGlobal={setSnackbarData} />
+        <EditDatesModal />
       </Grid>
     </Grid>
   );
@@ -85,5 +84,4 @@ export default FarmDatesDropdown;
 FarmDatesDropdown.propTypes = {
   rowData: PropTypes.any,
   nickname: PropTypes.string,
-  setSnackbarData: PropTypes.func,
 };

@@ -10,15 +10,13 @@ import {
   DialogActions,
   Select,
   MenuItem,
-  Snackbar,
   Typography,
   Switch,
 } from '@material-ui/core';
-import MuiAlert from '@material-ui/lab/Alert';
 import Axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-
+import { setSnackbarData } from '../../../Store/actions';
 // Local Imports
 import { apiURL, apiUsername, apiPassword } from '../../../utils/api_secret';
 import Location from '../../../Location/Location';
@@ -30,11 +28,6 @@ import {
 
 //Global Vars
 const qs = require('qs');
-
-// Helper function
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 const fullWidth = true;
 
@@ -54,11 +47,6 @@ const EditLocationModal = ({ action }) => {
   };
 
   const [maxWidth, setMaxWidth] = useState('md');
-  const [snackbarData, setSnackbarData] = useState({
-    open: false,
-    text: '',
-    severity: 'success',
-  });
 
   const [newData, setNewData] = useState({
     county: editLocationModalData.county,
@@ -142,23 +130,29 @@ const EditLocationModal = ({ action }) => {
         !checkLatitude(Math.ceil(newData.latitude)) &&
         !checkLongitude(Math.ceil(newData.longitude))
       ) {
-        setSnackbarData({
-          open: true,
-          text: `Wrong value for latitude and longitude, should be between -90 to 90 and -180 to 180 respectively`,
-          severity: 'error',
-        });
+        dispatch(
+          setSnackbarData({
+            open: true,
+            text: `Wrong value for latitude and longitude, should be between -90 to 90 and -180 to 180 respectively`,
+            severity: 'error',
+          }),
+        );
       } else if (!checkLatitude(Math.ceil(newData.latitude))) {
-        setSnackbarData({
-          open: true,
-          text: `Wrong value for latitude, should be between -90 to 90`,
-          severity: 'error',
-        });
+        dispatch(
+          setSnackbarData({
+            open: true,
+            text: `Wrong value for latitude, should be between -90 to 90`,
+            severity: 'error',
+          }),
+        );
       } else if (!checkLongitude(Math.ceil(newData.longitude))) {
-        setSnackbarData({
-          open: true,
-          text: `Wrong value for longitude, should be between -180 to 180`,
-          severity: 'error',
-        });
+        dispatch(
+          setSnackbarData({
+            open: true,
+            text: `Wrong value for longitude, should be between -180 to 180`,
+            severity: 'error',
+          }),
+        );
       }
     }
   };
@@ -228,17 +222,6 @@ const EditLocationModal = ({ action }) => {
       </DialogTitle>
       <DialogContent>
         <Grid container>
-          <Snackbar
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
-            }}
-            open={snackbarData.open}
-            autoHideDuration={10000}
-            onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-          >
-            <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-          </Snackbar>
           <Grid item xs>
             <Typography variant="h6">
               Click on the map below to select your site location

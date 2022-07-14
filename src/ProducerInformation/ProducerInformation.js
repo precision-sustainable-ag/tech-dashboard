@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import { Grid, Snackbar } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 // import { Context } from '../Store/Store';
 import MaterialTable from 'material-table';
 import { bannedRoles } from '../utils/constants';
@@ -7,7 +7,6 @@ import IssueDialogue from '../Comments/components/IssueDialogue/IssueDialogue';
 import { BannedRoleMessage, CustomLoader } from '../utils/CustomComponents';
 import { apiPassword, apiURL, apiUsername, onfarmAPI } from '../utils/api_secret';
 import { useAuth0 } from '../Auth/react-auth0-spa';
-import MuiAlert from '@material-ui/lab/Alert';
 
 import axios from 'axios';
 import QueryString from 'qs';
@@ -17,11 +16,6 @@ const producersURL = `${onfarmAPI}/producers${
   process.env.NODE_ENV === 'development' ? `?options=showtest` : ``
 }`;
 
-// Helper function
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-
 const ProducerInformation = () => {
   const [tableData, setTableData] = useState([]);
   const [isAuthorized, setIsAuthorized] = useState(false);
@@ -30,11 +24,6 @@ const ProducerInformation = () => {
   // const [state] = useContext(Context);
   const userInfo = useSelector((state) => state.userInfo);
   const { user } = useAuth0();
-  const [snackbarData, setSnackbarData] = useState({
-    open: false,
-    text: '',
-    severity: 'success',
-  });
 
   const allowEditing = () => {
     let permissions = userInfo.permissions;
@@ -202,17 +191,6 @@ const ProducerInformation = () => {
         </Grid>
       ) : (
         <Fragment>
-          <Snackbar
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
-            }}
-            open={snackbarData.open}
-            autoHideDuration={10000}
-            onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-          >
-            <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-          </Snackbar>
           <Grid item xs={12}>
             <MaterialTable
               editable={
@@ -277,7 +255,6 @@ const ProducerInformation = () => {
                         nickname={user.nickname}
                         rowData={rowData}
                         dataType="table"
-                        setSnackbarData={setSnackbarData}
                         labels={['producer-information'].concat(
                           rowData.codes.replace(/\s/g, '').split(','),
                         )}

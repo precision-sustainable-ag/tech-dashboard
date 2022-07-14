@@ -11,19 +11,12 @@ import {
   MenuItem,
   Checkbox,
   Button,
-  Snackbar,
 } from '@material-ui/core';
-import MuiAlert from '@material-ui/lab/Alert';
+import { setSnackbarData } from '../../../../Store/actions';
 import { useSelector, useDispatch } from 'react-redux';
 import { setEditProtocolsModalOpen } from '../../../../Store/actions';
 import { callAzureFunction } from '../../../../utils/SharedFunctions';
 import { useAuth0 } from '../../../../Auth/react-auth0-spa';
-import PropTypes from 'prop-types';
-
-// Helper function
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 // A protocol dictionary in case labels are to be changed in the future
 const protocolDict = {
@@ -42,7 +35,7 @@ const protocolDict = {
   weed_quadrat_photos_beta: 'weed_quadrat_photos_beta',
 };
 
-const EditProtocolModal = ({ setSnackbarDataGlobal }) => {
+const EditProtocolModal = () => {
   const open = useSelector((state) => state.tableData.editProtocolsModalOpen);
   const editProtocolsModalData = useSelector((state) => state.tableData.editProtocolsModalData);
   const dispatch = useDispatch();
@@ -51,11 +44,6 @@ const EditProtocolModal = ({ setSnackbarDataGlobal }) => {
   const [backedProtocols, setBackedProtocols] = useState([]);
   const [protocols, setProtocols] = useState([]);
   const [maxWidth, setMaxWidth] = useState('xs');
-  const [snackbarData, setSnackbarData] = useState({
-    open: false,
-    text: '',
-    severity: 'success',
-  });
 
   useEffect(() => {
     if (Object.keys(editProtocolsModalData).length !== 0) {
@@ -100,17 +88,21 @@ const EditProtocolModal = ({ setSnackbarDataGlobal }) => {
       if (res.response && res.response.status === 201) {
         setBackedProtocols(protocols);
         handleEditProtocolsModalClose();
-        setSnackbarDataGlobal({
-          open: true,
-          text: 'Successfully updated protocol_enrollment',
-          severity: 'success',
-        });
+        dispatch(
+          setSnackbarData({
+            open: true,
+            text: 'Successfully updated protocol_enrollment',
+            severity: 'success',
+          }),
+        );
       } else {
-        setSnackbarData({
-          open: true,
-          text: 'Could Not Update Protocol Enrollment',
-          severity: 'error',
-        });
+        dispatch(
+          setSnackbarData({
+            open: true,
+            text: 'Could Not Update Protocol Enrollment',
+            severity: 'error',
+          }),
+        );
       }
     });
   };
@@ -147,17 +139,6 @@ const EditProtocolModal = ({ setSnackbarDataGlobal }) => {
       </DialogTitle>
       <DialogContent>
         <Grid container justifyContent="space-between">
-          <Snackbar
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
-            }}
-            open={snackbarData.open}
-            autoHideDuration={10000}
-            onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-          >
-            <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-          </Snackbar>
           <FormControl>
             <Grid item>
               {Object.keys(protocols).map((protocol) => (
@@ -183,14 +164,6 @@ const EditProtocolModal = ({ setSnackbarDataGlobal }) => {
       </DialogActions>
     </Dialog>
   );
-};
-
-EditProtocolModal.defaultProps = {
-  setSnackbarDataGlobal: () => this.setSnackbarData(),
-};
-
-EditProtocolModal.propTypes = {
-  setSnackbarDataGlobal: PropTypes.func.isRequired,
 };
 
 export default EditProtocolModal;

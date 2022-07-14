@@ -1,21 +1,15 @@
 import React, { useState, Fragment } from 'react';
-import { Button, Snackbar } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
 import FormEditorModal from '../FormEditorModal/FormEditorModal';
 import { PropTypes } from 'prop-types';
 import { useAuth0 } from '../../../Auth/react-auth0-spa';
-import MuiAlert from '@material-ui/lab/Alert';
 
 import { callAzureFunction } from '../../../utils/SharedFunctions';
 // import { Context } from '../../../Store/Store';
 import { updateSelectedFormData } from '../../../Store/actions';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-
-// Helper function
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 const FormEditor = (props) => {
   let { slimRecord, error, uid } = props;
@@ -28,11 +22,6 @@ const FormEditor = (props) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingLists, setEditingLists] = useState([]);
   const [buttonText, setButtonText] = useState('View errors and fix form');
-  const [snackbarData, setSnackbarData] = useState({
-    open: false,
-    text: '',
-    severity: 'success',
-  });
 
   const toggleModalOpen = () => {
     // dispatch({
@@ -74,24 +63,12 @@ const FormEditor = (props) => {
 
   return (
     <Fragment>
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        open={snackbarData.open}
-        autoHideDuration={10000}
-        onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-      >
-        <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-      </Snackbar>
       {modalOpen ? (
         <FormEditorModal
           modalOpen={modalOpen}
           toggleModalOpen={toggleModalOpen}
           editingLists={editingLists}
           setButtonText={setButtonText}
-          setSnackbarData={setSnackbarData}
         />
       ) : userInfo.view_type === 'home' ? (
         <Button

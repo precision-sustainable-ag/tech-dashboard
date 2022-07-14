@@ -1,15 +1,9 @@
-import { Grid, Snackbar } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import React, { useState, useEffect, Fragment } from 'react';
 import { onfarmAPI } from '../../utils/api_secret';
 import { BannedRoleMessage, CustomLoader } from '../../utils/CustomComponents';
-import MuiAlert from '@material-ui/lab/Alert';
 import FarmValuesTable from './components/FarmValuesTable/FarmValuesTable';
 import { useSelector } from 'react-redux';
-
-// Helper function
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 const FarmValues = () => {
   const userInfo = useSelector((state) => state.userInfo);
@@ -17,11 +11,6 @@ const FarmValues = () => {
   const [farmValues, setFarmValues] = useState([]);
   const [farmYears, setFarmYears] = useState([]);
   const [affiliations, setAffiliations] = useState([]);
-  const [snackbarData, setSnackbarData] = useState({
-    open: false,
-    text: '',
-    severity: 'success',
-  });
 
   useEffect(() => {
     const fetchData = async (apiKey) => {
@@ -78,25 +67,9 @@ const FarmValues = () => {
         </Grid>
       ) : (
         <Fragment>
-          <Snackbar
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
-            }}
-            open={snackbarData.open}
-            autoHideDuration={10000}
-            onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-          >
-            <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-          </Snackbar>
           {/* Farm Values Table */}
           <Grid item container xs={12}>
-            <FarmValuesTable
-              data={farmValues}
-              setSnackbarData={setSnackbarData}
-              farmYears={farmYears}
-              affiliations={affiliations}
-            />
+            <FarmValuesTable data={farmValues} farmYears={farmYears} affiliations={affiliations} />
           </Grid>
         </Fragment>
       )}

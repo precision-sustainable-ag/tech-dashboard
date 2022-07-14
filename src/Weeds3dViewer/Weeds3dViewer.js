@@ -2,20 +2,14 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { callAzureFunction } from '../utils/SharedFunctions';
 import { useAuth0 } from '../Auth/react-auth0-spa';
-import { Grid, Snackbar, Tooltip } from '@material-ui/core';
+import { Grid, Tooltip } from '@material-ui/core';
 import MaterialTable from 'material-table';
 import Typography from '@material-ui/core/Typography';
 import IssueDialogue from '../Comments/components/IssueDialogue/IssueDialogue';
 import { useSelector } from 'react-redux';
 import { CustomLoader } from '../utils/CustomComponents';
 import { onfarmAPI } from '../utils/api_secret';
-import MuiAlert from '@material-ui/lab/Alert';
 import { Info, Error, CheckCircle } from '@material-ui/icons';
-
-// Helper function
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 const Weeds3dViewer = () => {
   const [videos, setVideos] = useState([]);
@@ -35,12 +29,6 @@ const Weeds3dViewer = () => {
   useEffect(() => {
     window.addEventListener('resize', handleResize, false);
   }, []);
-
-  const [snackbarData, setSnackbarData] = useState({
-    open: false,
-    text: '',
-    severity: 'success',
-  });
 
   const tableHeaderOptions = [
     {
@@ -192,17 +180,6 @@ const Weeds3dViewer = () => {
         <CustomLoader />
       ) : (
         <Grid item lg={12}>
-          <Snackbar
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
-            }}
-            open={snackbarData.open}
-            autoHideDuration={10000}
-            onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-          >
-            <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-          </Snackbar>
           <MaterialTable
             columns={tableHeaderOptions}
             data={videos}
@@ -270,7 +247,6 @@ const Weeds3dViewer = () => {
                       nickname={user.nickname}
                       rowData={rowData}
                       dataType="table"
-                      setSnackbarData={setSnackbarData}
                       labels={['weeds3d', rowData.code]}
                       getTokenSilently={getTokenSilently}
                     />
