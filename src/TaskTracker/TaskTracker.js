@@ -124,6 +124,7 @@ let decompBagJson = [
     table: 'decomp_biomass_dry',
     complete_col: 'recovery_date',
     time: '1',
+    exclusion_protocol: '',
   },
   {
     title: 'T1 dry weights',
@@ -207,6 +208,7 @@ let decompBagJson = [
     table: 'decomp_biomass_dry',
     complete_col: 'recovery_date',
     time: '4',
+    exclusion_protocol: '',
   },
   {
     title: 'T4 dry weights',
@@ -550,6 +552,7 @@ const TaskTracker = () => {
                               list_code={codes}
                               complete_col={biomassData.complete_col}
                               time={biomassData.time}
+                              exclusion_protocol={biomassData.exclusion_protocol}
                             />
                           </Card>
                         </Grid>
@@ -585,6 +588,7 @@ const TaskTracker = () => {
                               list_code={codes}
                               complete_col={decompData.complete_col}
                               time={decompData.time}
+                              exclusion_protocol={decompData.exclusion_protocol}
                             />
                           </Card>
                         </Grid>
@@ -620,6 +624,7 @@ const TaskTracker = () => {
                               list_code={codes}
                               complete_col={sensorData.complete_col}
                               time={sensorData.time}
+                              exclusion_protocol={sensorData.exclusion_protocol}
                             />
                           </Card>
                         </Grid>
@@ -655,6 +660,7 @@ const TaskTracker = () => {
                               list_code={codes}
                               complete_col={yieldData.complete_col}
                               time={yieldData.time}
+                              exclusion_protocol={yieldData.exclusion_protocol}
                             />
                           </Card>
                         </Grid>
