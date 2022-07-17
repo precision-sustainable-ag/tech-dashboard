@@ -8,6 +8,7 @@ import SharedToolbar from '../../../../TableComponents/SharedToolbar';
 import FarmValuesMobileView from './FarmValuesTableMobile';
 import { filterData } from '../../../../TableComponents/SharedTableFunctions';
 import SharedTableOptions from '../../../../TableComponents/SharedTableOptions';
+import { useSelector } from 'react-redux';
 
 const FarmValuesTable = (props) => {
   const { data, setSnackbarData, affiliations, farmYears } = props;
@@ -15,28 +16,15 @@ const FarmValuesTable = (props) => {
   const { getTokenSilently } = useAuth0();
   const { user } = useAuth0();
   const [units, setUnits] = useState('kg/ha');
-  const [height, setHeight] = useState(window.innerHeight);
-  const [width, setWidth] = useState(window.innerWidth);
   const [simpleView, setSimpleView] = useState(true);
   const [pickedYears, setPickedYears] = useState(['2022']);
   const [pickedAff, setPickedAff] = useState(['All']);
-
-  const handleResize = () => {
-    setHeight(window.innerHeight);
-    setWidth(window.innerWidth);
-  };
+  const height = useSelector((state) => state.userWindowData.windowHeight);
+  const width = useSelector((state) => state.userWindowData.windowWidth);
 
   useEffect(() => {
     setTableData(filterData(data, pickedYears, pickedAff));
   }, [pickedYears, pickedAff]);
-
-  useEffect(() => {
-    window.addEventListener('resize', handleResize, false);
-
-    return () => {
-      window.removeEventListener('resize', handleResize, false);
-    };
-  }, []);
 
   const tableHeaderOptions = [
     {

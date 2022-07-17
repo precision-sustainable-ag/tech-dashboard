@@ -176,17 +176,18 @@ const Weeds3dViewer = () => {
       .then(async (res) => {
         const data = { codes: res };
         const files = await callAzureFunction(data, '/weeds3d/videos', 'POST', getTokenSilently);
-        setVideos(files.jsonResponse.files);
+        
+        if (files.jsonResponse.status === 'success') {
+          setVideos(files.jsonResponse.files);
+        } else {
+          setVideos([]);
+        }
         setLoading(false);
-
-        console.log(files.jsonResponse.files);
       })
       .catch((err) => {
         console.log('API error: ' + err);
       });
   };
-
-  console.log(yearsAndAffiliations);
 
   useEffect(() => {
     const fetchData = async (apikey) => {
@@ -198,9 +199,13 @@ const Weeds3dViewer = () => {
   }, [getTokenSilently, userInfo.apikey]);
 
   const filterData = () => {
-    const filteredYears = videos.filter((row) =>
-      pickedYears.includes(yearsAndAffiliations[row.code].year),
-    );
+    const filteredYears = videos.filter((row) => {
+      if (yearsAndAffiliations[row.code]) {
+        return pickedYears.includes(yearsAndAffiliations[row.code].year);
+      } else {
+        return false;
+      }
+    });
 
     const filteredAff = pickedAff.includes('All')
       ? filteredYears

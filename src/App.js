@@ -1,5 +1,5 @@
 // Dependency Imports
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense, useCallback } from 'react';
 import {
   makeStyles,
   Box,
@@ -68,10 +68,9 @@ import { apiPassword, apiUsername, onfarmAPI, onfarmStaticApiKey } from './utils
 import { apiCorsUrl, APIURL } from './Devices/shared/hologramConstants';
 import QueryString from 'qs';
 import StressCamVisuals from './StressCamVisuals/StressCamVisuals';
-import { toggleIsDarkTheme } from './Store/actions';
+import { toggleIsDarkTheme, setWindowHeight, setWindowWidth } from './Store/actions';
 import { useDispatch } from 'react-redux';
 import Weeds3dViewer from './Weeds3dViewer/Weeds3dViewer';
-
 // Helper function
 
 const useOnFarmApiStatus = (manualRetry = false) => {
@@ -233,6 +232,32 @@ function App() {
     // });
     dispatch(toggleIsDarkTheme(newPaletteType === 'light' ? false : true));
   };
+
+  const handleResize = () => {
+    dispatch(setWindowHeight(window.innerHeight));
+    dispatch(setWindowWidth(window.innerWidth));
+  };
+
+  const debounce = (func) => {
+    let timer;
+    return function (...args) {
+      const context = this;
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => {
+        (timer = null), func.apply(context, args);
+      }, 500);
+    };
+  };
+
+  const debouncedHandleResize = useCallback(debounce(handleResize), []);
+
+  useEffect(() => {
+    window.addEventListener('resize', debouncedHandleResize, false);
+
+    return () => {
+      window.removeEventListener('resize', debouncedHandleResize, false);
+    };
+  }, []);
 
   useEffect(() => {
     if (!window.localStorage.getItem('theme')) {
