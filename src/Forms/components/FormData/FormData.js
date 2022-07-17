@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Chip, Grid, Typography, Snackbar, Box, Tab } from '@material-ui/core';
+import { Button, Chip, Grid, Typography, Box, Tab } from '@material-ui/core';
 import { TabList, TabContext } from '@material-ui/lab';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { useAuth0 } from '../../../Auth/react-auth0-spa';
 import { ArrowBackIosOutlined } from '@material-ui/icons';
-import MuiAlert from '@material-ui/lab/Alert';
 
 import json from 'react-syntax-highlighter/dist/esm/languages/hljs/json';
 import { Link, useHistory } from 'react-router-dom';
@@ -23,11 +22,6 @@ import {
 
 SyntaxHighlighter.registerLanguage('json', json);
 
-// Helper function
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-
 const FormData = () => {
   const history = useHistory();
 
@@ -41,11 +35,6 @@ const FormData = () => {
   const [allowedAccounts, setAllowedAccounts] = useState([]);
   const [activeAccount, setActiveAccount] = useState('all');
   const { getTokenSilently } = useAuth0();
-  const [snackbarData, setSnackbarData] = useState({
-    open: false,
-    text: '',
-    severity: 'success',
-  });
   const [value, setValue] = useState('1');
 
   const getHistory = async () => {
@@ -294,17 +283,6 @@ const FormData = () => {
 
   return (
     <div>
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        open={snackbarData.open}
-        autoHideDuration={10000}
-        onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-      >
-        <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-      </Snackbar>
       <Grid container spacing={2}>
         <Grid item>
           <Button
@@ -366,11 +344,7 @@ const FormData = () => {
             <Typography variant="h5">Fetching Data...</Typography>
           </Grid>
         ) : (
-          <RenderFormsData
-            fetching={fetching}
-            allowedAccounts={allowedAccounts}
-            setSnackbarData={setSnackbarData}
-          />
+          <RenderFormsData fetching={fetching} allowedAccounts={allowedAccounts} />
         )}
       </Grid>
     </div>

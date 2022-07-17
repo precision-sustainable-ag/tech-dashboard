@@ -4,6 +4,8 @@ import Comments from '../../Comments';
 import { useAuth0 } from '../../../Auth/react-auth0-spa';
 import { callAzureFunction } from '../../../utils/SharedFunctions';
 import PropTypes from 'prop-types';
+import { setSnackbarData } from '../../../Store/actions';
+import { useDispatch } from 'react-redux';
 
 const IssueDialogue = (props) => {
   const [checkValidation, setCheckValidation] = useState({
@@ -11,16 +13,9 @@ const IssueDialogue = (props) => {
     comment: false,
   });
   const [issueTitle, setIssueTitle] = useState('');
+  const dispatch = useDispatch();
   const { getTokenSilently } = useAuth0();
-  const {
-    nickname,
-    labels,
-    setSnackbarData,
-    setShowNewIssueDialog,
-    rowData,
-    dataType,
-    defaultText = '',
-  } = props;
+  const { nickname, labels, setShowNewIssueDialog, rowData, dataType, defaultText = '' } = props;
 
   const alwaysTaggedPeople = ['brianwdavis', 'saseehav', nickname];
   const [personName] = useState(alwaysTaggedPeople);
@@ -34,7 +29,6 @@ const IssueDialogue = (props) => {
       setButtonDisabled(true);
 
       const assignedPeople = personName.length > 0 ? personName : [`${nickname}`];
-
       const data = {
         user: nickname,
         title: issueTitle,
@@ -56,26 +50,32 @@ const IssueDialogue = (props) => {
         setRemoveCommentText(true);
         if (res.response) {
           if (res.response.status === 201) {
-            setSnackbarData({
-              open: true,
-              text: `New Issue has been created`,
-              severity: 'success',
-            });
+            dispatch(
+              setSnackbarData({
+                open: true,
+                text: `New Issue has been created`,
+                severity: 'success',
+              }),
+            );
           } else {
             console.log('Function could not create issue');
-            setSnackbarData({
-              open: true,
-              text: `Could not create issue (error code 0)`,
-              severity: 'error',
-            });
+            dispatch(
+              setSnackbarData({
+                open: true,
+                text: `Could not create issue (error code 0)`,
+                severity: 'error',
+              }),
+            );
           }
         } else {
           console.log('No response from function, likely cors');
-          setSnackbarData({
-            open: true,
-            text: `Could not create issue (error code 1)`,
-            severity: 'error',
-          });
+          dispatch(
+            setSnackbarData({
+              open: true,
+              text: `Could not create issue (error code 1)`,
+              severity: 'error',
+            }),
+          );
         }
 
         if (setShowNewIssueDialog) setShowNewIssueDialog(false);
@@ -133,7 +133,6 @@ export default IssueDialogue;
 IssueDialogue.propTypes = {
   nickname: PropTypes.any,
   labels: PropTypes.any,
-  setSnackbarData: PropTypes.func,
   setShowNewIssueDialog: PropTypes.func,
   rowData: PropTypes.any,
   dataType: PropTypes.any,

@@ -12,8 +12,12 @@ import {
   Grid,
   responsiveFontSizes,
   createTheme,
+  Snackbar,
 } from '@material-ui/core';
+import MuiAlert from '@material-ui/lab/Alert';
 import PropTypes from 'prop-types';
+import { setSnackbarData } from './Store/actions';
+import { useSelector } from 'react-redux';
 
 // Local Imports
 import { useAuth0 } from './Auth/react-auth0-spa';
@@ -72,6 +76,10 @@ import { toggleIsDarkTheme, setWindowHeight, setWindowWidth } from './Store/acti
 import { useDispatch } from 'react-redux';
 import Weeds3dViewer from './Weeds3dViewer/Weeds3dViewer';
 // Helper function
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useOnFarmApiStatus = (manualRetry = false) => {
   const [status, setStatus] = useState({ checking: true, working: true });
@@ -155,6 +163,7 @@ function App() {
   const classes = useStyles();
   const online = useOnlineStatus();
   const [onFarmManualCheck, setOnFarmManualCheck] = useState(false);
+  const snackbarData = useSelector((state) => state.appData.snackbarData);
   const { checking: onfarmApiChecking, working: onfarmApiWorking } =
     useOnFarmApiStatus(onFarmManualCheck);
 
@@ -478,6 +487,19 @@ function App() {
                   <PageNotFound />
                 </Route>
               </Switch>
+              <Snackbar
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'center',
+                }}
+                open={snackbarData.open}
+                autoHideDuration={10000}
+                onClose={() =>
+                  dispatch(setSnackbarData({ ...snackbarData, open: !snackbarData.open }))
+                }
+              >
+                <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
+              </Snackbar>
             </main>
           </Suspense>
         </Container>

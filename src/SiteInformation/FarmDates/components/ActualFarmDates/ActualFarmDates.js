@@ -36,7 +36,6 @@ const ActualFarmDates = ({ rowData }) => {
         else if (r.subplot === 2 && r.subsample === 'A') dates.s2sa.push(r);
         else if (r.subplot === 2 && r.subsample === 'B') dates.s2sb.push(r);
       }
-
       setOldRowData(rowData);
       setDatesObject(dates);
     });
@@ -120,7 +119,7 @@ const ActualFarmDates = ({ rowData }) => {
       </Table>
     </TableContainer>
   ) : (
-    <Typography variant="body1">No data available</Typography>
+    <Typography variant="body1"></Typography>
   );
 };
 

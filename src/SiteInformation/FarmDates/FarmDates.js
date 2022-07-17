@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Typography, Snackbar } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import MaterialTable from 'material-table';
 import { bannedRoles } from '../../utils/constants';
 import { BannedRoleMessage, CustomLoader } from '../../utils/CustomComponents';
 import { useAuth0 } from '../../Auth/react-auth0-spa';
-import MuiAlert from '@material-ui/lab/Alert';
 import FarmDatesDropdown from './components/FarmDatesDropdown/FarmDatesDropdown';
 import { fetchFarmDatesFromApi, makeDateObjects } from '../shared/functions';
 import { useSelector, useDispatch } from 'react-redux';
@@ -12,11 +11,6 @@ import { setFarmDatesData } from '../../Store/actions';
 import { cleanAff, cleanYears, filterData } from '../../TableComponents/SharedTableFunctions';
 import SharedToolbar from '../../TableComponents/SharedToolbar';
 import SharedTableOptions from '../../TableComponents/SharedTableOptions';
-
-// Helper function
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 const FarmDates = () => {
   const userInfo = useSelector((state) => state.userInfo);
@@ -173,17 +167,6 @@ const FarmDates = () => {
           <CustomLoader />
         ) : farmDatesData.length > 0 ? (
           <div>
-            <Snackbar
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'center',
-              }}
-              open={snackbarData.open}
-              autoHideDuration={10000}
-              onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-            >
-              <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-            </Snackbar>
             <MaterialTable
               title={
                   <SharedToolbar
@@ -203,13 +186,7 @@ const FarmDates = () => {
                 {
                   tooltip: 'View actual dates',
                   render: (rowData) => {
-                    return (
-                      <FarmDatesDropdown
-                        rowData={rowData}
-                        nickname={user.nickname}
-                        setSnackbarData={setSnackbarData}
-                      />
-                    );
+                    return <FarmDatesDropdown rowData={rowData} nickname={user.nickname} />;
                   },
                 },
               ]}

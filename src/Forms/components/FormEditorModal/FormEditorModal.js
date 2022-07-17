@@ -6,21 +6,21 @@ import docco from 'react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-l
 import dark from 'react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-dark';
 import { Error, CheckCircle } from '@material-ui/icons/';
 import { Delete } from '@material-ui/icons';
-
+import { setSnackbarData } from '../../../Store/actions';
 import EditableField from '../EditableField/EditableField';
 import { callAzureFunction } from '../../../utils/SharedFunctions';
 import { useAuth0 } from '../../../Auth/react-auth0-spa';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 const FormEditorModal = (props) => {
-  let { modalOpen, toggleModalOpen, editingLists, setButtonText, setSnackbarData } = props;
+  let { modalOpen, toggleModalOpen, editingLists, setButtonText } = props;
 
   const { getTokenSilently } = useAuth0();
   // const [state] = useContext(Context);
   const selectedFormData = useSelector((state) => state.formsData.selectedFormData);
   const formName = useSelector((state) => state.formsData.name);
   const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
-
+  const dispatch = useDispatch();
   const [editedForm, setEditedForm] = useState({ ...selectedFormData.slimRecord });
   const [submitText, setSubmitText] = useState('Submit');
   const [deleteItem, setDeleteItem] = useState(false);
@@ -67,17 +67,21 @@ const FormEditorModal = (props) => {
       newObj[entry_to_iterate].splice(iterator_index, 1);
       setEditedForm({ ...newObj });
       setDeleteItemText('');
-      setSnackbarData({
-        open: true,
-        text: `Successfully deleted item ${iterator_index}`,
-        severity: 'success',
-      });
+      dispatch(
+        setSnackbarData({
+          open: true,
+          text: `Successfully deleted item ${iterator_index}`,
+          severity: 'success',
+        }),
+      );
     } else if (deleteButtonText === `Delete item ${iterator_index}`) {
-      setSnackbarData({
-        open: true,
-        text: `Incorrect number given for item ${iterator_index}`,
-        severity: 'error',
-      });
+      dispatch(
+        setSnackbarData({
+          open: true,
+          text: `Incorrect number given for item ${iterator_index}`,
+          severity: 'error',
+        }),
+      );
     }
   };
 
@@ -98,26 +102,32 @@ const FormEditorModal = (props) => {
 
       if (res.response) {
         if (res.response.status === 201) {
-          setSnackbarData({
-            open: true,
-            text: `Successfully submitted form edit, check back in 5 minutes`,
-            severity: 'success',
-          });
+          dispatch(
+            setSnackbarData({
+              open: true,
+              text: `Successfully submitted form edit, check back in 5 minutes`,
+              severity: 'success',
+            }),
+          );
         } else {
           console.log('Function could not submit form edit');
-          setSnackbarData({
-            open: true,
-            text: `Could not edit form (error code 0)`,
-            severity: 'error',
-          });
+          dispatch(
+            setSnackbarData({
+              open: true,
+              text: `Could not edit form (error code 0)`,
+              severity: 'error',
+            }),
+          );
         }
       } else {
         console.log('No response from function, likely cors');
-        setSnackbarData({
-          open: true,
-          text: `Could not edit form (error code 1)`,
-          severity: 'error',
-        });
+        dispatch(
+          setSnackbarData({
+            open: true,
+            text: `Could not edit form (error code 1)`,
+            severity: 'error',
+          }),
+        );
       }
     });
   };
@@ -135,32 +145,44 @@ const FormEditorModal = (props) => {
 
       if (res.response) {
         if (res.response.status === 201) {
-          setSnackbarData({
-            open: true,
-            text: `Successfully removed form, check back in 5 minutes`,
-            severity: 'success',
-          });
+          dispatch(
+            setSnackbarData({
+              open: true,
+              text: `Successfully removed form, check back in 5 minutes`,
+              severity: 'success',
+            }),
+          );
         } else {
           console.log('Function could not remove form');
-          setSnackbarData({
-            open: true,
-            text: `Could not remove form (error code 0)`,
-            severity: 'error',
-          });
+          dispatch(
+            setSnackbarData({
+              open: true,
+              text: `Could not remove form (error code 0)`,
+              severity: 'error',
+            }),
+          );
         }
       } else {
         console.log('No response from function, likely cors');
-        setSnackbarData({
-          open: true,
-          text: `Could not remove form (error code 1)`,
-          severity: 'error',
-        });
+        dispatch(
+          setSnackbarData({
+            open: true,
+            text: `Could not remove form (error code 1)`,
+            severity: 'error',
+          }),
+        );
       }
     });
   };
 
   return typeof modalOpen === 'boolean' && modalOpen ? (
-    <Dialog open={modalOpen} aria-labelledby="form-dialog-title" fullWidth={true} maxWidth="xl">
+    <Dialog
+      open={modalOpen}
+      onClose={handleCancel}
+      aria-labelledby="form-dialog-title"
+      fullWidth={true}
+      maxWidth="xl"
+    >
       <DialogContent>
         <Grid container direction="row" spacing={2}>
           <Grid item>
@@ -356,7 +378,6 @@ FormEditorModal.propTypes = {
   toggleModalOpen: PropTypes.func,
   editingLists: PropTypes.object,
   setButtonText: PropTypes.func,
-  setSnackbarData: PropTypes.func,
 };
 
 export default FormEditorModal;

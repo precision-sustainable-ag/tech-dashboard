@@ -11,7 +11,7 @@ import SharedTableOptions from '../../../../TableComponents/SharedTableOptions';
 import { useSelector } from 'react-redux';
 
 const FarmValuesTable = (props) => {
-  const { data, setSnackbarData, affiliations, farmYears } = props;
+  const { data, affiliations, farmYears } = props;
   const [tableData, setTableData] = useState(data);
   const { getTokenSilently } = useAuth0();
   const { user } = useAuth0();
@@ -232,6 +232,4 @@ FarmValuesTable.propTypes = {
   data: PropTypes.array,
   farmYears: PropTypes.array,
   affiliations: PropTypes.array,
-  setSnackbarData: PropTypes.any,
-  snackbarData: PropTypes.any,
 };

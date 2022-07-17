@@ -16,11 +16,6 @@ const producersURL = `${onfarmAPI}/producers${
   process.env.NODE_ENV === 'development' ? `?options=showtest` : ``
 }`;
 
-// Helper function
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-
 const ProducerInformation = () => {
   const [tableData, setTableData] = useState([]);
   const [isAuthorized, setIsAuthorized] = useState(false);
@@ -33,11 +28,6 @@ const ProducerInformation = () => {
   // const [state] = useContext(Context);
   const userInfo = useSelector((state) => state.userInfo);
   const { user } = useAuth0();
-  const [snackbarData, setSnackbarData] = useState({
-    open: false,
-    text: '',
-    severity: 'success',
-  });
 
   const allowEditing = () => {
     let permissions = userInfo.permissions;
@@ -227,17 +217,6 @@ const ProducerInformation = () => {
         </Grid>
       ) : (
         <Fragment>
-          <Snackbar
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
-            }}
-            open={snackbarData.open}
-            autoHideDuration={10000}
-            onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-          >
-            <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-          </Snackbar>
           <Grid item xs={12}>
             <MaterialTable
               editable={
@@ -311,7 +290,6 @@ const ProducerInformation = () => {
                         nickname={user.nickname}
                         rowData={rowData}
                         dataType="table"
-                        setSnackbarData={setSnackbarData}
                         labels={['producer-information'].concat(
                           rowData.codes.replace(/\s/g, '').split(','),
                         )}

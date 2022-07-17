@@ -1,8 +1,6 @@
 // Dependency Imports
 import React, { useState, useEffect } from 'react';
 import Loading from 'react-loading';
-import { Snackbar } from '@material-ui/core';
-import MuiAlert from '@material-ui/lab/Alert';
 import { useSelector } from 'react-redux';
 
 // Local Imports
@@ -22,11 +20,6 @@ import EditCashCropModal from './components/EditCashCropModal/EditCashCropModal'
 import { cleanAff, cleanYears } from '../../TableComponents/SharedTableFunctions';
 
 const siteInfoAPI_URL = `${onfarmAPI}/raw?output=json&table=site_information&options=showtest, include_unenrolled_sites`;
-
-// Helper function
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 /**
  * Site information table component
@@ -49,11 +42,6 @@ const AllDataTable = (props) => {
   const [XHRResponse, setXHRResponse] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [snackbarData, setSnackbarData] = useState({
-    open: false,
-    text: '',
-    severity: 'success',
-  });
 
   const [height, setHeight] = useState(window.innerHeight);
   const [farmYears, setFarmYears] = useState([]);
@@ -145,17 +133,6 @@ const AllDataTable = (props) => {
       </div>
     ) : (
       <div>
-        <Snackbar
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-          }}
-          open={snackbarData.open}
-          autoHideDuration={10000}
-          onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-        >
-          <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-        </Snackbar>
         <TableModal
           data={tableData}
           height={height}
@@ -165,15 +142,11 @@ const AllDataTable = (props) => {
           affiliations={affiliations}
         />
         <EditLocationModal action="update" />
-        <EditProtocolModal setSnackbarDataGlobal={setSnackbarData} />
-        <EditCashCropModal setSnackbarDataGlobal={setSnackbarData} />
+        <EditProtocolModal />
+        <EditCashCropModal />
         <ReassignDataModal />
         <UnenrollSiteModal />
-        <NewIssueModal
-          setSnackbarData={setSnackbarData}
-          snackbarData={snackbarData}
-          nickname={user.nickname}
-        />
+        <NewIssueModal nickname={user.nickname} />
         <MapModal />
       </div>
     )
