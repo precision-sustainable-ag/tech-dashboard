@@ -42,18 +42,10 @@ const AllDataTable = (props) => {
   const [XHRResponse, setXHRResponse] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const [height, setHeight] = useState(window.innerHeight);
   const [farmYears, setFarmYears] = useState([]);
   const [affiliations, setAffiliations] = useState([]);
+  const height = useSelector((state) => state.appData.windowHeight);
 
-  const handleResize = () => {
-    setHeight(window.innerHeight);
-  };
-
-  useEffect(() => {
-    window.addEventListener('resize', handleResize, false);
-  }, []);
   useEffect(() => {
     const init = () => {
       if (userRole && userAPIKey) {
@@ -106,7 +98,7 @@ const AllDataTable = (props) => {
           if (active) return data.protocols_enrolled !== '-999';
           else return data.protocols_enrolled === '-999';
         });
-        setTableData(finalData);        
+        setTableData(finalData);
         setFarmYears(cleanYears(finalData));
         setAffiliations(cleanAff(finalData));
 

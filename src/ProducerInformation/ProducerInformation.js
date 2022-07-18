@@ -1,12 +1,11 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import { Grid, Snackbar } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import MaterialTable from 'material-table';
 import { bannedRoles } from '../utils/constants';
 import IssueDialogue from '../Comments/components/IssueDialogue/IssueDialogue';
 import { BannedRoleMessage, CustomLoader } from '../utils/CustomComponents';
 import { apiPassword, apiURL, apiUsername, onfarmAPI } from '../utils/api_secret';
 import { useAuth0 } from '../Auth/react-auth0-spa';
-import MuiAlert from '@material-ui/lab/Alert';
 import SharedToolbar from '../TableComponents/SharedToolbar';
 import axios from 'axios';
 import QueryString from 'qs';
@@ -24,6 +23,7 @@ const ProducerInformation = () => {
   const [affiliations, setAffiliations] = useState([]);
   const [pickedYears, setPickedYears] = useState(['2022']);
   const [pickedAff, setPickedAff] = useState(['All']);
+  const height = useSelector((state) => state.appData.windowHeight);
 
   // const [state] = useContext(Context);
   const userInfo = useSelector((state) => state.userInfo);
@@ -102,16 +102,6 @@ const ProducerInformation = () => {
       }
     }
   }, [userInfo.apikey, userInfo.role]);
-
-  const [height, setHeight] = useState(window.innerHeight);
-
-  const handleResize = () => {
-    setHeight(window.innerHeight);
-  };
-
-  useEffect(() => {
-    window.addEventListener('resize', handleResize, false);
-  }, []);
 
   const filterData = () => {
     const yearsOverlap = (arr1, arr2) => {
@@ -266,15 +256,15 @@ const ProducerInformation = () => {
               columns={tableHeaderOptions}
               data={filterData()}
               title={
-                  <SharedToolbar
-                    farmYears={farmYears}
-                    affiliations={affiliations}
-                    pickedYears={pickedYears}
-                    pickedAff={pickedAff}
-                    setPickedAff={setPickedAff}
-                    setPickedYears={setPickedYears}
-                    name={"Producer Information"}
-                  />
+                <SharedToolbar
+                  farmYears={farmYears}
+                  affiliations={affiliations}
+                  pickedYears={pickedYears}
+                  pickedAff={pickedAff}
+                  setPickedAff={setPickedAff}
+                  setPickedYears={setPickedYears}
+                  name={'Producer Information'}
+                />
               }
               options={tableOptions()}
               detailPanel={[

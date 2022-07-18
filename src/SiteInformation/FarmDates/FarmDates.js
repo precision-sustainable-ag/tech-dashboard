@@ -24,12 +24,8 @@ const FarmDates = () => {
   const [pickedAff, setPickedAff] = useState(['All']);
   const [farmYears, setFarmYears] = useState([]);
   const [affiliations, setAffiliations] = useState([]);
-  const [snackbarData, setSnackbarData] = useState({
-    open: false,
-    text: '',
-    severity: 'success',
-  });
   const [tableData, setTableData] = useState(farmDatesData);
+  const height = useSelector((state) => state.appData.windowHeight);
 
   useEffect(() => {
     if (userInfo.role && bannedRoles.includes(userInfo.role)) {
@@ -60,16 +56,6 @@ const FarmDates = () => {
   useEffect(() => {
     setTableData(filterData(farmDatesData, pickedYears, pickedAff));
   }, [pickedYears, pickedAff, farmDatesData]);
-
-  const [height, setHeight] = useState(window.innerHeight);
-
-  const handleResize = () => {
-    setHeight(window.innerHeight);
-  };
-
-  useEffect(() => {
-    window.addEventListener('resize', handleResize, false);
-  }, []);
 
   const tableHeaderOptions = [
     {
@@ -169,19 +155,19 @@ const FarmDates = () => {
           <div>
             <MaterialTable
               title={
-                  <SharedToolbar
-                    farmYears={farmYears}
-                    affiliations={affiliations}
-                    pickedYears={pickedYears}
-                    pickedAff={pickedAff}
-                    setPickedAff={setPickedAff}
-                    setPickedYears={setPickedYears}
-                    name={"Farm Dates"}
-                  />
+                <SharedToolbar
+                  farmYears={farmYears}
+                  affiliations={affiliations}
+                  pickedYears={pickedYears}
+                  pickedAff={pickedAff}
+                  setPickedAff={setPickedAff}
+                  setPickedYears={setPickedYears}
+                  name={'Farm Dates'}
+                />
               }
               columns={tableHeaderOptions}
               data={tableData}
-              options={SharedTableOptions(height, "Farm Dates", true)}
+              options={SharedTableOptions(height, 'Farm Dates', true)}
               detailPanel={[
                 {
                   tooltip: 'View actual dates',

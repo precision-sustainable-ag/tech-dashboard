@@ -19,8 +19,8 @@ const FarmValuesTable = (props) => {
   const [simpleView, setSimpleView] = useState(true);
   const [pickedYears, setPickedYears] = useState(['2022']);
   const [pickedAff, setPickedAff] = useState(['All']);
-  const height = useSelector((state) => state.userWindowData.windowHeight);
-  const width = useSelector((state) => state.userWindowData.windowWidth);
+  const height = useSelector((state) => state.appData.windowHeight);
+  const width = useSelector((state) => state.appData.windowWidth);
 
   useEffect(() => {
     setTableData(filterData(data, pickedYears, pickedAff));
@@ -201,7 +201,6 @@ const FarmValuesTable = (props) => {
                       nickname={user.nickname}
                       rowData={rowData}
                       dataType="table"
-                      setSnackbarData={setSnackbarData}
                       labels={['farm-values', rowData.code]}
                       getTokenSilently={getTokenSilently}
                     />

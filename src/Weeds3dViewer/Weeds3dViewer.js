@@ -23,20 +23,7 @@ const Weeds3dViewer = () => {
   const [affiliations, setAffiliations] = useState([]);
   const [pickedYears, setPickedYears] = useState(['2022']);
   const [pickedAff, setPickedAff] = useState(['All']);
-  const [height, setHeight] = useState(window.innerHeight);
-  const [snackbarData, setSnackbarData] = useState({
-    open: false,
-    text: '',
-    severity: 'success',
-  });
-
-  const handleResize = () => {
-    setHeight(window.innerHeight);
-  };
-
-  useEffect(() => {
-    window.addEventListener('resize', handleResize, false);
-  }, []);
+  const height = useSelector((state) => state.appData.windowHeight);
 
   const tableHeaderOptions = [
     {
@@ -170,7 +157,7 @@ const Weeds3dViewer = () => {
       .then(async (res) => {
         const data = { codes: res };
         const files = await callAzureFunction(data, '/weeds3d/videos', 'POST', getTokenSilently);
-        
+
         if (files.jsonResponse.status === 'success') {
           setVideos(files.jsonResponse.files);
         } else {
