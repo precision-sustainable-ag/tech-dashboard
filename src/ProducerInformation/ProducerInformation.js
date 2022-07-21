@@ -10,7 +10,8 @@ import { useAuth0 } from '../Auth/react-auth0-spa';
 
 import axios from 'axios';
 import QueryString from 'qs';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { setIssueDialogData } from '../Store/actions';
 
 const producersURL = `${onfarmAPI}/producers${
   process.env.NODE_ENV === 'development' ? `?options=showtest` : ``
@@ -20,7 +21,7 @@ const ProducerInformation = () => {
   const [tableData, setTableData] = useState([]);
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  const dispatch = useDispatch();
   // const [state] = useContext(Context);
   const userInfo = useSelector((state) => state.userInfo);
   const { user } = useAuth0();
@@ -35,7 +36,7 @@ const ProducerInformation = () => {
     );
   };
 
-  const { getTokenSilently } = useAuth0();
+  //const { getTokenSilently } = useAuth0();
 
   useEffect(() => {
     const fetchProducers = async () => {
@@ -250,15 +251,26 @@ const ProducerInformation = () => {
                   openIcon: 'message',
                   // eslint-disable-next-line react/display-name
                   render: (rowData) => {
+                    dispatch(
+                      setIssueDialogData({
+                        nickname: user.nickname,
+                        rowData: rowData,
+                        dataType: 'table',
+                        labels: ['producer-information'].concat(
+                          rowData.codes.replace(/\s/g, '').split(','),
+                        ),
+                        setShowNewIssueDialog: true,
+                      }),
+                    );
                     return (
                       <IssueDialogue
-                        nickname={user.nickname}
-                        rowData={rowData}
-                        dataType="table"
-                        labels={['producer-information'].concat(
-                          rowData.codes.replace(/\s/g, '').split(','),
-                        )}
-                        getTokenSilently={getTokenSilently}
+                      // nickname={user.nickname}
+                      // rowData={rowData}
+                      // dataType="table"
+                      // labels={['producer-information'].concat(
+                      //   rowData.codes.replace(/\s/g, '').split(','),
+                      // )}
+                      // getTokenSilently={getTokenSilently}
                       />
                     );
                   },

@@ -10,7 +10,8 @@ import { CustomLoader } from '../../../utils/CustomComponents';
 // import GatewayChart from "./GatewayChart";
 import SensorMap from '../../../utils/SensorMap';
 import { useAuth0 } from '../../../Auth/react-auth0-spa';
-
+import { useDispatch } from 'react-redux';
+import { setIssueDialogData } from '../../../Store/actions';
 import IssueDialogue from '../../../Comments/components/IssueDialogue/IssueDialogue';
 import TabCharts from '../TabCharts/TabCharts';
 import { useSelector } from 'react-redux';
@@ -30,12 +31,13 @@ const VisualsByCode = () => {
     locationData: [],
     zoom: 20,
   });
-
+  const dispatch = useDispatch();
+  const issueDialogData = useSelector((state) => state.issueDialogData.issueDialogData);
   const [tdrData, setTdrData] = useState([]);
   const [value, setValue] = useState('1');
   const [activeCharts, setActiveCharts] = useState('vwc');
 
-  const { getTokenSilently } = useAuth0();
+  //const { getTokenSilently } = useAuth0();
 
   // const [sensorData, setSensorData] = useState([]);
   const [gatewayData, setGatewayData] = useState([]);
@@ -56,7 +58,6 @@ const VisualsByCode = () => {
   const waterSensorDataEndpoint =
     onfarmAPI +
     `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,treatment,center_depth,soil_temp`;
-  const [showIssueDialog, setShowIssueDialog] = useState(false);
   const [issueBody, setIssueBody] = useState(null);
 
   const waterGatewayDataEndpoint =
@@ -300,9 +301,32 @@ const VisualsByCode = () => {
                 size="small"
                 variant="contained"
                 color="primary"
-                onClick={() => setShowIssueDialog(!showIssueDialog)}
+                onClick={() => {
+                  dispatch(
+                    setIssueDialogData({
+                      nickname: user.nickname,
+                      dataType: 'json',
+                      labels: [
+                        code,
+                        'tdr',
+                        'water-sensor-visuals',
+                        codeData.affiliation,
+                        activeCharts,
+                      ],
+                      setShowNewIssueDialog: true,
+                    }),
+                  );
+                  if (issueBody) {
+                    dispatch(
+                      setIssueDialogData({
+                        ...issueDialogData,
+                        rowData: JSON.stringify(issueBody, null, '\t'),
+                      }),
+                    );
+                  }
+                }}
               >
-                {showIssueDialog ? 'Cancel' : 'Create comment'}
+                {issueDialogData.setShowNewIssueDialog ? 'Cancel' : 'Create comment'}
               </Button>
             </Grid>
             {deviceLink && (
@@ -321,15 +345,15 @@ const VisualsByCode = () => {
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          {showIssueDialog &&
+          {issueDialogData.setShowNewIssueDialog &&
             (issueBody ? (
               <IssueDialogue
-                defaultText="Make sure to include treatment, rep, which sensor(s)/depth(s) are problematic; etc. Include as much detail as possible."
-                nickname={user.nickname}
-                rowData={JSON.stringify(issueBody, null, '\t')}
-                dataType="json"
-                labels={[code, 'tdr', 'water-sensor-visuals', codeData.affiliation, activeCharts]}
-                getTokenSilently={getTokenSilently}
+              // defaultText="Make sure to include treatment, rep, which sensor(s)/depth(s) are problematic; etc. Include as much detail as possible."
+              // nickname={user.nickname}
+              // rowData={JSON.stringify(issueBody, null, '\t')}
+              // dataType="json"
+              // labels={[code, 'tdr', 'water-sensor-visuals', codeData.affiliation, activeCharts]}
+              // getTokenSilently={getTokenSilently}
               />
             ) : (
               <Typography variant="h6">Waiting for data</Typography>

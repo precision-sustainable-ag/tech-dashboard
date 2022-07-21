@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import MUIDataTable from 'mui-datatables';
 import { onfarmAPI } from '../../../../utils/api_secret';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import IssueDialogue from '../../../../Comments/components/IssueDialogue/IssueDialogue';
 import { Button } from '@material-ui/core';
 import { useAuth0 } from '../../../../Auth/react-auth0-spa';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import { CustomLoader } from '../../../../utils/CustomComponents';
+import { setIssueDialogData } from '../../../../Store/actions';
 
 const FarmValuesDataTable = () => {
   const userInfo = useSelector((state) => state.userInfo);
   const [farmValues, setFarmValues] = useState([]);
   const { user } = useAuth0();
-  const { getTokenSilently } = useAuth0();
+  //const { getTokenSilently } = useAuth0();
   const [loading, setLoading] = useState(true);
   const [height, setHeight] = useState(window.innerHeight);
   const [units, setUnits] = useState('kg/ha');
+  const dispatch = useDispatch();
 
   const handleResize = () => {
     setHeight(window.innerHeight);
@@ -169,15 +171,24 @@ const FarmValuesDataTable = () => {
     pagination: false,
     renderExpandableRow: (rowData) => {
       const colSpan = rowData.length + 1;
+      dispatch(
+        setIssueDialogData({
+          nickname: user.nickname,
+          rowData: rowData,
+          dataType: 'table',
+          labels: ['farm-values', rowData[0], 'Subplot ' + rowData[1], rowData[3]],
+          setShowNewIssueDialog: true,
+        }),
+      );
       return (
         <TableRow>
           <TableCell colSpan={colSpan}>
             <IssueDialogue
-              nickname={user.nickname}
-              rowData={rowData}
-              dataType="table"
-              labels={['farm-values', rowData[0], 'Subplot ' + rowData[1], rowData[3]]}
-              getTokenSilently={getTokenSilently}
+            // nickname={user.nickname}
+            // rowData={rowData}
+            // dataType="table"
+            // labels={['farm-values', rowData[0], 'Subplot ' + rowData[1], rowData[3]]}
+            // getTokenSilently={getTokenSilently}
             />
           </TableCell>
         </TableRow>

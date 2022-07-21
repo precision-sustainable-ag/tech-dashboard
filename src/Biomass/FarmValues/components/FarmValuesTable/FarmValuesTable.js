@@ -20,6 +20,8 @@ import IssueDialogue from '../../../../Comments/components/IssueDialogue/IssueDi
 import { useAuth0 } from '../../../../Auth/react-auth0-spa';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
+import { useDispatch } from 'react-redux';
+import { setIssueDialogData } from '../../../../Store/actions';
 //import { MoreHoriz } from '@material-ui/icons';
 
 const CustomSelect = styled(Select)`
@@ -58,7 +60,7 @@ const useStyles = makeStyles(() => ({
 const FarmValuesTable = (props) => {
   const { data, affiliations, farmYears } = props;
   const [tableData, setTableData] = useState(data);
-  const { getTokenSilently } = useAuth0();
+  //const { getTokenSilently } = useAuth0();
   const { user } = useAuth0();
   const [units, setUnits] = useState('kg/ha');
   const [pickedYears, setPickedYears] = useState(['2022']);
@@ -66,6 +68,7 @@ const FarmValuesTable = (props) => {
   const [height, setHeight] = useState(window.innerHeight);
   const [simpleView, setSimpleView] = useState(true);
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   const handleResize = () => {
     setHeight(window.innerHeight);
@@ -405,13 +408,22 @@ const FarmValuesTable = (props) => {
             openIcon: 'message',
             // eslint-disable-next-line react/display-name
             render: (rowData) => {
+              dispatch(
+                setIssueDialogData({
+                  nickname: user.nickname,
+                  rowData: rowData,
+                  dataType: 'table',
+                  labels: ['farm-values', rowData.code],
+                  setShowNewIssueDialog: true,
+                }),
+              );
               return (
                 <IssueDialogue
-                  nickname={user.nickname}
-                  rowData={rowData}
-                  dataType="table"
-                  labels={['farm-values', rowData.code]}
-                  getTokenSilently={getTokenSilently}
+                // nickname={user.nickname}
+                // rowData={rowData}
+                // dataType="table"
+                // labels={['farm-values', rowData.code]}
+                // getTokenSilently={getTokenSilently}
                 />
               );
             },

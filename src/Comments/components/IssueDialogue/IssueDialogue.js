@@ -3,11 +3,11 @@ import { Grid, TextField, Typography } from '@material-ui/core';
 import Comments from '../../Comments';
 import { useAuth0 } from '../../../Auth/react-auth0-spa';
 import { callAzureFunction } from '../../../utils/SharedFunctions';
-import PropTypes from 'prop-types';
 import { setSnackbarData } from '../../../Store/actions';
-import { useDispatch } from 'react-redux';
+import { setIssueDialogData } from '../../../Store/actions';
+import { useSelector, useDispatch } from 'react-redux';
 
-const IssueDialogue = (props) => {
+const IssueDialogue = () => {
   const [checkValidation, setCheckValidation] = useState({
     title: false,
     comment: false,
@@ -15,9 +15,9 @@ const IssueDialogue = (props) => {
   const [issueTitle, setIssueTitle] = useState('');
   const dispatch = useDispatch();
   const { getTokenSilently } = useAuth0();
-  const { nickname, labels, setShowNewIssueDialog, rowData, dataType, defaultText = '' } = props;
+  const issueDialogData = useSelector((state) => state.issueDialogData.issueDialogData);
 
-  const alwaysTaggedPeople = ['brianwdavis', 'saseehav', nickname];
+  const alwaysTaggedPeople = ['brianwdavis', 'saseehav', issueDialogData.nickname];
   const [personName] = useState(alwaysTaggedPeople);
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [removeCommentText, setRemoveCommentText] = useState(false);
@@ -28,18 +28,18 @@ const IssueDialogue = (props) => {
 
       setButtonDisabled(true);
 
-      const assignedPeople = personName.length > 0 ? personName : [`${nickname}`];
+      const assignedPeople = personName.length > 0 ? personName : [`${issueDialogData.nickname}`];
       const data = {
-        user: nickname,
+        user: issueDialogData.nickname,
         title: issueTitle,
         assignees: assignedPeople,
-        labels: labels,
+        labels: issueDialogData.labels,
         body: newComment,
       };
 
       const issueSet = callAzureFunction(
         data,
-        `precision-sustainable-ag/repos/data_corrections/issues/${nickname}`,
+        `precision-sustainable-ag/repos/data_corrections/issues/${issueDialogData.nickname}`,
         'POST',
         getTokenSilently,
       );
@@ -78,7 +78,8 @@ const IssueDialogue = (props) => {
           );
         }
 
-        if (setShowNewIssueDialog) setShowNewIssueDialog(false);
+        if (issueDialogData.setShowNewIssueDialog)
+          dispatch(setIssueDialogData({ ...issueDialogData, setShowNewIssueDialog: false }));
       });
     } else {
       if (!issueTitle || !newComment) {
@@ -114,14 +115,9 @@ const IssueDialogue = (props) => {
       <Grid item xs={12} lg={6}>
         <Comments
           handleNewComment={fileNewIssue}
-          nickname={nickname}
-          rowData={rowData}
-          dataType={dataType}
           buttonDisabled={buttonDisabled}
           removeCommentText={removeCommentText}
           setRemoveCommentText={setRemoveCommentText}
-          setShowNewIssueDialog={setShowNewIssueDialog}
-          defaultText={defaultText}
         />
       </Grid>
     </Grid>
@@ -129,12 +125,3 @@ const IssueDialogue = (props) => {
 };
 
 export default IssueDialogue;
-
-IssueDialogue.propTypes = {
-  nickname: PropTypes.any,
-  labels: PropTypes.any,
-  setShowNewIssueDialog: PropTypes.func,
-  rowData: PropTypes.any,
-  dataType: PropTypes.any,
-  defaultText: PropTypes.string,
-};

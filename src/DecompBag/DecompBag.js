@@ -9,6 +9,8 @@ import { useAuth0 } from '../Auth/react-auth0-spa';
 import MaterialTable from 'material-table';
 import Typography from '@material-ui/core/Typography';
 import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { setIssueDialogData } from '../Store/actions';
 const _ = require('lodash');
 
 const DecompBag = () => {
@@ -18,8 +20,9 @@ const DecompBag = () => {
   const userInfo = useSelector((state) => state.userInfo);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { getTokenSilently } = useAuth0();
+  //const { getTokenSilently } = useAuth0();
   const { user } = useAuth0();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchData = async (apiKey) => {
@@ -233,13 +236,22 @@ const DecompBag = () => {
                 openIcon: 'message',
                 // eslint-disable-next-line react/display-name
                 render: (rowData) => {
+                  dispatch(
+                    setIssueDialogData({
+                      nickname: user.nickname,
+                      rowData: rowData,
+                      dataType: 'table',
+                      labels: ['decomp', rowData.year, rowData.code, rowData.affiliation],
+                      setShowNewIssueDialog: true,
+                    }),
+                  );
                   return (
                     <IssueDialogue
-                      nickname={user.nickname}
-                      rowData={rowData}
-                      dataType="table"
-                      labels={['decomp', rowData.year, rowData.code, rowData.affiliation]}
-                      getTokenSilently={getTokenSilently}
+                    // nickname={user.nickname}
+                    // rowData={rowData}
+                    // dataType="table"
+                    // labels={['decomp', rowData.year, rowData.code, rowData.affiliation]}
+                    // getTokenSilently={getTokenSilently}
                     />
                   );
                 },

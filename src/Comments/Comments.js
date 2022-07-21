@@ -14,6 +14,8 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
+import { setIssueDialogData } from './../Store/actions';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
 const bodyFormatter = (dataType, rowData, newComment) => {
@@ -49,18 +51,10 @@ const bodyFormatter = (dataType, rowData, newComment) => {
 };
 
 const Comments = (props) => {
-  const {
-    removeCommentText,
-    setRemoveCommentText,
-    dataType,
-    rowData,
-    handleNewComment,
-    buttonDisabled,
-    setShowNewIssueDialog,
-    defaultText,
-  } = props;
-
-  const [newComment, setNewComment] = useState(defaultText);
+  const { removeCommentText, setRemoveCommentText, handleNewComment, buttonDisabled } = props;
+  const issueDialogData = useSelector((state) => state.issueDialogData.issueDialogData);
+  const dispatch = useDispatch();
+  const [newComment, setNewComment] = useState(issueDialogData.defaultText);
   const [searchUser, setSearchUser] = useState('');
   const [showUsersDialog, setShowUsersDialog] = useState(false);
   const [githubUsers, setGithubUsers] = useState([]);
@@ -119,13 +113,13 @@ const Comments = (props) => {
 
   useEffect(() => {
     if (removeCommentText) {
-      setNewCommentBody(defaultText);
+      setNewCommentBody(issueDialogData.defaultText);
       setRemoveCommentText(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [removeCommentText]);
 
-  const body = bodyFormatter(dataType, rowData, newComment);
+  const body = bodyFormatter(issueDialogData.dataType, issueDialogData.rowData, newComment);
 
   return (
     <Grid container spacing={1}>
@@ -171,7 +165,7 @@ const Comments = (props) => {
                   {buttonDisabled ? 'Creating Comment' : 'Add Comment'}
                 </Button>
               </Grid>
-              {setShowNewIssueDialog && (
+              {issueDialogData.setShowNewIssueDialog && (
                 <Grid item>
                   <Button
                     variant="contained"
@@ -179,7 +173,9 @@ const Comments = (props) => {
                     size="small"
                     disabled={buttonDisabled}
                     onClick={() => {
-                      setShowNewIssueDialog(false);
+                      dispatch(
+                        setIssueDialogData({ ...issueDialogData, setShowNewIssueDialog: false }),
+                      );
                     }}
                   >
                     Cancel
@@ -252,10 +248,6 @@ export default Comments;
 Comments.propTypes = {
   removeCommentText: PropTypes.bool,
   setRemoveCommentText: PropTypes.func,
-  dataType: PropTypes.string,
-  rowData: PropTypes.object,
   handleNewComment: PropTypes.func,
   buttonDisabled: PropTypes.bool,
-  setShowNewIssueDialog: PropTypes.func,
-  defaultText: PropTypes.string,
 };

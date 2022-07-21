@@ -18,6 +18,7 @@ import { callAzureFunction } from '../../../../utils/SharedFunctions';
 import { useAuth0 } from '../../../../Auth/react-auth0-spa';
 import IssueDialogue from '../../../../Comments/components/IssueDialogue/IssueDialogue';
 import { setEnrollmentValuesEdited } from '../../../../Store/actions';
+import { setIssueDialogData } from '../../../../Store/actions';
 
 const EditCashCropModal = () => {
   const open = useSelector((state) => state.tableData.editCashCropModalOpen);
@@ -67,6 +68,14 @@ const EditCashCropModal = () => {
         dispatch(setEnrollmentValuesEdited(data));
         if (cashCrop === 'Other') {
           setShowOtherMessage(true);
+          dispatch(
+            setIssueDialogData({
+              nickname: user.nickname,
+              rowData: null,
+              setShowNewIssueDialog: true,
+              labels: ['cash-crop', farmCode],
+            }),
+          );
           dispatch(
             setSnackbarData({
               open: true,
@@ -151,11 +160,11 @@ const EditCashCropModal = () => {
         {showOtherMessage || cashCrop === null ? (
           <DialogContent>
             <IssueDialogue
-              nickname={user.nickname}
-              rowData={null}
-              setSnackbarData={setSnackbarData}
-              labels={['cash-crop', farmCode]}
-              getTokenSilently={getTokenSilently}
+            // nickname={user.nickname}
+            // rowData={null}
+            // setSnackbarData={setSnackbarData}
+            // labels={['cash-crop', farmCode]}
+            // getTokenSilently={getTokenSilently}
             />
           </DialogContent>
         ) : null}

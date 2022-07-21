@@ -10,6 +10,8 @@ import { useSelector } from 'react-redux';
 import { CustomLoader } from '../utils/CustomComponents';
 import { onfarmAPI } from '../utils/api_secret';
 import { Info, Error, CheckCircle } from '@material-ui/icons';
+import { useDispatch } from 'react-redux';
+import { setIssueDialogData } from './../Store/actions';
 
 const Weeds3dViewer = () => {
   const [videos, setVideos] = useState([]);
@@ -19,6 +21,7 @@ const Weeds3dViewer = () => {
   const { getTokenSilently } = useAuth0();
   const { user } = useAuth0();
   //const height = window.innerHeight;
+  const dispatch = useDispatch();
 
   const [height, setHeight] = useState(window.innerHeight);
 
@@ -242,13 +245,22 @@ const Weeds3dViewer = () => {
                 openIcon: 'message',
                 // eslint-disable-next-line react/display-name
                 render: (rowData) => {
+                  dispatch(
+                    setIssueDialogData({
+                      nickname: user.nickname,
+                      rowData: rowData,
+                      dataType: 'table',
+                      labels: ['weeds3d', rowData.code],
+                      setShowNewIssueDialog: true,
+                    }),
+                  );
                   return (
                     <IssueDialogue
-                      nickname={user.nickname}
-                      rowData={rowData}
-                      dataType="table"
-                      labels={['weeds3d', rowData.code]}
-                      getTokenSilently={getTokenSilently}
+                    // nickname={user.nickname}
+                    // rowData={rowData}
+                    // dataType="table"
+                    // labels={['weeds3d', rowData.code]}
+                    // getTokenSilently={getTokenSilently}
                     />
                   );
                 },
