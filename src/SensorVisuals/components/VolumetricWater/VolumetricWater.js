@@ -74,6 +74,9 @@ const VolumetricWater = ({ tdrData, axisMinMaxTdr }) => {
   const bareSub1Data = useMemo(() => {
     const filteredData = data.filter((rec) => rec.treatment === 'b' && rec.subplot === 1);
 
+    const serials = filteredData.map((r) => r.serial);
+    const uniqueSerials = [...new Set(serials)];
+
     const topDepth = filteredData
       .filter((rec) => rec.center_depth === -15)
       .map((rec) => [rec.timestamp, rec.vwc]);
@@ -91,6 +94,9 @@ const VolumetricWater = ({ tdrData, axisMinMaxTdr }) => {
       ...chartOptions,
       title: {
         text: 'VWC - Rep 1 Bare',
+      },
+      subtitle: {
+        text: 'Serial: ' + uniqueSerials.toString(),
       },
       series: [
         {
@@ -127,6 +133,9 @@ const VolumetricWater = ({ tdrData, axisMinMaxTdr }) => {
   const bareSub2Data = useMemo(() => {
     const filteredData = data.filter((rec) => rec.treatment === 'b' && rec.subplot === 2);
 
+    const serials = filteredData.map((r) => r.serial);
+    const uniqueSerials = [...new Set(serials)];
+
     const topDepth = filteredData
       .filter((rec) => rec.center_depth === -15)
       .map((rec) => [rec.timestamp, rec.vwc]);
@@ -144,6 +153,9 @@ const VolumetricWater = ({ tdrData, axisMinMaxTdr }) => {
       ...chartOptions,
       title: {
         text: 'VWC - Rep 2 Bare',
+      },
+      subtitle: {
+        text: 'Serial: ' + uniqueSerials.toString(),
       },
       series: [
         {
@@ -180,6 +192,9 @@ const VolumetricWater = ({ tdrData, axisMinMaxTdr }) => {
   const coverSub1Data = useMemo(() => {
     const filteredData = data.filter((rec) => rec.treatment === 'c' && rec.subplot === 1);
 
+    const serials = filteredData.map((r) => r.serial);
+    const uniqueSerials = [...new Set(serials)];
+
     const topDepth = filteredData
       .filter((rec) => rec.center_depth === -15)
       .map((rec) => [rec.timestamp, rec.vwc]);
@@ -197,6 +212,9 @@ const VolumetricWater = ({ tdrData, axisMinMaxTdr }) => {
       ...chartOptions,
       title: {
         text: 'VWC - Rep 1 Cover',
+      },
+      subtitle: {
+        text: 'Serial: ' + uniqueSerials.toString(),
       },
       series: [
         {
@@ -233,6 +251,9 @@ const VolumetricWater = ({ tdrData, axisMinMaxTdr }) => {
   const coverSub2Data = useMemo(() => {
     const filteredData = data.filter((rec) => rec.treatment === 'c' && rec.subplot === 2);
 
+    const serials = filteredData.map((r) => r.serial);
+    const uniqueSerials = [...new Set(serials)];
+
     const topDepth = filteredData
       .filter((rec) => rec.center_depth === -15)
       .map((rec) => [rec.timestamp, rec.vwc]);
@@ -250,6 +271,9 @@ const VolumetricWater = ({ tdrData, axisMinMaxTdr }) => {
       ...chartOptions,
       title: {
         text: 'VWC - Rep 2 Cover',
+      },
+      subtitle: {
+        text: 'Serial: ' + uniqueSerials.toString(),
       },
       series: [
         {
