@@ -11,7 +11,11 @@ const TableModal = ({ data, height, activeSites, tableTitle, farmYears, affiliat
   const [tableData, setTableData] = useState(data);
   const [pickedYears, setPickedYears] = useState([2022]);
   const [pickedAff, setPickedAff] = useState(['All']);
-  
+
+  useEffect(() => {
+    setTableData(data);
+  }, [data]);
+
   const tableHeaderOptions = [
     {
       title: 'Code',
@@ -69,40 +73,38 @@ const TableModal = ({ data, height, activeSites, tableTitle, farmYears, affiliat
   }, [pickedYears, pickedAff]);
 
   return (
-    <>
-      <Grid container>
-        <Grid item lg={12}>
-          <MaterialTable
-            detailPanel={[
-              {
-                tooltip: 'Expand Actions Panel',
+    <Grid container>
+      <Grid item lg={12}>
+        <MaterialTable
+          detailPanel={[
+            {
+              tooltip: 'Expand Actions Panel',
 
-                render: (rowData) => {
-                  return <RenderActionModal rowData={rowData} activeSites={activeSites} />;
-                },
+              render: (rowData) => {
+                return <RenderActionModal rowData={rowData} activeSites={activeSites} />;
               },
-            ]}
-            columns={tableHeaderOptions}
-            data={tableData}
-            title={
-                <SharedToolbar
-                  farmYears={farmYears}
-                  affiliations={affiliations}
-                  pickedYears={pickedYears}
-                  pickedAff={pickedAff}
-                  setPickedAff={setPickedAff}
-                  setPickedYears={setPickedYears}
-                  name={tableTitle}
-                />
-            }
-            options={SharedTableOptions(height, 'Contact and Location', false)}
-            components={{
-              Groupbar: () => <></>,
-            }}
-          />
-        </Grid>
+            },
+          ]}
+          columns={tableHeaderOptions}
+          data={tableData}
+          title={
+            <SharedToolbar
+              farmYears={farmYears}
+              affiliations={affiliations}
+              pickedYears={pickedYears}
+              pickedAff={pickedAff}
+              setPickedAff={setPickedAff}
+              setPickedYears={setPickedYears}
+              name={tableTitle}
+            />
+          }
+          options={SharedTableOptions(height, 'Contact and Location', false)}
+          components={{
+            Groupbar: () => <></>,
+          }}
+        />
       </Grid>
-    </>
+    </Grid>
   );
 };
 
