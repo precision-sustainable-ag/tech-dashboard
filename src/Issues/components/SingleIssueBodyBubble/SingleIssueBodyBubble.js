@@ -1,14 +1,17 @@
 import React from 'react';
-
 import Typography from '@material-ui/core/Typography';
-
-import Avatar from '@material-ui/core/Avatar';
-import { useSelector } from 'react-redux';
+// import Avatar from '@material-ui/core/Avatar';
+// import { useSelector } from 'react-redux';
 import MDEditor from '@uiw/react-md-editor';
 import PropTypes from 'prop-types';
 import { IconButton, Grid, Tooltip } from '@material-ui/core';
-import './IssueBodyBubble.scss';
+// import './IssueBodyBubble.scss';
 import { format_AM_PM } from '../../../utils/constants';
+import {
+  ChatBubbleBody,
+  ChatBubbleAvatar,
+  ChatBubbleText,
+} from '../../IssueStyledComponents';
 // import { Context } from '../../Store/Store';
 
 export const SingleIssueBodyBubble = ({
@@ -17,7 +20,7 @@ export const SingleIssueBodyBubble = ({
   const justify = 'flex-start';
   const updateDate = new Date(updated_at);
   // const [state] = useContext(Context);
-  const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
+  // const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
 
   return (
     <Grid container justifyContent={justify}>
@@ -26,27 +29,36 @@ export const SingleIssueBodyBubble = ({
           <Grid item>
             <Tooltip placement="bottom-start" title={username}>
               <IconButton href={`https://github.com/${username}`} target="_blank" rel="noreferrer">
-                <Avatar
+                {/* <Avatar
                   className="chatBubbleAvatar"
                   src={`https://github.com/${username}.png`}
                   alt={username}
-                />
+                /> */}
+                <ChatBubbleAvatar src={`https://github.com/${username}.png`} alt={username} />
               </IconButton>
             </Tooltip>
           </Grid>
           <Grid item>
             <Grid container style={{ padding: 0 }} justifyContent={justify} alignItems={justify}>
               <Grid item>
-                <div className={`chatBubbleBody ${justify} ${isDarkTheme ? `dark` : `light`}`}>
-                  <Typography
+                {/* <div className={`chatBubbleBody ${justify} ${isDarkTheme ? `dark` : `light`}`}> */}
+                <ChatBubbleBody justify={justify}>
+                  {/* <Typography
                     variant="body1"
                     component="div"
                     className="chatBubbleText"
                     align={justify === 'flex-start' ? 'left' : 'right'}
+                  > */}
+                  <ChatBubbleText
+                    variant="body1"
+                    component="div"
+                    align={justify === 'flex-start' ? 'left' : 'right'}
                   >
                     <MDEditor.Markdown source={body} />
-                  </Typography>
-                </div>
+                  </ChatBubbleText>
+                  {/* </Typography> */}
+                </ChatBubbleBody>
+                {/* </div> */}
               </Grid>
               <Grid item xs={12}>
                 <Grid container justifyContent={justify}>

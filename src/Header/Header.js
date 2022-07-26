@@ -268,9 +268,7 @@ export default function Header(props) {
     <div className={classes.root}>
       <AppBar
         position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
+        className={`${classes.appBar} ${open && classes.appBarShift}`}
         color="primary"
       >
         <Toolbar>
@@ -279,7 +277,7 @@ export default function Header(props) {
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
-            className={clsx(classes.menuButton, open && classes.hide)}
+            className={`${classes.menuButton} ${open && classes.hide}`}
           >
             <MenuIcon />
           </IconButton>
