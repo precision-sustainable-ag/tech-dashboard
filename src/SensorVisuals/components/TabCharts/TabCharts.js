@@ -2,52 +2,44 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { lazy } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 import PropTypes from 'prop-types';
-
 import GatewayChart from '../GatewayChart/GatewayChart';
+
 const NodeVoltage = lazy(() => import('../NodeVoltage/NodeVoltage'));
 const SoilTemp = lazy(() => import('../SoilTemp/SoilTemp'));
-const TempByLbs = lazy(() => import('../LitterbagTemp/LitterbagTemp'));
+const LitterbagTemp = lazy(() => import('../LitterbagTemp/LitterbagTemp'));
 const VolumetricWater = lazy(() => import('../VolumetricWater/VolumetricWater'));
 
 export const convertEpochtoDatetime = (epoch) => {
-  var date = new Date(epoch - new Date().getTimezoneOffset() * 60000);
+  let date = new Date(epoch - new Date().getTimezoneOffset() * 60000);
   // eslint-disable-next-line
-  var iso = date.toISOString().match(/(\d{4}\-\d{2}\-\d{2})T(\d{2}:\d{2}:\d{2})/);
+  let iso = date.toISOString().match(/(\d{4}\-\d{2}\-\d{2})T(\d{2}:\d{2}:\d{2})/);
   return iso[1] + ' ' + iso[2];
 };
 
 const now = convertEpochtoDatetime(Date.now());
 
-const TabCharts = (props) => {
+const TabCharts = ({ gatewayData, ambientData, nodeData, tdrData, year, activeCharts }) => {
   const [axisMinMaxGateway, setAxisMinMaxGateway] = useState([{ min: now }, { max: now }]);
   const [axisMinMaxTdr, setAxisMinMaxTdr] = useState([{ min: now }, { max: now }]);
-  let {
-    gatewayData,
-    activeCharts,
-    // nodeData,
-    tdrData,
-    year,
-  } = props;
+  const [axisMinMaxLitterbag, setAxisMinMaxLitterbag] = useState([{ min: now }, { max: now }]);
+  const [axisMinMaxNode, setAxisMinMaxNode] = useState([{ min: now }, { max: now }]);
 
   useEffect(() => {
-    const timestampsGateway = gatewayData.map((data) => new Date(data.timestamp).getTime());
-    setAxisMinMaxGateway({
-      min: convertEpochtoDatetime(new Date(Math.min(...timestampsGateway))),
-      max:
-        new Date().getFullYear().toString() === year
-          ? now
-          : convertEpochtoDatetime(new Date(Math.max(...timestampsGateway))),
-    });
+    const generateMinMax = (sensorData) => {
+      return {
+        min: sensorData.length === 0 ? now : convertEpochtoDatetime(sensorData[0].timestamp),
+        max:
+          new Date().getFullYear().toString() === year
+            ? now
+            : convertEpochtoDatetime(sensorData[0].timestamp),
+      };
+    };
 
-    const timestampsTdr = tdrData.map((data) => new Date(data.timestamp).getTime());
-    setAxisMinMaxTdr({
-      min: convertEpochtoDatetime(new Date(Math.min(...timestampsTdr))),
-      max:
-        new Date().getFullYear().toString() === year
-          ? now
-          : convertEpochtoDatetime(new Date(Math.max(...timestampsTdr))),
-    });
-  }, []);
+    setAxisMinMaxGateway(generateMinMax(gatewayData));
+    setAxisMinMaxTdr(generateMinMax(tdrData));
+    setAxisMinMaxLitterbag(generateMinMax(ambientData));
+    setAxisMinMaxNode(generateMinMax(nodeData));
+  }, [ambientData, gatewayData, nodeData, tdrData, year]);
 
   if (activeCharts === 'gateway') {
     return (
@@ -60,10 +52,10 @@ const TabCharts = (props) => {
                   Node Health
                 </Typography>
               </Grid>
-              <NodeVoltage axisMinMaxGateway={axisMinMaxGateway} />
+              <NodeVoltage axisMinMaxNode={axisMinMaxNode} nodeData={nodeData} />
               {gatewayData.length > 0 && (
                 <Grid item xs={12}>
-                  <GatewayChart data={gatewayData} axisMinMaxGateway={axisMinMaxGateway} />
+                  <GatewayChart gatewayData={gatewayData} axisMinMaxGateway={axisMinMaxGateway} />
                 </Grid>
               )}
             </Grid>
@@ -112,7 +104,7 @@ const TabCharts = (props) => {
                   Litterbag Temperature
                 </Typography>
               </Grid>
-              <TempByLbs />
+              <LitterbagTemp ambientData={ambientData} axisMinMaxLitterbag={axisMinMaxLitterbag} />
             </Grid>
           </Grid>
         ) : (
@@ -132,6 +124,7 @@ TabCharts.propTypes = {
   activeCharts: PropTypes.string,
   nodeData: PropTypes.array,
   tdrData: PropTypes.array,
+  ambientData: PropTypes.array,
   year: PropTypes.any,
 };
 
