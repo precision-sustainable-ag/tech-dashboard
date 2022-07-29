@@ -4,53 +4,30 @@ import { GpsFixed } from '@material-ui/icons';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import PropTypes from 'prop-types';
-// const useStyles = makeStyles((theme) => ({
-//   root: {
-//     display: "flex",
-//     justifyContent: "center",
-//     flexWrap: "wrap",
-//     listStyle: "none",
-//     padding: theme.spacing(0.5),
-//     margin: 0,
-//   },
-// }));
-const GatewayChart = (props) => {
-  const { data, axisMinMaxGateway } = props;
 
-  const serials = data.map((r) => r.serial);
+const GatewayChart = ({ gatewayData, axisMinMaxGateway }) => {
+  const serials = gatewayData.map((r) => r.serial);
   const uniqueSerials = [...new Set(serials)];
 
   const gwBattVol = useMemo(() => {
-    return data.map((record) => {
-      return [new Date(record.timestamp.split(' ').join('T')).getTime(), record.gw_batt_voltage];
-    });
-  }, [data]);
+    return gatewayData.map((record) => [record.timestamp, record.gw_batt_voltage]);
+  }, [gatewayData]);
+
   const gwSolarCurr = useMemo(() => {
-    return data.map((record) => {
-      return [new Date(record.timestamp.split(' ').join('T')).getTime(), record.gw_solar_current];
-    });
-  }, [data]);
+    return gatewayData.map((record) => [record.timestamp, record.gw_solar_current]);
+  }, [gatewayData]);
 
   const gwSolarVol = useMemo(() => {
-    return data.map((record) => {
-      return [new Date(record.timestamp.split(' ').join('T')).getTime(), record.gw_solar_voltage];
-    });
-  }, [data]);
+    return gatewayData.map((record) => [record.timestamp, record.gw_solar_voltage]);
+  }, [gatewayData]);
 
   const gwEnclTemp = useMemo(() => {
-    return data.map((record) => {
-      return [new Date(record.timestamp.split(' ').join('T')).getTime(), record.gw_enclosure_temp];
-    });
-  }, [data]);
+    return gatewayData.map((record) => [record.timestamp, record.gw_enclosure_temp]);
+  }, [gatewayData]);
 
   const gwTowerSigStr = useMemo(() => {
-    return data.map((record) => {
-      return [
-        new Date(record.timestamp.split(' ').join('T')).getTime(),
-        record.tower_signal_strength,
-      ];
-    });
-  }, [data]);
+    return gatewayData.map((record) => [record.timestamp, record.tower_signal_strength]);
+  }, [gatewayData]);
 
   const chartOptions = {
     time: {
@@ -78,9 +55,6 @@ const GatewayChart = (props) => {
       min: new Date(axisMinMaxGateway.min.split(' ').join('T')).getTime(),
     },
     yAxis: {
-      //   title: {
-      //     text: "Current",
-      //   },
       type: 'logarithmic',
     },
     legend: {
@@ -128,18 +102,17 @@ const GatewayChart = (props) => {
     ],
   };
 
-  // const classes = useStyles();
   return (
     <Grid container>
       <Grid item container xs={12} spacing={2} alignItems="center">
-        {data[0].bare_lat && (
+        {gatewayData[0].bare_lat && (
           <Grid item xs={12}>
             <Paper>
               <Toolbar>
                 <Button
                   size="small"
                   target="_blank"
-                  href={`https://maps.google.com/?t=h&z=21&q=${data[0].bare_lat},${data[0].bare_lon}`}
+                  href={`https://maps.google.com/?t=h&z=21&q=${gatewayData[0].bare_lat},${gatewayData[0].bare_lon}`}
                 >
                   <GpsFixed />
                   &nbsp; Bare
@@ -147,7 +120,7 @@ const GatewayChart = (props) => {
                 <Button
                   size="small"
                   target="_blank"
-                  href={`https://maps.google.com/?t=h&z=21&q=${data[0].cover_lat},${data[0].cover_lon}`}
+                  href={`https://maps.google.com/?t=h&z=21&q=${gatewayData[0].cover_lat},${gatewayData[0].cover_lon}`}
                 >
                   <GpsFixed />
                   &nbsp; Cover
@@ -163,11 +136,6 @@ const GatewayChart = (props) => {
             containerProps={{ style: { height: '100%', width: '100%' } }}
           />
         </Grid>
-        {/* {serials.map((serial, index) => (
-          <Grid item key={index}>
-            <Chip label={} />
-          </Grid>
-        ))} */}
       </Grid>
     </Grid>
   );
@@ -187,7 +155,6 @@ GatewayChart.defaultProps = {
 };
 
 GatewayChart.propTypes = {
-  code: PropTypes.string,
-  data: PropTypes.array,
+  gatewayData: PropTypes.array,
   axisMinMaxGateway: PropTypes.any,
 };

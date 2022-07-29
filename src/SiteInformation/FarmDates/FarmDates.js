@@ -8,6 +8,9 @@ import FarmDatesDropdown from './components/FarmDatesDropdown/FarmDatesDropdown'
 import { fetchFarmDatesFromApi, makeDateObjects } from '../shared/functions';
 import { useSelector, useDispatch } from 'react-redux';
 import { setFarmDatesData } from '../../Store/actions';
+import { cleanAff, cleanYears, filterData } from '../../TableComponents/SharedTableFunctions';
+import SharedToolbar from '../../TableComponents/SharedToolbar';
+import SharedTableOptions from '../../TableComponents/SharedTableOptions';
 
 const FarmDates = () => {
   const userInfo = useSelector((state) => state.userInfo);
@@ -17,6 +20,12 @@ const FarmDates = () => {
   const [showBannedMessage, setShowBannedMessage] = useState(false);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth0();
+  const [pickedYears, setPickedYears] = useState(['2022']);
+  const [pickedAff, setPickedAff] = useState(['All']);
+  const [farmYears, setFarmYears] = useState([]);
+  const [affiliations, setAffiliations] = useState([]);
+  const [tableData, setTableData] = useState(farmDatesData);
+  const height = useSelector((state) => state.appData.windowHeight);
 
   useEffect(() => {
     if (userInfo.role && bannedRoles.includes(userInfo.role)) {
@@ -39,24 +48,14 @@ const FarmDates = () => {
     }
   }, [userInfo.apikey, userInfo.role, farmDatesValuesEdited]);
 
-  //let height = window.innerHeight;
-
-  const [height, setHeight] = useState(window.innerHeight);
-
-  const handleResize = () => {
-    setHeight(window.innerHeight);
-  };
+  useEffect(() => {
+    setFarmYears(cleanYears(farmDatesData));
+    setAffiliations(cleanAff(farmDatesData));
+  }, [farmDatesData]);
 
   useEffect(() => {
-    window.addEventListener('resize', handleResize, false);
-  }, []);
-
-  // scale height
-  // if (height < 900 && height > 600) {
-  //   height -= 130;
-  // } else if (height < 600) {
-  //   height -= 200;
-  // }
+    setTableData(filterData(farmDatesData, pickedYears, pickedAff));
+  }, [pickedYears, pickedAff, farmDatesData]);
 
   const tableHeaderOptions = [
     {
@@ -71,15 +70,13 @@ const FarmDates = () => {
       field: 'year',
       type: 'numeric',
       align: 'justify',
-      defaultGroupOrder: 1,
-      defaultGroupSort: 'desc',
+      defaultSort: 'desc',
     },
     {
       title: 'Affiliation',
       field: 'affiliation',
       type: 'string',
       align: 'justify',
-      defaultGroupOrder: 0,
     },
     {
       title: 'Cover Crop Planting',
@@ -157,39 +154,20 @@ const FarmDates = () => {
         ) : farmDatesData.length > 0 ? (
           <div>
             <MaterialTable
-              title={'Farm Dates'}
+              title={
+                <SharedToolbar
+                  farmYears={farmYears}
+                  affiliations={affiliations}
+                  pickedYears={pickedYears}
+                  pickedAff={pickedAff}
+                  setPickedAff={setPickedAff}
+                  setPickedYears={setPickedYears}
+                  name={'Farm Dates'}
+                />
+              }
               columns={tableHeaderOptions}
-              data={farmDatesData}
-              options={{
-                padding: 'default',
-                defaultExpanded: true,
-                exportButton: true,
-                exportFileName: 'Farm Dates',
-                exportAllData: false,
-                // pageSizeOptions: [50, 100, farmDatesData.length],
-                // pageSize: farmDatesData.length,
-                paging: false,
-                groupRowSeparator: '  ',
-                grouping: true,
-                headerStyle: {
-                  fontWeight: 'bold',
-                  fontFamily: 'Bilo, sans-serif',
-                  fontSize: '0.8em',
-                  textAlign: 'left',
-                  position: 'sticky',
-                  top: 0,
-                },
-                rowStyle: {
-                  fontFamily: 'Roboto, sans-serif',
-                  fontSize: '0.8em',
-                  textAlign: 'left',
-                },
-                selection: false,
-                searchAutoFocus: true,
-                toolbarButtonAlignment: 'left',
-                actionsColumnIndex: 1,
-                maxBodyHeight: height - 250,
-              }}
+              data={tableData}
+              options={SharedTableOptions(height, 'Farm Dates', true)}
               detailPanel={[
                 {
                   tooltip: 'View actual dates',
@@ -198,6 +176,9 @@ const FarmDates = () => {
                   },
                 },
               ]}
+              components={{
+                Groupbar: () => <></>,
+              }}
             />
           </div>
         ) : (

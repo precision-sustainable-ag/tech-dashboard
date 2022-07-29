@@ -1,30 +1,11 @@
-import React, { useState, useEffect, useMemo } from 'react';
-
+import React, { useMemo } from 'react';
 import { Grid } from '@material-ui/core';
-import { onfarmAPI } from '../../../utils/api_secret';
-import { useParams } from 'react-router-dom';
-// import { Context } from '../../Store/Store';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
 import 'highcharts/modules/no-data-to-display';
-import { CustomLoader } from '../../../utils/CustomComponents';
-import { useSelector } from 'react-redux';
-import { convertEpochtoDatetime } from '../TabCharts/TabCharts';
+import PropTypes from 'prop-types';
 
-const TempByLbs = () => {
-  // const [state] = useContext(Context);
-  const userInfo = useSelector((state) => state.userInfo);
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const now = convertEpochtoDatetime(Date.now());
-  const [axisMinMax, setAxisMinMax] = useState([{ min: null }, { max: null }]);
-
-  const { code, year } = useParams();
-
-  const waterAmbientSensorDataEndpoint =
-    onfarmAPI +
-    `/soil_moisture?type=ambient&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,subplot,treatment,t_lb`;
-
+const LitterbagTemp = ({ ambientData, axisMinMaxLitterbag }) => {
   const chartOptions = {
     chart: {
       type: 'scatter',
@@ -41,8 +22,12 @@ const TempByLbs = () => {
       endOnTick: false,
       showLastLabel: true,
       showFirstLabel: true,
-      max: axisMinMax.max ? new Date(axisMinMax.max.split(' ').join('T')).getTime() : null,
-      min: axisMinMax.min ? new Date(axisMinMax.min.split(' ').join('T')).getTime() : null,
+      max: axisMinMaxLitterbag.max
+        ? new Date(axisMinMaxLitterbag.max.split(' ').join('T')).getTime()
+        : null,
+      min: axisMinMaxLitterbag.min
+        ? new Date(axisMinMaxLitterbag.min.split(' ').join('T')).getTime()
+        : null,
     },
     yAxis: {
       title: {
@@ -69,46 +54,8 @@ const TempByLbs = () => {
     lang: { noData: 'Your custom message' },
   };
 
-  useEffect(() => {
-    if (Object.keys(data).length !== 0) {
-      const timestamps = data.map((d) => d.timestamp);
-      setAxisMinMax({
-        min: convertEpochtoDatetime(new Date(Math.min(...timestamps))),
-        max:
-          new Date().getFullYear().toString() === year
-            ? now
-            : convertEpochtoDatetime(new Date(Math.max(...timestamps))),
-      });
-    }
-  }, [data]);
-
-  useEffect(() => {
-    const setNodeData = async (apiKey) => {
-      setLoading(true);
-      const response = await fetch(waterAmbientSensorDataEndpoint, {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-        },
-      });
-
-      const records = await response.json();
-      const timeZoneOffset = new Date().getTimezoneOffset() * 60 * 1000 * 2;
-      const sortedByTimestamp = records
-        .sort((a, b) => a - b)
-        .map((rec) => ({
-          ...rec,
-          timestamp: rec.timestamp * 1000 - timeZoneOffset,
-        }));
-
-      setData(sortedByTimestamp);
-    };
-
-    setNodeData(userInfo.apikey).then(() => setLoading(false));
-  }, [userInfo.apikey, waterAmbientSensorDataEndpoint]);
-
   const coverSub1Data = useMemo(() => {
-    const filteredData = data.filter((rec) => rec.treatment === 'c' && rec.subplot === 1);
+    const filteredData = ambientData.filter((rec) => rec.treatment === 'c' && rec.subplot === 1);
 
     const val = filteredData.map((rec) => [rec.timestamp, rec.t_lb]);
     return {
@@ -126,9 +73,10 @@ const TempByLbs = () => {
         },
       ],
     };
-  }, [data]);
+  }, [ambientData]);
+
   const coverSub2Data = useMemo(() => {
-    const filteredData = data.filter((rec) => rec.treatment === 'c' && rec.subplot === 2);
+    const filteredData = ambientData.filter((rec) => rec.treatment === 'c' && rec.subplot === 2);
 
     const val = filteredData.map((rec) => [rec.timestamp, rec.t_lb]);
 
@@ -147,39 +95,26 @@ const TempByLbs = () => {
         },
       ],
     };
-  }, [data]);
+  }, [ambientData]);
 
   return (
     <Grid container>
-      {loading ? (
-        <CustomLoader />
-      ) : (
-        <Grid item container spacing={2}>
-          {/* <Grid item lg={6} xs={12}>
-        
-            <HighchartsReact highcharts={Highcharts} options={bareSub1Data} />
-          </Grid> */}
-          <Grid item lg={6} xs={12}>
-            {/* Cover subplot 1 */}
-            <HighchartsReact highcharts={Highcharts} options={coverSub1Data} />
-          </Grid>
-          {/* <Grid item lg={6} xs={12}>
-          
-            <HighchartsReact highcharts={Highcharts} options={bareSub2Data} />
-          </Grid> */}
-          <Grid item lg={6} xs={12}>
-            {/* Cover subplot 2 */}
-            <HighchartsReact highcharts={Highcharts} options={coverSub2Data} />
-          </Grid>
+      <Grid item container spacing={2}>
+        <Grid item lg={6} xs={12}>
+          <HighchartsReact highcharts={Highcharts} options={coverSub1Data} />
         </Grid>
-      )}
+        <Grid item lg={6} xs={12}>
+          <HighchartsReact highcharts={Highcharts} options={coverSub2Data} />
+        </Grid>
+      </Grid>
     </Grid>
   );
 };
 
-export default TempByLbs;
+export default LitterbagTemp;
 
-// LitterbagTemp.propTypes = {
-//   tdrData: PropTypes.array,
-//   axisMinMaxTdr: PropTypes.any,
-// };
+LitterbagTemp.propTypes = {
+  ambientData: PropTypes.array,
+  axisMinMaxLitterbag: PropTypes.any,
+  year: PropTypes.string,
+};
