@@ -52,13 +52,13 @@ const FarmValuesTable = (props) => {
       defaultSort: 'asc',
     },
     {
-      field: 'cc_termination_date',
+      field: 'cc_harvest_date',
       title: 'Biomass Harvest',
       type: 'date',
       align: 'justify',
       render: (rowData) => {
-        return rowData.cc_termination_date
-          ? new Date(rowData.cc_termination_date).toLocaleDateString()
+        return rowData.cc_harvest_date
+          ? new Date(rowData.cc_harvest_date).toLocaleDateString()
           : 'N/A';
       },
     },
@@ -82,6 +82,18 @@ const FarmValuesTable = (props) => {
           ? units === 'kg/ha'
             ? Math.round(rowData.uncorrected_cc_dry_biomass_kg_ha)
             : Math.round(rowData.uncorrected_cc_dry_biomass_kg_ha * 0.8922)
+          : 'N/A';
+      },
+    },
+    {
+      field: 'cc_termination_data',
+      title: 'Termination date',
+      type: 'date',
+      align: 'justify',
+      hidden: simpleView,
+      render: (rowData) => {
+        return rowData.cc_termination_date
+          ? new Date(rowData.cc_termination_date).toLocaleDateString()
           : 'N/A';
       },
     },
