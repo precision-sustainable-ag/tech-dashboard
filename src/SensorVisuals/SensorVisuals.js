@@ -2,27 +2,18 @@ import { Grid, TextField, Typography } from '@material-ui/core';
 import React, { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { onfarmAPI } from '../utils/api_secret';
-// import { Context } from '../Store/Store';
 import { CustomLoader } from '../utils/CustomComponents';
 import YearsChips from '../utils/YearsChips';
 import AffiliationsChips from '../utils/AffiliationsChips';
 import { groupBy } from '../utils/constants';
-import FarmCodeCard from './components/FarmCodeCard';
+import FarmCodeCard from './components/FarmCodeCard/FarmCodeCard';
 import { Search } from '@material-ui/icons';
 import { useHistory } from 'react-router-dom';
 import { green, grey } from '@material-ui/core/colors';
 import moment from 'moment-timezone';
 import { useSelector } from 'react-redux';
 
-// const allYears
-
-const datesURL = onfarmAPI + `/raw?table=site_information`;
-
-// const stressCamAPIEndpoint = `https://weather.aesl.ces.uga.edu/onfarm/raw?table=stresscam_ratings&output=json`;
-const stressCamAPIEndpoint = onfarmAPI + `/raw?table=site_information&output=json`;
-
-const SensorVisuals = (props) => {
-  const { type } = props;
+const SensorVisuals = ({ type }) => {
   const history = useHistory();
   const location = history.location;
 
@@ -36,9 +27,11 @@ const SensorVisuals = (props) => {
   const [data, setData] = useState([]);
   const [years, setYears] = useState([]);
   const [affiliations, setAffiliations] = useState(['all']);
-  // const [state] = useContext(Context);
   const userInfo = useSelector((state) => state.userInfo);
   const [codeSearchText, setCodeSearchText] = useState('');
+
+  const datesURL = onfarmAPI + `/raw?table=site_information`;
+  const stressCamAPIEndpoint = onfarmAPI + `/raw?table=site_information&output=json`;
 
   // Styles
   const deviceColors = {
@@ -189,7 +182,6 @@ const SensorVisuals = (props) => {
               getCameraStatus(newData, userInfo.apikey);
             } else {
               setLoading(false);
-              // response.splice(100);
               let responseWithFilter = response.filter((r) => {
                 return r.protocols_enrolled !== '-999';
               });
@@ -310,13 +302,6 @@ const SensorVisuals = (props) => {
     );
   };
 
-  // const activeAffiliation = useMemo(() => {
-  //   return affiliations.reduce((acc, curr) => {
-  //     if (curr.active) return curr.affiliation;
-  //     else return acc;
-  //   }, "");
-  // }, [affiliations]);
-
   const handleActiveAffiliation = (affiliation = 'all') => {
     const newAffiliations = affiliations.map((rec) => {
       return {
@@ -385,7 +370,6 @@ const SensorVisuals = (props) => {
               type={type}
               apiKey={userInfo.apikey}
             />
-            {/* <div>{data.code}</div> */}
           </Grid>
         ))}
       </Grid>

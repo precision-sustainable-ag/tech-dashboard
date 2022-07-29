@@ -1,14 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 // Dependency Imports
-import { Button, Card, CardContent, Grid, Slide, Typography, Snackbar } from '@material-ui/core';
+import { Button, Card, CardContent, Grid, Slide, Typography } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
 import { Octokit } from '@octokit/rest';
 import React, { useState, useEffect } from 'react';
 import MDEditor from '@uiw/react-md-editor';
-import MuiAlert from '@material-ui/lab/Alert';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 // Local Imports
 // import { Context } from '../Store/Store';
 import { githubToken } from '../../../utils/api_secret';
@@ -19,11 +18,7 @@ import IssueBubbleBody from '../IssueBodyBubble/IssueBodyBubble';
 import { SingleIssueBodyBubble } from '../SingleIssueBodyBubble/SingleIssueBodyBubble';
 import { callAzureFunction } from '../../../utils/SharedFunctions';
 import Comments from '../../../Comments/Comments';
-
-// Helper function
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+import { setSnackbarData } from '../../../Store/actions';
 
 // Default function
 const Issue = (props) => {
@@ -39,11 +34,7 @@ const Issue = (props) => {
   const [newComment, setNewComment] = useState('');
   const [newCommentAdded, setNewCommentAdded] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
-  const [snackbarData, setSnackbarData] = useState({
-    open: false,
-    text: '',
-    severity: 'success',
-  });
+  const dispatch = useDispatch();
   const { location } = useHistory();
   const history = useHistory();
 
@@ -123,29 +114,35 @@ const Issue = (props) => {
       setButtonDisabled(false);
       if (res.response) {
         if (res.response.status === 201) {
-          setSnackbarData({
-            open: true,
-            text: `New comment has been created`,
-            severity: 'success',
-            // text: "created test issue"
-          });
+          dispatch(
+            setSnackbarData({
+              open: true,
+              text: `New comment has been created`,
+              severity: 'success',
+              // text: "created test issue"
+            }),
+          );
         } else {
           console.log('Function could not create issue');
-          setSnackbarData({
-            open: true,
-            text: `Could not create comment (error code 0)`,
-            severity: 'error',
-            // text: "created test issue"
-          });
+          dispatch(
+            setSnackbarData({
+              open: true,
+              text: `Could not create comment (error code 0)`,
+              severity: 'error',
+              // text: "created test issue"
+            }),
+          );
         }
       } else {
         console.log('No response from function, likely cors');
-        setSnackbarData({
-          open: true,
-          text: `Could not create comment (error code 1)`,
-          severity: 'error',
-          // text: "created test issue"
-        });
+        dispatch(
+          setSnackbarData({
+            open: true,
+            text: `Could not create comment (error code 1)`,
+            severity: 'error',
+            // text: "created test issue"
+          }),
+        );
       }
     });
   }
@@ -233,17 +230,6 @@ const Issue = (props) => {
 
   return (
     <React.Fragment>
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        open={snackbarData.open}
-        autoHideDuration={10000}
-        onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-      >
-        <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-      </Snackbar>
       <Slide in={showIssue} direction="up" timeout={300}>
         <Grid container spacing={5}>
           <Grid item xs={12}>

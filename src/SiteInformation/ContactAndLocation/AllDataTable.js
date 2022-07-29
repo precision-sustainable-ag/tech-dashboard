@@ -1,8 +1,6 @@
 // Dependency Imports
 import React, { useState, useEffect } from 'react';
 import Loading from 'react-loading';
-import { Snackbar } from '@material-ui/core';
-import MuiAlert from '@material-ui/lab/Alert';
 import { useSelector } from 'react-redux';
 
 // Local Imports
@@ -19,13 +17,9 @@ import { useAuth0 } from '../../Auth/react-auth0-spa';
 import TableModal from './components/TableModal/TableModal';
 import PropTypes from 'prop-types';
 import EditCashCropModal from './components/EditCashCropModal/EditCashCropModal';
+import { cleanAff, cleanYears } from '../../TableComponents/SharedTableFunctions';
 
 const siteInfoAPI_URL = `${onfarmAPI}/raw?output=json&table=site_information&options=showtest, include_unenrolled_sites`;
-
-// Helper function
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 /**
  * Site information table component
@@ -48,30 +42,9 @@ const AllDataTable = (props) => {
   const [XHRResponse, setXHRResponse] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [snackbarData, setSnackbarData] = useState({
-    open: false,
-    text: '',
-    severity: 'success',
-  });
-
-  //let height = window.innerHeight;
-
-  const [height, setHeight] = useState(window.innerHeight);
-
-  const handleResize = () => {
-    setHeight(window.innerHeight);
-  };
-
-  useEffect(() => {
-    window.addEventListener('resize', handleResize, false);
-  }, []);
-
-  // scale height
-  // if (height < 900 && height > 600) {
-  //   height -= 130;
-  // } else if (height < 600) {
-  //   height -= 200;
-  // }
+  const [farmYears, setFarmYears] = useState([]);
+  const [affiliations, setAffiliations] = useState([]);
+  const height = useSelector((state) => state.appData.windowHeight);
 
   useEffect(() => {
     const init = () => {
@@ -126,6 +99,9 @@ const AllDataTable = (props) => {
           else return data.protocols_enrolled === '-999';
         });
         setTableData(finalData);
+        setFarmYears(cleanYears(finalData));
+        setAffiliations(cleanAff(finalData));
+
         return true;
       } else {
         return false;
@@ -149,33 +125,20 @@ const AllDataTable = (props) => {
       </div>
     ) : (
       <div>
-        <Snackbar
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-          }}
-          open={snackbarData.open}
-          autoHideDuration={10000}
-          onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-        >
-          <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-        </Snackbar>
         <TableModal
-          tableData={tableData}
+          data={tableData}
           height={height}
           activeSites={active}
           tableTitle={active ? 'Contact and Location' : 'Inactive Sites-Contact and Location'}
+          farmYears={farmYears}
+          affiliations={affiliations}
         />
         <EditLocationModal action="update" />
-        <EditProtocolModal setSnackbarDataGlobal={setSnackbarData} />
-        <EditCashCropModal setSnackbarDataGlobal={setSnackbarData} />
+        <EditProtocolModal />
+        <EditCashCropModal />
         <ReassignDataModal />
         <UnenrollSiteModal />
-        <NewIssueModal
-          setSnackbarData={setSnackbarData}
-          snackbarData={snackbarData}
-          nickname={user.nickname}
-        />
+        <NewIssueModal nickname={user.nickname} />
         <MapModal />
       </div>
     )

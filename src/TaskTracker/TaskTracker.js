@@ -1,6 +1,5 @@
 import {
   Grid,
-  Snackbar,
   Card,
   Typography,
   Chip,
@@ -18,36 +17,62 @@ import {
   Codes,
 } from '../utils/CustomComponents';
 import { uniqueYears } from '../utils/SharedFunctions';
-import MuiAlert from '@material-ui/lab/Alert';
 import TaskTrackerCard from './components/TaskTrackerCard/TaskTrackerCard';
 import { useSelector } from 'react-redux';
 
-// Helper function
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-
 // Data for the respective cards
 let siteEnrollmentJson = [
-  { title: 'Address', table: 'site_information', complete_col: 'address', time: '' },
-  { title: 'Site coordinates', table: 'site_information', complete_col: 'latitude', time: '' },
-  { title: 'GPS corners', table: 'gps_corners', complete_col: 'latitude', time: '' },
+  {
+    title: 'Address',
+    table: 'site_information',
+    complete_col: 'address',
+    time: '',
+    exclusion_protocol: '',
+  },
+  {
+    title: 'Site coordinates',
+    table: 'site_information',
+    complete_col: 'latitude',
+    time: '',
+    exclusion_protocol: '',
+  },
+  {
+    title: 'GPS corners',
+    table: 'gps_corners',
+    complete_col: 'latitude',
+    time: '',
+    exclusion_protocol: '',
+  },
   {
     title: 'Cover Crop Planting Date',
     table: 'farm_history',
     complete_col: 'cc_planting_date',
     time: '',
+    exclusion_protocol: '',
   },
 ];
 
 let biomassJson = [
-  { title: 'Fresh weight', table: 'biomass_in_field', complete_col: 'fresh_wt_a', time: '' },
-  { title: 'Legume percentage', table: 'biomass_in_field', complete_col: 'legumes_40', time: '' },
+  {
+    title: 'Fresh weight',
+    table: 'biomass_in_field',
+    complete_col: 'fresh_wt_a',
+    time: '',
+    exclusion_protocol: 'decomp_biomass',
+  },
+  {
+    title: 'Legume percentage',
+    table: 'biomass_in_field',
+    complete_col: 'legumes_40',
+    time: '',
+    exclusion_protocol: '',
+  },
   {
     title: 'Termination date',
     table: 'farm_history',
     complete_col: 'cc_termination_date',
     time: '',
+    exclusion_protocol: '',
   },
 ];
 
@@ -57,144 +82,168 @@ let decompBagJson = [
     table: 'decomp_biomass_fresh',
     complete_col: 'empty_bag_wt',
     time: '0',
+    exclusion_protocol: 'decomp_biomass',
   },
   {
     title: 'T0 fresh weights',
     table: 'decomp_biomass_fresh',
     complete_col: 'fresh_biomass_wt',
     time: '0',
+    exclusion_protocol: 'decomp_biomass',
   },
   {
     title: 'T0 recovery date',
     table: 'decomp_biomass_dry',
     complete_col: 'recovery_date',
     time: '0',
+    exclusion_protocol: '',
   },
   {
     title: 'T0 dry weights',
     table: 'decomp_biomass_dry',
     complete_col: 'dry_biomass_wt',
     time: '0',
+    exclusion_protocol: '',
   },
   {
     title: 'T1 empty weights',
     table: 'decomp_biomass_fresh',
     complete_col: 'empty_bag_wt',
     time: '1',
+    exclusion_protocol: '',
   },
   {
     title: 'T1 fresh weights',
     table: 'decomp_biomass_fresh',
     complete_col: 'fresh_biomass_wt',
     time: '1',
+    exclusion_protocol: '',
   },
   {
     title: 'T1 recovery date',
     table: 'decomp_biomass_dry',
     complete_col: 'recovery_date',
     time: '1',
+    exclusion_protocol: '',
   },
   {
     title: 'T1 dry weights',
     table: 'decomp_biomass_dry',
     complete_col: 'dry_biomass_wt',
     time: '1',
+    exclusion_protocol: '',
   },
   {
     title: 'T2 empty weights',
     table: 'decomp_biomass_fresh',
     complete_col: 'empty_bag_wt',
     time: '2',
+    exclusion_protocol: '',
   },
   {
     title: 'T2 fresh weights',
     table: 'decomp_biomass_fresh',
     complete_col: 'fresh_biomass_wt',
     time: '2',
+    exclusion_protocol: '',
   },
   {
     title: 'T2 recovery date',
     table: 'decomp_biomass_dry',
     complete_col: 'recovery_date',
     time: '2',
+    exclusion_protocol: '',
   },
   {
     title: 'T2 dry weights',
     table: 'decomp_biomass_dry',
     complete_col: 'dry_biomass_wt',
     time: '2',
+    exclusion_protocol: '',
   },
   {
     title: 'T3 empty weights',
     table: 'decomp_biomass_fresh',
     complete_col: 'empty_bag_wt',
     time: '3',
+    exclusion_protocol: '',
   },
   {
     title: 'T3 fresh weights',
     table: 'decomp_biomass_fresh',
     complete_col: 'fresh_biomass_wt',
     time: '3',
+    exclusion_protocol: '',
   },
   {
     title: 'T3 recovery date',
     table: 'decomp_biomass_dry',
     complete_col: 'recovery_date',
     time: '3',
+    exclusion_protocol: '',
   },
   {
     title: 'T3 dry weights',
     table: 'decomp_biomass_dry',
     complete_col: 'dry_biomass_wt',
     time: '3',
+    exclusion_protocol: '',
   },
   {
     title: 'T4 empty weights',
     table: 'decomp_biomass_fresh',
     complete_col: 'empty_bag_wt',
     time: '4',
+    exclusion_protocol: '',
   },
   {
     title: 'T4 fresh weights',
     table: 'decomp_biomass_fresh',
     complete_col: 'fresh_biomass_wt',
     time: '4',
+    exclusion_protocol: '',
   },
   {
     title: 'T4 recovery date',
     table: 'decomp_biomass_dry',
     complete_col: 'recovery_date',
     time: '4',
+    exclusion_protocol: '',
   },
   {
     title: 'T4 dry weights',
     table: 'decomp_biomass_dry',
     complete_col: 'dry_biomass_wt',
     time: '4',
+    exclusion_protocol: '',
   },
   {
     title: 'T5 empty weights',
     table: 'decomp_biomass_fresh',
     complete_col: 'empty_bag_wt',
     time: '5',
+    exclusion_protocol: '',
   },
   {
     title: 'T5 fresh weights',
     table: 'decomp_biomass_fresh',
     complete_col: 'fresh_biomass_wt',
     time: '5',
+    exclusion_protocol: '',
   },
   {
     title: 'T5 recovery date',
     table: 'decomp_biomass_dry',
     complete_col: 'recovery_date',
     time: '5',
+    exclusion_protocol: '',
   },
   {
     title: 'T5 dry weights',
     table: 'decomp_biomass_dry',
     complete_col: 'dry_biomass_wt',
     time: '5',
+    exclusion_protocol: '',
   },
 ];
 
@@ -204,12 +253,14 @@ let sensorJson = [
     table: 'wsensor_install',
     complete_col: 'bare_node_serial_no',
     time: '',
+    exclusion_protocol: '',
   },
   {
     title: 'Cash crop planting date',
     table: 'farm_history',
     complete_col: 'cash_crop_planting_date',
     time: '',
+    exclusion_protocol: '',
   },
 ];
 
@@ -219,24 +270,28 @@ let yieldJson = [
     table: 'yield_corn',
     complete_col: 'fresh_harvest_wt',
     time: '',
+    exclusion_protocol: 'cash_crop_yield',
   },
   {
     title: 'Cotton hand-harvest',
     table: 'yield_cotton',
     complete_col: 'boll_wt',
     time: '',
+    exclusion_protocol: 'cash_crop_yield',
   },
   {
     title: 'Soybean hand-harvest',
     table: 'yield_soybeans',
     complete_col: 'fresh_harvest_wt',
     time: '',
+    exclusion_protocol: 'cash_crop_yield',
   },
   {
     title: 'Weigh Wagon',
     table: 'yield_wagon',
     complete_col: 'wagon_area_ft2',
     time: '',
+    exclusion_protocol: 'cash_crop_yield',
   },
 ];
 const TaskTracker = () => {
@@ -247,11 +302,6 @@ const TaskTracker = () => {
   const [farmYears, setFarmYears] = useState([]);
   const [affiliations, setAffiliations] = useState([]);
   const [codes, setCodes] = useState([]);
-  const [snackbarData, setSnackbarData] = useState({
-    open: false,
-    text: '',
-    severity: 'success',
-  });
 
   const activeFarmYear = () => {
     const activeYear = farmYears.filter((rec) => rec.active).map((rec) => rec.year);
@@ -411,17 +461,6 @@ const TaskTracker = () => {
         </Grid>
       ) : (
         <Fragment>
-          <Snackbar
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
-            }}
-            open={snackbarData.open}
-            autoHideDuration={10000}
-            onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-          >
-            <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-          </Snackbar>
           {/* Years and Affiliation */}
           <Grid item lg={9} sm={12}>
             <Grid container spacing={3}>
@@ -477,6 +516,7 @@ const TaskTracker = () => {
                               list_code={codes}
                               complete_col={siteData.complete_col}
                               time={siteData.time}
+                              exclusion_protocol={siteData.exclusion_protocol}
                             />
                           </Card>
                         </Grid>
@@ -512,6 +552,7 @@ const TaskTracker = () => {
                               list_code={codes}
                               complete_col={biomassData.complete_col}
                               time={biomassData.time}
+                              exclusion_protocol={biomassData.exclusion_protocol}
                             />
                           </Card>
                         </Grid>
@@ -547,6 +588,7 @@ const TaskTracker = () => {
                               list_code={codes}
                               complete_col={decompData.complete_col}
                               time={decompData.time}
+                              exclusion_protocol={decompData.exclusion_protocol}
                             />
                           </Card>
                         </Grid>
@@ -582,6 +624,7 @@ const TaskTracker = () => {
                               list_code={codes}
                               complete_col={sensorData.complete_col}
                               time={sensorData.time}
+                              exclusion_protocol={sensorData.exclusion_protocol}
                             />
                           </Card>
                         </Grid>
@@ -617,6 +660,7 @@ const TaskTracker = () => {
                               list_code={codes}
                               complete_col={yieldData.complete_col}
                               time={yieldData.time}
+                              exclusion_protocol={yieldData.exclusion_protocol}
                             />
                           </Card>
                         </Grid>

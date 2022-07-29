@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Grid, Snackbar } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import { onfarmAPI } from '../utils/api_secret';
 // import { Context } from '../Store/Store';
 import { CustomLoader } from '../utils/CustomComponents';
@@ -8,14 +8,8 @@ import IssueDialogue from '../Comments/components/IssueDialogue/IssueDialogue';
 import { useAuth0 } from '../Auth/react-auth0-spa';
 import MaterialTable from 'material-table';
 import Typography from '@material-ui/core/Typography';
-import MuiAlert from '@material-ui/lab/Alert';
 import { useSelector } from 'react-redux';
 const _ = require('lodash');
-
-// Helper function
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 const DecompBag = () => {
   const history = useHistory();
@@ -26,11 +20,6 @@ const DecompBag = () => {
   const [loading, setLoading] = useState(true);
   const { getTokenSilently } = useAuth0();
   const { user } = useAuth0();
-  const [snackbarData, setSnackbarData] = useState({
-    open: false,
-    text: '',
-    severity: 'success',
-  });
 
   useEffect(() => {
     const fetchData = async (apiKey) => {
@@ -175,17 +164,6 @@ const DecompBag = () => {
         <CustomLoader />
       ) : (
         <Grid item xs={12}>
-          <Snackbar
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
-            }}
-            open={snackbarData.open}
-            autoHideDuration={10000}
-            onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-          >
-            <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-          </Snackbar>
           <MaterialTable
             columns={tableHeaderOptions}
             data={data}
@@ -260,7 +238,6 @@ const DecompBag = () => {
                       nickname={user.nickname}
                       rowData={rowData}
                       dataType="table"
-                      setSnackbarData={setSnackbarData}
                       labels={['decomp', rowData.year, rowData.code, rowData.affiliation]}
                       getTokenSilently={getTokenSilently}
                     />

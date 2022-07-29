@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { setEditDatesModalOpen, setFarmDatesValuesEdited } from '../../../../Store/actions';
 import React, { useState, useEffect } from 'react';
+import { setSnackbarData } from '../../../../Store/actions';
 import {
   Dialog,
   DialogContent,
@@ -12,9 +13,8 @@ import {
 } from '@material-ui/core';
 import { callAzureFunction } from '../../../../utils/SharedFunctions';
 import { useAuth0 } from '../../../../Auth/react-auth0-spa';
-import PropTypes from 'prop-types';
 
-const EditDatesModal = ({ setSnackbarDataGlobal }) => {
+const EditDatesModal = () => {
   const farmDatesValuesEdited = useSelector((state) => state.farmDatesData.farmDatesValuesEdited);
   const editDatesModalData = useSelector((state) => state.farmDatesData.editDatesModalData);
   const editDatesModalOpen = useSelector((state) => state.farmDatesData.editDatesModalOpen);
@@ -80,11 +80,13 @@ const EditDatesModal = ({ setSnackbarDataGlobal }) => {
 
   //handles submit
   const handleEditDatesModalSubmit = () => {
-    setSnackbarDataGlobal({
-      open: true,
-      text: 'Submitting...',
-      severity: 'info',
-    });
+    dispatch(
+      setSnackbarData({
+        open: true,
+        text: 'Submitting...',
+        severity: 'info',
+      }),
+    );
     const biomassData1A = {
       values: {
         recovery_date: datesDict.biomassHarvest,
@@ -152,47 +154,59 @@ const EditDatesModal = ({ setSnackbarDataGlobal }) => {
           if (values[2].response && values[2].response.status === 201) {
             if (values[3].response && values[3].response.status === 201) {
               if (values[4].response && values[4].response.status === 201) {
-                setSnackbarDataGlobal({
-                  open: true,
-                  text: 'Dates Edit Was Successful!',
-                  severity: 'success',
-                });
+                dispatch(
+                  setSnackbarData({
+                    open: true,
+                    text: 'Dates Edit Was Successful!',
+                    severity: 'success',
+                  }),
+                );
                 dispatch(setFarmDatesValuesEdited(!farmDatesValuesEdited));
                 handleEditDatesModalClose();
               } else {
-                setSnackbarDataGlobal({
-                  open: true,
-                  text: 'ERROR. All biomass dates added. Update failed at farm history dates',
-                  severity: 'error',
-                });
+                dispatch(
+                  setSnackbarData({
+                    open: true,
+                    text: 'ERROR. All biomass dates added. Update failed at farm history dates',
+                    severity: 'error',
+                  }),
+                );
               }
             } else {
-              setSnackbarDataGlobal({
-                open: true,
-                text: 'ERROR. Biomass subplots/subtables 1A,1B,2A added. Update failed at subplot/subtable 2B',
-                severity: 'error',
-              });
+              dispatch(
+                setSnackbarData({
+                  open: true,
+                  text: 'ERROR. Biomass subplots/subtables 1A,1B,2A added. Update failed at subplot/subtable 2B',
+                  severity: 'error',
+                }),
+              );
             }
           } else {
-            setSnackbarDataGlobal({
-              open: true,
-              text: 'ERROR. Biomass subplots/subtables 1A,1B added. Update failed at subplot/subtable 2A',
-              severity: 'error',
-            });
+            dispatch(
+              setSnackbarData({
+                open: true,
+                text: 'ERROR. Biomass subplots/subtables 1A,1B added. Update failed at subplot/subtable 2A',
+                severity: 'error',
+              }),
+            );
           }
         } else {
-          setSnackbarDataGlobal({
-            open: true,
-            text: 'ERROR. Biomass subplot/subtable 1A added. Update failed at subplot/subtable 1B',
-            severity: 'error',
-          });
+          dispatch(
+            setSnackbarData({
+              open: true,
+              text: 'ERROR. Biomass subplot/subtable 1A added. Update failed at subplot/subtable 1B',
+              severity: 'error',
+            }),
+          );
         }
       } else {
-        setSnackbarDataGlobal({
-          open: true,
-          text: 'ERROR. No dates added. Update failed at biomass subplot/subtable 1A',
-          severity: 'error',
-        });
+        dispatch(
+          setSnackbarData({
+            open: true,
+            text: 'ERROR. No dates added. Update failed at biomass subplot/subtable 1A',
+            severity: 'error',
+          }),
+        );
       }
     });
   };
@@ -298,10 +312,6 @@ const EditDatesModal = ({ setSnackbarDataGlobal }) => {
       </DialogContent>
     </Dialog>
   );
-};
-
-EditDatesModal.propTypes = {
-  setSnackbarDataGlobal: PropTypes.func,
 };
 
 export default EditDatesModal;
