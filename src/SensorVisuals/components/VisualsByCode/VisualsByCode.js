@@ -49,7 +49,7 @@ const VisualsByCode = () => {
 
   const waterTdrDataEndpoint =
     onfarmAPI +
-    `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,treatment,center_depth,soil_temp`;
+    `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,serial,vwc,subplot,treatment,center_depth,soil_temp`;
 
   const waterNodeDataEndpoint =
     onfarmAPI +
