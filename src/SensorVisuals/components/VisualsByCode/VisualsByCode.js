@@ -1,13 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState, Fragment } from 'react';
 import { Button, Grid, Typography, Box, Tab } from '@material-ui/core';
 import { TabList, TabContext } from '@material-ui/lab';
 import { apiPassword, apiURL, apiUsername, onfarmAPI } from '../../../utils/api_secret';
 import { ArrowBackIos } from '@material-ui/icons';
 import { Link, useHistory, useParams, useLocation } from 'react-router-dom';
-import { useEffect, useState, Fragment } from 'react';
-// import { Context } from '../../Store/Store';
 import { CustomLoader } from '../../../utils/CustomComponents';
-// import GatewayChart from "./GatewayChart";
 import SensorMap from '../../../utils/SensorMap';
 import { useAuth0 } from '../../../Auth/react-auth0-spa';
 
@@ -18,7 +15,6 @@ import { useSelector } from 'react-redux';
 const nicknameURL = apiURL + `/api/hologram/device/nicknames/code`;
 
 const VisualsByCode = () => {
-  // const [state] = useContext(Context);
   const userInfo = useSelector((state) => state.userInfo);
   const history = useHistory();
   const { user } = useAuth0();
@@ -31,41 +27,41 @@ const VisualsByCode = () => {
     zoom: 20,
   });
 
-  const [tdrData, setTdrData] = useState([]);
   const [value, setValue] = useState('1');
   const [activeCharts, setActiveCharts] = useState('vwc');
 
   const { getTokenSilently } = useAuth0();
 
-  // const [sensorData, setSensorData] = useState([]);
   const [gatewayData, setGatewayData] = useState([]);
+  const [tdrData, setTdrData] = useState([]);
   const [nodeData, setNodeData] = useState([]);
+  const [ambientData, setAmbientData] = useState([]);
   const [codeData, setCodeData] = useState({});
-  // const [ambientSensorData, setAmbientSensorData] = useState([]);
-  // const [serials, setSerials] = useState({
-  //   sensor: [],
-  //   gateway: [],
-  //   node: [],
-  //   ambient: [],
-  // });
 
   const location = useLocation();
 
-  const latLongEndpoint = onfarmAPI + `/locations?code=${code}&year=${year}`;
-  const affiliationEndpoint = onfarmAPI + `/raw?table=site_information&code=${code}`;
-  const waterSensorDataEndpoint =
-    onfarmAPI +
-    `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,treatment,center_depth,soil_temp`;
   const [showIssueDialog, setShowIssueDialog] = useState(false);
   const [issueBody, setIssueBody] = useState(null);
 
   const waterGatewayDataEndpoint =
     onfarmAPI +
-    `/soil_moisture?type=gateway&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31`;
+    `/soil_moisture?type=gateway&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix`;
+
+  const waterTdrDataEndpoint =
+    onfarmAPI +
+    `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,treatment,center_depth,soil_temp`;
 
   const waterNodeDataEndpoint =
     onfarmAPI +
-    `/soil_moisture?type=node&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31`;
+    `/soil_moisture?type=node&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix`;
+
+  const waterAmbientSensorDataEndpoint =
+    onfarmAPI +
+    `/soil_moisture?type=ambient&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,subplot,treatment,t_lb`;
+
+  const latLongEndpoint = onfarmAPI + `/locations?code=${code}&year=${year}`;
+
+  const affiliationEndpoint = onfarmAPI + `/raw?table=site_information&code=${code}`;
 
   useEffect(() => {
     const checkDeviceNicknames = async (code) => {
@@ -98,132 +94,87 @@ const VisualsByCode = () => {
   }, [history, location.state, year]);
 
   useEffect(() => {
-    const fetchData = async (apiKey) => {
-      console.log('fetching data');
-      const setAllData = (response, type) => {
-        // const uniqueSerials = response;
-        // .reduce((acc, curr) => {
-        //   if (acc.includes(curr.serial)) {
-        //     return acc;
-        //   } else {
-        //     let newAcc = acc;
-        //     newAcc.push(curr.serial);
-        //     return newAcc;
-        //   }
-        // }, [])
-        // .sort((a, b) => a - b);
-        switch (type) {
-          case 'sensor': {
-            // setSensorData(response);
-            // setSerials((serial) => ({ ...serial, sensor: uniqueSerials }));
-            break;
-          }
-          case 'node': {
-            setNodeData(response);
-            // setSerials((serial) => ({ ...serial, node: uniqueSerials }));
-            break;
-          }
-          case 'gateway': {
-            setGatewayData(response);
-            // setSerials((serial) => ({ ...serial, gateway: uniqueSerials }));
-            break;
-          }
-
-          case 'ambient': {
-            // setAmbientSensorData(response);
-            // setSerials((serial) => ({ ...serial, ambient: uniqueSerials }));
-            break;
-          }
-          default:
-            break;
-        }
-      };
-
-      setLoading(true);
-
-      if (apiKey) {
+    const fetchAndFormat = async (endpoint, sort) => {
+      if (userInfo.apikey) {
         try {
-          const gatewayRecords = await fetch(waterGatewayDataEndpoint, {
+          // fetch gateway data
+          const sensorRecords = await fetch(endpoint, {
             headers: {
               'Content-Type': 'application/json',
-              'x-api-key': apiKey,
+              'x-api-key': userInfo.apikey,
             },
           });
-          const latLongData = await fetch(latLongEndpoint, {
-            headers: {
-              'Content-Type': 'application/json',
-              'x-api-key': apiKey,
-            },
-          });
-          const tdrDataFromApi = await fetch(waterSensorDataEndpoint, {
-            headers: {
-              'Content-Type': 'application/json',
-              'x-api-key': apiKey,
-            },
-          });
-          const codeDataFromApi = await fetch(affiliationEndpoint, {
-            headers: {
-              'Content-Type': 'application/json',
-              'x-api-key': apiKey,
-            },
-          });
-          const latLongResponse = await latLongData.json();
 
-          setMapData((d) => ({ ...d, locationData: latLongResponse }));
-
-          const gatewayResponse = await gatewayRecords.json();
-
-          const tdrDataRecords = await tdrDataFromApi.json();
-
-          const codeDataRecords = await codeDataFromApi.json();
-
-          setCodeData(codeDataRecords[0]);
-
-          setIssueBody(tdrDataRecords[tdrDataRecords.length - 1]);
-
-          const sortedByTimestamp = tdrDataRecords
-            .sort((a, b) => a - b)
-            .map((rec) => ({ ...rec, timestamp: rec.timestamp * 1000 }));
-
-          setTdrData(sortedByTimestamp);
-
-          setAllData(gatewayResponse, 'gateway');
-          // if (gatewayResponse.length !== 0) {
-          const nodeRecords = await fetch(waterNodeDataEndpoint, {
-            headers: {
-              'Content-Type': 'application/json',
-              'x-api-key': apiKey,
-            },
-          });
-          // const ambientRecords = await fetch(waterAmbientSensorDataEndpoint, {
-          //   headers: {
-          //     "Content-Type": "application/json",
-          //     "x-api-key": apiKey,
-          //   },
-          // });
-          // const waterSensorRecords = await fetch(waterSensorDataEndpoint, {
-          //   headers: {
-          //     "Content-Type": "application/json",
-          //     "x-api-key": apiKey,
-          //   },
-          // });
-          const nodeResponse = await nodeRecords.json();
-          // const ambientResponse = await ambientRecords.json();
-          // const waterSensorResponse = await waterSensorRecords.json();
-          setAllData(nodeResponse, 'node');
-          // setAllData(ambientResponse, "ambient");
-          // setAllData(waterSensorResponse, "sensor");
-          // }
+          const sensorResponse = await sensorRecords.json();
+          if (sort)
+            return sensorResponse
+              .sort((a, b) => a.timestamp - b.timestamp)
+              .map((rec) => ({ ...rec, timestamp: rec.timestamp * 1000 }));
+          else return sensorResponse;
         } catch (e) {
-          // console.error("Error:" + e);
-
           throw new Error(e);
         }
       }
-      setLoading(false);
     };
 
-    fetchData(userInfo.apikey);
+    const fetchAllData = async () => {
+      if (!userInfo.apikey) return;
+
+      const allEndpoints = [
+        waterGatewayDataEndpoint,
+        waterTdrDataEndpoint,
+        waterNodeDataEndpoint,
+        waterAmbientSensorDataEndpoint,
+        latLongEndpoint,
+        affiliationEndpoint,
+      ];
+
+      for (const endpoint of allEndpoints) {
+        switch (endpoint) {
+          case waterGatewayDataEndpoint:
+            // fetch gateway data
+            fetchAndFormat(waterGatewayDataEndpoint, true).then((data) => {
+              setGatewayData(data);
+            });
+            break;
+          case waterTdrDataEndpoint:
+            // fetch tdr data
+            fetchAndFormat(waterTdrDataEndpoint, true).then((data) => {
+              setIssueBody(data[data.length - 1]);
+              setTdrData(data);
+            });
+            break;
+          case waterNodeDataEndpoint:
+            // fetch node data
+            fetchAndFormat(waterNodeDataEndpoint, true).then((data) => {
+              setNodeData(data);
+            });
+            break;
+          case waterAmbientSensorDataEndpoint:
+            // fetch ambient data
+            fetchAndFormat(waterAmbientSensorDataEndpoint, true).then((data) => {
+              setAmbientData(data);
+            });
+            break;
+          case latLongEndpoint:
+            // other let lng data for site
+            fetchAndFormat(latLongEndpoint, false).then((res) => setCodeData(res[0]));
+            break;
+          case affiliationEndpoint:
+            // fetch code data for site
+            fetchAndFormat(affiliationEndpoint, false).then((res) =>
+              setMapData((d) => ({ ...d, locationData: res })),
+            );
+            break;
+          default:
+            break;
+        }
+      }
+    };
+
+    setLoading(true);
+    fetchAllData().then(setLoading(false));
+
     return () => {
       setLoading(false);
     };
@@ -232,25 +183,21 @@ const VisualsByCode = () => {
     userInfo.apikey,
     waterNodeDataEndpoint,
     latLongEndpoint,
-    waterSensorDataEndpoint,
+    waterTdrDataEndpoint,
+    waterAmbientSensorDataEndpoint,
+    affiliationEndpoint,
   ]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
     switch (newValue) {
       case '1':
-        // setData(validData);
-        // setFormType("valid");
         setActiveCharts('vwc');
         break;
       case '2':
-        // setData(invalidData);
-        // setFormType("invalid");
         setActiveCharts('gateway');
         break;
       case '3':
-        // setData(historyData);
-        // setFormType("history");
         setActiveCharts('temp');
         break;
       default:
@@ -266,7 +213,6 @@ const VisualsByCode = () => {
             variant="contained"
             size="medium"
             onClick={() => {
-              // history.goBack();
               history.push({
                 pathname: '/sensor-visuals',
                 state: {
@@ -339,7 +285,10 @@ const VisualsByCode = () => {
         <Grid item xs={12}>
           {loading ? (
             <CustomLoader />
-          ) : gatewayData.length === 0 && nodeData.length === 0 ? (
+          ) : gatewayData.length === 0 &&
+            nodeData.length === 0 &&
+            ambientData.length === 0 &&
+            tdrData.length === 0 ? (
             <Grid container style={{ minHeight: '20vh' }}>
               <Grid item xs={12}>
                 <Typography variant="h6">
@@ -374,13 +323,12 @@ const VisualsByCode = () => {
                 </Box>
               </Grid>
               <TabCharts
-                value={value}
-                handleChange={handleChange}
                 gatewayData={gatewayData}
-                activeCharts={activeCharts}
+                ambientData={ambientData}
                 nodeData={nodeData}
                 tdrData={tdrData}
                 year={year}
+                activeCharts={activeCharts}
               />
             </Grid>
           )}

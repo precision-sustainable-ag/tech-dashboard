@@ -1,9 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-
 import { Grid } from '@material-ui/core';
-// import { onfarmAPI } from "../../utils/api_secret";
-// import { useParams } from "react-router-dom";
-
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
 import PropTypes from 'prop-types';
@@ -12,12 +8,6 @@ import { CustomLoader } from '../../../utils/CustomComponents';
 const SoilTemp = ({ tdrData, axisMinMaxTdr }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // const { code, year } = useParams();
-
-  // const waterSensorDataEndpoint =
-  //   onfarmAPI +
-  //   `/soil_moisture?type=tdr&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=timestamp,vwc,subplot,trt`;
 
   const chartOptions = {
     time: {
@@ -111,6 +101,7 @@ const SoilTemp = ({ tdrData, axisMinMaxTdr }) => {
       ],
     };
   }, [data]);
+
   const bareSub2Data = useMemo(() => {
     const filteredData = data.filter((rec) => rec.treatment === 'b' && rec.subplot === 2);
 
@@ -164,6 +155,7 @@ const SoilTemp = ({ tdrData, axisMinMaxTdr }) => {
       ],
     };
   }, [data]);
+
   const coverSub1Data = useMemo(() => {
     const filteredData = data.filter((rec) => rec.treatment === 'c' && rec.subplot === 1);
 
@@ -217,6 +209,7 @@ const SoilTemp = ({ tdrData, axisMinMaxTdr }) => {
       ],
     };
   }, [data]);
+
   const coverSub2Data = useMemo(() => {
     const filteredData = data.filter((rec) => rec.treatment === 'c' && rec.subplot === 2);
 
@@ -278,19 +271,15 @@ const SoilTemp = ({ tdrData, axisMinMaxTdr }) => {
       ) : (
         <Grid item container spacing={2}>
           <Grid item lg={6} xs={12}>
-            {/* Bare subplot 1 */}
             <HighchartsReact highcharts={Highcharts} options={bareSub1Data} />
           </Grid>
           <Grid item lg={6} xs={12}>
-            {/* Cover subplot 1 */}
             <HighchartsReact highcharts={Highcharts} options={coverSub1Data} />
           </Grid>
           <Grid item lg={6} xs={12}>
-            {/* Bare subplot 2 */}
             <HighchartsReact highcharts={Highcharts} options={bareSub2Data} />
           </Grid>
           <Grid item lg={6} xs={12}>
-            {/* Cover subplot 2 */}
             <HighchartsReact highcharts={Highcharts} options={coverSub2Data} />
           </Grid>
         </Grid>
