@@ -8,6 +8,8 @@ import { useAuth0 } from '../../../Auth/react-auth0-spa';
 // import { Context } from '../../Store/Store';
 import IssueDialogue from '../../../Comments/components/IssueDialogue/IssueDialogue';
 import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { setIssueDialogData } from '../../../Store/actions';
 
 const CreateNewIssue = (props) => {
   let { issueData, index } = props;
@@ -17,13 +19,14 @@ const CreateNewIssue = (props) => {
   const formName = useSelector((state) => state.formsData.name);
   const formType = useSelector((state) => state.formsData.type);
   const affiliationLookup = useSelector((state) => state.formsData.affiliationLookup);
-  const [showNewIssueDialog, setShowNewIssueDialog] = useState(false);
   const [newIssueData, setNewIssueData] = useState({});
   const [activeIssueIndex, setActiveIssueIndex] = useState(null);
+  const dispatch = useDispatch();
+  const issueDialogData = useSelector((state) => state.issueDialogData.issueDialogData);
 
   return (
     <div>
-      {showNewIssueDialog ? (
+      {issueDialogData.showNewIssueDialog ? (
         ''
       ) : (
         <Tooltip title="Submit a new issue">
@@ -33,9 +36,22 @@ const CreateNewIssue = (props) => {
             variant="contained"
             color="primary"
             onClick={() => {
-              setShowNewIssueDialog(true);
               setNewIssueData(issueData);
               setActiveIssueIndex(index);
+              dispatch(
+                setIssueDialogData({
+                  nickname: user.nickname,
+                  dataType: 'json',
+                  labels: [
+                    newIssueData._id.toString(),
+                    affiliationLookup[newIssueData._submitted_by],
+                    formName,
+                    'kobo-forms',
+                    formType,
+                  ],
+                  setShowNewIssueDialog: true,
+                }),
+              );
             }}
           >
             Add Comment
@@ -43,22 +59,8 @@ const CreateNewIssue = (props) => {
         </Tooltip>
       )}
 
-      {showNewIssueDialog && index === activeIssueIndex ? (
-        <IssueDialogue
-          nickname={user.nickname}
-          rowData={JSON.stringify(newIssueData, null, '\t')}
-          dataType="json"
-          formName={formName}
-          closeDialogue={setShowNewIssueDialog}
-          labels={[
-            newIssueData._id.toString(),
-            affiliationLookup[newIssueData._submitted_by],
-            formName,
-            'kobo-forms',
-            formType,
-          ]}
-          setShowNewIssueDialog={setShowNewIssueDialog}
-        />
+      {issueDialogData.showNewIssueDialog && index === activeIssueIndex ? (
+        <IssueDialogue rowData={JSON.stringify(newIssueData, null, '\t')} />
       ) : (
         ''
       )}
