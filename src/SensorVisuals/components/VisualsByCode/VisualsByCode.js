@@ -252,6 +252,8 @@ const VisualsByCode = () => {
                     setIssueDialogData({
                       nickname: user.nickname,
                       dataType: 'json',
+                      defaultText:
+                        'Make sure to include treatment, rep, which sensor(s)/depth(s) are problematic; etc. Include as much detail as possible.',
                       setShowNewIssueDialog: true,
                     }),
                   );

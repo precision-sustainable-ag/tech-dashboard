@@ -1,9 +1,7 @@
 const defaultState = {
   issueDialogData: {
     nickname: '',
-    labels: '',
     setShowNewIssueDialog: false,
-    rowData: '',
     dataType: '',
     defaultText: '',
   },
