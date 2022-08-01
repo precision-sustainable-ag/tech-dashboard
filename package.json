@@ -94,6 +94,6 @@
     "prettier": "^2.7.1",
     "react-scripts": "^5.0.1",
     "react-test-renderer": "^17.0.2",
-    "webpack": "^5.73.0"
+    "webpack": "^5.74.0"
   }
 }
