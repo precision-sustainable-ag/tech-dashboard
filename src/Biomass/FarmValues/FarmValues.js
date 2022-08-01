@@ -4,6 +4,7 @@ import { onfarmAPI } from '../../utils/api_secret';
 import { BannedRoleMessage, CustomLoader } from '../../utils/CustomComponents';
 import FarmValuesTable from './components/FarmValuesTable/FarmValuesTable';
 import { useSelector } from 'react-redux';
+import { cleanYears, cleanAff } from '../../TableComponents/SharedTableFunctions';
 
 const FarmValues = () => {
   const userInfo = useSelector((state) => state.userInfo);
@@ -32,20 +33,9 @@ const FarmValues = () => {
             throw new Error('No data');
           }
           setFarmValues(response);
+          setFarmYears(cleanYears(response));
+          setAffiliations(cleanAff(response));
 
-          let allYears = response.map((record) => record.year);
-          setFarmYears([...new Set(allYears)]);
-
-          let allAffiliations = response
-            .filter((record) => record.affiliation !== undefined)
-            .reduce(
-              (prev, curr) =>
-                !prev.includes(curr.affiliation) ? [...prev, curr.affiliation] : [...prev],
-              [],
-            );
-          allAffiliations.sort();
-          allAffiliations.unshift('All');
-          setAffiliations(allAffiliations);
         })
         .then(() => {
           setFetching(false);

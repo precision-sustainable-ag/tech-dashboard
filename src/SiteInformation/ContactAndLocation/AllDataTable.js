@@ -17,6 +17,7 @@ import { useAuth0 } from '../../Auth/react-auth0-spa';
 import TableModal from './components/TableModal/TableModal';
 import PropTypes from 'prop-types';
 import EditCashCropModal from './components/EditCashCropModal/EditCashCropModal';
+import { cleanAff, cleanYears } from '../../TableComponents/SharedTableFunctions';
 
 const siteInfoAPI_URL = `${onfarmAPI}/raw?output=json&table=site_information&options=showtest, include_unenrolled_sites`;
 
@@ -41,25 +42,9 @@ const AllDataTable = (props) => {
   const [XHRResponse, setXHRResponse] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  //let height = window.innerHeight;
-
-  const [height, setHeight] = useState(window.innerHeight);
-
-  const handleResize = () => {
-    setHeight(window.innerHeight);
-  };
-
-  useEffect(() => {
-    window.addEventListener('resize', handleResize, false);
-  }, []);
-
-  // scale height
-  // if (height < 900 && height > 600) {
-  //   height -= 130;
-  // } else if (height < 600) {
-  //   height -= 200;
-  // }
+  const [farmYears, setFarmYears] = useState([]);
+  const [affiliations, setAffiliations] = useState([]);
+  const height = useSelector((state) => state.appData.windowHeight);
 
   useEffect(() => {
     const init = () => {
@@ -114,6 +99,9 @@ const AllDataTable = (props) => {
           else return data.protocols_enrolled === '-999';
         });
         setTableData(finalData);
+        setFarmYears(cleanYears(finalData));
+        setAffiliations(cleanAff(finalData));
+
         return true;
       } else {
         return false;
@@ -138,10 +126,12 @@ const AllDataTable = (props) => {
     ) : (
       <div>
         <TableModal
-          tableData={tableData}
+          data={tableData}
           height={height}
           activeSites={active}
           tableTitle={active ? 'Contact and Location' : 'Inactive Sites-Contact and Location'}
+          farmYears={farmYears}
+          affiliations={affiliations}
         />
         <EditLocationModal action="update" />
         <EditProtocolModal />

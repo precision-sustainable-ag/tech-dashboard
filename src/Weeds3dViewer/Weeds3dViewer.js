@@ -4,7 +4,6 @@ import { callAzureFunction } from '../utils/SharedFunctions';
 import { useAuth0 } from '../Auth/react-auth0-spa';
 import { Grid, Tooltip } from '@material-ui/core';
 import MaterialTable from 'material-table';
-import Typography from '@material-ui/core/Typography';
 import IssueDialogue from '../Comments/components/IssueDialogue/IssueDialogue';
 import { useSelector } from 'react-redux';
 import { CustomLoader } from '../utils/CustomComponents';
@@ -12,6 +11,8 @@ import { onfarmAPI } from '../utils/api_secret';
 import { Info, Error, CheckCircle } from '@material-ui/icons';
 import { useDispatch } from 'react-redux';
 import { setIssueDialogData } from './../Store/actions';
+import SharedToolbar from '../TableComponents/SharedToolbar';
+import SharedTableOptions from '../TableComponents/SharedTableOptions';
 
 const Weeds3dViewer = () => {
   const [videos, setVideos] = useState([]);
@@ -20,17 +21,14 @@ const Weeds3dViewer = () => {
   const userInfo = useSelector((state) => state.userInfo);
   const { getTokenSilently } = useAuth0();
   const { user } = useAuth0();
-  //const height = window.innerHeight;
   const dispatch = useDispatch();
-
-  const [height, setHeight] = useState(window.innerHeight);
-
-  const handleResize = () => {
-    setHeight(window.innerHeight);
-  };
+  const [farmYears, setFarmYears] = useState([]);
+  const [affiliations, setAffiliations] = useState([]);
+  const [pickedYears, setPickedYears] = useState(['2022']);
+  const [pickedAff, setPickedAff] = useState(['All']);
+  const height = useSelector((state) => state.appData.windowHeight);
 
   useEffect(() => {
-    window.addEventListener('resize', handleResize, false);
     dispatch(
       setIssueDialogData({
         nickname: user.nickname,
@@ -126,7 +124,6 @@ const Weeds3dViewer = () => {
   const convertToMB = (bytes) => {
     const bytesToMegaBytes = bytes / 1024 ** 2;
     return Math.round(bytesToMegaBytes);
-    //Math.round(bytesToMegaBytes * 10 ) / 10;
   };
 
   const fetchCodes = async (apikey) => {
@@ -144,6 +141,8 @@ const Weeds3dViewer = () => {
       .then((res) => {
         let listOfCodes = [];
         let yearsAndAffiliationsDict = {};
+        let listOfYears = [];
+        let listOfAff = [];
 
         const data = res.data;
         Object.keys(data).forEach((key) => {
@@ -153,9 +152,17 @@ const Weeds3dViewer = () => {
             year: data[key].year,
             affiliation: data[key].affiliation,
           };
+
+          listOfYears.push(data[key].year);
+          listOfAff.push(data[key].affiliation);
         });
 
+        const allYearsUniqueAndSorted = [...new Set(listOfYears)].sort();
+        const allAffUniqueAndSorted = [...new Set(listOfAff)].sort();
+
         setYearsAndAffiliations(yearsAndAffiliationsDict);
+        setAffiliations(allAffUniqueAndSorted);
+        setFarmYears(allYearsUniqueAndSorted);
 
         return listOfCodes;
       })
@@ -163,7 +170,12 @@ const Weeds3dViewer = () => {
       .then(async (res) => {
         const data = { codes: res };
         const files = await callAzureFunction(data, '/weeds3d/videos', 'POST', getTokenSilently);
-        setVideos(files.jsonResponse.files);
+
+        if (files.jsonResponse.status === 'success') {
+          setVideos(files.jsonResponse.files);
+        } else {
+          setVideos([]);
+        }
         setLoading(false);
       })
       .catch((err) => {
@@ -174,15 +186,29 @@ const Weeds3dViewer = () => {
   useEffect(() => {
     const fetchData = async (apikey) => {
       await fetchCodes(apikey);
-      //await fetchAPIData(codes, getTokenSilently, setVideos, setLoading);
-      //await fetchYearsAndAffiliations(videos);
     };
 
     if (!userInfo.apikey) return false;
     fetchData(userInfo.apikey);
   }, [getTokenSilently, userInfo.apikey]);
 
-  console.log(yearsAndAffiliations);
+  const filterData = () => {
+    const filteredYears = videos.filter((row) => {
+      if (yearsAndAffiliations[row.code]) {
+        return pickedYears.includes(yearsAndAffiliations[row.code].year);
+      } else {
+        return false;
+      }
+    });
+
+    const filteredAff = pickedAff.includes('All')
+      ? filteredYears
+      : filteredYears.filter((row) =>
+          pickedAff.includes(yearsAndAffiliations[row.code].affiliation),
+        );
+
+    return filteredAff;
+  };
 
   return (
     <Grid container>
@@ -192,59 +218,19 @@ const Weeds3dViewer = () => {
         <Grid item lg={12}>
           <MaterialTable
             columns={tableHeaderOptions}
-            data={videos}
+            data={filterData()}
             title={
-              <div>
-                <div>
-                  <Typography
-                    variant={'h6'}
-                    style={{
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                    }}
-                  >
-                    {'Weeds 3d Videos'}
-                  </Typography>
-                </div>
-              </div>
+              <SharedToolbar
+                farmYears={farmYears}
+                affiliations={affiliations}
+                pickedYears={pickedYears}
+                pickedAff={pickedAff}
+                setPickedAff={setPickedAff}
+                setPickedYears={setPickedYears}
+                name={'Weeds 3d Videos'}
+              />
             }
-            options={{
-              paging: false,
-              defaultExpanded: false,
-              padding: 'default',
-              exportButton: false,
-              exportFileName: 'Weeds 3d Videos',
-              addRowPosition: 'last',
-              exportAllData: false,
-              groupRowSeparator: '   ',
-              grouping: true,
-              headerStyle: {
-                fontWeight: 'bold',
-                fontFamily: 'Bilo, sans-serif',
-                fontSize: '0.8em',
-                textAlign: 'left',
-                position: 'sticky',
-                top: 0,
-              },
-              //rowData as prop
-              rowStyle: () => ({
-                fontFamily: 'Roboto, sans-serif',
-                fontSize: '0.8em',
-                textAlign: 'left',
-                // backgroundColor:
-                //   convertToMB(rowData.file_size) < 25
-                //     ? '#A61C3C'
-                //     : convertToMB(rowData.file_size) > 750
-                //     ? '#2F7C31'
-                //     : '#1E3888',
-              }),
-              selection: false,
-              searchAutoFocus: true,
-              toolbarButtonAlignment: 'left',
-              actionsColumnIndex: 1,
-              maxBodyHeight: height - 250,
-            }}
+            options={SharedTableOptions(height, 'Weeds 3d Videos', false)}
             detailPanel={[
               {
                 tooltip: 'Add Comments',
@@ -256,6 +242,9 @@ const Weeds3dViewer = () => {
                 },
               },
             ]}
+            components={{
+              Groupbar: () => <></>,
+            }}
           />
         </Grid>
       )}

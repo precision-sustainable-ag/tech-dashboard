@@ -11,7 +11,6 @@ import * as Constants from '../../shared/hologramConstants';
 import { bannedRoles, apiCall, compareStrings } from '../../../utils/constants';
 import { apiUsername, apiPassword } from '../../../utils/api_secret';
 
-import '../../Devices.scss';
 // import { Context } from '../../../Store/Store';
 import DevicesComponent from '../../Devices';
 import { useDispatch } from 'react-redux';

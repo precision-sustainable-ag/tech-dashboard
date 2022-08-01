@@ -1,61 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import MaterialTable from 'material-table';
 import PropTypes from 'prop-types';
-import {
-  Grid,
-  Tooltip,
-  Select,
-  MenuItem,
-  OutlinedInput,
-  Checkbox,
-  ListItemText,
-  FormControl,
-  Switch,
-  // FormGroup,
-  // FormControlLabel,
-  Button,
-} from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { Grid, Tooltip } from '@material-ui/core';
 import IssueDialogue from '../../../../Comments/components/IssueDialogue/IssueDialogue';
 import { useAuth0 } from '../../../../Auth/react-auth0-spa';
-import Typography from '@material-ui/core/Typography';
-import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { setIssueDialogData } from '../../../../Store/actions';
-//import { MoreHoriz } from '@material-ui/icons';
-
-const CustomSelect = styled(Select)`
-  max-width: 200px;
-`;
-
-const FilterGroup = styled.div`
-  padding: 5px 15px;
-  background: transparent;
-  border: solid;
-  border-width: 2px;
-  border-color: #2f7c31;
-  display: flex;
-  border-radius: 20px;
-  align-items: center;
-  overflow: visible;
-`;
-
-const UnitButton = styled(Button)`
-  height: 20px;
-  width: 70px;
-  background: ${({ units, thisUnit }) => (units === thisUnit ? '#2F7C31' : 'none')};
-`;
-
-const UnitButtonText = styled.div`
-  font-size: 0.8em;
-`;
-
-const useStyles = makeStyles(() => ({
-  list: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr 1fr 1fr',
-  },
-}));
+import SharedToolbar from '../../../../TableComponents/SharedToolbar';
+import FarmValuesMobileView from './FarmValuesTableMobile';
+import { filterData } from '../../../../TableComponents/SharedTableFunctions';
+import SharedTableOptions from '../../../../TableComponents/SharedTableOptions';
+import { useSelector } from 'react-redux';
 
 const FarmValuesTable = (props) => {
   const { data, affiliations, farmYears } = props;
@@ -63,19 +18,18 @@ const FarmValuesTable = (props) => {
   //const { getTokenSilently } = useAuth0();
   const { user } = useAuth0();
   const [units, setUnits] = useState('kg/ha');
+  const [simpleView, setSimpleView] = useState(true);
   const [pickedYears, setPickedYears] = useState(['2022']);
   const [pickedAff, setPickedAff] = useState(['All']);
-  const [height, setHeight] = useState(window.innerHeight);
-  const [simpleView, setSimpleView] = useState(true);
-  const classes = useStyles();
   const dispatch = useDispatch();
-
-  const handleResize = () => {
-    setHeight(window.innerHeight);
-  };
+  const height = useSelector((state) => state.appData.windowHeight);
+  const width = useSelector((state) => state.appData.windowWidth);
 
   useEffect(() => {
-    window.addEventListener('resize', handleResize, false);
+    setTableData(filterData(data, pickedYears, pickedAff));
+  }, [pickedYears, pickedAff]);
+
+  useEffect(() => {
     dispatch(
       setIssueDialogData({
         nickname: user.nickname,
@@ -84,10 +38,6 @@ const FarmValuesTable = (props) => {
       }),
     );
   }, []);
-
-  useEffect(() => {
-    setTableData(filterData());
-  }, [pickedYears, pickedAff]);
 
   const tableHeaderOptions = [
     {
@@ -115,13 +65,13 @@ const FarmValuesTable = (props) => {
       defaultSort: 'asc',
     },
     {
-      field: 'cc_termination_date',
+      field: 'cc_harvest_date',
       title: 'Biomass Harvest',
       type: 'date',
       align: 'justify',
       render: (rowData) => {
-        return rowData.cc_termination_date
-          ? new Date(rowData.cc_termination_date).toLocaleDateString()
+        return rowData.cc_harvest_date
+          ? new Date(rowData.cc_harvest_date).toLocaleDateString()
           : 'N/A';
       },
     },
@@ -145,6 +95,18 @@ const FarmValuesTable = (props) => {
           ? units === 'kg/ha'
             ? Math.round(rowData.uncorrected_cc_dry_biomass_kg_ha)
             : Math.round(rowData.uncorrected_cc_dry_biomass_kg_ha * 0.8922)
+          : 'N/A';
+      },
+    },
+    {
+      field: 'cc_termination_data',
+      title: 'Termination date',
+      type: 'date',
+      align: 'justify',
+      hidden: simpleView,
+      render: (rowData) => {
+        return rowData.cc_termination_date
+          ? new Date(rowData.cc_termination_date).toLocaleDateString()
           : 'N/A';
       },
     },
@@ -224,206 +186,59 @@ const FarmValuesTable = (props) => {
     } else {
       return (
         <Tooltip title={name}>
-          <div>
-            {/* <div style={{ display: 'flex' }}>{name.substring(0, 10) + "..."}</div> */}
-            {/* <MoreHoriz size="small" style={{ color: '#3da641' }} /> */}
-            {name.substring(0, 10) + '...'}
-          </div>
+          <div>{name.substring(0, 10) + '...'}</div>
         </Tooltip>
       );
     }
   };
 
-  const filterData = () => {
-    const filteredYears = data.filter((row) => pickedYears.includes(row.year));
-
-    return pickedAff.includes('All')
-      ? filteredYears
-      : filteredYears.filter((row) => pickedAff.includes(row.affiliation));
-  };
-
-  const handleChangeYears = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setPickedYears(typeof value === 'string' ? value.split(',') : value);
-  };
-
-  const handleChangeAff = (event) => {
-    const {
-      target: { value },
-    } = event;
-    const pick = value[value.length - 1];
-
-    if (pick === 'All') {
-      setPickedAff(['All']);
-    } else if (pick != 'All' && value.includes('All')) {
-      const removeAll = value.filter((aff) => aff !== 'All');
-      setPickedAff(removeAll);
-    } else {
-      setPickedAff(typeof value === 'string' ? value.split(',') : value);
-    }
-  };
-
   return (
-    <Grid item lg={12}>
-      <MaterialTable
-        columns={tableHeaderOptions}
-        title={
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ paddingRight: '20px' }}>
-              <Typography variant={'h6'}>{'Farm Values'}</Typography>
-            </div>
-            <FilterGroup>
-              <Grid container spacing={2} alignItems="center">
-                <Grid item>
-                  <Grid container spacing={1} alignItems="center">
-                    <Grid item>
-                      <Typography>{'Years: '}</Typography>
-                    </Grid>
-                    <Grid item>
-                      <FormControl size="small">
-                        <CustomSelect
-                          id="demo-mutiple-checkbox"
-                          multiple
-                          value={pickedYears}
-                          onChange={handleChangeYears}
-                          input={<OutlinedInput label="Tag" />}
-                          renderValue={(selected) => selected.join(', ')}
-                          MenuProps={{ classes: { list: classes.list } }}
-                        >
-                          {farmYears.map((year) => (
-                            <MenuItem key={year} value={year}>
-                              <Checkbox
-                                checked={pickedYears.includes(year)}
-                                style={{ color: '#3da641' }}
-                              />
-                              <ListItemText primary={year} />
-                            </MenuItem>
-                          ))}
-                        </CustomSelect>
-                      </FormControl>
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item>
-                  <Grid container spacing={1} alignItems="center">
-                    <Grid item>
-                      <Typography>{'Affiliations: '}</Typography>
-                    </Grid>
-                    <Grid item>
-                      <FormControl size="small">
-                        <CustomSelect
-                          id="demo-mutiple-checkbox"
-                          multiple
-                          value={pickedAff}
-                          onChange={handleChangeAff}
-                          input={<OutlinedInput label="Tag" />}
-                          renderValue={(selected) => selected.join(', ')}
-                          MenuProps={{ classes: { list: classes.list } }}
-                        >
-                          {affiliations.map((aff) => (
-                            <MenuItem key={aff} value={aff} className={aff}>
-                              <Checkbox
-                                checked={pickedAff.includes(aff)}
-                                className={aff}
-                                style={{ color: '#3da641' }}
-                              />
-                              <ListItemText primary={aff} />
-                            </MenuItem>
-                          ))}
-                        </CustomSelect>
-                      </FormControl>
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item>
-                  <div style={{ display: 'grid' }}>
-                    <UnitButton onClick={() => setUnits('kg/ha')} units={units} thisUnit={'kg/ha'}>
-                      <UnitButtonText>Kg/Ha</UnitButtonText>
-                    </UnitButton>
-                    <UnitButton
-                      onClick={() => setUnits('lbs/ac')}
-                      units={units}
-                      thisUnit={'lbs/ac'}
-                    >
-                      <UnitButtonText>Lbs/ac</UnitButtonText>
-                    </UnitButton>
-                  </div>
-                </Grid>
-                <Grid item>
-                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <Switch
-                      size="small"
-                      color="primary"
-                      checked={!simpleView}
-                      onChange={() => setSimpleView(!simpleView)}
-                    />
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'start',
-                        marginLeft: '5px',
-                      }}
-                    >
-                      <div style={{ fontSize: '0.9em' }}>Advanced</div>
-                      <div style={{ fontSize: '0.9em' }}>View</div>
-                    </div>
-                  </div>
-                </Grid>
-              </Grid>
-            </FilterGroup>
-          </div>
-        }
-        data={tableData}
-        options={{
-          paging: false,
-          defaultExpanded: false,
-          padding: 'dense',
-          exportButton: false,
-          addRowPosition: 'last',
-          exportAllData: false,
-          grouping: true,
-          tableLayout: 'auto',
-          headerStyle: {
-            fontWeight: 'bold',
-            fontFamily: 'Bilo, sans-serif',
-            fontSize: '0.8em',
-            textAlign: 'left',
-            position: 'sticky',
-            top: 0,
-            //padding: '5px 0px',
-          },
-          rowStyle: () => ({
-            fontFamily: 'Roboto, sans-serif',
-            fontSize: '0.8em',
-            //textAlign: 'left',
-            overflowWrap: 'break-word',
-          }),
-          selection: false,
-          searchAutoFocus: true,
-          toolbarButtonAlignment: 'left',
-          actionsColumnIndex: 1,
-          maxBodyHeight: height - 170,
-        }}
-        detailPanel={[
-          {
-            tooltip: 'Add Comments',
-            icon: 'comment',
-            openIcon: 'message',
-            // eslint-disable-next-line react/display-name
-            render: (rowData) => {
-              return <IssueDialogue rowData={rowData} labels={['farm-values', rowData.code]} />;
-            },
-          },
-        ]}
-        components={{
-          Groupbar: () => <></>,
-        }}
-      />
-    </Grid>
+    <div style={{ height: 'calc(100vh - 120px)', width: 'calc(100vw - 80px)' }}>
+      {width > 1280 ? (
+        <Grid item lg={12}>
+          <MaterialTable
+            columns={tableHeaderOptions}
+            title={
+              <SharedToolbar
+                farmYears={farmYears}
+                affiliations={affiliations}
+                setUnits={setUnits}
+                setSimpleView={setSimpleView}
+                units={units}
+                simpleView={simpleView}
+                pickedYears={pickedYears}
+                pickedAff={pickedAff}
+                setPickedAff={setPickedAff}
+                setPickedYears={setPickedYears}
+                name={'Farm Values'}
+              />
+            }
+            data={tableData}
+            options={SharedTableOptions(height, 'Farm Values', false)}
+            detailPanel={[
+              {
+                tooltip: 'Add Comments',
+                icon: 'comment',
+                openIcon: 'message',
+                render: (rowData) => {
+                  return <IssueDialogue rowData={rowData} labels={['farm-values', rowData.code]} />;
+                },
+              },
+            ]}
+            components={{
+              Groupbar: () => <></>,
+            }}
+          />
+        </Grid>
+      ) : (
+        <FarmValuesMobileView
+          farmYears={farmYears}
+          affiliations={affiliations}
+          tableHeaderOptions={tableHeaderOptions}
+          data={data}
+        />
+      )}
+    </div>
   );
 };
 
