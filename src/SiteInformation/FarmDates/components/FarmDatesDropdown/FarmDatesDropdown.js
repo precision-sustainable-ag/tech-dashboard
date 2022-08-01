@@ -41,9 +41,7 @@ const FarmDatesDropdown = ({ rowData, nickname }) => {
                 dispatch(
                   setIssueDialogData({
                     nickname: nickname,
-                    rowData: rowData,
                     dataType: 'table',
-                    labels: ['farm-dates'],
                     setShowNewIssueDialog: true,
                   }),
                 );
@@ -56,7 +54,7 @@ const FarmDatesDropdown = ({ rowData, nickname }) => {
       )}
       {issueDialogData.setShowNewIssueDialog && (
         <Grid item>
-          <IssueDialogue />
+          <IssueDialogue rowData={rowData} labels={['farm-dates']} />
         </Grid>
       )}
       <Grid item>

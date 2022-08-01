@@ -42,16 +42,10 @@ const CreateNewIssue = (props) => {
                 setIssueDialogData({
                   nickname: user.nickname,
                   dataType: 'json',
-                  labels: [
-                    newIssueData._id.toString(),
-                    affiliationLookup[newIssueData._submitted_by],
-                    formName,
-                    'kobo-forms',
-                    formType,
-                  ],
                   setShowNewIssueDialog: true,
                 }),
               );
+              console.log(issueDialogData.setShowNewIssueDialog);
             }}
           >
             Add Comment
@@ -59,8 +53,17 @@ const CreateNewIssue = (props) => {
         </Tooltip>
       )}
 
-      {issueDialogData.showNewIssueDialog && index === activeIssueIndex ? (
-        <IssueDialogue rowData={JSON.stringify(newIssueData, null, '\t')} />
+      {issueDialogData.setShowNewIssueDialog && index === activeIssueIndex ? (
+        <IssueDialogue
+          rowData={JSON.stringify(newIssueData, null, '\t')}
+          labels={[
+            newIssueData._id.toString(),
+            affiliationLookup[newIssueData._submitted_by],
+            formName,
+            'kobo-forms',
+            formType,
+          ]}
+        />
       ) : (
         ''
       )}

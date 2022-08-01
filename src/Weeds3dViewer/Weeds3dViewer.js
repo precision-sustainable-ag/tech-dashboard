@@ -31,6 +31,13 @@ const Weeds3dViewer = () => {
 
   useEffect(() => {
     window.addEventListener('resize', handleResize, false);
+    dispatch(
+      setIssueDialogData({
+        nickname: user.nickname,
+        dataType: 'table',
+        setShowNewIssueDialog: true,
+      }),
+    );
   }, []);
 
   const tableHeaderOptions = [
@@ -245,24 +252,7 @@ const Weeds3dViewer = () => {
                 openIcon: 'message',
                 // eslint-disable-next-line react/display-name
                 render: (rowData) => {
-                  dispatch(
-                    setIssueDialogData({
-                      nickname: user.nickname,
-                      rowData: rowData,
-                      dataType: 'table',
-                      labels: ['weeds3d', rowData.code],
-                      setShowNewIssueDialog: true,
-                    }),
-                  );
-                  return (
-                    <IssueDialogue
-                    // nickname={user.nickname}
-                    // rowData={rowData}
-                    // dataType="table"
-                    // labels={['weeds3d', rowData.code]}
-                    // getTokenSilently={getTokenSilently}
-                    />
-                  );
+                  return <IssueDialogue rowData={rowData} labels={['weeds3d', rowData.code]} />;
                 },
               },
             ]}

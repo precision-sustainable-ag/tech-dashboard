@@ -6,8 +6,9 @@ import { callAzureFunction } from '../../../utils/SharedFunctions';
 import { setSnackbarData } from '../../../Store/actions';
 import { setIssueDialogData } from '../../../Store/actions';
 import { useSelector, useDispatch } from 'react-redux';
+import { PropTypes } from 'prop-types';
 
-const IssueDialogue = () => {
+const IssueDialogue = (props) => {
   const [checkValidation, setCheckValidation] = useState({
     title: false,
     comment: false,
@@ -16,7 +17,7 @@ const IssueDialogue = () => {
   const dispatch = useDispatch();
   const { getTokenSilently } = useAuth0();
   const issueDialogData = useSelector((state) => state.issueDialogData.issueDialogData);
-
+  const { rowData, labels } = props;
   const alwaysTaggedPeople = ['brianwdavis', 'saseehav', issueDialogData.nickname];
   const [personName] = useState(alwaysTaggedPeople);
   const [buttonDisabled, setButtonDisabled] = useState(false);
@@ -33,7 +34,7 @@ const IssueDialogue = () => {
         user: issueDialogData.nickname,
         title: issueTitle,
         assignees: assignedPeople,
-        labels: issueDialogData.labels,
+        labels: labels,
         body: newComment,
       };
 
@@ -116,6 +117,7 @@ const IssueDialogue = () => {
         <Comments
           handleNewComment={fileNewIssue}
           buttonDisabled={buttonDisabled}
+          rowData={rowData}
           removeCommentText={removeCommentText}
           setRemoveCommentText={setRemoveCommentText}
         />
@@ -125,3 +127,8 @@ const IssueDialogue = () => {
 };
 
 export default IssueDialogue;
+
+IssueDialogue.propTypes = {
+  rowData: PropTypes.any,
+  labels: PropTypes.any,
+};

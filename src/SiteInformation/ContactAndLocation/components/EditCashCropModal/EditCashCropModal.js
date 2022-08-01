@@ -71,9 +71,7 @@ const EditCashCropModal = () => {
           dispatch(
             setIssueDialogData({
               nickname: user.nickname,
-              rowData: null,
               setShowNewIssueDialog: true,
-              labels: ['cash-crop', farmCode],
             }),
           );
           dispatch(
@@ -159,13 +157,7 @@ const EditCashCropModal = () => {
         )}
         {showOtherMessage || cashCrop === null ? (
           <DialogContent>
-            <IssueDialogue
-            // nickname={user.nickname}
-            // rowData={null}
-            // setSnackbarData={setSnackbarData}
-            // labels={['cash-crop', farmCode]}
-            // getTokenSilently={getTokenSilently}
-            />
+            <IssueDialogue rowData={null} labels={['cash-crop', farmCode]} />
           </DialogContent>
         ) : null}
       </DialogContent>

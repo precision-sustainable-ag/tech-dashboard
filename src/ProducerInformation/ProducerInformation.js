@@ -91,6 +91,13 @@ const ProducerInformation = () => {
 
   useEffect(() => {
     window.addEventListener('resize', handleResize, false);
+    dispatch(
+      setIssueDialogData({
+        nickname: user.nickname,
+        dataType: 'table',
+        setShowNewIssueDialog: true,
+      }),
+    );
   }, []);
 
   // scale height
@@ -251,26 +258,12 @@ const ProducerInformation = () => {
                   openIcon: 'message',
                   // eslint-disable-next-line react/display-name
                   render: (rowData) => {
-                    dispatch(
-                      setIssueDialogData({
-                        nickname: user.nickname,
-                        rowData: rowData,
-                        dataType: 'table',
-                        labels: ['producer-information'].concat(
-                          rowData.codes.replace(/\s/g, '').split(','),
-                        ),
-                        setShowNewIssueDialog: true,
-                      }),
-                    );
                     return (
                       <IssueDialogue
-                      // nickname={user.nickname}
-                      // rowData={rowData}
-                      // dataType="table"
-                      // labels={['producer-information'].concat(
-                      //   rowData.codes.replace(/\s/g, '').split(','),
-                      // )}
-                      // getTokenSilently={getTokenSilently}
+                        rowData={rowData}
+                        labels={['producer-information'].concat(
+                          rowData.codes.replace(/\s/g, '').split(','),
+                        )}
                       />
                     );
                   },

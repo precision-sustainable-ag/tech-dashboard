@@ -306,24 +306,9 @@ const VisualsByCode = () => {
                     setIssueDialogData({
                       nickname: user.nickname,
                       dataType: 'json',
-                      labels: [
-                        code,
-                        'tdr',
-                        'water-sensor-visuals',
-                        codeData.affiliation,
-                        activeCharts,
-                      ],
                       setShowNewIssueDialog: true,
                     }),
                   );
-                  if (issueBody) {
-                    dispatch(
-                      setIssueDialogData({
-                        ...issueDialogData,
-                        rowData: JSON.stringify(issueBody, null, '\t'),
-                      }),
-                    );
-                  }
                 }}
               >
                 {issueDialogData.setShowNewIssueDialog ? 'Cancel' : 'Create comment'}
@@ -348,12 +333,8 @@ const VisualsByCode = () => {
           {issueDialogData.setShowNewIssueDialog &&
             (issueBody ? (
               <IssueDialogue
-              // defaultText="Make sure to include treatment, rep, which sensor(s)/depth(s) are problematic; etc. Include as much detail as possible."
-              // nickname={user.nickname}
-              // rowData={JSON.stringify(issueBody, null, '\t')}
-              // dataType="json"
-              // labels={[code, 'tdr', 'water-sensor-visuals', codeData.affiliation, activeCharts]}
-              // getTokenSilently={getTokenSilently}
+                rowData={JSON.stringify(issueBody, null, '\t')}
+                labels={[code, 'tdr', 'water-sensor-visuals', codeData.affiliation, activeCharts]}
               />
             ) : (
               <Typography variant="h6">Waiting for data</Typography>

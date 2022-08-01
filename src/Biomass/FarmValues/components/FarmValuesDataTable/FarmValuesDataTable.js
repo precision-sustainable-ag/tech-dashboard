@@ -26,6 +26,13 @@ const FarmValuesDataTable = () => {
 
   useEffect(() => {
     window.addEventListener('resize', handleResize, false);
+    dispatch(
+      setIssueDialogData({
+        nickname: user.nickname,
+        dataType: 'table',
+        setShowNewIssueDialog: true,
+      }),
+    );
   }, []);
 
   const columns = [
@@ -171,24 +178,12 @@ const FarmValuesDataTable = () => {
     pagination: false,
     renderExpandableRow: (rowData) => {
       const colSpan = rowData.length + 1;
-      dispatch(
-        setIssueDialogData({
-          nickname: user.nickname,
-          rowData: rowData,
-          dataType: 'table',
-          labels: ['farm-values', rowData[0], 'Subplot ' + rowData[1], rowData[3]],
-          setShowNewIssueDialog: true,
-        }),
-      );
       return (
         <TableRow>
           <TableCell colSpan={colSpan}>
             <IssueDialogue
-            // nickname={user.nickname}
-            // rowData={rowData}
-            // dataType="table"
-            // labels={['farm-values', rowData[0], 'Subplot ' + rowData[1], rowData[3]]}
-            // getTokenSilently={getTokenSilently}
+              rowData={rowData}
+              labels={['farm-values', rowData[0], 'Subplot ' + rowData[1], rowData[3]]}
             />
           </TableCell>
         </TableRow>

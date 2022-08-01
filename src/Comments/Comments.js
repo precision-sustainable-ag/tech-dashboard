@@ -51,7 +51,8 @@ const bodyFormatter = (dataType, rowData, newComment) => {
 };
 
 const Comments = (props) => {
-  const { removeCommentText, setRemoveCommentText, handleNewComment, buttonDisabled } = props;
+  const { removeCommentText, rowData, setRemoveCommentText, handleNewComment, buttonDisabled } =
+    props;
   const issueDialogData = useSelector((state) => state.issueDialogData.issueDialogData);
   const dispatch = useDispatch();
   const [newComment, setNewComment] = useState(issueDialogData.defaultText);
@@ -119,7 +120,7 @@ const Comments = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [removeCommentText]);
 
-  const body = bodyFormatter(issueDialogData.dataType, issueDialogData.rowData, newComment);
+  const body = bodyFormatter(issueDialogData.dataType, rowData, newComment);
 
   return (
     <Grid container spacing={1}>
@@ -246,6 +247,7 @@ const Comments = (props) => {
 export default Comments;
 
 Comments.propTypes = {
+  rowData: PropTypes.any,
   removeCommentText: PropTypes.bool,
   setRemoveCommentText: PropTypes.func,
   handleNewComment: PropTypes.func,

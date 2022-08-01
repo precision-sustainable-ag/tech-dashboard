@@ -59,6 +59,14 @@ const DecompBag = () => {
 
     fetchData(userInfo.apikey);
 
+    dispatch(
+      setIssueDialogData({
+        nickname: user.nickname,
+        dataType: 'table',
+        setShowNewIssueDialog: true,
+      }),
+    );
+
     return () => {
       const location = {
         ...history.location,
@@ -236,22 +244,10 @@ const DecompBag = () => {
                 openIcon: 'message',
                 // eslint-disable-next-line react/display-name
                 render: (rowData) => {
-                  dispatch(
-                    setIssueDialogData({
-                      nickname: user.nickname,
-                      rowData: rowData,
-                      dataType: 'table',
-                      labels: ['decomp', rowData.year, rowData.code, rowData.affiliation],
-                      setShowNewIssueDialog: true,
-                    }),
-                  );
                   return (
                     <IssueDialogue
-                    // nickname={user.nickname}
-                    // rowData={rowData}
-                    // dataType="table"
-                    // labels={['decomp', rowData.year, rowData.code, rowData.affiliation]}
-                    // getTokenSilently={getTokenSilently}
+                      rowData={rowData}
+                      labels={['decomp', rowData.year, rowData.code, rowData.affiliation]}
                     />
                   );
                 },
