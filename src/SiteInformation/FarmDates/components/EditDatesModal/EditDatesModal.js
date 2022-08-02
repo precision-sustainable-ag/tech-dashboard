@@ -279,7 +279,6 @@ const EditDatesModal = () => {
             <TextField
               color="primary"
               value={datesDict.cashPlanting}
-              disabled={datesDict.cashPlanting == null || datesDict.cashPlanting === 'undefined'}
               onChange={(data) => updateDate(3, data.target.value)}
               type="date"
               id="Cash Planting"
