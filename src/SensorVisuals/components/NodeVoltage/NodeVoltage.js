@@ -1,18 +1,12 @@
-import React, { useState, useEffect, useMemo } from 'react';
-
+import React, { useMemo } from 'react';
 import { Grid } from '@material-ui/core';
-import { onfarmAPI } from '../../../utils/api_secret';
-import { useParams } from 'react-router-dom';
-// import { Context } from '../../Store/Store';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
-import { CustomLoader } from '../../../utils/CustomComponents';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 const timezoneOffset = new Date().getTimezoneOffset() * 2;
 
-const NodeVoltage = ({ axisMinMaxGateway }) => {
+const NodeVoltage = ({ nodeData, axisMinMaxNode }) => {
   const chartOptions = {
     time: {
       timezoneOffset: timezoneOffset,
@@ -32,8 +26,8 @@ const NodeVoltage = ({ axisMinMaxGateway }) => {
       endOnTick: false,
       showLastLabel: true,
       showFirstLabel: true,
-      max: new Date(axisMinMaxGateway.max.split(' ').join('T')).getTime(),
-      min: new Date(axisMinMaxGateway.min.split(' ').join('T')).getTime(),
+      max: new Date(axisMinMaxNode.max.split(' ').join('T')).getTime(),
+      min: new Date(axisMinMaxNode.min.split(' ').join('T')).getTime(),
     },
     yAxis: {
       title: {
@@ -57,54 +51,8 @@ const NodeVoltage = ({ axisMinMaxGateway }) => {
     ],
   };
 
-  // const [state] = useContext(Context);
-  const userInfo = useSelector((state) => state.userInfo);
-
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const { code, year } = useParams();
-  const waterNodeDataEndpoint =
-    onfarmAPI +
-    `/soil_moisture?type=node&code=${code.toLowerCase()}&start=${year}-01-01&end=${year}-12-31&datetimes=unix&cols=node_serial_no,serial,treatment,subplot,timestamp,nd_solar_voltage,nd_batt_voltage,signal_strength`;
-
-  useEffect(() => {
-    const setNodeData = async (apiKey) => {
-      setLoading(true);
-      try {
-        const response = await fetch(waterNodeDataEndpoint, {
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': apiKey,
-          },
-        });
-
-        const records = await response.json();
-
-        const sortedByTimestamp = records
-          .sort((a, b) => a - b)
-          .map((rec) => ({ ...rec, timestamp: rec.timestamp * 1000 }));
-
-        setData(sortedByTimestamp);
-        // console.log(sortedByTimestamp);
-      } catch (e) {
-        console.error(e);
-        // setLoading(false);
-
-        // throw new Error(e);
-      }
-    };
-
-    if (!userInfo.apikey) return;
-
-    setNodeData(userInfo.apikey).then(() => {
-      setLoading(false);
-    });
-    return () => {};
-  }, [userInfo.apikey, waterNodeDataEndpoint]);
-
   const bareSub1Data = useMemo(() => {
-    const filteredData = data.filter((rec) => rec.treatment === 'b' && rec.subplot === 1);
+    const filteredData = nodeData.filter((rec) => rec.treatment === 'b' && rec.subplot === 1);
     const serials = filteredData.map((r) => r.serial);
     const uniqueSerials = [...new Set(serials)];
 
@@ -152,9 +100,10 @@ const NodeVoltage = ({ axisMinMaxGateway }) => {
         },
       ],
     };
-  }, [data]);
+  }, [nodeData]);
+
   const bareSub2Data = useMemo(() => {
-    const filteredData = data.filter((rec) => rec.treatment === 'b' && rec.subplot === 2);
+    const filteredData = nodeData.filter((rec) => rec.treatment === 'b' && rec.subplot === 2);
 
     const serials = filteredData.map((r) => r.serial);
     const uniqueSerials = [...new Set(serials)];
@@ -203,9 +152,10 @@ const NodeVoltage = ({ axisMinMaxGateway }) => {
         },
       ],
     };
-  }, [data]);
+  }, [nodeData]);
+
   const coverSub1Data = useMemo(() => {
-    const filteredData = data.filter((rec) => rec.treatment === 'c' && rec.subplot === 1);
+    const filteredData = nodeData.filter((rec) => rec.treatment === 'c' && rec.subplot === 1);
 
     const serials = filteredData.map((r) => r.serial);
     const uniqueSerials = [...new Set(serials)];
@@ -254,10 +204,10 @@ const NodeVoltage = ({ axisMinMaxGateway }) => {
         },
       ],
     };
-  }, [data]);
+  }, [nodeData]);
 
   const coverSub2Data = useMemo(() => {
-    const filteredData = data.filter((rec) => rec.treatment === 'c' && rec.subplot === 2);
+    const filteredData = nodeData.filter((rec) => rec.treatment === 'c' && rec.subplot === 2);
 
     const serials = filteredData.map((r) => r.serial);
     const uniqueSerials = [...new Set(serials)];
@@ -306,32 +256,24 @@ const NodeVoltage = ({ axisMinMaxGateway }) => {
         },
       ],
     };
-  }, [data]);
+  }, [nodeData]);
 
   return (
     <Grid container>
-      {loading ? (
-        <CustomLoader />
-      ) : (
-        <Grid item container spacing={2}>
-          <Grid item lg={6} xs={12}>
-            {/* Bare subplot 1 */}
-            <HighchartsReact highcharts={Highcharts} options={bareSub1Data} />
-          </Grid>
-          <Grid item lg={6} xs={12}>
-            {/* Cover subplot 1 */}
-            <HighchartsReact highcharts={Highcharts} options={coverSub1Data} />
-          </Grid>
-          <Grid item lg={6} xs={12}>
-            {/* Bare subplot 2 */}
-            <HighchartsReact highcharts={Highcharts} options={bareSub2Data} />
-          </Grid>
-          <Grid item lg={6} xs={12}>
-            {/* Cover subplot 2 */}
-            <HighchartsReact highcharts={Highcharts} options={coverSub2Data} />
-          </Grid>
+      <Grid item container spacing={2}>
+        <Grid item lg={6} xs={12}>
+          <HighchartsReact highcharts={Highcharts} options={bareSub1Data} />
         </Grid>
-      )}
+        <Grid item lg={6} xs={12}>
+          <HighchartsReact highcharts={Highcharts} options={coverSub1Data} />
+        </Grid>
+        <Grid item lg={6} xs={12}>
+          <HighchartsReact highcharts={Highcharts} options={bareSub2Data} />
+        </Grid>
+        <Grid item lg={6} xs={12}>
+          <HighchartsReact highcharts={Highcharts} options={coverSub2Data} />
+        </Grid>
+      </Grid>
     </Grid>
   );
 };
@@ -339,5 +281,6 @@ const NodeVoltage = ({ axisMinMaxGateway }) => {
 export default NodeVoltage;
 
 NodeVoltage.propTypes = {
-  axisMinMaxGateway: PropTypes.any,
+  nodeData: PropTypes.array,
+  axisMinMaxNode: PropTypes.any,
 };

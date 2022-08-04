@@ -1,6 +1,5 @@
 // Dependency Imports
 import React, { useEffect, useState } from 'react';
-import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import { RiSensorFill, RiTimeLine } from 'react-icons/ri';
@@ -19,7 +18,6 @@ import {
   MenuItem,
   Collapse,
   Icon,
-  Snackbar,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import {
@@ -48,14 +46,9 @@ import { apiPassword, apiUsername, apiURL } from '../utils/api_secret';
 import { useAuth0 } from '../Auth/react-auth0-spa';
 import { callAzureFunction } from '../utils/SharedFunctions';
 import { debugAdmins } from '../utils/constants';
-import MuiAlert from '@material-ui/lab/Alert';
+import { setSnackbarData } from '../Store/actions';
 import { updateRole, updateUserInfo, updatingUserInfo } from '../Store/actions';
 import { useSelector, useDispatch } from 'react-redux';
-
-// Helper function
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 //Global Vars
 const drawerWidth = 240;
@@ -146,11 +139,6 @@ export default function Header(props) {
     waterSensors: false,
     stressCams: false,
   });
-  const [snackbarData, setSnackbarData] = useState({
-    open: false,
-    text: '',
-    severity: 'success',
-  });
 
   const { getTokenSilently } = useAuth0();
 
@@ -234,11 +222,13 @@ export default function Header(props) {
 
           addUserToDatabase(qs.stringify(obj));
         } else if (data.data === null && viewType === 'global') {
-          setSnackbarData({
-            open: true,
-            text: `No data available for global view`,
-            severity: 'error',
-          });
+          dispatch(
+            setSnackbarData({
+              open: true,
+              text: `No data available for global view`,
+              severity: 'error',
+            }),
+          );
         } else {
           if (data.data.state !== 'default') {
             console.log('adding to technicians');
@@ -275,22 +265,9 @@ export default function Header(props) {
 
   return (
     <div className={classes.root}>
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        open={snackbarData.open}
-        autoHideDuration={10000}
-        onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-      >
-        <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-      </Snackbar>
       <AppBar
         position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
+        className={`${classes.appBar} ${open && classes.appBarShift}`}
         color="primary"
       >
         <Toolbar>
@@ -299,7 +276,7 @@ export default function Header(props) {
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
-            className={clsx(classes.menuButton, open && classes.hide)}
+            className={`${classes.menuButton} ${open && classes.hide}`}
           >
             <MenuIcon />
           </IconButton>

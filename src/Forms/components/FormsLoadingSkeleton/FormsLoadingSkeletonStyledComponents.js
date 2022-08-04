@@ -1,4 +1,6 @@
-div.skeletonWrapper {
+import styled from 'styled-components';
+
+export const SkeletonWrapper = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -7,4 +9,4 @@ div.skeletonWrapper {
   div {
     margin: 10px 10px;
   }
-}
+`;

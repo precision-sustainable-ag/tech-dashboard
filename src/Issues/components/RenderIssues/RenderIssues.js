@@ -17,14 +17,47 @@ import React, { useEffect, useState } from 'react';
 import Loading from 'react-loading';
 import { githubToken } from '../../../utils/api_secret';
 import { ucFirst } from '../../../utils/constants';
-
 import MDEditor from '@uiw/react-md-editor';
 import { Link } from 'react-router-dom';
-import './RenderIssues.scss';
+// import './RenderIssues.scss';
+import styled from 'styled-components';
 
 /**
  * A component to render issues based on a given state labels
  */
+
+const IssueMarkdown = styled(Grid)`
+  table {
+    border: 0;
+    border-radius: 5px;
+    border-style: hidden;
+    box-shadow: 0 0 0 1px #666;
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    tbody {
+      border-top: 2px solid #eceeef;
+      tr {
+        border-bottom: thin solid #dddddd;
+        &:nth-of-type(even) {
+          background-color: #f3f3f3;
+        }
+        &:last-of-type {
+          border-bottom: 2px solid #009879;
+        }
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.075);
+        }
+      }
+      td {
+        padding: 12px 15px;
+      }
+    }
+  }
+`;
 
 export const RenderIssues = ({ stateLabel, filter }) => {
   const [showIssues, setShowIssues] = useState(false);
@@ -236,9 +269,12 @@ export const RenderIssues = ({ stateLabel, filter }) => {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} className="issueMarkdown">
+                  {/* <Grid item xs={12} className='issueMarkdown'>
                     <MDEditor.Markdown source={issue.body} />
-                  </Grid>
+                  </Grid> */}
+                  <IssueMarkdown item xs={12}>
+                    <MDEditor.Markdown source={issue.body} />
+                  </IssueMarkdown>
                   <Grid item xs={12}>
                     <RenderUserCredits username={issue.username} show={doneSettingUsernames} />
                   </Grid>

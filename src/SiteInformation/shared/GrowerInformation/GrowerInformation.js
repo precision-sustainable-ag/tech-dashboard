@@ -1,12 +1,4 @@
-import {
-  Button,
-  FormControlLabel,
-  Grid,
-  Radio,
-  TextField,
-  Typography,
-  Snackbar,
-} from '@material-ui/core';
+import { Button, FormControlLabel, Grid, Radio, TextField, Typography } from '@material-ui/core';
 import { Save } from '@material-ui/icons';
 import React, { useState, useEffect } from 'react';
 import InputMask from 'react-input-mask';
@@ -15,20 +7,15 @@ import PropTypes from 'prop-types';
 // Local Imports
 import { NewSiteInfo } from '../NewSiteInfo/NewSiteInfo';
 import { useAuth0 } from '../../../Auth/react-auth0-spa';
-import MuiAlert from '@material-ui/lab/Alert';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   setReassignSiteModalOpen,
   setEnrollmentValuesEdited,
   setEnrollmentData,
+  setSnackbarData,
 } from '../../../Store/actions';
 import ExistingGrowersGrid from '../ExistingGrowersGrid/ExistingGrowersGrid';
 import { saveNewGrowerAndFetchProducerId, fetchGrowerByLastName, updateSite } from '../functions';
-
-// Helper function
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 // Default function
 const GrowerInformation = ({ editSite }) => {
@@ -40,11 +27,6 @@ const GrowerInformation = ({ editSite }) => {
   const [allGrowers, setAllGrowers] = useState([]);
   const [showSitesInfo, setShowSitesInfo] = useState(false);
   const [savingProducerId, setSavingProducerId] = useState(false);
-  const [snackbarData, setSnackbarData] = useState({
-    open: false,
-    text: '',
-    severity: 'success',
-  });
 
   const reassignSiteModalOpen = useSelector((state) => state.tableData.reassignSiteModalOpen);
   const reassignSiteModalData = useSelector((state) => state.tableData.reassignSiteModalData);
@@ -115,17 +97,6 @@ const GrowerInformation = ({ editSite }) => {
       <Grid item sm={12}>
         <Typography variant="h4">Grower Information</Typography>
       </Grid>
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        open={snackbarData.open}
-        autoHideDuration={10000}
-        onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-      >
-        <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-      </Snackbar>
       <Grid item sm={12}>
         <Grid container alignContent="center" justifyContent="center" spacing={2}>
           <Grid item>
@@ -297,18 +268,22 @@ const GrowerInformation = ({ editSite }) => {
                     growerType,
                   )
                     .then(() => {
-                      setSnackbarData({
-                        open: true,
-                        text: `Updated grower successfully. Please edit the site information if necessary.`,
-                        severity: 'success',
-                      });
+                      dispatch(
+                        setSnackbarData({
+                          open: true,
+                          text: `Updated grower successfully. Please edit the site information if necessary.`,
+                          severity: 'success',
+                        }),
+                      );
                     })
                     .catch(() => {
-                      setSnackbarData({
-                        open: true,
-                        text: `Oops! Could not update grower information.`,
-                        severity: 'error',
-                      });
+                      dispatch(
+                        setSnackbarData({
+                          open: true,
+                          text: `Oops! Could not update grower information.`,
+                          severity: 'error',
+                        }),
+                      );
                     })
                     .finally(() => {
                       setTimeout(() => {

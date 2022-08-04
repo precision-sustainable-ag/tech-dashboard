@@ -10,23 +10,16 @@ import {
   MenuItem,
   DialogActions,
   Button,
-  Snackbar,
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
-import MuiAlert from '@material-ui/lab/Alert';
 import { setEditCashCropModalOpen } from '../../../../Store/actions';
+import { setSnackbarData } from '../../../../Store/actions';
 import { callAzureFunction } from '../../../../utils/SharedFunctions';
 import { useAuth0 } from '../../../../Auth/react-auth0-spa';
-import PropTypes from 'prop-types';
 import IssueDialogue from '../../../../Comments/components/IssueDialogue/IssueDialogue';
 import { setEnrollmentValuesEdited } from '../../../../Store/actions';
 
-// Helper function
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-
-const EditCashCropModal = ({ setSnackbarDataGlobal }) => {
+const EditCashCropModal = () => {
   const open = useSelector((state) => state.tableData.editCashCropModalOpen);
   const editCashCropModalData = useSelector((state) => state.tableData.editCashCropModalData);
   const [farmCode, setFarmCode] = useState();
@@ -35,11 +28,6 @@ const EditCashCropModal = ({ setSnackbarDataGlobal }) => {
   const [backedCashCrop, setBackedCashCrop] = useState();
   const dispatch = useDispatch();
   const { getTokenSilently, user } = useAuth0();
-  const [snackbarData, setSnackbarData] = useState({
-    open: false,
-    text: '',
-    severity: 'success',
-  });
 
   useEffect(() => {
     if (Object.keys(editCashCropModalData).length !== 0) {
@@ -79,25 +67,31 @@ const EditCashCropModal = ({ setSnackbarDataGlobal }) => {
         dispatch(setEnrollmentValuesEdited(data));
         if (cashCrop === 'Other') {
           setShowOtherMessage(true);
-          setSnackbarData({
-            open: true,
-            text: 'Successfully updated Cash Crop, but further explanation needed',
-            severity: 'warning',
-          });
+          dispatch(
+            setSnackbarData({
+              open: true,
+              text: 'Successfully updated Cash Crop, but further explanation needed',
+              severity: 'warning',
+            }),
+          );
         } else {
           handleEditCashCropModalClose(false);
-          setSnackbarDataGlobal({
-            open: true,
-            text: 'Successfully updated Cash Crop',
-            severity: 'success',
-          });
+          dispatch(
+            setSnackbarData({
+              open: true,
+              text: 'Successfully updated Cash Crop',
+              severity: 'success',
+            }),
+          );
         }
       } else {
-        setSnackbarData({
-          open: true,
-          text: 'Could not update Cash Crop',
-          severity: 'error',
-        });
+        dispatch(
+          setSnackbarData({
+            open: true,
+            text: 'Could not update Cash Crop',
+            severity: 'error',
+          }),
+        );
       }
     });
   };
@@ -115,17 +109,6 @@ const EditCashCropModal = ({ setSnackbarDataGlobal }) => {
         </Grid>
       </DialogTitle>
       <DialogContent>
-        <Snackbar
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-          }}
-          open={snackbarData.open}
-          autoHideDuration={10000}
-          onClose={() => setSnackbarData({ ...snackbarData, open: !snackbarData.open })}
-        >
-          <Alert severity={snackbarData.severity}>{snackbarData.text}</Alert>
-        </Snackbar>
         {cashCrop === null ? (
           <Grid container justifyContent="center">
             <Grid item>
@@ -206,14 +189,6 @@ const EditCashCropModal = ({ setSnackbarDataGlobal }) => {
       </DialogActions>
     </Dialog>
   );
-};
-
-EditCashCropModal.defaultProps = {
-  setSnackbarDataGlobal: () => this.setSnackbarData(),
-};
-
-EditCashCropModal.propTypes = {
-  setSnackbarDataGlobal: PropTypes.func.isRequired,
 };
 
 export default EditCashCropModal;
