@@ -55,6 +55,8 @@ const WaterSensors = () => {
               (tagsObject) => {
                 // console.log("Tags Object: ", tagsObject);
                 let tags = tagsObject.data.tags;
+                if (tags.length === 0) dispatch(setDevicesLoadingState(false));
+
                 let matchedResult = tags.filter((obj) => {
                   if (deviceState.includes(obj.name)) return obj;
                 });
