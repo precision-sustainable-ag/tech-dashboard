@@ -18,7 +18,7 @@
     "axios": "^0.27.2",
     "buffer": "^6.0.3",
     "date-fns": "^2.29.1",
-    "google-map-react": "^2.1.10",
+    "google-map-react": "^2.2.0",
     "highcharts": "^10.2.0",
     "highcharts-react-official": "^3.1.0",
     "html-react-parser": "^3.0.1",
