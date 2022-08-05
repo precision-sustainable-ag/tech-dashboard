@@ -7,21 +7,17 @@ import qs from 'qs';
 import { useHistory } from 'react-router-dom';
 
 // Local Imports
-import * as Constants from '../../shared/hologramConstants';
+import { hologramApiUrl, apiCorsUrl } from '../../shared/hologramConstants';
 import { bannedRoles, apiCall, compareStrings } from '../../../utils/constants';
 import { apiUsername, apiPassword } from '../../../utils/api_secret';
-import DevicesComponent from '../../Devices';
+import Devices from '../../Devices';
 import { useSelector, useDispatch } from 'react-redux';
 import { setDevices, setDevicesLoadingState, setShowDevices } from '../../../Store/actions';
 
 // Default function
 const StressCams = () => {
-  // const [state] = useContext(Context);
   const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.userInfo);
-  // const [devices, setDevices] = useState([]);
-  // const [showDevices, setShowDevices] = useState(false);
-  // const [devicesLoadingState, setDevicesLoadingState] = useState(true);
   const { location } = useHistory();
 
   let devicesData = [];
@@ -33,7 +29,7 @@ const StressCams = () => {
       } else {
         // get tag id for
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        finalAPIURL = Constants.APIURL();
+        finalAPIURL = hologramApiUrl;
         // Check user state or retrieve all devices
         let apiParams;
 
@@ -49,20 +45,13 @@ const StressCams = () => {
           } else {
             getTags(`${finalAPIURL}/api/1/devices/tags?limit=1000&withlocation=true`).then(
               (tagsObject) => {
-                // console.log("Tags Object: ", tagsObject);
                 let tags = tagsObject.data.tags;
                 let matchedResult = tags.filter((obj) => {
                   if (deviceState.includes(obj.name)) return obj;
                 });
-                // console.log(matchedResult);
-                // let tagsIdArray = [];
                 let tagsId = matchedResult.map((val) => {
-                  // console.log(val);
-                  // console.log(val.id);
-                  // let tagId = val.id;
                   return val.id;
                 });
-                // console.log(tagsId);
                 tagsId.forEach((tagId) => {
                   fetchRecords(
                     `${finalAPIURL}/api/1/devices?tagid=${tagId}&withlocation=true`,
@@ -75,44 +64,26 @@ const StressCams = () => {
               },
             );
           }
-
-          // var result = jsObjects.filter(obj => {
-          //   return obj.b === 6
-          // })
-          // }
-
-          // get tag id from hologram for this specific
         }
 
         dispatch(setShowDevices(true));
       }
     }
-
-    //   30 * 1000
-    // );
-    // return () => clearInterval(interval);
   }, [userInfo.apikey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getTags = async (apiURL) => {
-    let options = Constants.StressCamCreds();
     let tagsData = [];
-    await tagsApiCall(apiURL, options).then((response) => {
-      // console.log(response);
+    await tagsApiCall(apiURL).then((response) => {
       tagsData = response;
     });
     return tagsData;
   };
 
   const fetchRecords = async (apiURL) => {
-    let options = Constants.StressCamCreds();
-
-    await apiCall(apiURL, options, 'stresscams')
+    await apiCall(apiURL, 'stresscams')
       .then((response) => {
         // save whatever we get for a specific state or "all"
-        // console.log(response.data.data);
         // TODO: Set a model to be used for devices
-        // let device = new Devices(response.data.data);
-        // console.log(device);
         devicesData.push(response.data.data);
 
         return response;
@@ -139,7 +110,7 @@ const StressCams = () => {
 
     await Axios({
       method: 'post',
-      url: Constants.apiCorsUrl + '/stresscams',
+      url: apiCorsUrl + '/stresscams',
       data: qs.stringify({
         url: url,
       }),
@@ -152,20 +123,12 @@ const StressCams = () => {
       },
       responseType: 'json',
     }).then((response) => {
-      // console.log(response.data);
       tagsData = response.data;
     });
     return tagsData;
   };
   return (
-    <DevicesComponent
-      // showDevices={showDevices}
-      // devices={devices}
-      // loading={devicesLoadingState}
-      for={'stresscams'}
-      // userInfo={userInfo}
-      activeTag={location.state ? location.state.activeTag : null}
-    />
+    <Devices for={'stresscams'} activeTag={location.state ? location.state.activeTag : null} />
   );
 };
 

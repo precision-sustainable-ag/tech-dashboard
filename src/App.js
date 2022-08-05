@@ -35,15 +35,13 @@ import SiteEnrollment from './SiteInformation/Enrollment/SiteEnrollment';
 import PageNotFound from './PageNotFound';
 import AllDataTable from './SiteInformation/ContactAndLocation/AllDataTable';
 
-import DeviceComponent from './Devices/components/Device/Device';
+import Device from './Devices/components/Device/Device';
 
 import Header from './Header/Header';
 
 import Issues from './Issues/Issues';
 import Issue from './Issues/components/Issue/Issue';
 import Forms from './Forms/Forms';
-
-// const Forms = lazy(() => "./Forms/Forms");
 
 import StressCams from './Devices/components/StressCams/StressCams';
 import WaterSensors from './Devices/components/WaterSensors/WaterSensors';
@@ -54,7 +52,6 @@ import FarmDates from './SiteInformation/FarmDates/FarmDates';
 import FarmValues from './Biomass/FarmValues/FarmValues';
 import SensorVisuals from './SensorVisuals/SensorVisuals';
 import VisualsByCode from './SensorVisuals/components/VisualsByCode/VisualsByCode';
-// import FarmDatesCalendar from "./SiteInformation/FarmDates/FarmDatesCalendar";
 import Profile from './Profile/Profile';
 
 import FarmDatesCalendar from './SiteInformation/FarmDates/components/FarmDatesCalendar/FarmDatesCalendar';
@@ -69,7 +66,7 @@ import DecompBag from './DecompBag/DecompBag';
 import Debug from './Debug/Debug';
 import axios from 'axios';
 import { apiPassword, apiUsername, onfarmAPI, onfarmStaticApiKey } from './utils/api_secret';
-import { apiCorsUrl, APIURL } from './Devices/shared/hologramConstants';
+import { apiCorsUrl, hologramApiUrl } from './Devices/shared/hologramConstants';
 import QueryString from 'qs';
 import StressCamVisuals from './StressCamVisuals/StressCamVisuals';
 import { toggleIsDarkTheme, setWindowHeight, setWindowWidth } from './Store/actions';
@@ -167,18 +164,9 @@ function App() {
   const { checking: onfarmApiChecking, working: onfarmApiWorking } =
     useOnFarmApiStatus(onFarmManualCheck);
 
-  // useEffect(() => {
-  //   if (!onfarmApiChecking && !onfarmApiWorking) {
-  //     setOnline(false);
-  //   } else {
-  //     setOnline(useOnlineStatus);
-  //   }
-  // }, [onfarmApiChecking, onfarmApiWorking]);
-
   const { loading, isAuthenticated, loginWithRedirect, getTokenSilently } = useAuth0();
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // const [, dispatch] = useContext(Context);
   const dispatch = useDispatch();
 
   const [theme, setTheme] = useState({
@@ -214,12 +202,6 @@ function App() {
   muiTheme = responsiveFontSizes(muiTheme);
 
   useEffect(() => {
-    // dispatch({
-    //   type: 'TOGGLE_IS_DARK_THEME',
-    //   data: {
-    //     isDarkTheme: theme.palette.type === 'light' ? false : true,
-    //   },
-    // });
     dispatch(toggleIsDarkTheme(theme.palette.type === 'light' ? false : true));
   }, []);
 
@@ -232,13 +214,6 @@ function App() {
         type: newPaletteType,
       },
     });
-
-    // dispatch({
-    //   type: 'TOGGLE_IS_DARK_THEME',
-    //   data: {
-    //     isDarkTheme: newPaletteType === 'light' ? false : true,
-    //   },
-    // });
     dispatch(toggleIsDarkTheme(newPaletteType === 'light' ? false : true));
   };
 
@@ -402,7 +377,7 @@ function App() {
                 <PrivateRoute path="/devices" component={DevicesWrapper} exact />
                 <PrivateRoute
                   path={`/devices/:deviceId`}
-                  render={(props) => <DeviceComponent {...props} title="Device Data" />}
+                  render={(props) => <Device {...props} title="Device Data" />}
                 />
                 <PrivateRoute
                   path={`/kobo-forms/`}
@@ -428,9 +403,6 @@ function App() {
 
                 <PrivateRoute path="/profile" component={Profile} />
                 <PrivateRoute path="/device-enroll" component={DeviceEnroll} />
-
-                {/* Decomp Bag View */}
-                {/* <PrivateRoute path={`/decomp-bags`} component={DecompBag} exact /> */}
 
                 {/* New Sensors Page URLS */}
 
@@ -610,14 +582,11 @@ const APIChecker = (props) => {
   useEffect(() => {
     const hologramAPI = '/api/1/users/me';
 
-    // const onfarmAPI =
-    //   "https://api.precisionsustainableag.org/onfarm/raw?table=biomass_in_field&affiliation=MD";
-    // setCheckingApis((a) => ({ ...a, phpAPI: true }));
     axios({
       method: 'post',
       url: apiCorsUrl + `/watersensors`,
       data: QueryString.stringify({
-        url: `${APIURL()}${hologramAPI}`,
+        url: `${hologramApiUrl}${hologramAPI}`,
       }),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
@@ -649,7 +618,7 @@ const APIChecker = (props) => {
           method: 'post',
           url: apiCorsUrl + `/watersensors`,
           data: QueryString.stringify({
-            url: `${APIURL()}${hologramAPI}`,
+            url: `${hologramApiUrl}${hologramAPI}`,
           }),
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',

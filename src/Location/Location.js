@@ -4,9 +4,10 @@ import React, { useState } from 'react';
 import GoogleMapsReact from 'google-map-react';
 import PropTypes from 'prop-types';
 // Local Imports
-import './marker.scss';
+// import './marker.scss';
 import { googleApiKey } from '../utils/api_secret';
 import SearchBox from './components/SearchBox/SearchBox';
+import { Pin, Pulse } from './LocationStyledComponents';
 
 // Default function
 const Location = ({
@@ -171,8 +172,10 @@ const Location = ({
 const Marker = () => {
   return (
     <>
-      <div className="pin"></div>
-      <div className="pulse"></div>
+      {/* <div className="pin"></div>
+      <div className="pulse"></div> */}
+      <Pin />
+      <Pulse />
     </>
   );
 };

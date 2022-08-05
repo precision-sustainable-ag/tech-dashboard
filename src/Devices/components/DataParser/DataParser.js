@@ -43,28 +43,16 @@ const DataParser = (props) => {
   let device = props.deviceData;
   device.for = props.for;
   const { lastSession } = props;
-  // console.log("deviceData", props.deviceData);
+
   const setDeviceState = (deviceId) => {
     setDeviceId(deviceId);
     history.push(`/devices/${deviceId}`, {
       ...device,
       activeTag: props.activeTag,
     });
-    // to={{
-    //     pathname: ,
-    //     state: device,
-    //     activeTag: props.activeTag,
-    //   }}
-    //setShouldRedirect(true);
   };
 
   useEffect(() => {
-    // let now = moment();
-    // let todayDay = now.date();
-    // let todayMonth = now.month() + 1;
-    // let todayYear = now.year();
-    // let today = false;
-
     if (device.lastsession) {
       // guess user's timezone
       let tz = moment.tz.guess();
@@ -78,38 +66,9 @@ const DataParser = (props) => {
       let deviceDateFormatted = deviceDateLocal.fromNow();
 
       let dateDiff = moment.duration(moment().diff(deviceDateLocal)).asHours();
-      // console.log(dateDiff);
 
       setDeviceDateStr(deviceDateFormatted.toString());
-      // let deviceDay = moment
-      //   .tz(deviceSessionBegin, "Africa/Abidjan")
-      //   .tz(tz)
-      //   .date();
 
-      // let deviceMonth =
-      //   moment
-      //     .tz(deviceSessionBegin, "Africa/Abidjan")
-      //     .tz(tz)
-      //     .month() + 1;
-
-      // let deviceYear = moment
-      //   .tz(deviceSessionBegin, "Africa/Abidjan")
-      //   .tz(tz)
-      //   .year();
-
-      // if (todayYear === deviceYear && todayMonth === deviceMonth) {
-      //   // active this month
-      //   if (todayDay === deviceDay) {
-      //     // active today
-      //     dateStatus = "Active Today";
-      //     today = true;
-      //   } else {
-      //     dateStatus = "Active this month";
-      //   }
-      // } else {
-      //   // not active this month
-      //   dateStatus = "Not active this month";
-      // }
       if (Math.round(dateDiff) <= 1) {
         setDateStatus('Active within last hour');
         setDeviceBGColor(deviceColors.withinLastHour);
@@ -147,7 +106,6 @@ const DataParser = (props) => {
     updateDeviceNickname()
       .then((r) => {
         if (r.data.status === 'success') {
-          // setDeviceNickname(deviceActualName);
           device['nickname'] = deviceActualName;
           setIsDeviceNameBeingEdited(false);
           setShowEditBtn(false);
@@ -287,7 +245,6 @@ const DataParser = (props) => {
             className={
               !device.lastsession ? 'deviceActionArea deadDevice' : 'deviceActionArea aliveDevice'
             }
-            // style={{ height: "100%" }}
             disabled={!device.lastsession ? true : false}
             onClick={() => {
               if (lastSession) setDeviceState(device.id);
@@ -306,25 +263,11 @@ const DataParser = (props) => {
                 <Typography variant="body2" style={{ fontWeight: 'bold' }}>
                   Last Session: Not Available
                 </Typography>
-                {/* <Typography variant="body2" style={{ fontWeight: "bold" }}>
-                  Device Dead
-                </Typography> */}
               </Grid>
             )}
           </Grid>
         </Tooltip>
       </CardContent>
-      {/* <CardActions>
-        <Button
-          variant="text"
-          size="small"
-          onClick={() => {
-            setDeviceState(device.id);
-          }}
-        >
-          View Device
-        </Button>
-      </CardActions> */}
     </>
   );
 };
@@ -336,5 +279,4 @@ DataParser.propTypes = {
   lastSession: PropTypes.any,
   deviceData: PropTypes.any,
   for: PropTypes.string,
-  // setRefreshDevices: PropTypes.func,
 };

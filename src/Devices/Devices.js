@@ -7,7 +7,6 @@ import { Buffer } from 'buffer';
 // Local Imports
 import DataParser from './components/DataParser/DataParser';
 import { BannedRoleMessage } from '../utils/CustomComponents';
-// import "./Devices.scss";
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { Edit, Search } from '@material-ui/icons';
@@ -19,22 +18,13 @@ const deviceCardStyle = {
 };
 
 // Default function
-const DevicesComponent = ({
-  for: forWhom,
-  activeTag: activeTg,
-  // devices,
-  // userInfo,
-  from,
-  // showDevices,
-  // loading,
-}) => {
+const Devices = ({ for: forWhom, activeTag: activeTg, from }) => {
   const [validDevices, setValidDevices] = useState([]);
   const [devicesWithNicknames, setDevicesWithNicknames] = useState([]);
   const [searchedDevices, setSearchedDevices] = useState([]);
   const [deviceTags, setDeviceTags] = useState([]);
   const [deviceSearchText, setDeviceSearchText] = useState('');
   const [activeTag, setActiveTag] = useState('All');
-  // const [refreshDevices, setRefreshDevices] = useState(false);
   const history = useHistory();
   const showDevices = useSelector((state) => state.devicesData.showDevices);
   const devices = useSelector((state) => state.devicesData.devices);
@@ -45,8 +35,6 @@ const DevicesComponent = ({
   useEffect(() => {
     if (validDevices.length === 0) return false;
 
-    // console.log(validDevices);
-
     const initNicknamesFetch = async () => {
       const deviceIds = validDevices.reduce((acc, device) => {
         if (acc.length === 0) return [device.id];
@@ -56,16 +44,6 @@ const DevicesComponent = ({
         return acc;
       }, []);
       const fetchNicknamesURL = `${apiURL}/api/hologram/device/nicknames/bulk`;
-
-      // const response = await axios({
-      //   url: fetchNicknamesURL,
-      //   method: "post",
-      //   auth: {
-      //     username: apiUsername,
-      //     password: apiPassword,
-      //   },
-      //   data: JSON.stringify(deviceIds),
-      // });
 
       const response = await fetch(fetchNicknamesURL, {
         method: 'post',
@@ -244,7 +222,6 @@ const DevicesComponent = ({
                       deviceData={device}
                       lastSession={true}
                       activeTag={activeTag}
-                      // setRefreshDevices={setRefreshDevices}
                     />
                   </Card>
                 </Grid>
@@ -261,7 +238,6 @@ const DevicesComponent = ({
                       key={device.id}
                       deviceData={device}
                       lastSession={false}
-                      // setRefreshDevices={setRefreshDevices}
                     />
                   </Card>
                 </Grid>
@@ -316,7 +292,6 @@ const filterDevicesByTags = (devices = [], activeTag) => {
     }
   });
 
-  // console.log(tagSpecificDevices);
   return tagSpecificDevices;
 };
 
@@ -349,13 +324,9 @@ const filterAllDevices = (devices) => {
   return devicesWithTags;
 };
 
-export default DevicesComponent;
+export default Devices;
 
-DevicesComponent.propTypes = {
-  // showDevices: PropTypes.bool.isRequired,
-  // loading: PropTypes.bool.isRequired,
-  // devices: PropTypes.array.isRequired,
-  // userInfo: PropTypes.object,
+Devices.propTypes = {
   activeTag: PropTypes.string,
   for: PropTypes.string,
   from: PropTypes.string,
