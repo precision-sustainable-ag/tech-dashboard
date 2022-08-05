@@ -181,7 +181,7 @@ const FarmValuesTable = (props) => {
 
   return (
     <div style={{ height: 'calc(100vh - 120px)', width: 'calc(100vw - 80px)' }}>
-      {width > 1280 ? (
+      {width > 800 ? (
         <Grid item lg={12}>
           <MaterialTable
             columns={tableHeaderOptions}
