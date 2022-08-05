@@ -231,6 +231,8 @@ const FarmValuesTable = (props) => {
           affiliations={affiliations}
           tableHeaderOptions={tableHeaderOptions}
           data={data}
+          units={units}
+          setUnits={setUnits}
         />
       )}
     </div>
