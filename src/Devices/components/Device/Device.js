@@ -12,7 +12,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 // Local Imports
 import { apiUsername, apiPassword } from '../../../utils/api_secret';
-import { APIURL, apiCorsUrl } from '../../shared/hologramConstants';
+import { hologramApiUrl, apiCorsUrl } from '../../shared/hologramConstants';
 import { ScrollTop, useInfiniteScroll } from '../../../utils/CustomComponents';
 import Loading from 'react-loading';
 import StressCamButtons from '../StressCamButtons/StressCamButtons';
@@ -24,19 +24,14 @@ import { setDeviceData, setMostRecentData, setUserTimezone } from '../../../Stor
 
 SyntaxHighlighter.registerLanguage('json', json);
 
-const DeviceComponent = (props) => {
+const Device = (props) => {
   const { deviceId } = useParams();
   const dispatch = useDispatch();
   const history = useHistory();
   const activeTag = history.location.state ? history.location.state.activeTag : 'all';
-  // const [deviceData, setDeviceData] = useState({ name: '' });
-  // const [mostRecentData, setMostRecentData] = useState([]);
   const mostRecentData = useSelector((state) => state.devicesData.mostRecentData);
-  // const userTimezone = useSelector((state) => state.devicesData.userTimezone);
-  // const [userTimezone, setUserTimezone] = useState('America/New_York');
   const [pagesLoaded, setPagesLoaded] = useState(0);
   const [loadMoreDataURI, setLoadMoreDataURI] = useState('');
-  // const [timeEnd, setTimeEnd] = useState(Math.floor(Date.now() / 1000));
   const timeEnd = useSelector((state) => state.devicesData.timeEnd);
   const [hologramApiFunctional, setHologramApiFunctional] = useState(true);
   const [fetchMessage, setFetchMessage] = useState('');
@@ -45,8 +40,6 @@ const DeviceComponent = (props) => {
   );
   const [chartRedirectYear, setChartRedirectYear] = useState(0);
   const [siteCode, setSiteCode] = useState('');
-
-  // const [state] = useContext(Context);
   const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
 
   useEffect(() => {
@@ -113,7 +106,7 @@ const DeviceComponent = (props) => {
         method: 'post',
         url: apiCorsUrl + `/watersensors`,
         data: qs.stringify({
-          url: `${APIURL()}/api/1/csr/rdm?deviceid=${deviceId}&withlocation=true&timeend=${timeEnd}`,
+          url: `${hologramApiUrl}/api/1/csr/rdm?deviceid=${deviceId}&withlocation=true&timeend=${timeEnd}`,
         }),
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
@@ -144,9 +137,7 @@ const DeviceComponent = (props) => {
         method: 'post',
         url: apiCorsUrl + `/${props.location.state.for}`,
         data: qs.stringify({
-          url: `${APIURL()}/api/1/csr/rdm?deviceid=${
-            props.location.state.id
-          }&withlocation=true&timeend=${timeEnd}`,
+          url: `${hologramApiUrl}/api/1/csr/rdm?deviceid=${props.location.state.id}&withlocation=true&timeend=${timeEnd}`,
         }),
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
@@ -205,44 +196,16 @@ const DeviceComponent = (props) => {
             All Devices
           </Button>
         </Grid>
-        {/* <Grid item xs={12}>
-          <div style={{ height: "350px" }}>
-            {state.lastsession ? (
-              <GoogleMap
-                lat={latLng.data[0]}
-                lng={latLng.data[1]}
-                from={"device"}
-              />
-            ) : (
-              <GoogleMap from={"device"} />
-            )}
-          </div>
-        </Grid> */}
       </Grid>
     );
   };
 
   //TODO: Auto Reload data
-  // const [timer, setTimer] = useState(0);
-
-  // const interval = useAutoRefresh(() => {
-  //   setTimer(timer + 1);
-  // }, 1000);
-
-  // useEffect(() => {
-  //   console.log(timer);
-  // }, [timer]);
 
   const RenderGridListData = () => {
     return (
       <Grid container spacing={3}>
-        <DeviceInfo
-          // timeEnd={timeEnd}
-          // setTimeEnd={setTimeEnd}
-          deviceName={deviceName}
-          // deviceData={deviceData}
-          // userTimezone={userTimezone}
-        />
+        <DeviceInfo deviceName={deviceName} />
 
         {props.location.state ? (
           props.location.state.for !== 'watersensors' ? (
@@ -274,12 +237,7 @@ const DeviceComponent = (props) => {
           )}
 
         <Grid item xs={12}>
-          <DeviceData
-            location={props.location.state}
-            // mostRecentData={mostRecentData}
-            // userTimezone={userTimezone}
-            isFetching={isFetching}
-          />
+          <DeviceData location={props.location.state} isFetching={isFetching} />
         </Grid>
         {isFetching && (
           <Grid item xs={12}>
@@ -329,7 +287,7 @@ const DeviceComponent = (props) => {
         method: 'post',
         url: apiCorsUrl + `/${props.location.state ? props.location.state.for : 'watersensors'}`,
         data: qs.stringify({
-          url: `${APIURL()}${loadMoreDataURI}`,
+          url: `${hologramApiUrl}${loadMoreDataURI}`,
         }),
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
@@ -341,7 +299,6 @@ const DeviceComponent = (props) => {
         responseType: 'json',
       })
         .then((response) => {
-          // console.log(response);
           let deviceDataShadow = mostRecentData || [];
           deviceDataShadow.push(response.data.data);
 
@@ -386,9 +343,9 @@ const DeviceComponent = (props) => {
   );
 };
 
-export default DeviceComponent;
+export default Device;
 
-DeviceComponent.propTypes = {
+Device.propTypes = {
   location: PropTypes.any,
   history: PropTypes.any,
 };

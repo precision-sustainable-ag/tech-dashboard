@@ -44,7 +44,7 @@ export const checkIfDeviceHasNickname = async (deviceId) => {
   return data;
 };
 
-export const apiCall = async (url, options, from) => {
+export const apiCall = async (url, from) => {
   return await Axios({
     method: 'post',
     url: apiCorsUrl + `/${from}`,
