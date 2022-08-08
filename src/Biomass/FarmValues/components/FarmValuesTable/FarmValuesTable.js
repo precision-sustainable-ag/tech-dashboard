@@ -9,6 +9,7 @@ import SharedToolbar from '../../../../TableComponents/SharedToolbar';
 import { filterData } from '../../../../TableComponents/SharedTableFunctions';
 import SharedTableOptions from '../../../../TableComponents/SharedTableOptions';
 import { useSelector } from 'react-redux';
+import { SharedTableContainer } from '../../../../TableComponents/SharedTableContainer';
 
 const FarmValuesTable = (props) => {
   const { data, affiliations, farmYears } = props;
@@ -180,51 +181,51 @@ const FarmValuesTable = (props) => {
   };
 
   return (
-    <div style={{ height: 'calc(100vh - 120px)', width: 'calc(100vw - 80px)' }}>
-      <Grid item lg={12}>
-        <MaterialTable
-          columns={tableHeaderOptions}
-          title={
-            <SharedToolbar
-              farmYears={farmYears}
-              affiliations={affiliations}
-              setUnits={setUnits}
-              setSimpleView={setSimpleView}
-              units={units}
-              simpleView={simpleView}
-              pickedYears={pickedYears}
-              pickedAff={pickedAff}
-              setPickedAff={setPickedAff}
-              setPickedYears={setPickedYears}
-              name={'Farm Values'}
-            />
-          }
-          data={tableData}
-          options={SharedTableOptions(height, 'Farm Values', false)}
-          detailPanel={[
-            {
-              tooltip: 'Add Comments',
-              icon: 'comment',
-              openIcon: 'message',
-              render: (rowData) => {
-                return (
-                  <IssueDialogue
-                    nickname={user.nickname}
-                    rowData={rowData}
-                    dataType="table"
-                    labels={['farm-values', rowData.code]}
-                    getTokenSilently={getTokenSilently}
-                  />
-                );
+    <SharedTableContainer>
+        <Grid item lg={12}>
+          <MaterialTable
+            columns={tableHeaderOptions}
+            title={
+              <SharedToolbar
+                farmYears={farmYears}
+                affiliations={affiliations}
+                setUnits={setUnits}
+                setSimpleView={setSimpleView}
+                units={units}
+                simpleView={simpleView}
+                pickedYears={pickedYears}
+                pickedAff={pickedAff}
+                setPickedAff={setPickedAff}
+                setPickedYears={setPickedYears}
+                name={'Farm Values'}
+              />
+            }
+            data={tableData}
+            options={SharedTableOptions(height, 'Farm Values', false)}
+            detailPanel={[
+              {
+                tooltip: 'Add Comments',
+                icon: 'comment',
+                openIcon: 'message',
+                render: (rowData) => {
+                  return (
+                    <IssueDialogue
+                      nickname={user.nickname}
+                      rowData={rowData}
+                      dataType="table"
+                      labels={['farm-values', rowData.code]}
+                      getTokenSilently={getTokenSilently}
+                    />
+                  );
+                },
               },
-            },
-          ]}
-          components={{
-            Groupbar: () => <></>,
-          }}
-        />
-      </Grid>
-    </div>
+            ]}
+            components={{
+              Groupbar: () => <></>,
+            }}
+          />
+        </Grid>
+    </SharedTableContainer>
   );
 };
 

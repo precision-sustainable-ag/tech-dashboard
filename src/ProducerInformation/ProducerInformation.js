@@ -10,6 +10,7 @@ import SharedToolbar from '../TableComponents/SharedToolbar';
 import axios from 'axios';
 import QueryString from 'qs';
 import { useSelector } from 'react-redux';
+import { SharedTableContainer } from '../TableComponents/SharedTableContainer';
 
 const producersURL = `${onfarmAPI}/producers${
   process.env.NODE_ENV === 'development' ? `?options=showtest` : ``
@@ -200,103 +201,105 @@ const ProducerInformation = () => {
   });
 
   return isAuthorized ? (
-    <Grid container>
-      {loading ? (
-        <Grid item xs={12}>
-          <CustomLoader />
-        </Grid>
-      ) : (
-        <Fragment>
+    <SharedTableContainer>
+      <Grid container>
+        {loading ? (
           <Grid item xs={12}>
-            <MaterialTable
-              editable={
-                allowEditing() && {
-                  onRowUpdate: (newData, oldData) => {
-                    return new Promise((resolve, reject) => {
-                      const { producer_id } = oldData;
-                      const { email, last_name, phone, first_name } = newData;
-                      if (!producer_id) {
-                        reject('Producer id missing');
-                      } else {
-                        const preparedData = {
-                          first_name: first_name || '',
-                          last_name: last_name || '',
-                          email: email || '',
-                          phone: phone || '',
-                        };
-
-                        axios({
-                          url: `${apiURL}/api/producers/${producer_id}`,
-                          method: 'POST',
-                          data: QueryString.stringify(preparedData),
-                          auth: {
-                            username: apiUsername,
-                            password: apiPassword,
-                          },
-                        })
-                          .then((res) => {
-                            if (res.data.data) {
-                              const dataUpdate = [...tableData];
-                              const index = oldData.tableData.id;
-                              dataUpdate[index] = newData;
-                              setTableData([...dataUpdate]);
-                            }
-                          })
-                          .then(() => {
-                            resolve();
-                          })
-                          .catch((e) => {
-                            reject(e);
-                          });
-                      }
-                    });
-                  },
-                }
-              }
-              columns={tableHeaderOptions}
-              data={filterData()}
-              title={
-                <SharedToolbar
-                  farmYears={farmYears}
-                  affiliations={affiliations}
-                  pickedYears={pickedYears}
-                  pickedAff={pickedAff}
-                  setPickedAff={setPickedAff}
-                  setPickedYears={setPickedYears}
-                  name={'Producer Information'}
-                />
-              }
-              options={tableOptions()}
-              detailPanel={[
-                {
-                  tooltip: 'Add Comments',
-                  icon: 'comment',
-
-                  openIcon: 'message',
-                  // eslint-disable-next-line react/display-name
-                  render: (rowData) => {
-                    return (
-                      <IssueDialogue
-                        nickname={user.nickname}
-                        rowData={rowData}
-                        dataType="table"
-                        labels={['producer-information'].concat(
-                          rowData.codes.replace(/\s/g, '').split(','),
-                        )}
-                        getTokenSilently={getTokenSilently}
-                      />
-                    );
-                  },
-                },
-              ]}
-              components={{
-                Groupbar: () => <></>,
-              }}
-            />
+            <CustomLoader />
           </Grid>
-        </Fragment>
-      )}
-    </Grid>
+        ) : (
+          <Fragment>
+            <Grid item xs={12}>
+              <MaterialTable
+                editable={
+                  allowEditing() && {
+                    onRowUpdate: (newData, oldData) => {
+                      return new Promise((resolve, reject) => {
+                        const { producer_id } = oldData;
+                        const { email, last_name, phone, first_name } = newData;
+                        if (!producer_id) {
+                          reject('Producer id missing');
+                        } else {
+                          const preparedData = {
+                            first_name: first_name || '',
+                            last_name: last_name || '',
+                            email: email || '',
+                            phone: phone || '',
+                          };
+
+                          axios({
+                            url: `${apiURL}/api/producers/${producer_id}`,
+                            method: 'POST',
+                            data: QueryString.stringify(preparedData),
+                            auth: {
+                              username: apiUsername,
+                              password: apiPassword,
+                            },
+                          })
+                            .then((res) => {
+                              if (res.data.data) {
+                                const dataUpdate = [...tableData];
+                                const index = oldData.tableData.id;
+                                dataUpdate[index] = newData;
+                                setTableData([...dataUpdate]);
+                              }
+                            })
+                            .then(() => {
+                              resolve();
+                            })
+                            .catch((e) => {
+                              reject(e);
+                            });
+                        }
+                      });
+                    },
+                  }
+                }
+                columns={tableHeaderOptions}
+                data={filterData()}
+                title={
+                  <SharedToolbar
+                    farmYears={farmYears}
+                    affiliations={affiliations}
+                    pickedYears={pickedYears}
+                    pickedAff={pickedAff}
+                    setPickedAff={setPickedAff}
+                    setPickedYears={setPickedYears}
+                    name={'Producer Information'}
+                  />
+                }
+                options={tableOptions()}
+                detailPanel={[
+                  {
+                    tooltip: 'Add Comments',
+                    icon: 'comment',
+
+                    openIcon: 'message',
+                    // eslint-disable-next-line react/display-name
+                    render: (rowData) => {
+                      return (
+                        <IssueDialogue
+                          nickname={user.nickname}
+                          rowData={rowData}
+                          dataType="table"
+                          labels={['producer-information'].concat(
+                            rowData.codes.replace(/\s/g, '').split(','),
+                          )}
+                          getTokenSilently={getTokenSilently}
+                        />
+                      );
+                    },
+                  },
+                ]}
+                components={{
+                  Groupbar: () => <></>,
+                }}
+              />
+            </Grid>
+          </Fragment>
+        )}
+      </Grid>
+    </SharedTableContainer>
   ) : (
     <BannedRoleMessage title="Producer Information" />
   );

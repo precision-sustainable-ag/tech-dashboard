@@ -11,6 +11,7 @@ import { onfarmAPI } from '../utils/api_secret';
 import { Info, Error, CheckCircle } from '@material-ui/icons';
 import SharedToolbar from '../TableComponents/SharedToolbar';
 import SharedTableOptions from '../TableComponents/SharedTableOptions';
+import { SharedTableContainer } from '../TableComponents/SharedTableContainer';
 
 const Weeds3dViewer = () => {
   const [videos, setVideos] = useState([]);
@@ -199,52 +200,54 @@ const Weeds3dViewer = () => {
   };
 
   return (
-    <Grid container>
-      {loading ? (
-        <CustomLoader />
-      ) : (
-        <Grid item lg={12}>
-          <MaterialTable
-            columns={tableHeaderOptions}
-            data={filterData()}
-            title={
-              <SharedToolbar
-                farmYears={farmYears}
-                affiliations={affiliations}
-                pickedYears={pickedYears}
-                pickedAff={pickedAff}
-                setPickedAff={setPickedAff}
-                setPickedYears={setPickedYears}
-                name={'Weeds 3d Videos'}
-              />
-            }
-            options={SharedTableOptions(height, 'Weeds 3d Videos', false)}
-            detailPanel={[
-              {
-                tooltip: 'Add Comments',
-                icon: 'comment',
-                openIcon: 'message',
-                // eslint-disable-next-line react/display-name
-                render: (rowData) => {
-                  return (
-                    <IssueDialogue
-                      nickname={user.nickname}
-                      rowData={rowData}
-                      dataType="table"
-                      labels={['weeds3d', rowData.code]}
-                      getTokenSilently={getTokenSilently}
-                    />
-                  );
+    <SharedTableContainer>
+      <Grid container>
+        {loading ? (
+          <CustomLoader />
+        ) : (
+          <Grid item lg={12}>
+            <MaterialTable
+              columns={tableHeaderOptions}
+              data={filterData()}
+              title={
+                <SharedToolbar
+                  farmYears={farmYears}
+                  affiliations={affiliations}
+                  pickedYears={pickedYears}
+                  pickedAff={pickedAff}
+                  setPickedAff={setPickedAff}
+                  setPickedYears={setPickedYears}
+                  name={'Weeds 3d Videos'}
+                />
+              }
+              options={SharedTableOptions(height, 'Weeds 3d Videos', false)}
+              detailPanel={[
+                {
+                  tooltip: 'Add Comments',
+                  icon: 'comment',
+                  openIcon: 'message',
+                  // eslint-disable-next-line react/display-name
+                  render: (rowData) => {
+                    return (
+                      <IssueDialogue
+                        nickname={user.nickname}
+                        rowData={rowData}
+                        dataType="table"
+                        labels={['weeds3d', rowData.code]}
+                        getTokenSilently={getTokenSilently}
+                      />
+                    );
+                  },
                 },
-              },
-            ]}
-            components={{
-              Groupbar: () => <></>,
-            }}
-          />
-        </Grid>
-      )}
-    </Grid>
+              ]}
+              components={{
+                Groupbar: () => <></>,
+              }}
+            />
+          </Grid>
+        )}
+      </Grid>
+    </SharedTableContainer>
   );
 };
 
