@@ -114,6 +114,7 @@ const Weeds3dViewer = () => {
   };
 
   const fetchCodes = async (apikey) => {
+    setLoading(true);
     // calls the site_information API and gets a list of sites
     await axios({
       method: 'GET',
