@@ -156,6 +156,7 @@ const FarmDates = () => {
           ) : farmDatesData.length > 0 ? (
             <div>
               <MaterialTable
+                style={{ minWidth: '890px' }}
                 title={
                   <SharedToolbar
                     farmYears={farmYears}

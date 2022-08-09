@@ -78,6 +78,7 @@ const TableModal = ({ data, height, activeSites, tableTitle, farmYears, affiliat
       <Grid container>
         <Grid item lg={12}>
           <MaterialTable
+            style={{ minWidth: '1005px' }}
             detailPanel={[
               {
                 tooltip: 'Expand Actions Panel',

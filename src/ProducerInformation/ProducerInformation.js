@@ -211,6 +211,7 @@ const ProducerInformation = () => {
           <Fragment>
             <Grid item xs={12}>
               <MaterialTable
+                style={{ minWidth: '985px' }}
                 editable={
                   allowEditing() && {
                     onRowUpdate: (newData, oldData) => {
