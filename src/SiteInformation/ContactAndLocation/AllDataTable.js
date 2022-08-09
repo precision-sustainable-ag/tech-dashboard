@@ -52,7 +52,7 @@ const AllDataTable = (props) => {
   }, [userInfo]);
 
   useEffect(() => {
-    const init = () => {
+    const init = async () => {
       if (userRole && userAPIKey) {
         if (userRole) {
           if (bannedRoles.includes(userRole)) {
@@ -69,16 +69,12 @@ const AllDataTable = (props) => {
             },
           });
 
-          records
-            .then((response) => {
-              let res = response.json();
-              res.then((records) => {
-                setXHRResponse({ status: 'success', data: records });
-              });
-            })
-            .then(() => {
-              setLoading(false);
+          records.then((response) => {
+            let res = response.json();
+            res.then((records) => {
+              setXHRResponse({ status: 'success', data: records });
             });
+          });
         }
       }
     };

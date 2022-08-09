@@ -28,12 +28,13 @@ const FarmDates = () => {
   const [tableData, setTableData] = useState(farmDatesData);
   const height = useSelector((state) => state.appData.windowHeight);
 
+
   useEffect(() => {
+    setLoading(true);
     if (userInfo.role && bannedRoles.includes(userInfo.role)) {
       setShowBannedMessage(true);
     } else {
       if (userInfo.apikey) {
-        setLoading(true);
         setShowBannedMessage(false);
         fetchFarmDatesFromApi(userInfo.apikey).then((response) => {
           makeDateObjects(response)
