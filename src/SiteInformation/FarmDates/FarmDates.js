@@ -33,8 +33,8 @@ const FarmDates = () => {
       setShowBannedMessage(true);
     } else {
       if (userInfo.apikey) {
-        setShowBannedMessage(false);
         setLoading(true);
+        setShowBannedMessage(false);
         fetchFarmDatesFromApi(userInfo.apikey).then((response) => {
           makeDateObjects(response)
             .then((response) => {

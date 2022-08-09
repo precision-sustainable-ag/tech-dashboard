@@ -45,10 +45,14 @@ const AllDataTable = (props) => {
   const [farmYears, setFarmYears] = useState([]);
   const [affiliations, setAffiliations] = useState([]);
   const height = useSelector((state) => state.appData.windowHeight);
+  const userInfo = useSelector((state) => state.userInfo);
+
+  useEffect(() => {
+    setLoading(true);
+  }, [userInfo]);
 
   useEffect(() => {
     const init = () => {
-      setLoading(true);
       if (userRole && userAPIKey) {
         if (userRole) {
           if (bannedRoles.includes(userRole)) {
@@ -65,13 +69,16 @@ const AllDataTable = (props) => {
             },
           });
 
-          records.then((response) => {
-            let res = response.json();
-            res.then((records) => {
-              setXHRResponse({ status: 'success', data: records });
+          records
+            .then((response) => {
+              let res = response.json();
+              res.then((records) => {
+                setXHRResponse({ status: 'success', data: records });
+              });
+            })
+            .then(() => {
+              setLoading(false);
             });
-            setLoading(false);
-          });
         }
       }
     };
@@ -81,7 +88,7 @@ const AllDataTable = (props) => {
 
   useEffect(() => {
     const parseXHRResponse = async (data) => {
-      setLoading(true);
+      // setLoading(true);
       if (data.status === 'success') {
         let responseData = data.data;
         let modifiedData = responseData.map((data) => {

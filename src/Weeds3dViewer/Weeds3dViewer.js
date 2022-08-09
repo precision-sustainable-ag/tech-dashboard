@@ -25,6 +25,7 @@ const Weeds3dViewer = () => {
   const [pickedYears, setPickedYears] = useState(['2022']);
   const [pickedAff, setPickedAff] = useState(['All']);
   const height = useSelector((state) => state.appData.windowHeight);
+  // const userAPIKey = useSelector((state) => state.userInfo.apikey);
 
   const tableHeaderOptions = [
     {
@@ -115,7 +116,7 @@ const Weeds3dViewer = () => {
   };
 
   const fetchCodes = async (apikey) => {
-    setLoading(true);
+    // setLoading(true);
     // calls the site_information API and gets a list of sites
     await axios({
       method: 'GET',
@@ -171,6 +172,10 @@ const Weeds3dViewer = () => {
         console.log('API error: ' + err);
       });
   };
+
+  useEffect(() => {
+    setLoading(true);
+  }, [userInfo]);
 
   useEffect(() => {
     const fetchData = async (apikey) => {

@@ -11,7 +11,7 @@ import axios from 'axios';
 import QueryString from 'qs';
 import { useSelector } from 'react-redux';
 import { SharedTableContainer } from '../TableComponents/SharedTableContainer';
-import  SharedTableOptions  from '../TableComponents/SharedTableOptions';
+import SharedTableOptions from '../TableComponents/SharedTableOptions';
 
 const producersURL = `${onfarmAPI}/producers${
   process.env.NODE_ENV === 'development' ? `?options=showtest` : ``
@@ -26,10 +26,13 @@ const ProducerInformation = () => {
   const [pickedYears, setPickedYears] = useState(['2022']);
   const [pickedAff, setPickedAff] = useState(['All']);
   const height = useSelector((state) => state.appData.windowHeight);
-
   // const [state] = useContext(Context);
   const userInfo = useSelector((state) => state.userInfo);
   const { user } = useAuth0();
+
+  useEffect(() => {
+    setLoading(true);
+  }, [userInfo]);
 
   const allowEditing = () => {
     let permissions = userInfo.permissions;
@@ -59,7 +62,7 @@ const ProducerInformation = () => {
     } else {
       if (userInfo.apikey && userInfo.apikey !== null) {
         setIsAuthorized(true);
-        setLoading(true);
+        // setLoading(true);
         fetchProducers()
           .then((res) => {
             let modRes = res.map((rec) => {
@@ -171,35 +174,6 @@ const ProducerInformation = () => {
       editable: 'always',
     },
   ];
-
-  // const tableOptions = () => ({
-  //   padding: 'dense',
-  //   exportButton: true,
-  //   exportFileName: 'Producer Information',
-  //   addRowPosition: 'first',
-  //   exportAllData: false,
-  //   paging: false,
-  //   groupRowSeparator: '  ',
-  //   grouping: true,
-  //   headerStyle: {
-  //     fontWeight: 'bold',
-  //     fontFamily: 'Bilo, sans-serif',
-  //     fontSize: '0.8em',
-  //     textAlign: 'justify',
-  //     position: 'sticky',
-  //     top: 0,
-  //   },
-  //   rowStyle: {
-  //     fontFamily: 'Roboto, sans-serif',
-  //     fontSize: '0.8em',
-  //     textAlign: 'justify',
-  //   },
-  //   selection: false,
-  //   searchAutoFocus: true,
-  //   toolbarButtonAlignment: 'left',
-  //   actionsColumnIndex: 0,
-  //   maxBodyHeight: height - 180,
-  // });
 
   return isAuthorized ? (
     <SharedTableContainer>
