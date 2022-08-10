@@ -30,22 +30,22 @@ const FarmDates = () => {
 
 
   useEffect(() => {
-    setLoading(true);
     if (userInfo.role && bannedRoles.includes(userInfo.role)) {
       setShowBannedMessage(true);
     } else {
       if (userInfo.apikey) {
+        setLoading(true);
         setShowBannedMessage(false);
-        fetchFarmDatesFromApi(userInfo.apikey).then((response) => {
-          makeDateObjects(response)
-            .then((response) => {
+        fetchFarmDatesFromApi(userInfo.apikey)
+          .then((response) => {
+            makeDateObjects(response).then((response) => {
               let responseWithFilter = response.filter((r) => {
                 return r.protocols_enrolled !== '-999';
               });
               dispatch(setFarmDatesData(responseWithFilter));
-            })
-            .finally(() => setLoading(false));
-        });
+            });
+          })
+          .then(() => setLoading(false));
       }
     }
   }, [userInfo.apikey, userInfo.role, farmDatesValuesEdited]);
