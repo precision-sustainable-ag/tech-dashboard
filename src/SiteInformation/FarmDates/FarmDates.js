@@ -11,6 +11,7 @@ import { setFarmDatesData } from '../../Store/actions';
 import { cleanAff, cleanYears, filterData } from '../../TableComponents/SharedTableFunctions';
 import SharedToolbar from '../../TableComponents/SharedToolbar';
 import SharedTableOptions from '../../TableComponents/SharedTableOptions';
+import { SharedTableContainer } from '../../TableComponents/SharedTableContainer';
 
 const FarmDates = () => {
   const userInfo = useSelector((state) => state.userInfo);
@@ -27,23 +28,24 @@ const FarmDates = () => {
   const [tableData, setTableData] = useState(farmDatesData);
   const height = useSelector((state) => state.appData.windowHeight);
 
+
   useEffect(() => {
     if (userInfo.role && bannedRoles.includes(userInfo.role)) {
       setShowBannedMessage(true);
     } else {
       if (userInfo.apikey) {
-        setShowBannedMessage(false);
         setLoading(true);
-        fetchFarmDatesFromApi(userInfo.apikey).then((response) => {
-          makeDateObjects(response)
-            .then((response) => {
+        setShowBannedMessage(false);
+        fetchFarmDatesFromApi(userInfo.apikey)
+          .then((response) => {
+            makeDateObjects(response).then((response) => {
               let responseWithFilter = response.filter((r) => {
                 return r.protocols_enrolled !== '-999';
               });
               dispatch(setFarmDatesData(responseWithFilter));
-            })
-            .finally(() => setLoading(false));
-        });
+            });
+          })
+          .then(() => setLoading(false));
       }
     }
   }, [userInfo.apikey, userInfo.role, farmDatesValuesEdited]);
@@ -147,45 +149,48 @@ const FarmDates = () => {
   ];
 
   return !showBannedMessage ? (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        {loading ? (
-          <CustomLoader />
-        ) : farmDatesData.length > 0 ? (
-          <div>
-            <MaterialTable
-              title={
-                <SharedToolbar
-                  farmYears={farmYears}
-                  affiliations={affiliations}
-                  pickedYears={pickedYears}
-                  pickedAff={pickedAff}
-                  setPickedAff={setPickedAff}
-                  setPickedYears={setPickedYears}
-                  name={'Farm Dates'}
-                />
-              }
-              columns={tableHeaderOptions}
-              data={tableData}
-              options={SharedTableOptions(height, 'Farm Dates', true)}
-              detailPanel={[
-                {
-                  tooltip: 'View actual dates',
-                  render: (rowData) => {
-                    return <FarmDatesDropdown rowData={rowData} nickname={user.nickname} />;
+    <SharedTableContainer>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          {loading ? (
+            <CustomLoader />
+          ) : farmDatesData.length > 0 ? (
+            <div>
+              <MaterialTable
+                style={{ minWidth: '890px' }}
+                title={
+                  <SharedToolbar
+                    farmYears={farmYears}
+                    affiliations={affiliations}
+                    pickedYears={pickedYears}
+                    pickedAff={pickedAff}
+                    setPickedAff={setPickedAff}
+                    setPickedYears={setPickedYears}
+                    name={'Farm Dates'}
+                  />
+                }
+                columns={tableHeaderOptions}
+                data={tableData}
+                options={SharedTableOptions(height, 'Farm Dates', true)}
+                detailPanel={[
+                  {
+                    tooltip: 'View actual dates',
+                    render: (rowData) => {
+                      return <FarmDatesDropdown rowData={rowData} nickname={user.nickname} />;
+                    },
                   },
-                },
-              ]}
-              components={{
-                Groupbar: () => <></>,
-              }}
-            />
-          </div>
-        ) : (
-          <Typography variant="body1">No Data</Typography>
-        )}
+                ]}
+                components={{
+                  Groupbar: () => <></>,
+                }}
+              />
+            </div>
+          ) : (
+            <Typography variant="body1">No Data</Typography>
+          )}
+        </Grid>
       </Grid>
-    </Grid>
+    </SharedTableContainer>
   ) : (
     <BannedRoleMessage title="Farm Dates" />
   );

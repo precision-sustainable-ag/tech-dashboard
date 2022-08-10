@@ -26,7 +26,7 @@ const SharedTableOptions = (height, tableName, isExport) => {
     searchAutoFocus: true,
     toolbarButtonAlignment: 'left',
     actionsColumnIndex: 1,
-    maxBodyHeight: height - 170,
+    maxBodyHeight: height - 180,
   };
 };
 
