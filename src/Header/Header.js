@@ -362,7 +362,10 @@ export default function Header(props) {
             </div>
           ) : (
             <div>
-              <ArrowDropDownCircle onClick={() => setShowMobileDropdown(!showMobileDropdown)} />
+              <ArrowDropDownCircle
+                onClick={() => setShowMobileDropdown(!showMobileDropdown)}
+                style={{ transform: showMobileDropdown ? 'rotate(180deg)' : null }}
+              />
               {showMobileDropdown && (
                 <MobileDropdown width={width}>
                   <SwitchesGroup setViewType={setViewType} />
