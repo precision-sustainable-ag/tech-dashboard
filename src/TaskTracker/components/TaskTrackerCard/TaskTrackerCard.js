@@ -2,6 +2,7 @@ import { CardContent, Divider, Typography, TextField, Chip, Grid } from '@materi
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { onfarmAPI } from '../../../utils/api_secret';
 // import { Context } from '../Store/Store';
 
@@ -110,18 +111,77 @@ const TaskTrackerCard = ({
     }
   }, [userInfo.apikey, year, affiliation, code]);
 
+  const linkDict = {
+    /*Site Enrollment*/
+    Address: '/site-information/contact-enrollment',
+    'Site coordinates': '/site-information/contact-enrollment',
+    'GPS corners': '/kobo-forms/ak6HVZZJPwC2EgR3qVWTsA',
+    'Cover Crop Planting Date': '/site-information/farm-dates',
+
+    /*Biomass*/
+    'Fresh weight': '/kobo-forms/a5Do7iYsTxrHxHqqaqcfU9',
+    'Legume percentage': '/kobo-forms/a5Do7iYsTxrHxHqqaqcfU9',
+    'Termination date': '/site-information/farm-dates',
+
+    /*Decomp Bags*/
+    /* T0 */
+    'T0 empty weights': '/kobo-forms/afHDjP6jCPMGvDDZqDqdyL',
+    'T0 fresh weights': '/kobo-forms/a5Do7iYsTxrHxHqqaqcfU9',
+    'T0 recovery date': '/kobo-forms/aGCjaJEeADNxfoPZD9rUm7',
+    'T0 dry weights': '/kobo-forms/aGPMTPpqU68JvdHK6Wuejb',
+    /* T1 */
+    'T1 empty weights': '/kobo-forms/afHDjP6jCPMGvDDZqDqdyL',
+    'T1 fresh weights': '/kobo-forms/a5Do7iYsTxrHxHqqaqcfU9',
+    'T1 recovery date': '/kobo-forms/aGCjaJEeADNxfoPZD9rUm7',
+    'T1 dry weights': '/kobo-forms/aGPMTPpqU68JvdHK6Wuejb',
+    /* T2 */
+    'T2 empty weights': '/kobo-forms/afHDjP6jCPMGvDDZqDqdyL',
+    'T2 fresh weights': '/kobo-forms/a5Do7iYsTxrHxHqqaqcfU9',
+    'T2 recovery date': '/kobo-forms/aGCjaJEeADNxfoPZD9rUm7',
+    'T2 dry weights': '/kobo-forms/aGPMTPpqU68JvdHK6Wuejb',
+    /* T3 */
+    'T3 empty weights': '/kobo-forms/afHDjP6jCPMGvDDZqDqdyL',
+    'T3 fresh weights': '/kobo-forms/a5Do7iYsTxrHxHqqaqcfU9',
+    'T3 recovery date': '/kobo-forms/aGCjaJEeADNxfoPZD9rUm7',
+    'T3 dry weights': '/kobo-forms/aGPMTPpqU68JvdHK6Wuejb',
+    /* T4 */
+    'T4 empty weights': '/kobo-forms/afHDjP6jCPMGvDDZqDqdyL',
+    'T4 fresh weights': '/kobo-forms/a5Do7iYsTxrHxHqqaqcfU9',
+    'T4 recovery date': '/kobo-forms/aGCjaJEeADNxfoPZD9rUm7',
+    'T4 dry weights': '/kobo-forms/aGPMTPpqU68JvdHK6Wuejb',
+    /* T5 */
+    'T5 empty weights': '/kobo-forms/afHDjP6jCPMGvDDZqDqdyL',
+    'T5 fresh weights': '/kobo-forms/a5Do7iYsTxrHxHqqaqcfU9',
+    'T5 recovery date': '/kobo-forms/aGCjaJEeADNxfoPZD9rUm7',
+    'T5 dry weights': '/kobo-forms/aGPMTPpqU68JvdHK6Wuejb',
+
+    /*Sensor Installation*/
+    'Nodes scanned': '/kobo-forms/aixsrhq7hngRuJaPMLCMQy',
+    'Cash crop planting date': '/site-information/farm-dates',
+
+    /*Yield*/
+    'Corn hand-harvest': '/kobo-forms/aK58LtJJkQZx8ZRJ8uyiLq',
+    'Soybean hand-harvest': '/kobo-forms/aK58LtJJkQZx8ZRJ8uyiLq',
+    'Cotton hand-harvest': '/kobo-forms/aK58LtJJkQZx8ZRJ8uyiLq',
+    'Weigh Wagon': '/kobo-forms/aK58LtJJkQZx8ZRJ8uyiLq',
+  };
+
   return (
     <>
       <CardContent>
         <Typography component="div" align="center" variant="body1" className="cardTitle">
-          <TextField
-            type="text"
-            placeholder="Enter device name"
-            variant="standard"
-            inputProps={{ style: { textAlign: 'center' } }}
-            fullWidth
-            value={title}
-          />
+          <Link to={linkDict[title]}>
+            {
+              <TextField
+                type="text"
+                placeholder="Enter device name"
+                variant="standard"
+                inputProps={{ style: { textAlign: 'center' } }}
+                fullWidth
+                value={title}
+              />
+            }
+          </Link>
         </Typography>
       </CardContent>
       <Divider />
