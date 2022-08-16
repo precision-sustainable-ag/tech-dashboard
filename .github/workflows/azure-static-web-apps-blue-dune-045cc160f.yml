@@ -18,6 +18,25 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: true
+      - name: 'Create env file'
+        run: |
+          touch .env
+          echo REACT_APP_ONFARM_OLD_API_USERNAME=${{ secrets.REACT_APP_ONFARM_OLD_API_USERNAME }} >> .env
+          echo REACT_APP_ONFARM_OLD_API_PASSWORD=${{ secrets.REACT_APP_ONFARM_OLD_API_PASSWORD }} >> .env
+          echo REACT_APP_ONFARM_DEV_API_URL=${{ secrets.REACT_APP_ONFARM_DEV_API_URL }} >> .env
+          echo REACT_APP_ONFARM_PROD_API_URL=${{ secrets.REACT_APP_ONFARM_PROD_API_URL }} >> .env
+          echo REACT_APP_ONFARM_OLD_API_URL=${{ secrets.REACT_APP_ONFARM_OLD_API_URL }} >> .env
+          echo REACT_APP_HOLOGRAM_WATER_SENSOR_API_KEY=${{ secrets.REACT_APP_HOLOGRAM_WATER_SENSOR_API_KEY }} >> .env
+          echo REACT_APP_HOLOGRAM_STRESS_CAM_API_KEY=${{ secrets.REACT_APP_HOLOGRAM_STRESS_CAM_API_KEY }} >> .env
+          echo REACT_APP_CONTACT_PERSON_NAME=${{ secrets.REACT_APP_CONTACT_PERSON_NAME }} >> .env
+          echo REACT_APP_CONTACT_PERSON_EMAIL=${{ secrets.REACT_APP_CONTACT_PERSON_EMAIL }} >> .env
+          echo REACT_APP_DEVELOPER_CONTACT_NAME=${{ secrets.REACT_APP_DEVELOPER_CONTACT_NAME }} >> .env
+          echo REACT_APP_DEVELOPER_CONTACT_EMAIL=${{ secrets.REACT_APP_DEVELOPER_CONTACT_EMAIL }} >> .env
+          echo REACT_APP_GOOGLE_API_KEY_PROD=${{ secrets.REACT_APP_GOOGLE_API_KEY_PROD }} >> .env
+          echo REACT_APP_GOOGLE_API_KEY_DEV=${{ secrets.REACT_APP_GOOGLE_API_KEY_DEV }} >> .env
+          echo REACT_APP_GITHUB_AUTH_TOKEN=${{ secrets.REACT_APP_GITHUB_AUTH_TOKEN }} >> .env
+          echo REACT_APP_ONFARM_GLOBAL_API_KEY=${{ secrets.REACT_APP_ONFARM_GLOBAL_API_KEY }} >> .env
+          cat .env
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
