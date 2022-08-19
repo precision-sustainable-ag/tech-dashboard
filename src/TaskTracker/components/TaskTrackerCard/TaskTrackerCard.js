@@ -169,20 +169,20 @@ const TaskTrackerCard = ({
   return (
     <>
       <CardContent>
-        <Typography component="div" align="center" variant="body1" className="cardTitle">
-          <Link to={linkDict[title]}>
-            {
+        <Link to={{ pathname: linkDict[title] }}>
+          {
+            <Typography component="div" align="center" variant="body1" className="cardTitle">
               <TextField
                 type="text"
                 placeholder="Enter device name"
                 variant="standard"
-                inputProps={{ style: { textAlign: 'center' } }}
+                inputProps={{ style: { textAlign: 'center', cursor: 'pointer' } }}
                 fullWidth
                 value={title}
               />
-            }
-          </Link>
-        </Typography>
+            </Typography>
+          }
+        </Link>
       </CardContent>
       <Divider />
       <CardContent>
