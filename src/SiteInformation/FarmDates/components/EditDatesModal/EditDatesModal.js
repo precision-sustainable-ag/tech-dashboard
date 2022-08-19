@@ -235,9 +235,6 @@ const EditDatesModal = () => {
             <TextField
               color="primary"
               value={datesDict.coverCropPlanting}
-              disabled={
-                datesDict.coverCropPlanting == null || datesDict.coverCropPlanting === 'undefined'
-              }
               onChange={(data) => updateDate(0, data.target.value)}
               type="date"
               id="Cover Crop Planting"
@@ -265,10 +262,6 @@ const EditDatesModal = () => {
             <TextField
               color="primary"
               value={datesDict.coverCropTermination}
-              disabled={
-                datesDict.coverCropTermination == null ||
-                datesDict.coverCropTermination === 'undefined'
-              }
               onChange={(data) => updateDate(2, data.target.value)}
               type="date"
               id="Cover Crop Termination"
