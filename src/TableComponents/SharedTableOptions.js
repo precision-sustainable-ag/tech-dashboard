@@ -3,7 +3,7 @@ const SharedTableOptions = (height, tableName, isExport) => {
     paging: false,
     defaultExpanded: false,
     padding: 'dense',
-    exportButton: isExport,
+    exportButton: false,
     exportFileName: tableName,
     addRowPosition: 'last',
     exportAllData: isExport,
