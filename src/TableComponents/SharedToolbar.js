@@ -8,7 +8,6 @@ import {
   Checkbox,
   ListItemText,
   FormControl,
-  Switch,
   Button,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -34,7 +33,7 @@ const CustomSelect = styled(Select)`
 const UnitButton = styled(Button)`
   height: 20px;
   width: 70px;
-  background: ${({ units, thisUnit }) => (units === thisUnit ? '#2F7C31' : 'none')};
+  background: ${({ value, targetValue }) => (value === targetValue ? '#2F7C31' : 'none')};
 `;
 
 const UnitButtonText = styled.div`
@@ -163,9 +162,17 @@ const SharedToolbar = (props) => {
             <Grid item>
               <div style={{ display: 'grid' }}>
                 <UnitButton onClick={() => setUnits('kg/ha')} units={units} thisUnit={'kg/ha'}>
-                  <UnitButtonText>Kg/Ha</UnitButtonText>
+                  <UnitButtonText value={'kg/ha'} targetValue={units}>
+                    Kg/Ha
+                  </UnitButtonText>
                 </UnitButton>
-                <UnitButton onClick={() => setUnits('lbs/ac')} units={units} thisUnit={'lbs/ac'}>
+                <UnitButton
+                  value={'lbs/ac'}
+                  targetValue={units}
+                  onClick={() => setUnits('lbs/ac')}
+                  units={units}
+                  thisUnit={'lbs/ac'}
+                >
                   <UnitButtonText>Lbs/ac</UnitButtonText>
                 </UnitButton>
               </div>
@@ -173,25 +180,25 @@ const SharedToolbar = (props) => {
           )}
           {simpleView !== null && (
             <Grid item>
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <Switch
-                  size="small"
-                  color="primary"
-                  checked={!simpleView}
-                  onChange={() => setSimpleView(!simpleView)}
-                />
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'start',
-                    marginLeft: '5px',
-                  }}
+              <div style={{ display: 'grid' }}>
+                <UnitButton
+                  value={true}
+                  targetValue={simpleView}
+                  onClick={() => setSimpleView(true)}
+                  units={units}
+                  thisUnit={'kg/ha'}
                 >
-                  <div style={{ fontSize: '0.9em' }}>Advanced</div>
-                  <div style={{ fontSize: '0.9em' }}>View</div>
-                </div>
+                  <UnitButtonText>Simple</UnitButtonText>
+                </UnitButton>
+                <UnitButton
+                  value={false}
+                  targetValue={simpleView}
+                  onClick={() => setSimpleView(false)}
+                  units={units}
+                  thisUnit={'lbs/ac'}
+                >
+                  <UnitButtonText>Advanced</UnitButtonText>
+                </UnitButton>
               </div>
             </Grid>
           )}
