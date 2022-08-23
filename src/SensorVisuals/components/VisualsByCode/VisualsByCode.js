@@ -259,7 +259,7 @@ const VisualsByCode = () => {
                   );
                 }}
               >
-                {issueDialogData.setShowNewIssueDialog ? 'Cancel' : 'Create comment'}
+                {'Create comment'}
               </Button>
             </Grid>
             {deviceLink && (
