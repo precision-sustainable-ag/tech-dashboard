@@ -161,18 +161,14 @@ const SharedToolbar = (props) => {
           {units !== null && (
             <Grid item>
               <div style={{ display: 'grid' }}>
-                <UnitButton onClick={() => setUnits('kg/ha')} units={units} thisUnit={'kg/ha'}>
-                  <UnitButtonText value={'kg/ha'} targetValue={units}>
-                    Kg/Ha
-                  </UnitButtonText>
-                </UnitButton>
                 <UnitButton
-                  value={'lbs/ac'}
+                  onClick={() => setUnits('kg/ha')}
+                  value={'kg/ha'}
                   targetValue={units}
-                  onClick={() => setUnits('lbs/ac')}
-                  units={units}
-                  thisUnit={'lbs/ac'}
                 >
+                  <UnitButtonText>Kg/Ha</UnitButtonText>
+                </UnitButton>
+                <UnitButton value={'lbs/ac'} targetValue={units} onClick={() => setUnits('lbs/ac')}>
                   <UnitButtonText>Lbs/ac</UnitButtonText>
                 </UnitButton>
               </div>
@@ -185,8 +181,6 @@ const SharedToolbar = (props) => {
                   value={true}
                   targetValue={simpleView}
                   onClick={() => setSimpleView(true)}
-                  units={units}
-                  thisUnit={'kg/ha'}
                 >
                   <UnitButtonText>Simple</UnitButtonText>
                 </UnitButton>
@@ -194,8 +188,6 @@ const SharedToolbar = (props) => {
                   value={false}
                   targetValue={simpleView}
                   onClick={() => setSimpleView(false)}
-                  units={units}
-                  thisUnit={'lbs/ac'}
                 >
                   <UnitButtonText>Advanced</UnitButtonText>
                 </UnitButton>
