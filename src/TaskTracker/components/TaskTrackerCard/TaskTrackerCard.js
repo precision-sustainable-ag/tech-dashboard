@@ -169,20 +169,16 @@ const TaskTrackerCard = ({
   return (
     <>
       <CardContent>
-        <Link to={{ pathname: linkDict[title] }}>
-          {
-            <Typography component="div" align="center" variant="body1" className="cardTitle">
-              <TextField
-                type="text"
-                placeholder="Enter device name"
-                variant="standard"
-                inputProps={{ style: { textAlign: 'center', cursor: 'pointer' } }}
-                fullWidth
-                value={title}
-              />
-            </Typography>
-          }
-        </Link>
+        <Typography component="div" align="center" variant="body1" className="cardTitle">
+          <TextField
+            type="text"
+            placeholder="Enter device name"
+            variant="standard"
+            inputProps={{ style: { textAlign: 'center' } }}
+            fullWidth
+            value={title}
+          />
+        </Typography>
       </CardContent>
       <Divider />
       <CardContent>
@@ -191,13 +187,17 @@ const TaskTrackerCard = ({
             {codes && codes.length > 0
               ? codes.map((siteinfo, index) => (
                   <Grid item key={`newSites-${index}`}>
-                    <Chip
-                      label={siteinfo.code}
-                      size="small"
-                      style={{ backgroundColor: siteinfo.bgcolor, color: siteinfo.col }}
-                    >
-                      <Typography variant="body2">{siteinfo.code}</Typography>
-                    </Chip>
+                    <Link to={{ pathname: linkDict[title] }} style={{ textDecoration: 'none' }}>
+                      {
+                        <Chip
+                          label={siteinfo.code}
+                          size="small"
+                          style={{ backgroundColor: siteinfo.bgcolor, color: siteinfo.col }}
+                        >
+                          <Typography variant="body2">{siteinfo.code}</Typography>
+                        </Chip>
+                      }
+                    </Link>
                   </Grid>
                 ))
               : ''}
