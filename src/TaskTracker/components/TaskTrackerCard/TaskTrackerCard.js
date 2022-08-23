@@ -192,7 +192,11 @@ const TaskTrackerCard = ({
                         <Chip
                           label={siteinfo.code}
                           size="small"
-                          style={{ backgroundColor: siteinfo.bgcolor, color: siteinfo.col }}
+                          style={{
+                            backgroundColor: siteinfo.bgcolor,
+                            color: siteinfo.col,
+                            cursor: 'pointer',
+                          }}
                         >
                           <Typography variant="body2">{siteinfo.code}</Typography>
                         </Chip>
