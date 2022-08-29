@@ -213,7 +213,9 @@ const EditDatesModal = () => {
 
   return (
     <Dialog open={editDatesModalOpen} onClose={handleEditDatesModalClose} fullWidth maxWidth="md">
-      <DialogTitle>Edit Dates for {farmCode} </DialogTitle>
+      <DialogTitle>
+        Edit Dates for <strong>{farmCode}</strong>
+      </DialogTitle>
       <DialogContent>
         <Grid
           container
@@ -233,9 +235,6 @@ const EditDatesModal = () => {
             <TextField
               color="primary"
               value={datesDict.coverCropPlanting}
-              disabled={
-                datesDict.coverCropPlanting == null || datesDict.coverCropPlanting === 'undefined'
-              }
               onChange={(data) => updateDate(0, data.target.value)}
               type="date"
               id="Cover Crop Planting"
@@ -263,10 +262,6 @@ const EditDatesModal = () => {
             <TextField
               color="primary"
               value={datesDict.coverCropTermination}
-              disabled={
-                datesDict.coverCropTermination == null ||
-                datesDict.coverCropTermination === 'undefined'
-              }
               onChange={(data) => updateDate(2, data.target.value)}
               type="date"
               id="Cover Crop Termination"
