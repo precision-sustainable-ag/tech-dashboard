@@ -137,7 +137,6 @@ const VisualsByCode = () => {
 
     setLoading(true);
     fetchAllData().then(setLoading(false));
-    s;
 
     return () => {
       setLoading(false);
