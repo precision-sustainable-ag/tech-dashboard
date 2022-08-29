@@ -137,6 +137,7 @@ const VisualsByCode = () => {
 
     setLoading(true);
     fetchAllData().then(setLoading(false));
+    s;
 
     return () => {
       setLoading(false);
@@ -292,7 +293,6 @@ const VisualsByCode = () => {
                 tdrData={tdrData}
                 year={year}
                 activeCharts={activeCharts}
-                loading={loading}
               />
             </Grid>
           )}
