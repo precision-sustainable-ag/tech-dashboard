@@ -34,6 +34,10 @@ const UnitButton = styled(Button)`
   height: 20px;
   width: 70px;
   background: ${({ value, targetValue }) => (value === targetValue ? '#2F7C31' : 'none')};
+
+  &:hover {
+    background: ${({ value, targetValue }) => (value === targetValue ? '#2F7C31' : 'none')};
+  }
 `;
 
 const UnitButtonText = styled.div`
@@ -161,11 +165,7 @@ const SharedToolbar = (props) => {
           {units !== null && (
             <Grid item>
               <div style={{ display: 'grid' }}>
-                <UnitButton
-                  onClick={() => setUnits('kg/ha')}
-                  value={'kg/ha'}
-                  targetValue={units}
-                >
+                <UnitButton onClick={() => setUnits('kg/ha')} value={'kg/ha'} targetValue={units}>
                   <UnitButtonText>Kg/Ha</UnitButtonText>
                 </UnitButton>
                 <UnitButton value={'lbs/ac'} targetValue={units} onClick={() => setUnits('lbs/ac')}>
