@@ -136,7 +136,7 @@ const VisualsByCode = () => {
     };
 
     setLoading(true);
-    fetchAllData().then(setLoading(false));
+    fetchAllData().then(() => setLoading(false));
 
     return () => {
       setLoading(false);
