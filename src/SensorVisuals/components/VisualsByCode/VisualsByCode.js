@@ -200,7 +200,6 @@ const VisualsByCode = () => {
     };
 
     setLoading(true);
-    setLoadingMessage('Making API call');
     fetchAllData().then(setLoading(false));
 
     return () => {
