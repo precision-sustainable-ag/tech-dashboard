@@ -13,10 +13,14 @@ import {
   DialogActions,
   DialogContent,
   Select,
+  Switch,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
+import IssueDialogue from '../../../../Comments/components/IssueDialogue/IssueDialogue';
+import { Comment } from '@material-ui/icons';
+import { useAuth0 } from '../../../../Auth/react-auth0-spa';
 
 const CustomSelect = styled(Select)`
   max-width: 200px;
@@ -39,7 +43,7 @@ const MobileTableRowHead = styled.div`
 `;
 
 const MobileTableRowLabel = styled.div`
-  background: green;
+  // background: green;
   font-weight: bold;
   margin-right: 5px;
   height: fit-content;
@@ -63,13 +67,15 @@ const useStyles = makeStyles(() => ({
 }));
 
 const FarmValuesMobileView = (props) => {
-  const { farmYears, affiliations, tableHeaderOptions, data } = props;
+  const { farmYears, affiliations, tableHeaderOptions, data, units, setUnits } = props;
   const [mobileModalOpen, setMobileModelOpen] = useState(false);
   const [mobileSelectedCode, setMobileSelectedCode] = useState('');
   const [pickedYears, setPickedYears] = useState(['2022']);
   const [pickedAff, setPickedAff] = useState(['All']);
   const classes = useStyles();
   const [tableData, setTableData] = useState(data);
+  const [commentOpen, setCommentOpen] = useState(false);
+  const { getTokenSilently, user } = useAuth0();
 
   const handleChangeYears = (event) => {
     const {
@@ -175,8 +181,24 @@ const FarmValuesMobileView = (props) => {
                 </Grid>
               </Grid>
             </Grid>
-            {/* <Grid item>{UnitButtonComponent()}</Grid>
-                <Grid item>{AdvancedViewToggle()}</Grid> */}
+            <Grid item>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <div style={{ marginRight: '5px', fontSize: '0.9em' }}>KG/HA</div>
+                <Switch
+                  size="small"
+                  color="primary"
+                  checked={units === 'lbs/ac'}
+                  onChange={() => {
+                    if (units === 'kg/ha') {
+                      setUnits('lbs/ac');
+                    } else {
+                      setUnits('kg/ha');
+                    }
+                  }}
+                />
+                <div style={{ fontSize: '0.9em', marginLeft: '5px' }}>LBS/AC</div>
+              </div>
+            </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
@@ -203,27 +225,56 @@ const FarmValuesMobileView = (props) => {
                 {', subplot ' + code.subplot}
               </div>
               {mobileSelectedCode != code.code + code.subplot ? (
-                <ExpandMore onClick={() => setMobileSelectedCode(code.code + code.subplot)} />
+                <ExpandMore
+                  onClick={() => {
+                    setMobileSelectedCode(code.code + code.subplot);
+                    setCommentOpen(false);
+                  }}
+                />
               ) : (
                 <ExpandLess onClick={() => setMobileSelectedCode(null)} />
               )}
             </MobileTableRowHead>
             {mobileSelectedCode === code.code + code.subplot ? (
               <div style={{ display: 'grid', marginBottom: '5px' }} key={code.code + code.subplot}>
-                {tableHeaderOptions
-                  .filter(
-                    (option) =>
-                      option.field !== 'code' &&
-                      option.field !== 'subplot' &&
-                      option.field !== 'affiliation' &&
-                      option.field !== 'year',
-                  )
-                  .map((option) => (
-                    <div style={{ display: 'flex' }} key={code.code + code.suplot + option.field}>
-                      <MobileTableRowLabel>{option.title + ':'}</MobileTableRowLabel>
-                      {option.render(code)}
-                    </div>
-                  ))}
+                <table>
+                  {tableHeaderOptions
+                    .filter(
+                      (option) =>
+                        option.field !== 'code' &&
+                        option.field !== 'subplot' &&
+                        option.field !== 'affiliation' &&
+                        option.field !== 'year',
+                    )
+                    .map((option) => (
+                      <tbody key={code.code + code.suplot + option.field}>
+                        <tbody>
+                          <MobileTableRowLabel>{option.title + ':'}</MobileTableRowLabel>
+                        </tbody>
+                        <td>{option.render(code)}</td>
+                      </tbody>
+                    ))}
+                </table>
+                <div
+                  style={{
+                    margin: '10px 0px',
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                  onClick={() => setCommentOpen(!commentOpen)}
+                >
+                  <Comment />
+                  <div style={{ marginLeft: '10px' }}>ADD COMMENT</div>
+                </div>
+                {commentOpen ? (
+                  <IssueDialogue
+                    nickname={user.nickname}
+                    rowData={code}
+                    dataType="table"
+                    labels={['farm-values', code.code]}
+                    getTokenSilently={getTokenSilently}
+                  />
+                ) : null}
               </div>
             ) : null}
           </MobileTableRow>
@@ -240,4 +291,6 @@ FarmValuesMobileView.propTypes = {
   affiliations: PropTypes.array,
   tableHeaderOptions: PropTypes.any,
   data: PropTypes.any,
+  units: PropTypes.string,
+  setUnits: PropTypes.func,
 };

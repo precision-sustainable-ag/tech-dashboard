@@ -3,7 +3,7 @@ const SharedTableOptions = (height, tableName, isExport) => {
     paging: false,
     defaultExpanded: false,
     padding: 'dense',
-    exportButton: isExport,
+    exportButton: false,
     exportFileName: tableName,
     addRowPosition: 'last',
     exportAllData: isExport,
@@ -23,10 +23,10 @@ const SharedTableOptions = (height, tableName, isExport) => {
       textAlign: 'left',
     }),
     selection: false,
-    searchAutoFocus: true,
+    searchAutoFocus: false,
     toolbarButtonAlignment: 'left',
     actionsColumnIndex: 1,
-    maxBodyHeight: height - 170,
+    maxBodyHeight: window.innerWidth > 768 ? height - 180 : height - 120,
   };
 };
 

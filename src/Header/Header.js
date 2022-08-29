@@ -49,6 +49,8 @@ import { debugAdmins } from '../utils/constants';
 import { setSnackbarData } from '../Store/actions';
 import { updateRole, updateUserInfo, updatingUserInfo } from '../Store/actions';
 import { useSelector, useDispatch } from 'react-redux';
+import { ArrowDropDownCircle } from '@material-ui/icons';
+import styled from 'styled-components';
 
 //Global Vars
 const drawerWidth = 240;
@@ -115,6 +117,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const MobileDropdown = styled.div`
+  height: 150px;
+  width: 250px;
+  top: ${(width) => (width > 600 ? '60px' : '55px')};
+  right: 15px;
+  background: #2f7c31;
+  z-index: 999;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-left: solid 3px white;
+  border-bottom: solid 3px white;
+  border-right: solid 3px white;
+`;
+
 // Default function
 export default function Header(props) {
   const classes = useStyles();
@@ -127,6 +146,7 @@ export default function Header(props) {
   const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
   const userInfo = useSelector((state) => state.userInfo);
   const [viewType, setViewType] = useState('home');
+  const width = useSelector((state) => state.appData.windowWidth);
 
   const { logout, user, loginWithRedirect } = useAuth0();
   const [openAllDataNav, setOpenAllDataNav] = useState(false);
@@ -139,6 +159,7 @@ export default function Header(props) {
     waterSensors: false,
     stressCams: false,
   });
+  const [showMobileDropdown, setShowMobileDropdown] = useState(false);
 
   const { getTokenSilently } = useAuth0();
 
@@ -160,6 +181,7 @@ export default function Header(props) {
     setAnchorEl(event.currentTarget);
   };
   const handleProfileMenuClose = () => {
+    setShowMobileDropdown(false);
     setAnchorEl(null);
   };
 
@@ -283,51 +305,121 @@ export default function Header(props) {
           <Typography variant="h6" noWrap className={classes.title}>
             PSA Tech Dashboard
           </Typography>
-          <SwitchesGroup setViewType={setViewType} />
-          <IconButton color="inherit" onClick={toggleThemeDarkness}>
-            {isDarkTheme ? <BrightnessLow /> : <BrightnessHigh />}
-          </IconButton>
-          {!props.isLoggedIn && (
-            <IconButton
-              color="inherit"
-              onClick={() => loginWithRedirect({ redirect_uri: window.location.href })}
+          {width > 630 ? (
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
             >
-              <Lock />
-            </IconButton>
-          )}
-
-          {props.isLoggedIn && (
-            <div>
-              <IconButton
-                aria-label="user profile"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <AccountCircle />
+              <SwitchesGroup setViewType={setViewType} />
+              <IconButton color="inherit" onClick={toggleThemeDarkness}>
+                {isDarkTheme ? <BrightnessLow /> : <BrightnessHigh />}
               </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                keepMounted
-                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                open={profileMenuOpen}
-                onClose={handleProfileMenuClose}
-              >
-                <MenuItem component={Link} to={'/profile'} onClick={handleProfileMenuClose}>
-                  Profile
-                </MenuItem>
-                {debugAdmins.includes(userInfo?.email) && (
-                  <MenuItem component={Link} to={'/debug'} onClick={handleProfileMenuClose}>
-                    Debug
-                  </MenuItem>
-                )}
-                <MenuItem onClick={() => logout({ returnTo: window.location.origin })}>
-                  Log Out
-                </MenuItem>
-              </Menu>
+              {!props.isLoggedIn && (
+                <IconButton
+                  color="inherit"
+                  onClick={() => loginWithRedirect({ redirect_uri: window.location.href })}
+                >
+                  <Lock />
+                </IconButton>
+              )}
+              {props.isLoggedIn && (
+                <div>
+                  <IconButton
+                    aria-label="user profile"
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    onClick={handleMenu}
+                    color="inherit"
+                  >
+                    <AccountCircle />
+                  </IconButton>
+                  <Menu
+                    id="menu-appbar"
+                    anchorEl={anchorEl}
+                    anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                    keepMounted
+                    transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                    open={profileMenuOpen}
+                    onClose={handleProfileMenuClose}
+                  >
+                    <MenuItem component={Link} to={'/profile'} onClick={handleProfileMenuClose}>
+                      Profile
+                    </MenuItem>
+                    {debugAdmins.includes(userInfo?.email) && (
+                      <MenuItem component={Link} to={'/debug'} onClick={handleProfileMenuClose}>
+                        Debug
+                      </MenuItem>
+                    )}
+                    <MenuItem onClick={() => logout({ returnTo: window.location.origin })}>
+                      Log Out
+                    </MenuItem>
+                  </Menu>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div>
+              <ArrowDropDownCircle
+                onClick={() => setShowMobileDropdown(!showMobileDropdown)}
+                style={{ transform: showMobileDropdown ? 'rotate(180deg)' : null }}
+              />
+              {showMobileDropdown && (
+                <MobileDropdown width={width}>
+                  <SwitchesGroup setViewType={setViewType} />
+                  <div>
+                    Change to {isDarkTheme ? 'light mode' : 'dark mode'}:
+                    <IconButton color="inherit" onClick={toggleThemeDarkness}>
+                      {isDarkTheme ? <BrightnessLow /> : <BrightnessHigh />}
+                    </IconButton>
+                  </div>
+                  {!props.isLoggedIn && (
+                    <IconButton
+                      color="inherit"
+                      onClick={() => loginWithRedirect({ redirect_uri: window.location.href })}
+                    >
+                      <Lock />
+                    </IconButton>
+                  )}
+                  {props.isLoggedIn && (
+                    <div>
+                      Settings:
+                      <IconButton
+                        aria-label="user profile"
+                        aria-controls="menu-appbar"
+                        aria-haspopup="true"
+                        onClick={handleMenu}
+                        color="inherit"
+                      >
+                        <AccountCircle />
+                      </IconButton>
+                      <Menu
+                        id="menu-appbar"
+                        anchorEl={anchorEl}
+                        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                        keepMounted
+                        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                        open={profileMenuOpen}
+                        onClose={handleProfileMenuClose}
+                      >
+                        <MenuItem component={Link} to={'/profile'} onClick={handleProfileMenuClose}>
+                          Profile
+                        </MenuItem>
+                        {debugAdmins.includes(userInfo?.email) && (
+                          <MenuItem component={Link} to={'/debug'} onClick={handleProfileMenuClose}>
+                            Debug
+                          </MenuItem>
+                        )}
+                        <MenuItem onClick={() => logout({ returnTo: window.location.origin })}>
+                          Log Out
+                        </MenuItem>
+                      </Menu>
+                    </div>
+                  )}
+                </MobileDropdown>
+              )}
             </div>
           )}
         </Toolbar>

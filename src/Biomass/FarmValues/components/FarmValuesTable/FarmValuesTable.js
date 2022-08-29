@@ -5,9 +5,11 @@ import { Grid, Tooltip } from '@material-ui/core';
 import IssueDialogue from '../../../../Comments/components/IssueDialogue/IssueDialogue';
 import { useAuth0 } from '../../../../Auth/react-auth0-spa';
 import SharedToolbar from '../../../../TableComponents/SharedToolbar';
+// import FarmValuesMobileView from './FarmValuesTableMobile';
 import { filterData } from '../../../../TableComponents/SharedTableFunctions';
 import SharedTableOptions from '../../../../TableComponents/SharedTableOptions';
 import { useSelector } from 'react-redux';
+import { SharedTableContainer } from '../../../../TableComponents/SharedTableContainer';
 
 const FarmValuesTable = (props) => {
   const { data, affiliations, farmYears } = props;
@@ -19,6 +21,7 @@ const FarmValuesTable = (props) => {
   const [pickedYears, setPickedYears] = useState(['2022']);
   const [pickedAff, setPickedAff] = useState(['All']);
   const height = useSelector((state) => state.appData.windowHeight);
+  // const width = useSelector((state) => state.appData.windowWidth);
 
   useEffect(() => {
     setTableData(filterData(data, pickedYears, pickedAff));
@@ -178,9 +181,10 @@ const FarmValuesTable = (props) => {
   };
 
   return (
-    <div style={{ height: 'calc(100vh - 120px)', width: 'calc(100vw - 80px)' }}>
+    <SharedTableContainer>
       <Grid item lg={12}>
         <MaterialTable
+          style={{ width: 'calc(100vw - 100px)', minWidth: '1145px' }}
           columns={tableHeaderOptions}
           title={
             <SharedToolbar
@@ -222,7 +226,7 @@ const FarmValuesTable = (props) => {
           }}
         />
       </Grid>
-    </div>
+    </SharedTableContainer>
   );
 };
 

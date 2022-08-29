@@ -1,6 +1,5 @@
 // Dependency Imports
 import React, { useState, useEffect } from 'react';
-import Loading from 'react-loading';
 import { useSelector } from 'react-redux';
 
 // Local Imports
@@ -18,6 +17,7 @@ import TableModal from './components/TableModal/TableModal';
 import PropTypes from 'prop-types';
 import EditCashCropModal from './components/EditCashCropModal/EditCashCropModal';
 import { cleanAff, cleanYears } from '../../TableComponents/SharedTableFunctions';
+import { CustomLoader } from '../../utils/CustomComponents';
 
 const siteInfoAPI_URL = `${onfarmAPI}/raw?output=json&table=site_information&options=showtest, include_unenrolled_sites`;
 
@@ -45,9 +45,14 @@ const AllDataTable = (props) => {
   const [farmYears, setFarmYears] = useState([]);
   const [affiliations, setAffiliations] = useState([]);
   const height = useSelector((state) => state.appData.windowHeight);
+  const userInfo = useSelector((state) => state.userInfo);
 
   useEffect(() => {
-    const init = () => {
+    setLoading(true);
+  }, [userInfo]);
+
+  useEffect(() => {
+    const init = async () => {
       if (userRole && userAPIKey) {
         if (userRole) {
           if (bannedRoles.includes(userRole)) {
@@ -79,6 +84,7 @@ const AllDataTable = (props) => {
 
   useEffect(() => {
     const parseXHRResponse = async (data) => {
+      // setLoading(true);
       if (data.status === 'success') {
         let responseData = data.data;
         let modifiedData = responseData.map((data) => {
@@ -121,7 +127,7 @@ const AllDataTable = (props) => {
   return showTable ? (
     loading ? (
       <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Loading type="bars" width="200px" height="200px" color="#3f51b5" />
+        <CustomLoader />
       </div>
     ) : (
       <div>
