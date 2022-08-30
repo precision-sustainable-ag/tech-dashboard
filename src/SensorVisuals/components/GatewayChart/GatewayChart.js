@@ -1,13 +1,18 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Button, Grid, Paper, Toolbar } from '@material-ui/core';
 import { GpsFixed } from '@material-ui/icons';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import PropTypes from 'prop-types';
+import Boost from 'highcharts/modules/boost';
 
 const GatewayChart = ({ gatewayData, axisMinMaxGateway }) => {
   const serials = gatewayData.map((r) => r.serial);
   const uniqueSerials = [...new Set(serials)];
+
+  useEffect(() => {
+    Boost(Highcharts);
+  }, []);
 
   const gwBattVol = useMemo(() => {
     return gatewayData.map((record) => [record.timestamp, record.gw_batt_voltage]);

@@ -95,23 +95,23 @@ const VisualsByCode = () => {
   }, [history, location.state, year]);
 
   const reduceDataSize = (data) => {
-    const reducedArr = [];
-    if (data.length > 10000) {
-      for (let i = 0; i < data.length; i += 10) {
-        reducedArr.push(data[i]);
-      }
-      console.log(reducedArr.length);
-      return reducedArr;
-    } else if (data.length > 2000) {
-      for (let i = 0; i < data.length; i += 4) {
-        reducedArr.push(data[i]);
-      }
-      console.log(reducedArr.length);
-      return reducedArr;
-    } else {
-      console.log(data.length);
+    // const reducedArr = [];
+    // if (data.length > 10000) {
+    //   for (let i = 0; i < data.length; i += 10) {
+    //     reducedArr.push(data[i]);
+    //   }
+    //   console.log(reducedArr.length);
+    //   return reducedArr;
+    // } else if (data.length > 2000) {
+    //   for (let i = 0; i < data.length; i += 4) {
+    //     reducedArr.push(data[i]);
+    //   }
+    //   console.log(reducedArr.length);
+    //   return reducedArr;
+    // } else {
+    //   console.log(data.length);
       return data;
-    }
+    // }
   };
 
   useEffect(() => {
