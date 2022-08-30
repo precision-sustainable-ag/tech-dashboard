@@ -19,7 +19,7 @@ const VisualsByCode = () => {
   const history = useHistory();
   const { user } = useAuth0();
   const { code, year } = useParams();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [deviceLink, setDeviceLink] = useState('');
   const [mapData, setMapData] = useState({
     open: false,
@@ -120,60 +120,23 @@ const VisualsByCode = () => {
     const fetchAllData = async () => {
       if (!userInfo.apikey) return;
 
-      const allEndpoints = [
-        waterGatewayDataEndpoint,
-        waterTdrDataEndpoint,
-        waterNodeDataEndpoint,
-        waterAmbientSensorDataEndpoint,
-        latLongEndpoint,
-        affiliationEndpoint,
-      ];
-
-      for (const endpoint of allEndpoints) {
-        switch (endpoint) {
-          case waterGatewayDataEndpoint:
-            // fetch gateway data
-            fetchAndFormat(waterGatewayDataEndpoint, true).then((data) => {
-              setGatewayData(data);
-            });
-            break;
-          case waterTdrDataEndpoint:
-            // fetch tdr data
-            fetchAndFormat(waterTdrDataEndpoint, true).then((data) => {
-              setIssueBody(data[data.length - 1]);
-              setTdrData(data);
-            });
-            break;
-          case waterNodeDataEndpoint:
-            // fetch node data
-            fetchAndFormat(waterNodeDataEndpoint, true).then((data) => {
-              setNodeData(data);
-            });
-            break;
-          case waterAmbientSensorDataEndpoint:
-            // fetch ambient data
-            fetchAndFormat(waterAmbientSensorDataEndpoint, true).then((data) => {
-              setAmbientData(data);
-            });
-            break;
-          case latLongEndpoint:
-            // other let lng data for site
-            fetchAndFormat(latLongEndpoint, false).then((res) => setCodeData(res[0]));
-            break;
-          case affiliationEndpoint:
-            // fetch code data for site
-            fetchAndFormat(affiliationEndpoint, false).then((res) =>
-              setMapData((d) => ({ ...d, locationData: res })),
-            );
-            break;
-          default:
-            break;
-        }
-      }
+      await Promise.all([
+        fetchAndFormat(waterGatewayDataEndpoint, true).then((data) => setGatewayData(data)),
+        fetchAndFormat(waterTdrDataEndpoint, true).then((data) => {
+          setIssueBody(data[data.length - 1]);
+          setTdrData(data);
+        }),
+        fetchAndFormat(waterNodeDataEndpoint, true).then((data) => setNodeData(data)),
+        fetchAndFormat(waterAmbientSensorDataEndpoint, true).then((data) => setAmbientData(data)),
+        fetchAndFormat(latLongEndpoint, false).then((res) => setCodeData(res[0])),
+        fetchAndFormat(affiliationEndpoint, false).then((res) =>
+          setMapData((d) => ({ ...d, locationData: res })),
+        ),
+      ]);
     };
 
     setLoading(true);
-    fetchAllData().then(setLoading(false));
+    fetchAllData().then(() => setLoading(false));
 
     return () => {
       setLoading(false);

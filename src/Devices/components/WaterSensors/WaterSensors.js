@@ -48,6 +48,8 @@ const WaterSensors = () => {
             getTags(`${finalAPIURL}/api/1/devices/tags?limit=1000&withlocation=true`).then(
               (tagsObject) => {
                 let tags = tagsObject.data.tags;
+                if (tags.length === 0) dispatch(setDevicesLoadingState(false));
+
                 let matchedResult = tags.filter((obj) => {
                   if (deviceState.includes(obj.name)) return obj;
                 });
