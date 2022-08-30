@@ -18,7 +18,15 @@ export const convertEpochtoDatetime = (epoch) => {
 
 const now = convertEpochtoDatetime(Date.now());
 
-const TabCharts = ({ gatewayData, ambientData, nodeData, tdrData, year, activeCharts }) => {
+const TabCharts = ({
+  gatewayData,
+  ambientData,
+  nodeData,
+  tdrData,
+  year,
+  activeCharts,
+  loadingMessage,
+}) => {
   const [axisMinMaxGateway, setAxisMinMaxGateway] = useState([{ min: now }, { max: now }]);
   const [axisMinMaxTdr, setAxisMinMaxTdr] = useState([{ min: now }, { max: now }]);
   const [axisMinMaxLitterbag, setAxisMinMaxLitterbag] = useState([{ min: now }, { max: now }]);
@@ -61,7 +69,7 @@ const TabCharts = ({ gatewayData, ambientData, nodeData, tdrData, year, activeCh
             </Grid>
           </Grid>
         ) : (
-          'Node data unavailable'
+          loadingMessage
         )}
       </Grid>
     );
@@ -80,7 +88,7 @@ const TabCharts = ({ gatewayData, ambientData, nodeData, tdrData, year, activeCh
             </Grid>
           </Grid>
         ) : (
-          'VWC data unavailable'
+          loadingMessage
         )}
       </Grid>
     );
@@ -108,7 +116,7 @@ const TabCharts = ({ gatewayData, ambientData, nodeData, tdrData, year, activeCh
             </Grid>
           </Grid>
         ) : (
-          'Temperature data unavailable'
+          loadingMessage
         )}
       </Grid>
     );
@@ -126,6 +134,7 @@ TabCharts.propTypes = {
   tdrData: PropTypes.array,
   ambientData: PropTypes.array,
   year: PropTypes.any,
+  loadingMessage: PropTypes.string,
 };
 
 export default TabCharts;
