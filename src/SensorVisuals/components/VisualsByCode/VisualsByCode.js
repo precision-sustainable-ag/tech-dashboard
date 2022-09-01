@@ -110,7 +110,7 @@ const VisualsByCode = () => {
     //   return reducedArr;
     // } else {
     //   console.log(data.length);
-      return data;
+    return data;
     // }
   };
 
@@ -156,10 +156,10 @@ const VisualsByCode = () => {
         fetchAndFormat(waterAmbientSensorDataEndpoint, true).then((data) =>
           setAmbientData(reduceDataSize(data)),
         ),
-        fetchAndFormat(latLongEndpoint, false).then((res) => setCodeData(res[0])),
-        fetchAndFormat(affiliationEndpoint, false).then((res) =>
+        fetchAndFormat(latLongEndpoint, false).then((res) =>
           setMapData((d) => ({ ...d, locationData: res })),
         ),
+        fetchAndFormat(affiliationEndpoint, false).then((res) => setCodeData(res[0])),
       ]);
     };
 
