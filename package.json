@@ -23,7 +23,7 @@
     "html-react-parser": "^3.0.4",
     "material-table": "^1.69.3",
     "moment": "^2.29.4",
-    "moment-timezone": "^0.5.35",
+    "moment-timezone": "^0.5.37",
     "qs": "^6.11.0",
     "react": "^17.0.2",
     "react-app-polyfill": "^3.0.0",
