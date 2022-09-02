@@ -1,12 +1,17 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Grid } from '@material-ui/core';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
 import PropTypes from 'prop-types';
+import Boost from 'highcharts/modules/boost';
 
 const timezoneOffset = new Date().getTimezoneOffset() * 2;
 
 const NodeVoltage = ({ nodeData, axisMinMaxNode }) => {
+  useEffect(() => {
+    Boost(Highcharts);
+  }, []);
+
   const chartOptions = {
     time: {
       timezoneOffset: timezoneOffset,

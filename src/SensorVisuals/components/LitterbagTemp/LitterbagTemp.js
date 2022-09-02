@@ -1,11 +1,15 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Grid } from '@material-ui/core';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
 import 'highcharts/modules/no-data-to-display';
 import PropTypes from 'prop-types';
+import Boost from 'highcharts/modules/boost';
 
 const LitterbagTemp = ({ ambientData, axisMinMaxLitterbag }) => {
+  useEffect(() => {
+    Boost(Highcharts);
+  }, []);
   const chartOptions = {
     chart: {
       type: 'scatter',

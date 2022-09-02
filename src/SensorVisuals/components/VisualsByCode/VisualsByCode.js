@@ -37,6 +37,7 @@ const VisualsByCode = () => {
   const [nodeData, setNodeData] = useState([]);
   const [ambientData, setAmbientData] = useState([]);
   const [codeData, setCodeData] = useState({});
+  const [loadingMessage, setLoadingMessage] = useState('Loading Tables');
 
   const location = useLocation();
 
@@ -93,8 +94,29 @@ const VisualsByCode = () => {
     };
   }, [history, location.state, year]);
 
+  const reduceDataSize = (data) => {
+    // const reducedArr = [];
+    // if (data.length > 10000) {
+    //   for (let i = 0; i < data.length; i += 10) {
+    //     reducedArr.push(data[i]);
+    //   }
+    //   console.log(reducedArr.length);
+    //   return reducedArr;
+    // } else if (data.length > 2000) {
+    //   for (let i = 0; i < data.length; i += 4) {
+    //     reducedArr.push(data[i]);
+    //   }
+    //   console.log(reducedArr.length);
+    //   return reducedArr;
+    // } else {
+    //   console.log(data.length);
+    return data;
+    // }
+  };
+
   useEffect(() => {
     const fetchAndFormat = async (endpoint, sort) => {
+      setLoadingMessage(Object.keys(endpoint)[0]);
       if (userInfo.apikey) {
         try {
           // fetch gateway data
@@ -121,21 +143,28 @@ const VisualsByCode = () => {
       if (!userInfo.apikey) return;
 
       await Promise.all([
-        fetchAndFormat(waterGatewayDataEndpoint, true).then((data) => setGatewayData(data)),
+        fetchAndFormat(waterGatewayDataEndpoint, true).then((data) =>
+          setGatewayData(reduceDataSize(data)),
+        ),
         fetchAndFormat(waterTdrDataEndpoint, true).then((data) => {
           setIssueBody(data[data.length - 1]);
-          setTdrData(data);
+          setTdrData(reduceDataSize(data));
         }),
-        fetchAndFormat(waterNodeDataEndpoint, true).then((data) => setNodeData(data)),
-        fetchAndFormat(waterAmbientSensorDataEndpoint, true).then((data) => setAmbientData(data)),
-        fetchAndFormat(latLongEndpoint, false).then((res) => setCodeData(res[0])),
-        fetchAndFormat(affiliationEndpoint, false).then((res) =>
+        fetchAndFormat(waterNodeDataEndpoint, true).then((data) =>
+          setNodeData(reduceDataSize(data)),
+        ),
+        fetchAndFormat(waterAmbientSensorDataEndpoint, true).then((data) =>
+          setAmbientData(reduceDataSize(data)),
+        ),
+        fetchAndFormat(latLongEndpoint, false).then((res) =>
           setMapData((d) => ({ ...d, locationData: res })),
         ),
+        fetchAndFormat(affiliationEndpoint, false).then((res) => setCodeData(res[0])),
       ]);
     };
 
     setLoading(true);
+    setLoadingMessage('Making API calls');
     fetchAllData().then(() => setLoading(false));
 
     return () => {
@@ -292,6 +321,7 @@ const VisualsByCode = () => {
                 tdrData={tdrData}
                 year={year}
                 activeCharts={activeCharts}
+                loadingMessage={loadingMessage}
               />
             </Grid>
           )}
