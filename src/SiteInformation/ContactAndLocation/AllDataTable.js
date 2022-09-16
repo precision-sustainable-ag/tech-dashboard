@@ -45,11 +45,6 @@ const AllDataTable = (props) => {
   const [farmYears, setFarmYears] = useState([]);
   const [affiliations, setAffiliations] = useState([]);
   const height = useSelector((state) => state.appData.windowHeight);
-  const userInfo = useSelector((state) => state.userInfo);
-
-  useEffect(() => {
-    setLoading(true);
-  }, [userInfo]);
 
   useEffect(() => {
     const init = async () => {
