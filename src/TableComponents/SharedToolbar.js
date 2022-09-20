@@ -64,6 +64,7 @@ const SharedToolbar = (props) => {
     pickedYears,
     setPickedYears,
     name,
+    buacToggle,
   } = props;
   const classes = useStyles();
 
@@ -162,18 +163,34 @@ const SharedToolbar = (props) => {
               </Grid>
             </Grid>
           </Grid>
-          {units !== null && (
-            <Grid item>
-              <div style={{ display: 'grid' }}>
-                <UnitButton onClick={() => setUnits('kg/ha')} value={'kg/ha'} targetValue={units}>
-                  <UnitButtonText>Kg/Ha</UnitButtonText>
-                </UnitButton>
-                <UnitButton value={'lbs/ac'} targetValue={units} onClick={() => setUnits('lbs/ac')}>
-                  <UnitButtonText>Lbs/ac</UnitButtonText>
-                </UnitButton>
-              </div>
-            </Grid>
-          )}
+          {units !== null &&
+            (buacToggle ? (
+              <Grid item>
+                <div style={{ display: 'grid' }}>
+                  <UnitButton onClick={() => setUnits('mg/ha')} value={'mg/ha'} targetValue={units}>
+                    <UnitButtonText>mg/ha</UnitButtonText>
+                  </UnitButton>
+                  <UnitButton value={'bu/ac'} targetValue={units} onClick={() => setUnits('bu/ac')}>
+                    <UnitButtonText>bu/ac</UnitButtonText>
+                  </UnitButton>
+                </div>
+              </Grid>
+            ) : (
+              <Grid item>
+                <div style={{ display: 'grid' }}>
+                  <UnitButton onClick={() => setUnits('kg/ha')} value={'kg/ha'} targetValue={units}>
+                    <UnitButtonText>Kg/Ha</UnitButtonText>
+                  </UnitButton>
+                  <UnitButton
+                    value={'lbs/ac'}
+                    targetValue={units}
+                    onClick={() => setUnits('lbs/ac')}
+                  >
+                    <UnitButtonText>Lbs/ac</UnitButtonText>
+                  </UnitButton>
+                </div>
+              </Grid>
+            ))}
           {simpleView !== null && (
             <Grid item>
               <div style={{ display: 'grid' }}>
@@ -214,6 +231,7 @@ SharedToolbar.propTypes = {
   pickedYears: PropTypes.array,
   setPickedYears: PropTypes.func,
   name: PropTypes.string,
+  buacToggle: PropTypes.bool,
 };
 
 SharedToolbar.defaultProps = {
