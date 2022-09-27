@@ -9,23 +9,35 @@ import SharedToolbar from '../../../../TableComponents/SharedToolbar';
 import { filterData } from '../../../../TableComponents/SharedTableFunctions';
 import SharedTableOptions from '../../../../TableComponents/SharedTableOptions';
 import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { setIssueDialogueData } from '../../../../Store/actions';
 import { SharedTableContainer } from '../../../../TableComponents/SharedTableContainer';
 
 const FarmValuesTable = (props) => {
   const { data, affiliations, farmYears } = props;
   const [tableData, setTableData] = useState(data);
-  const { getTokenSilently } = useAuth0();
   const { user } = useAuth0();
   const [units, setUnits] = useState('kg/ha');
   const [simpleView, setSimpleView] = useState(true);
   const [pickedYears, setPickedYears] = useState(['2022']);
   const [pickedAff, setPickedAff] = useState(['All']);
   const height = useSelector((state) => state.appData.windowHeight);
+  const dispatch = useDispatch();
   // const width = useSelector((state) => state.appData.windowWidth);
 
   useEffect(() => {
     setTableData(filterData(data, pickedYears, pickedAff));
   }, [pickedYears, pickedAff]);
+
+  useEffect(() => {
+    dispatch(
+      setIssueDialogueData({
+        nickname: user.nickname,
+        dataType: 'table',
+        setShowNewIssueDialog: true,
+      }),
+    );
+  }, []);
 
   const tableHeaderOptions = [
     {
@@ -209,15 +221,7 @@ const FarmValuesTable = (props) => {
               icon: 'comment',
               openIcon: 'message',
               render: (rowData) => {
-                return (
-                  <IssueDialogue
-                    nickname={user.nickname}
-                    rowData={rowData}
-                    dataType="table"
-                    labels={['farm-values', rowData.code]}
-                    getTokenSilently={getTokenSilently}
-                  />
-                );
+                return <IssueDialogue rowData={rowData} labels={['farm-values', rowData.code]} />;
               },
             },
           ]}

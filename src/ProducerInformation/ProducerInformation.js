@@ -9,7 +9,8 @@ import { useAuth0 } from '../Auth/react-auth0-spa';
 import SharedToolbar from '../TableComponents/SharedToolbar';
 import axios from 'axios';
 import QueryString from 'qs';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { setIssueDialogueData } from '../Store/actions';
 import { SharedTableContainer } from '../TableComponents/SharedTableContainer';
 import SharedTableOptions from '../TableComponents/SharedTableOptions';
 
@@ -20,6 +21,7 @@ const producersURL = `${onfarmAPI}/producers${
 const ProducerInformation = () => {
   const [tableData, setTableData] = useState([]);
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [farmYears, setFarmYears] = useState([]);
   const [affiliations, setAffiliations] = useState([]);
@@ -43,8 +45,6 @@ const ProducerInformation = () => {
       userInfo.view_type === 'home'
     );
   };
-
-  const { getTokenSilently } = useAuth0();
 
   useEffect(() => {
     const fetchProducers = async () => {
@@ -107,6 +107,16 @@ const ProducerInformation = () => {
       }
     }
   }, [userInfo.apikey, userInfo.role]);
+
+  useEffect(() => {
+    dispatch(
+      setIssueDialogueData({
+        nickname: user.nickname,
+        dataType: 'table',
+        setShowNewIssueDialogue: true,
+      }),
+    );
+  }, []);
 
   const filterData = () => {
     const yearsOverlap = (arr1, arr2) => {
@@ -255,13 +265,10 @@ const ProducerInformation = () => {
                     render: (rowData) => {
                       return (
                         <IssueDialogue
-                          nickname={user.nickname}
                           rowData={rowData}
-                          dataType="table"
                           labels={['producer-information'].concat(
                             rowData.codes.replace(/\s/g, '').split(','),
                           )}
-                          getTokenSilently={getTokenSilently}
                         />
                       );
                     },
