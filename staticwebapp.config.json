@@ -1,6 +1,6 @@
 {
     "globalHeaders": {
-        "content-security-policy": "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none'"
+        "content-security-policy": "object-src 'none'"
     },
     "navigationFallback": {
         "rewrite": "/index.html",
