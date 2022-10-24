@@ -39,7 +39,7 @@ const TabCharts = ({
         max:
           new Date().getFullYear().toString() === year
             ? now
-            : convertEpochtoDatetime(sensorData[0].timestamp),
+            : convertEpochtoDatetime(sensorData[sensorData.length - 1].timestamp),
       };
     };
 
