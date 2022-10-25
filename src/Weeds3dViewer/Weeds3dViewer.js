@@ -129,7 +129,7 @@ const Weeds3dViewer = () => {
   };
 
   const fetchCodes = async (apikey) => {
-    // setLoading(true);
+    setLoading(true);
     // calls the site_information API and gets a list of sites
     await axios({
       method: 'GET',
@@ -185,10 +185,6 @@ const Weeds3dViewer = () => {
         console.log('API error: ' + err);
       });
   };
-
-  useEffect(() => {
-    setLoading(true);
-  }, [userInfo]);
 
   useEffect(() => {
     const fetchData = async (apikey) => {

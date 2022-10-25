@@ -52,7 +52,7 @@ const FarmDatesDropdown = ({ rowData, nickname }) => {
           </Tooltip>
         </Grid>
       )}
-      {issueDialogueData.setShowNewIssueDialog && (
+      {issueDialogueData.setShowNewIssueDialogue && (
         <Grid item>
           <IssueDialogue rowData={rowData} labels={['farm-dates']} />
         </Grid>

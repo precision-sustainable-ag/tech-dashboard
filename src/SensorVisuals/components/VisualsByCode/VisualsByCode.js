@@ -270,7 +270,7 @@ const VisualsByCode = () => {
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          {issueDialogueData.setShowIssueDialogue &&
+          {issueDialogueData.setShowNewIssueDialogue &&
             (issueBody ? (
               <IssueDialogue
                 rowData={JSON.stringify(issueBody, null, '\t')}

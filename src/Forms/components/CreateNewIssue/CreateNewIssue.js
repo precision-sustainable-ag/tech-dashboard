@@ -52,7 +52,7 @@ const CreateNewIssue = (props) => {
         </Tooltip>
       )}
 
-      {issueDialogueData.setShowNewIssueDialog && index === activeIssueIndex ? (
+      {issueDialogueData.setShowNewIssueDialogue && index === activeIssueIndex ? (
         <IssueDialogue
           rowData={JSON.stringify(newIssueData, null, '\t')}
           labels={[

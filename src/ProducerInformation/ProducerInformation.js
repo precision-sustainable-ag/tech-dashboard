@@ -32,10 +32,6 @@ const ProducerInformation = () => {
   const userInfo = useSelector((state) => state.userInfo);
   const { user } = useAuth0();
 
-  useEffect(() => {
-    setLoading(true);
-  }, [userInfo]);
-
   const allowEditing = () => {
     let permissions = userInfo.permissions;
     const allowedPermissions = ['edit', 'update', 'all'];
@@ -62,7 +58,7 @@ const ProducerInformation = () => {
     } else {
       if (userInfo.apikey && userInfo.apikey !== null) {
         setIsAuthorized(true);
-        // setLoading(true);
+        setLoading(true);
         fetchProducers()
           .then((res) => {
             let modRes = res.map((rec) => {

@@ -166,7 +166,7 @@ const Comments = (props) => {
                   {buttonDisabled ? 'Creating Comment' : 'Add Comment'}
                 </Button>
               </Grid>
-              {issueDialogueData.setShowNewIssueDialog && (
+              {issueDialogueData.setShowNewIssueDialogue && (
                 <Grid item>
                   <Button
                     variant="contained"
@@ -177,7 +177,7 @@ const Comments = (props) => {
                       dispatch(
                         setIssueDialogueData({
                           ...issueDialogueData,
-                          setShowNewIssueDialog: false,
+                          setShowNewIssueDialogue: false,
                         }),
                       );
                     }}
