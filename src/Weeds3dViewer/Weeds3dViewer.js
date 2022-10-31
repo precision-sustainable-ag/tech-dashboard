@@ -9,6 +9,8 @@ import { useSelector } from 'react-redux';
 import { CustomLoader } from '../utils/CustomComponents';
 import { onfarmAPI } from '../utils/api_secret';
 import { Info, Error, CheckCircle } from '@material-ui/icons';
+import { useDispatch } from 'react-redux';
+import { setIssueDialogueData } from './../Store/actions';
 import SharedToolbar from '../TableComponents/SharedToolbar';
 import SharedTableOptions from '../TableComponents/SharedTableOptions';
 import { SharedTableContainer } from '../TableComponents/SharedTableContainer';
@@ -20,12 +22,23 @@ const Weeds3dViewer = () => {
   const userInfo = useSelector((state) => state.userInfo);
   const { getTokenSilently } = useAuth0();
   const { user } = useAuth0();
+  const dispatch = useDispatch();
   const [farmYears, setFarmYears] = useState([]);
   const [affiliations, setAffiliations] = useState([]);
   const [pickedYears, setPickedYears] = useState(['2022']);
   const [pickedAff, setPickedAff] = useState(['All']);
   const height = useSelector((state) => state.appData.windowHeight);
   // const userAPIKey = useSelector((state) => state.userInfo.apikey);
+
+  useEffect(() => {
+    dispatch(
+      setIssueDialogueData({
+        nickname: user.nickname,
+        dataType: 'table',
+        setShowNewIssueDialogue: true,
+      }),
+    );
+  }, []);
 
   const tableHeaderOptions = [
     {
@@ -116,7 +129,7 @@ const Weeds3dViewer = () => {
   };
 
   const fetchCodes = async (apikey) => {
-    // setLoading(true);
+    setLoading(true);
     // calls the site_information API and gets a list of sites
     await axios({
       method: 'GET',
@@ -174,10 +187,6 @@ const Weeds3dViewer = () => {
   };
 
   useEffect(() => {
-    setLoading(true);
-  }, [userInfo]);
-
-  useEffect(() => {
     const fetchData = async (apikey) => {
       await fetchCodes(apikey);
     };
@@ -233,15 +242,7 @@ const Weeds3dViewer = () => {
                   openIcon: 'message',
                   // eslint-disable-next-line react/display-name
                   render: (rowData) => {
-                    return (
-                      <IssueDialogue
-                        nickname={user.nickname}
-                        rowData={rowData}
-                        dataType="table"
-                        labels={['weeds3d', rowData.code]}
-                        getTokenSilently={getTokenSilently}
-                      />
-                    );
+                    return <IssueDialogue rowData={rowData} labels={['weeds3d', rowData.code]} />;
                   },
                 },
               ]}

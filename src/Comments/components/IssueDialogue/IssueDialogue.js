@@ -5,7 +5,8 @@ import { useAuth0 } from '../../../Auth/react-auth0-spa';
 import { callAzureFunction } from '../../../utils/SharedFunctions';
 import PropTypes from 'prop-types';
 import { setSnackbarData } from '../../../Store/actions';
-import { useDispatch } from 'react-redux';
+import { setIssueDialogueData } from '../../../Store/actions';
+import { useSelector, useDispatch } from 'react-redux';
 
 const IssueDialogue = (props) => {
   const [checkValidation, setCheckValidation] = useState({
@@ -15,9 +16,9 @@ const IssueDialogue = (props) => {
   const [issueTitle, setIssueTitle] = useState('');
   const dispatch = useDispatch();
   const { getTokenSilently } = useAuth0();
-  const { nickname, labels, setShowNewIssueDialog, rowData, dataType, defaultText = '' } = props;
-
-  const alwaysTaggedPeople = ['brianwdavis', 'saseehav', nickname];
+  const { labels, rowData } = props;
+  const issueDialogueData = useSelector((state) => state.issueDialogueData.issueDialogueData);
+  const alwaysTaggedPeople = ['brianwdavis', 'saseehav', issueDialogueData.nickname];
   const [personName] = useState(alwaysTaggedPeople);
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [removeCommentText, setRemoveCommentText] = useState(false);
@@ -28,9 +29,9 @@ const IssueDialogue = (props) => {
 
       setButtonDisabled(true);
 
-      const assignedPeople = personName.length > 0 ? personName : [`${nickname}`];
+      const assignedPeople = personName.length > 0 ? personName : [`${issueDialogueData.nickname}`];
       const data = {
-        user: nickname,
+        user: issueDialogueData.nickname,
         title: issueTitle,
         assignees: assignedPeople,
         labels: labels,
@@ -39,7 +40,7 @@ const IssueDialogue = (props) => {
 
       const issueSet = callAzureFunction(
         data,
-        `precision-sustainable-ag/repos/data_corrections/issues/${nickname}`,
+        `precision-sustainable-ag/repos/data_corrections/issues/${issueDialogueData.nickname}`,
         'POST',
         getTokenSilently,
       );
@@ -78,7 +79,8 @@ const IssueDialogue = (props) => {
           );
         }
 
-        if (setShowNewIssueDialog) setShowNewIssueDialog(false);
+        if (issueDialogueData.setShowNewIssueDialogue)
+          dispatch(setIssueDialogueData({ ...issueDialogueData, setShowNewIssueDialogue: false }));
       });
     } else {
       if (!issueTitle || !newComment) {
@@ -114,14 +116,10 @@ const IssueDialogue = (props) => {
       <Grid item xs={12} lg={6}>
         <Comments
           handleNewComment={fileNewIssue}
-          nickname={nickname}
           rowData={rowData}
-          dataType={dataType}
           buttonDisabled={buttonDisabled}
           removeCommentText={removeCommentText}
           setRemoveCommentText={setRemoveCommentText}
-          setShowNewIssueDialog={setShowNewIssueDialog}
-          defaultText={defaultText}
         />
       </Grid>
     </Grid>

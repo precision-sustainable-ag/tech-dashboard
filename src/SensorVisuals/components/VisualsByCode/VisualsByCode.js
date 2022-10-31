@@ -7,7 +7,8 @@ import { Link, useHistory, useParams, useLocation } from 'react-router-dom';
 import { CustomLoader } from '../../../utils/CustomComponents';
 import SensorMap from '../../../utils/SensorMap';
 import { useAuth0 } from '../../../Auth/react-auth0-spa';
-
+import { useDispatch } from 'react-redux';
+import { setIssueDialogueData } from '../../../Store/actions';
 import IssueDialogue from '../../../Comments/components/IssueDialogue/IssueDialogue';
 import TabCharts from '../TabCharts/TabCharts';
 import { useSelector } from 'react-redux';
@@ -27,10 +28,12 @@ const VisualsByCode = () => {
     zoom: 20,
   });
 
+  const dispatch = useDispatch();
+  const issueDialogueData = useSelector((state) => state.issueDialogueData.issueDialogueData);
   const [value, setValue] = useState('1');
   const [activeCharts, setActiveCharts] = useState('vwc');
 
-  const { getTokenSilently } = useAuth0();
+  //const { getTokenSilently } = useAuth0();
 
   const [gatewayData, setGatewayData] = useState([]);
   const [tdrData, setTdrData] = useState([]);
@@ -40,8 +43,6 @@ const VisualsByCode = () => {
   const [loadingMessage, setLoadingMessage] = useState('Loading Tables');
 
   const location = useLocation();
-
-  const [showIssueDialog, setShowIssueDialog] = useState(false);
   const [issueBody, setIssueBody] = useState(null);
 
   const waterGatewayDataEndpoint =
@@ -238,9 +239,19 @@ const VisualsByCode = () => {
                 size="small"
                 variant="contained"
                 color="primary"
-                onClick={() => setShowIssueDialog(!showIssueDialog)}
+                onClick={() => {
+                  dispatch(
+                    setIssueDialogueData({
+                      nickname: user.nickname,
+                      dataType: 'json',
+                      defaultText:
+                        'Make sure to include treatment, rep, which sensor(s)/depth(s) are problematic; etc. Include as much detail as possible.',
+                      setShowNewIssueDialogue: true,
+                    }),
+                  );
+                }}
               >
-                {showIssueDialog ? 'Cancel' : 'Create comment'}
+                {'Create comment'}
               </Button>
             </Grid>
             {deviceLink && (
@@ -259,15 +270,11 @@ const VisualsByCode = () => {
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          {showIssueDialog &&
+          {issueDialogueData.setShowNewIssueDialogue &&
             (issueBody ? (
               <IssueDialogue
-                defaultText="Make sure to include treatment, rep, which sensor(s)/depth(s) are problematic; etc. Include as much detail as possible."
-                nickname={user.nickname}
                 rowData={JSON.stringify(issueBody, null, '\t')}
-                dataType="json"
                 labels={[code, 'tdr', 'water-sensor-visuals', codeData.affiliation, activeCharts]}
-                getTokenSilently={getTokenSilently}
               />
             ) : (
               <Typography variant="h6">Waiting for data</Typography>

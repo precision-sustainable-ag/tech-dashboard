@@ -21,6 +21,8 @@ import PropTypes from 'prop-types';
 import IssueDialogue from '../../../../Comments/components/IssueDialogue/IssueDialogue';
 import { Comment } from '@material-ui/icons';
 import { useAuth0 } from '../../../../Auth/react-auth0-spa';
+import { useDispatch } from 'react-redux';
+import { setIssueDialogueData } from '../../../../Store/actions';
 
 const CustomSelect = styled(Select)`
   max-width: 200px;
@@ -75,7 +77,12 @@ const FarmValuesMobileView = (props) => {
   const classes = useStyles();
   const [tableData, setTableData] = useState(data);
   const [commentOpen, setCommentOpen] = useState(false);
-  const { getTokenSilently, user } = useAuth0();
+  const dispatch = useDispatch();
+  const { user } = useAuth0();
+
+  useEffect(() => {
+    dispatch(setIssueDialogueData({ nickname: user.nickname, dataType: 'table' }));
+  }, []);
 
   const handleChangeYears = (event) => {
     const {
@@ -267,13 +274,7 @@ const FarmValuesMobileView = (props) => {
                   <div style={{ marginLeft: '10px' }}>ADD COMMENT</div>
                 </div>
                 {commentOpen ? (
-                  <IssueDialogue
-                    nickname={user.nickname}
-                    rowData={code}
-                    dataType="table"
-                    labels={['farm-values', code.code]}
-                    getTokenSilently={getTokenSilently}
-                  />
+                  <IssueDialogue rowData={code} labels={['farm-values', code.code]} />
                 ) : null}
               </div>
             ) : null}
