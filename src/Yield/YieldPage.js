@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Grid, Tab } from '@material-ui/core';
 import { TabList, TabContext } from '@material-ui/lab';
-import YieldCharts from './YieldTabs';
+import YieldCharts from './YieldCharts';
 import { onfarmAPI } from '../utils/api_secret';
 import { useSelector } from 'react-redux';
 import { CustomLoader } from '../utils/CustomComponents';
@@ -9,7 +9,7 @@ import { cleanYears, cleanAff } from './../TableComponents/SharedTableFunctions'
 
 const YieldPage = () => {
   const userInfo = useSelector((state) => state.userInfo);
-  const [value, setValue] = useState(1);
+  const [value, setValue] = useState('1');
   const [data, setData] = useState();
   const [loading, setLoading] = useState(true);
   const [activeTable, setActiveTable] = useState('Corn');

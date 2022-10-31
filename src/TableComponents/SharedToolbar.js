@@ -64,7 +64,7 @@ const SharedToolbar = (props) => {
     pickedYears,
     setPickedYears,
     name,
-    buacToggle,
+    bushelsPerAcreToggle,
   } = props;
   const classes = useStyles();
 
@@ -164,7 +164,7 @@ const SharedToolbar = (props) => {
             </Grid>
           </Grid>
           {units !== null &&
-            (buacToggle ? (
+            (bushelsPerAcreToggle ? (
               <Grid item>
                 <div style={{ display: 'grid' }}>
                   <UnitButton onClick={() => setUnits('mg/ha')} value={'mg/ha'} targetValue={units}>
@@ -231,7 +231,7 @@ SharedToolbar.propTypes = {
   pickedYears: PropTypes.array,
   setPickedYears: PropTypes.func,
   name: PropTypes.string,
-  buacToggle: PropTypes.bool,
+  bushelsPerAcreToggle: PropTypes.bool,
 };
 
 SharedToolbar.defaultProps = {

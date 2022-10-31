@@ -23,12 +23,11 @@ const YieldTables = (props) => {
   const height = useSelector((state) => state.appData.windowHeight);
 
   useEffect(() => {
-    console.log(data);
-  }, [data]);
-
-  useEffect(() => {
     var filteredData = filterData(data, pickedYears, pickedAff);
     switch (tableName) {
+      case 'Corn':
+        filteredData = filteredData.filter((row) => row['cash.crop'] === 'Corn');
+        break;
       case 'Cotton':
         filteredData = filteredData.filter((row) => row['cash.crop'] === 'Cotton');
         break;
@@ -36,7 +35,7 @@ const YieldTables = (props) => {
         filteredData = filteredData.filter((row) => row['cash.crop'] === 'Soybeans');
         break;
       default:
-        filteredData = filteredData.filter((row) => row['cash.crop'] === 'Corn');
+        null;
     }
     setTableData(filteredData);
   }, [pickedYears, pickedAff, tableName]);
@@ -133,7 +132,9 @@ const YieldTables = (props) => {
                   setPickedAff={setPickedAff}
                   setPickedYears={setPickedYears}
                   name={tableName}
-                  buacToggle={tableName === 'Corn' || tableName === 'Soybean' ? true : false}
+                  bushelsPerAcreToggle={
+                    tableName === 'Corn' || tableName === 'Soybean' ? true : false
+                  }
                 />
               }
               data={tableData}
