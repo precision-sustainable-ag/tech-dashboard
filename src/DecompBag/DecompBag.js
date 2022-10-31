@@ -9,6 +9,8 @@ import { useAuth0 } from '../Auth/react-auth0-spa';
 import MaterialTable from 'material-table';
 import Typography from '@material-ui/core/Typography';
 import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { setIssueDialogueData } from '../Store/actions';
 const _ = require('lodash');
 
 const DecompBag = () => {
@@ -18,8 +20,8 @@ const DecompBag = () => {
   const userInfo = useSelector((state) => state.userInfo);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { getTokenSilently } = useAuth0();
   const { user } = useAuth0();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchData = async (apiKey) => {
@@ -55,6 +57,14 @@ const DecompBag = () => {
     if (!userInfo.apikey) return false;
 
     fetchData(userInfo.apikey);
+
+    dispatch(
+      setIssueDialogueData({
+        nickname: user.nickname,
+        dataType: 'table',
+        setShowNewIssueDialogue: true,
+      }),
+    );
 
     return () => {
       const location = {
@@ -235,11 +245,8 @@ const DecompBag = () => {
                 render: (rowData) => {
                   return (
                     <IssueDialogue
-                      nickname={user.nickname}
                       rowData={rowData}
-                      dataType="table"
                       labels={['decomp', rowData.year, rowData.code, rowData.affiliation]}
-                      getTokenSilently={getTokenSilently}
                     />
                   );
                 },

@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Grid, Tooltip } from '@material-ui/core';
 import { Edit, QuestionAnswer } from '@material-ui/icons';
 import ActualFarmDates from '../ActualFarmDates/ActualFarmDates';
 import IssueDialogue from '../../../../Comments/components/IssueDialogue/IssueDialogue';
 import EditDatesModal from '../EditDatesModal/EditDatesModal';
 import { setEditDatesModalData, setEditDatesModalOpen } from '../../../../Store/actions';
+import { setIssueDialogueData } from '../../../../Store/actions';
 import PropTypes from 'prop-types';
 
 const FarmDatesDropdown = ({ rowData, nickname }) => {
-  const [showIssue, setShowIssue] = useState(false);
   const dispatch = useDispatch();
+  const issueDialogueData = useSelector((state) => state.issueDialogueData.issueDialogueData);
   const expandActualFarmDates =
     rowData.protocols.decomp_biomass === null ||
     rowData.protocols.decomp_biomass === 0 ||
@@ -28,7 +29,7 @@ const FarmDatesDropdown = ({ rowData, nickname }) => {
       ) : (
         ''
       )}
-      {!showIssue && (
+      {!issueDialogueData.setShowNewIssueDialog && (
         <Grid item>
           <Tooltip title="Submit a new issue">
             <Button
@@ -37,7 +38,13 @@ const FarmDatesDropdown = ({ rowData, nickname }) => {
               variant="contained"
               color="primary"
               onClick={() => {
-                setShowIssue(!showIssue);
+                dispatch(
+                  setIssueDialogueData({
+                    nickname: nickname,
+                    dataType: 'table',
+                    setShowNewIssueDialogue: true,
+                  }),
+                );
               }}
             >
               Comment
@@ -45,15 +52,9 @@ const FarmDatesDropdown = ({ rowData, nickname }) => {
           </Tooltip>
         </Grid>
       )}
-      {showIssue && (
+      {issueDialogueData.setShowNewIssueDialogue && (
         <Grid item>
-          <IssueDialogue
-            nickname={nickname}
-            rowData={rowData}
-            dataType="table"
-            labels={['farm-dates']}
-            setShowNewIssueDialog={setShowIssue}
-          />
+          <IssueDialogue rowData={rowData} labels={['farm-dates']} />
         </Grid>
       )}
       <Grid item>

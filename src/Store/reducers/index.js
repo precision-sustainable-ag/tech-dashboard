@@ -6,6 +6,7 @@ import { userInfoReducer } from './userInfoReducer';
 import { devicesReducer } from './devicesReducer';
 import { farmDatesReducer } from './farmDatesReducer';
 import { appReducer } from './appReducer';
+import { issueDialogueReducer } from './issueDialogueReducer';
 
 import { combineReducers } from 'redux';
 
@@ -18,4 +19,5 @@ export const allReducers = combineReducers({
   devicesData: devicesReducer,
   farmDatesData: farmDatesReducer,
   appData: appReducer,
+  issueDialogueData: issueDialogueReducer,
 });
