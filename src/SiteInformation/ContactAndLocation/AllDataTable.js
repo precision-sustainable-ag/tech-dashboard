@@ -49,7 +49,7 @@ const AllDataTable = (props) => {
 
   useEffect(() => {
     setLoading(true);
-  }, [userInfo]);
+  }, [userInfo.view_type]);
 
   useEffect(() => {
     const init = async () => {

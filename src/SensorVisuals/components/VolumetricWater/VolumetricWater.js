@@ -4,10 +4,15 @@ import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
 import PropTypes from 'prop-types';
 import { CustomLoader } from '../../../utils/CustomComponents';
+import Boost from 'highcharts/modules/boost';
 
 const VolumetricWater = ({ tdrData, axisMinMaxTdr }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Boost(Highcharts);
+  }, []);
 
   const chartOptions = {
     time: {
