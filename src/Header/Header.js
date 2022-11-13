@@ -523,6 +523,18 @@ export default function Header(props) {
 
               <ListItem
                 button
+                to="/site-information/farmer-report"
+                component={Link}
+                onClick={() => {
+                  setOpen(false);
+                  handleOpenAllDataNav();
+                }}
+              >
+                <ListItemText inset primary="Farmer Report" />
+              </ListItem>
+
+              <ListItem
+                button
                 to="/site-information/farm-dates"
                 component={Link}
                 onClick={() => {
