@@ -7,6 +7,7 @@ For extra features, import Location.js
 import React from 'react';
 import GoogleMapsReact from 'google-map-react';
 import PropTypes from 'prop-types';
+import { Pin, Pulse } from '../../LocationStyledComponents';
 
 import { googleApiKey } from '../../../utils/api_secret';
 
@@ -74,8 +75,10 @@ const GoogleMap = ({ lat = 35.763197, lng = -78.700187, from = '' }) => {
 const Marker = () => {
   return (
     <>
-      <div className="pin"></div>
-      <div className="pulse"></div>
+      {/* <div className="pin"></div>
+      <div className="pulse"></div> */}
+      <Pin />
+      <Pulse />
     </>
   );
 };
