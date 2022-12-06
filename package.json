@@ -21,6 +21,7 @@
     "highcharts": "^10.2.1",
     "highcharts-react-official": "^3.1.0",
     "html-react-parser": "^3.0.4",
+    "js-file-download": "^0.4.12",
     "material-table": "^1.69.3",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.37",

@@ -1,6 +1,5 @@
 import { Grid, TextField, Typography } from '@material-ui/core';
 import React, { useState, useEffect, useMemo } from 'react';
-import PropTypes from 'prop-types';
 import { onfarmAPI } from '../../utils/api_secret';
 import { CustomLoader } from '../../utils/CustomComponents';
 import YearsChips from '../../utils/YearsChips';
@@ -9,37 +8,18 @@ import { groupBy } from '../../utils/constants';
 import FarmerReportCard from './components/FarmerReportCard';
 import { Search } from '@material-ui/icons';
 import { useHistory } from 'react-router-dom';
-import { green, grey } from '@material-ui/core/colors';
-import moment from 'moment-timezone';
 import { useSelector } from 'react-redux';
 
-const FarmerReport = ({ type }) => {
+const FarmerReport = () => {
   const history = useHistory();
   const location = history.location;
-
-  const displayTitle =
-    type === 'decompbags'
-      ? 'Decomp Bags'
-      : type === 'watersensors'
-      ? 'Water Sensors'
-      : 'Stress Cams';
   const [loading, setLoading] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   const [data, setData] = useState([]);
   const [years, setYears] = useState([]);
   const [affiliations, setAffiliations] = useState(['all']);
   const userInfo = useSelector((state) => state.userInfo);
   const [codeSearchText, setCodeSearchText] = useState('');
-
-  const datesURL = onfarmAPI + `/raw?table=site_information`;
-  const stressCamAPIEndpoint = onfarmAPI + `/raw?table=site_information&output=json`;
-
-  // Styles
-  const deviceColors = {
-    bothSubplots: green[800],
-    oneSubplot: green[400],
-    loading: grey[400],
-    default: 'default',
-  };
 
   const handleActiveYear = (year = '') => {
     const newYears = years.map((yearInfo) => {
@@ -49,108 +29,6 @@ const FarmerReport = ({ type }) => {
     setYears(sortedNewYears);
   };
 
-  async function getCameraStatus(data, apiKey) {
-    let allCodes = '';
-    let allResponses = {};
-    let responseArray = [];
-
-    data.forEach((entry) => {
-      allCodes = allCodes.concat(entry.code.toLowerCase() + ',');
-      allResponses[entry.code.toLowerCase()] = [];
-      responseArray.push(entry);
-    });
-
-    const waterSensorInstallEndpoint = onfarmAPI + `/raw?table=wsensor_install&code=${allCodes}`;
-
-    await fetch(waterSensorInstallEndpoint, {
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-      },
-    }).then((res) => {
-      res.json().then((resJson) => {
-        resJson.forEach((response) => {
-          if (response.code) {
-            allResponses[response.code.toLowerCase()].push(response);
-          }
-        });
-
-        Object.keys(allResponses).forEach((key, index) => {
-          if (allResponses[key].length === 0) {
-            responseArray[index] = {
-              ...responseArray[index],
-              code: key.toUpperCase(),
-              color: deviceColors.default,
-              lastUpdated: '',
-            };
-          } else {
-            let tz = moment.tz.guess();
-
-            let lastUpdatedString;
-            if (allResponses[key][allResponses[key].length - 1].time_begin) {
-              let deviceSessionBegin = allResponses[key][allResponses[key].length - 1].time_begin;
-              // get device session begin as user local time
-              let deviceDateLocal = moment.tz(deviceSessionBegin, 'Africa/Abidjan').tz(tz);
-
-              let deviceDateFormatted = deviceDateLocal.fromNow();
-              lastUpdatedString = 'Form registered ' + deviceDateFormatted;
-            } else {
-              lastUpdatedString = 'No timestamp';
-            }
-
-            if (allResponses[key].length === 1) {
-              responseArray[index] = {
-                ...responseArray[index],
-                code: key.toUpperCase(),
-                color: deviceColors.oneSubplot,
-                lastUpdated: lastUpdatedString,
-              };
-            } else {
-              let foundSubplotOne = false;
-              let foundSubplotTwo = false;
-
-              allResponses[key].forEach((entry) => {
-                if ('subplot' in entry) {
-                  if (entry.subplot === 1) {
-                    foundSubplotOne = true;
-                  } else if (entry.subplot === 2) foundSubplotTwo = true;
-                }
-
-                if (foundSubplotOne && foundSubplotTwo) {
-                  responseArray[index] = {
-                    ...responseArray[index],
-                    code: key.toUpperCase(),
-                    color: deviceColors.bothSubplots,
-                    lastUpdated: lastUpdatedString,
-                  };
-                } else if (foundSubplotOne || foundSubplotTwo) {
-                  responseArray[index] = {
-                    ...responseArray[index],
-                    code: key.toUpperCase(),
-                    color: deviceColors.oneSubplot,
-                    lastUpdated: lastUpdatedString,
-                  };
-                } else {
-                  responseArray[index] = {
-                    ...responseArray[index],
-                    code: key.toUpperCase(),
-                    color: deviceColors.default,
-                    lastUpdated: ' ',
-                  };
-                }
-              });
-            }
-          }
-        });
-        setLoading(false);
-        let responseWithFilter = responseArray.filter((r) => {
-          return r.protocols_enrolled !== '-999';
-        });
-        setData(responseWithFilter);
-      });
-    });
-  }
-
   useEffect(() => {
     if (location.state && location.state.data) {
       setData(location.state.data);
@@ -158,7 +36,7 @@ const FarmerReport = ({ type }) => {
 
     const fetchData = async (apiKey) => {
       setLoading(true);
-      const endpoint = type === 'watersensors' ? datesURL : stressCamAPIEndpoint;
+      const endpoint = onfarmAPI + `/raw?table=site_information`;
       if (apiKey) {
         try {
           const records = await fetch(endpoint, {
@@ -170,23 +48,11 @@ const FarmerReport = ({ type }) => {
           let response = await records.json();
 
           if (data.length === 0) {
-            let newData = response.map((entry) => {
-              return {
-                ...entry,
-                color: deviceColors.loading,
-                lastUpdated: 'Fetching last update time',
-              };
+            setLoading(false);
+            let responseWithFilter = response.filter((r) => {
+              return r.protocols_enrolled !== '-999';
             });
-
-            if (type === 'watersensors') {
-              getCameraStatus(newData, userInfo.apikey);
-            } else {
-              setLoading(false);
-              let responseWithFilter = response.filter((r) => {
-                return r.protocols_enrolled !== '-999';
-              });
-              setData(responseWithFilter);
-            }
+            setData(responseWithFilter);
           }
 
           const recs = groupBy(response, 'year');
@@ -240,7 +106,7 @@ const FarmerReport = ({ type }) => {
     };
 
     fetchData(userInfo.apikey);
-  }, [userInfo.apikey, type, location.state, data.length]);
+  }, [userInfo.apikey, location.state, data.length]);
 
   useEffect(() => {
     return () => {
@@ -285,14 +151,6 @@ const FarmerReport = ({ type }) => {
     }
   }, [years, data, affiliations, codeSearchText]);
 
-  const activeYear = useMemo(() => {
-    return years.reduce((acc, curr) => {
-      if (curr.active) {
-        return curr.year;
-      } else return acc;
-    }, '');
-  }, [years]);
-
   const activeAffiliation = () => {
     return (
       affiliations
@@ -318,10 +176,12 @@ const FarmerReport = ({ type }) => {
 
   return loading && data.length === 0 ? (
     <CustomLoader />
+  ) : downloading ? (
+    <CustomLoader />
   ) : (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h5">{displayTitle}</Typography>
+        <Typography variant="h5">Farmer Report</Typography>
       </Grid>
       <Grid item container justifyContent="space-between" spacing={2}>
         <Grid item container spacing={2} xs={12} md={6} lg={9}>
@@ -372,11 +232,7 @@ const FarmerReport = ({ type }) => {
           <Grid item key={index} xl={2} lg={3} md={4} sm={6} xs={12}>
             <FarmerReportCard
               code={entry.code}
-              year={activeYear}
-              affiliation={activeAffiliation() || 'all'}
-              lastUpdated={entry.lastUpdated}
-              data={data}
-              type={type}
+              setDownloading={setDownloading}
               apiKey={userInfo.apikey}
             />
           </Grid>
@@ -384,14 +240,6 @@ const FarmerReport = ({ type }) => {
       </Grid>
     </Grid>
   );
-};
-
-FarmerReport.defaultProps = {
-  type: 'watersensors',
-};
-
-FarmerReport.propTypes = {
-  type: PropTypes.oneOf(['watersensors', 'stresscams']).isRequired,
 };
 
 export default FarmerReport;
