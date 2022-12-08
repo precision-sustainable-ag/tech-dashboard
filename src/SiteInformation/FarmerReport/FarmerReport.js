@@ -219,7 +219,7 @@ const FarmerReport = () => {
       </Grid>
       <Grid item container spacing={2} xs={12}>
         <Grid item sm={12} md={12} xs={12}>
-          <Typography variant="heading1">
+          <Typography variant="h5">
             The buttons below will generate reports for your growers. A Word document will be
             downloaded to your computer; this will take about 15 seconds to complete. Make sure to
             review the file and edit it as appropriate for your grower. You may wish to rename or

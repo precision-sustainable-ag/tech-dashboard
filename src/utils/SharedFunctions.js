@@ -83,7 +83,14 @@ export function useWindowDimensions() {
   return dimensions;
 }
 
-export const callAzureFunction = async (data, endpoint, method, getTokenSilently) => {
+/** make default param resType=json */
+export const callAzureFunction = async (
+  data,
+  endpoint,
+  method,
+  getTokenSilently,
+  resType = 'json',
+) => {
   let token = await getTokenSilently({
     audience: `https://precision-sustaibale-ag/tech-dashboard`,
   });
@@ -114,13 +121,21 @@ export const callAzureFunction = async (data, endpoint, method, getTokenSilently
   }
 
   let correctionsApiResponseJSON = null;
+  let correctionsApiResponseBLOB = null;
 
-  if (correctionsApiResponse)
-    correctionsApiResponseJSON = await correctionsApiResponse.json().catch((err) => {
-      console.log(err);
-      correctionsApiResponseJSON = correctionsApiResponse;
-    });
-
+  if (correctionsApiResponse) {
+    if (resType === 'blob') {
+      correctionsApiResponseBLOB = await correctionsApiResponse.blob().catch((err) => {
+        console.log(err);
+        correctionsApiResponseBLOB = correctionsApiResponse;
+      });
+    } else {
+      correctionsApiResponseJSON = await correctionsApiResponse.json().catch((err) => {
+        console.log(err);
+        correctionsApiResponseJSON = correctionsApiResponse;
+      });
+    }
+  }
   console.log(correctionsApiResponse);
 
   const dataString = qs.stringify({
@@ -152,6 +167,7 @@ export const callAzureFunction = async (data, endpoint, method, getTokenSilently
 
   return {
     jsonResponse: correctionsApiResponseJSON,
+    blobResponse: correctionsApiResponseBLOB,
     response: correctionsApiResponse,
   };
 };

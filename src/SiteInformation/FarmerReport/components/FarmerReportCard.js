@@ -6,27 +6,50 @@ import fileDownload from 'js-file-download';
 import { useSelector } from 'react-redux';
 import { callAzureFunction } from '../../../utils/SharedFunctions';
 import { useAuth0 } from '../../../Auth/react-auth0-spa';
+import { useDispatch } from 'react-redux';
+import { setSnackbarData } from '../../../Store/actions';
 
-//`${code.toUpperCase()}-Report.docx`
 const FarmerReportCard = (props) => {
   let { code, setDownloading } = props;
   const { getTokenSilently } = useAuth0();
   const theme = useTheme();
   const isDarkTheme = useSelector((state) => state.userInfo.isDarkTheme);
+  const dispatch = useDispatch();
 
   const saveFile = () => {
     setDownloading(true);
-    callAzureFunction(null, `report/${code}`, 'GET', getTokenSilently)
-      .then((res) => res.response.blob)
-      .then((blob) => {
-        fileDownload(blob.data, `${code.toUpperCase()}-Report.docx`);
-        // const url = window.URL.createObjectURL(new Blob([blob]));
-        // const link = document.createElement('a');
-        // link.href = url;
-        // link.setAttribute('download', `${code.toUpperCase()}-Report.docx`);
-        // document.body.appendChild(link);
-        // link.click();
-        // link.parentNode.removeChild(link);
+    /**fetch data*/
+    callAzureFunction(null, `report/${code}`, 'GET', getTokenSilently, 'blob')
+      .then((res) => {
+        /** download data */
+        if (res.blobResponse && res.response.status === 201) {
+          fileDownload(res.blobResponse, `${code.toUpperCase()}-Report.docx`);
+          dispatch(
+            setSnackbarData({
+              open: true,
+              text: 'Download Success!',
+              severity: 'success',
+            }),
+          );
+        } else {
+          dispatch(
+            setSnackbarData({
+              open: true,
+              text: 'Download Failed. Response status returned failure.',
+              severity: 'failure',
+            }),
+          );
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        dispatch(
+          setSnackbarData({
+            open: true,
+            text: 'Download Failed. Fetching failed.',
+            severity: 'failure',
+          }),
+        );
       })
       .finally(() => {
         setDownloading(false);
