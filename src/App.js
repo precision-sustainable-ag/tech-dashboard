@@ -54,6 +54,7 @@ import FarmValues from './Biomass/FarmValues/FarmValues';
 import SensorVisuals from './SensorVisuals/SensorVisuals';
 import VisualsByCode from './SensorVisuals/components/VisualsByCode/VisualsByCode';
 import Profile from './Profile/Profile';
+import YieldPage from './Yield/YieldPage';
 
 import FarmDatesCalendar from './SiteInformation/FarmDates/components/FarmDatesCalendar/FarmDatesCalendar';
 
@@ -458,6 +459,10 @@ function App() {
                   path={`/biomass/farm-values`}
                   render={(props) => <FarmValues {...props} />}
                 />
+
+                {/* Yield URLS */}
+                <PrivateRoute path={`/yield`} render={(props) => <YieldPage {...props} />} />
+
                 {/* Task Tracker View */}
                 <PrivateRoute path={`/task-tracker`} component={TaskTracker} exact />
                 <PrivateRoute path={`/weeds-3d-viewer`} component={Weeds3dViewer} exact />

@@ -64,6 +64,7 @@ const SharedToolbar = (props) => {
     pickedYears,
     setPickedYears,
     name,
+    bushelsPerAcreToggle,
   } = props;
   const classes = useStyles();
 
@@ -162,24 +163,42 @@ const SharedToolbar = (props) => {
               </Grid>
             </Grid>
           </Grid>
-          {units !== null && (
-            <Grid item>
-              <div style={{ display: 'grid' }}>
-                <UnitButton
-                  onClick={() => setUnits('kg/ha')}
-                  value={'kg/ha' == units ? true : false}
-                >
-                  <UnitButtonText>Kg/Ha</UnitButtonText>
-                </UnitButton>
-                <UnitButton
-                  value={'lbs/ac' == units ? true : false}
-                  onClick={() => setUnits('lbs/ac')}
-                >
-                  <UnitButtonText>Lbs/ac</UnitButtonText>
-                </UnitButton>
-              </div>
-            </Grid>
-          )}
+          {units !== null &&
+            (bushelsPerAcreToggle ? (
+              <Grid item>
+                <div style={{ display: 'grid' }}>
+                  <UnitButton
+                    onClick={() => setUnits('mg/ha')}
+                    value={'mg/ha' == units ? true : false}
+                  >
+                    <UnitButtonText>mg/ha</UnitButtonText>
+                  </UnitButton>
+                  <UnitButton
+                    onClick={() => setUnits('bu/ac')}
+                    value={'bu/ac' == units ? true : false}
+                  >
+                    <UnitButtonText>bu/ac</UnitButtonText>
+                  </UnitButton>
+                </div>
+              </Grid>
+            ) : (
+              <Grid item>
+                <div style={{ display: 'grid' }}>
+                  <UnitButton
+                    onClick={() => setUnits('kg/ha')}
+                    value={'kg/ha' == units ? true : false}
+                  >
+                    <UnitButtonText>Kg/Ha</UnitButtonText>
+                  </UnitButton>
+                  <UnitButton
+                    onClick={() => setUnits('lbs/ac')}
+                    value={'lbs/ac' == units ? true : false}
+                  >
+                    <UnitButtonText>Lbs/ac</UnitButtonText>
+                  </UnitButton>
+                </div>
+              </Grid>
+            ))}
           {simpleView !== null && (
             <Grid item>
               <div style={{ display: 'grid' }}>
@@ -212,6 +231,7 @@ SharedToolbar.propTypes = {
   pickedYears: PropTypes.array,
   setPickedYears: PropTypes.func,
   name: PropTypes.string,
+  bushelsPerAcreToggle: PropTypes.bool,
 };
 
 SharedToolbar.defaultProps = {

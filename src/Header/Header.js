@@ -582,6 +582,14 @@ export default function Header(props) {
               </ListItem>
             </List>
           </Collapse>
+
+          <ListItem onClick={() => setOpen(false)} button key="Yield" component={Link} to="/yield">
+            <ListItemIcon>
+              <Storage />
+            </ListItemIcon>
+            <ListItemText primary="Yield" />
+          </ListItem>
+
           <ListItem
             onClick={() => setOpen(false)}
             button
