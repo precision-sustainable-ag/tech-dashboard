@@ -34,6 +34,7 @@ import WaterSensorByGateway from './Devices/components/WaterSensorByGateway/Wate
 import SiteEnrollment from './SiteInformation/Enrollment/SiteEnrollment';
 import PageNotFound from './PageNotFound';
 import AllDataTable from './SiteInformation/ContactAndLocation/AllDataTable';
+import FarmerReport from './SiteInformation/FarmerReport/FarmerReport';
 
 import Device from './Devices/components/Device/Device';
 
@@ -347,6 +348,11 @@ function App() {
                 <PrivateRoute
                   path="/site-information/inactive-sites"
                   render={() => <AllDataTable active={false} />}
+                />
+
+                <PrivateRoute
+                  path="/site-information/farmer-report"
+                  render={() => <FarmerReport title="Farmer Report" />}
                 />
 
                 <PrivateRoute
