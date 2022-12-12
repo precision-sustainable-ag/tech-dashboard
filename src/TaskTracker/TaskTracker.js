@@ -289,7 +289,7 @@ let yieldJson = [
   {
     title: 'Weigh Wagon',
     table: 'yield_wagon',
-    complete_col: 'wagon_area_ft2',
+    complete_col: 'moisture_pct',
     time: '',
     exclusion_protocol: 'cash_crop_yield',
   },
