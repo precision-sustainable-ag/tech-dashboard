@@ -17,8 +17,9 @@ const YieldTables = (props) => {
   const [tableData, setTableData] = useState(data);
   const [units, setUnits] = useState('mg/ha');
   //const [simpleView, setSimpleView] = useState(true);
-  const currTime = new Date();
-  const [pickedYears, setPickedYears] = useState([currTime.getFullYear()]);
+  // const currTime = new Date();
+  const orderedYears = farmYears.sort((a, b) => a.localeCompare(b));
+  const [pickedYears, setPickedYears] = useState([orderedYears[orderedYears.length - 1]]);
   const [pickedAff, setPickedAff] = useState(['All']);
   const height = useSelector((state) => state.appData.windowHeight);
 

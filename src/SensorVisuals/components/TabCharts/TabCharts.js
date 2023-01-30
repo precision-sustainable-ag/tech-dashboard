@@ -37,7 +37,8 @@ const TabCharts = ({
       return {
         min: sensorData.length === 0 ? now : convertEpochtoDatetime(sensorData[0].timestamp),
         max:
-          new Date().getFullYear().toString() === year
+          sensorData.length === 0 ||
+          (new Date().getFullYear().toString() === year && new Date().getMonth() < 10)
             ? now
             : convertEpochtoDatetime(sensorData[sensorData.length - 1].timestamp),
       };
