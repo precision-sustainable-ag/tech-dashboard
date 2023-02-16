@@ -97,7 +97,6 @@ const FarmerReport = () => {
             b.affiliation < a.affiliation ? 1 : b.affiliation > a.affiliation ? -1 : 0,
           );
 
-          console.log(sortedUniqueAffiliations);
           setAffiliations(sortedUniqueAffiliations);
         } catch (e) {
           setYears([]);
