@@ -58,6 +58,9 @@ const FarmerReport = () => {
           const recs = groupBy(response, 'year');
           const currentYear = new Date().getFullYear().toString();
 
+          const greatestGivenYear = Object.keys(recs).sort((a, b) => b - a)[0];
+          const highlightedYear = greatestGivenYear < currentYear ? greatestGivenYear : currentYear;
+
           const uniqueYears = Object.keys(recs)
             .sort((a, b) => b - a)
             .map((y) => {
@@ -75,7 +78,7 @@ const FarmerReport = () => {
               } else {
                 return {
                   year: y,
-                  active: currentYear === y,
+                  active: highlightedYear === y,
                 };
               }
             });
