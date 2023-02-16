@@ -97,6 +97,7 @@ const FarmerReport = () => {
             b.affiliation < a.affiliation ? 1 : b.affiliation > a.affiliation ? -1 : 0,
           );
 
+          console.log(sortedUniqueAffiliations);
           setAffiliations(sortedUniqueAffiliations);
         } catch (e) {
           setYears([]);
@@ -193,7 +194,7 @@ const FarmerReport = () => {
           </Grid>
           <YearsChips years={years} handleActiveYear={handleActiveYear} />
         </Grid>
-        {affiliations.length > 1 && (
+        {affiliations.length > 0 && (
           <Grid item container spacing={2} xs={12}>
             <Grid item sm={2} md={1} xs={12}>
               <Typography variant="body1">Affiliations</Typography>
