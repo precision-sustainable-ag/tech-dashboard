@@ -58,6 +58,9 @@ const FarmerReport = () => {
           const recs = groupBy(response, 'year');
           const currentYear = new Date().getFullYear().toString();
 
+          const greatestGivenYear = Object.keys(recs).sort((a, b) => b - a)[0];
+          const highlightedYear = greatestGivenYear < currentYear ? greatestGivenYear : currentYear;
+
           const uniqueYears = Object.keys(recs)
             .sort((a, b) => b - a)
             .map((y) => {
@@ -75,7 +78,7 @@ const FarmerReport = () => {
               } else {
                 return {
                   year: y,
-                  active: currentYear === y,
+                  active: highlightedYear === y,
                 };
               }
             });
@@ -190,7 +193,7 @@ const FarmerReport = () => {
           </Grid>
           <YearsChips years={years} handleActiveYear={handleActiveYear} />
         </Grid>
-        {affiliations.length > 1 && (
+        {affiliations.length > 0 && (
           <Grid item container spacing={2} xs={12}>
             <Grid item sm={2} md={1} xs={12}>
               <Typography variant="body1">Affiliations</Typography>
