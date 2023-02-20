@@ -69,7 +69,7 @@ const TabCharts = ({
               )}
             </Grid>
           </Grid>
-        ) : !gatewayData ? (
+        ) : gatewayData.length == 0 || !gatewayData ? (
           'No Gateway Data'
         ) : (
           loadingMessage
@@ -90,7 +90,7 @@ const TabCharts = ({
               <VolumetricWater tdrData={tdrData} axisMinMaxTdr={axisMinMaxTdr} />
             </Grid>
           </Grid>
-        ) : !tdrData ? (
+        ) : tdrData.length == 0 || !tdrData ? (
           'No VWC Data'
         ) : (
           loadingMessage
@@ -120,7 +120,7 @@ const TabCharts = ({
               <LitterbagTemp ambientData={ambientData} axisMinMaxLitterbag={axisMinMaxLitterbag} />
             </Grid>
           </Grid>
-        ) : !tdrData ? (
+        ) : tdrData.length == 0 || !tdrData ? (
           'No Temperature Data'
         ) : (
           loadingMessage
