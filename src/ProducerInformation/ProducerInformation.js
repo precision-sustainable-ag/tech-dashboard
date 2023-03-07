@@ -25,12 +25,16 @@ const ProducerInformation = () => {
   const [loading, setLoading] = useState(false);
   const [farmYears, setFarmYears] = useState([]);
   const [affiliations, setAffiliations] = useState([]);
-  const [pickedYears, setPickedYears] = useState(['2022']);
+  const [pickedYears, setPickedYears] = useState([]);
   const [pickedAff, setPickedAff] = useState(['All']);
   const height = useSelector((state) => state.appData.windowHeight);
   // const [state] = useContext(Context);
   const userInfo = useSelector((state) => state.userInfo);
   const { user } = useAuth0();
+
+  useEffect(() => {
+    setPickedYears([farmYears.sort()[farmYears.length - 1]]);
+  }, [farmYears]);
 
   const allowEditing = () => {
     let permissions = userInfo.permissions;

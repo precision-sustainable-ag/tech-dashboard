@@ -72,13 +72,17 @@ const FarmValuesMobileView = (props) => {
   const { farmYears, affiliations, tableHeaderOptions, data, units, setUnits } = props;
   const [mobileModalOpen, setMobileModelOpen] = useState(false);
   const [mobileSelectedCode, setMobileSelectedCode] = useState('');
-  const [pickedYears, setPickedYears] = useState(['2022']);
+  const [pickedYears, setPickedYears] = useState([]);
   const [pickedAff, setPickedAff] = useState(['All']);
   const classes = useStyles();
   const [tableData, setTableData] = useState(data);
   const [commentOpen, setCommentOpen] = useState(false);
   const dispatch = useDispatch();
   const { user } = useAuth0();
+
+  useEffect(() => {
+    setPickedYears([farmYears.sort()[farmYears.length - 1]]);
+  }, [farmYears]);
 
   useEffect(() => {
     dispatch(setIssueDialogueData({ nickname: user.nickname, dataType: 'table' }));
