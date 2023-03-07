@@ -19,11 +19,15 @@ const FarmValuesTable = (props) => {
   const { user } = useAuth0();
   const [units, setUnits] = useState('kg/ha');
   const [simpleView, setSimpleView] = useState(true);
-  const [pickedYears, setPickedYears] = useState(['2022']);
+  const [pickedYears, setPickedYears] = useState([]);
   const [pickedAff, setPickedAff] = useState(['All']);
   const height = useSelector((state) => state.appData.windowHeight);
   const dispatch = useDispatch();
   // const width = useSelector((state) => state.appData.windowWidth);
+
+  useEffect(() => {
+    setPickedYears([farmYears.sort()[farmYears.length - 1]]);
+  }, [farmYears]);
 
   useEffect(() => {
     setTableData(filterData(data, pickedYears, pickedAff));
