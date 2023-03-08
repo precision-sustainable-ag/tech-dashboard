@@ -25,10 +25,14 @@ const Weeds3dViewer = () => {
   const dispatch = useDispatch();
   const [farmYears, setFarmYears] = useState([]);
   const [affiliations, setAffiliations] = useState([]);
-  const [pickedYears, setPickedYears] = useState(['2022']);
+  const [pickedYears, setPickedYears] = useState([]);
   const [pickedAff, setPickedAff] = useState(['All']);
   const height = useSelector((state) => state.appData.windowHeight);
   // const userAPIKey = useSelector((state) => state.userInfo.apikey);
+
+  useEffect(() => {
+    setPickedYears([farmYears.sort()[farmYears.length - 1]]);
+  }, [farmYears]);
 
   useEffect(() => {
     dispatch(
