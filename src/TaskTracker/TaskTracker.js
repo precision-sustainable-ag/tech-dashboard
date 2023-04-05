@@ -473,6 +473,17 @@ const TaskTracker = () => {
                 showYears={true}
               />
             </Grid>
+            <div style={{ marginTop: '20px' }}>
+              {' '}
+              Protocol timelines:{' '}
+              <a
+                href="https://sites.google.com/ncsu.edu/psateamportal/teams/on-farm/on-farm-timeline"
+                target="_blank"
+                rel="noreferrer"
+              >
+                view on Team Portal
+              </a>
+            </div>
           </Grid>
           {/* Codes */}
           <Grid item lg={9} sm={12}>

@@ -60,7 +60,6 @@ import FarmDatesCalendar from './SiteInformation/FarmDates/components/FarmDatesC
 
 import ProducerInformation from './ProducerInformation/ProducerInformation';
 
-import TaskTimeline from './Landing/TaskTimeline/TaskTimeline';
 import TaskTracker from './TaskTracker/TaskTracker';
 
 import Protocols from './Protocols/Protocols';
@@ -316,17 +315,6 @@ function App() {
               <div className={`${classes.toolbar} topHead`} />
 
               <Switch>
-                <Route
-                  render={() => (
-                    // <LandingComponent
-                    //   {...props}
-                    //   isDarkTheme={theme.palette.type === "light" ? false : true}
-                    // />
-                    <TaskTimeline title="Task Timeline" />
-                  )}
-                  path="/"
-                  exact
-                />
                 <PrivateRoute
                   path="/on-farm-protocols"
                   render={() => <Protocols title="On Farm Protocols" />}
@@ -464,7 +452,7 @@ function App() {
                 <PrivateRoute path={`/yield`} render={(props) => <YieldPage {...props} />} />
 
                 {/* Task Tracker View */}
-                <PrivateRoute path={`/task-tracker`} component={TaskTracker} exact />
+                <PrivateRoute path={"/"} exact component={TaskTracker} />
                 <PrivateRoute path={`/weeds-3d-viewer`} component={Weeds3dViewer} exact />
                 <Route path="*">
                   <PageNotFound />

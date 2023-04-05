@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
-import { RiSensorFill, RiTimeLine } from 'react-icons/ri';
+import { RiSensorFill } from 'react-icons/ri';
 import {
   Drawer,
   AppBar,
@@ -441,14 +441,19 @@ export default function Header(props) {
 
         <Divider />
         <List>
-          <ListItem onClick={() => setOpen(false)} button key={'timeline'} component={Link} to="/">
+          <ListItem
+            onClick={() => setOpen(false)}
+            button
+            key="TaskTracker"
+            component={Link}
+            to="/task-tracker"
+          >
             <ListItemIcon>
-              <Icon>
-                <RiTimeLine />
-              </Icon>
+              <Storage />
             </ListItemIcon>
-            <ListItemText primary={'Timeline'} />
+            <ListItemText primary="Task Tracker" />
           </ListItem>
+
           <ListItem
             onClick={() => setOpen(false)}
             button
@@ -712,20 +717,6 @@ export default function Header(props) {
             </ListItemIcon>
             <ListItemText primary="Forms" />
           </ListItem>
-
-          <ListItem
-            onClick={() => setOpen(false)}
-            button
-            key="TaskTracker"
-            component={Link}
-            to="/task-tracker"
-          >
-            <ListItemIcon>
-              <Storage />
-            </ListItemIcon>
-            <ListItemText primary="Task Tracker" />
-          </ListItem>
-
           <ListItem
             onClick={() => setOpen(false)}
             button
