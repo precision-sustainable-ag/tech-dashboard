@@ -446,7 +446,7 @@ export default function Header(props) {
             button
             key="TaskTracker"
             component={Link}
-            to="/task-tracker"
+            to="/"
           >
             <ListItemIcon>
               <Storage />
