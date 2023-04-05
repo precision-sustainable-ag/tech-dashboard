@@ -581,6 +581,20 @@ export default function Header(props) {
                 <ListItemText inset primary={'Farm Values'} />
               </ListItem>
             </List>
+            <List component="div" disablePadding>
+              <ListItem
+                onClick={() => {
+                  setOpenNav({ ...openNav, biomass: !openNav.biomass });
+                  setOpen(false);
+                }}
+                button
+                key={'Species'}
+                component={Link}
+                to="/biomass/species"
+              >
+                <ListItemText inset primary={'Species'} />
+              </ListItem>
+            </List>
           </Collapse>
 
           <ListItem onClick={() => setOpen(false)} button key="Yield" component={Link} to="/yield">

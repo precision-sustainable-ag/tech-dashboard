@@ -35,6 +35,7 @@ import SiteEnrollment from './SiteInformation/Enrollment/SiteEnrollment';
 import PageNotFound from './PageNotFound';
 import AllDataTable from './SiteInformation/ContactAndLocation/AllDataTable';
 import FarmerReport from './SiteInformation/FarmerReport/FarmerReport';
+import Species from './Biomass/Species/Species';
 
 import Device from './Devices/components/Device/Device';
 
@@ -459,6 +460,8 @@ function App() {
                   path={`/biomass/farm-values`}
                   render={(props) => <FarmValues {...props} />}
                 />
+
+                <PrivateRoute path="/biomass/species" render={(props) => <Species {...props} />} />
 
                 {/* Yield URLS */}
                 <PrivateRoute path={`/yield`} render={(props) => <YieldPage {...props} />} />
