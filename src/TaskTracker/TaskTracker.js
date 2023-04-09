@@ -74,6 +74,13 @@ let biomassJson = [
     time: '',
     exclusion_protocol: '',
   },
+  {
+    title: 'Species',
+    table: 'cc_mixture',
+    complete_col: 'code',
+    time: '',
+    exclusion_protocol: '',
+  },
 ];
 
 let decompBagJson = [
@@ -463,17 +470,7 @@ const TaskTracker = () => {
         <Fragment>
           {/* Years and Affiliation */}
           <Grid item lg={9} sm={12}>
-            <Grid container spacing={3}>
-              <YearsAndAffiliations
-                title={'Task Tracker'}
-                years={farmYears}
-                handleActiveYear={handleActiveYear}
-                affiliations={affiliations}
-                handleActiveAffiliation={handleActiveAffiliation}
-                showYears={true}
-              />
-            </Grid>
-            <div style={{ marginTop: '20px' }}>
+            <div style={{ marginBottom: '20px' }}>
               {' '}
               Protocol timelines:{' '}
               <a
@@ -484,6 +481,16 @@ const TaskTracker = () => {
                 view on Team Portal
               </a>
             </div>
+            <Grid container spacing={3}>
+              <YearsAndAffiliations
+                title={'Task Tracker'}
+                years={farmYears}
+                handleActiveYear={handleActiveYear}
+                affiliations={affiliations}
+                handleActiveAffiliation={handleActiveAffiliation}
+                showYears={true}
+              />
+            </Grid>
           </Grid>
           {/* Codes */}
           <Grid item lg={9} sm={12}>
