@@ -21,13 +21,16 @@ const FarmDates = () => {
   const [showBannedMessage, setShowBannedMessage] = useState(false);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth0();
-  const [pickedYears, setPickedYears] = useState(['2022']);
+  const [pickedYears, setPickedYears] = useState([]);
   const [pickedAff, setPickedAff] = useState(['All']);
   const [farmYears, setFarmYears] = useState([]);
   const [affiliations, setAffiliations] = useState([]);
   const [tableData, setTableData] = useState(farmDatesData);
   const height = useSelector((state) => state.appData.windowHeight);
 
+  useEffect(() => {
+    setPickedYears([farmYears.sort()[farmYears.length - 1]]);
+  }, [farmYears]);
 
   useEffect(() => {
     if (userInfo.role && bannedRoles.includes(userInfo.role)) {

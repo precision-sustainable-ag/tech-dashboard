@@ -10,12 +10,14 @@ import { SharedTableContainer } from '../../../../TableComponents/SharedTableCon
 
 const TableModal = ({ data, height, activeSites, tableTitle, farmYears, affiliations }) => {
   const [tableData, setTableData] = useState(data);
-  const [pickedYears, setPickedYears] = useState([2022]);
+  const [pickedYears, setPickedYears] = useState([]);
   const [pickedAff, setPickedAff] = useState(['All']);
 
   useEffect(() => {
     setTableData(data);
-  }, [data]);
+
+    setPickedYears([farmYears.sort()[farmYears.length - 1]]);
+  }, [farmYears]);
 
   const tableHeaderOptions = [
     {
