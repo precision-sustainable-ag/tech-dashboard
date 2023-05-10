@@ -5,7 +5,7 @@ import Highcharts from 'highcharts';
 import PropTypes from 'prop-types';
 import Boost from 'highcharts/modules/boost';
 
-const timezoneOffset = new Date().getTimezoneOffset() * 2;
+const timezoneOffset = new Date().getTimezoneOffset();
 
 const NodeVoltage = ({ nodeData, axisMinMaxNode }) => {
   useEffect(() => {
