@@ -16,7 +16,7 @@ const VolumetricWater = ({ tdrData, axisMinMaxTdr }) => {
 
   const chartOptions = {
     time: {
-      timezoneOffset: new Date().getTimezoneOffset() * 2,
+      timezoneOffset: new Date().getTimezoneOffset(),
     },
     chart: {
       type: 'scatter',
