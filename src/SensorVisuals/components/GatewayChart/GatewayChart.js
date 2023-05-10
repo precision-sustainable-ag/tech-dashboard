@@ -36,7 +36,7 @@ const GatewayChart = ({ gatewayData, axisMinMaxGateway }) => {
 
   const chartOptions = {
     time: {
-      timezoneOffset: new Date().getTimezoneOffset() * 2,
+      timezoneOffset: new Date().getTimezoneOffset(),
     },
     chart: {
       type: 'scatter',
